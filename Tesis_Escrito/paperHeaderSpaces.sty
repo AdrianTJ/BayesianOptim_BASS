@@ -1,0 +1,42 @@
+%% Written by Andreas Wachtel
+%% for the pageformat of ITAM
+%% date  December 10th, 2019
+
+% The configuration is written for a one-sided document declared as follows
+%\documentclass[11pt, oneside]{scrartcl}
+%\documentclass[11pt, oneside, headings=twolinechapter]{scrreprt}
+\RequirePackage{color}
+\RequirePackage{calc}
+
+
+%% paper and margin settings
+\usepackage[paperwidth=17cm, paperheight=22.5cm, nofoot=true, bindingoffset=1.1cm, inner=1.6cm, outer=1.8cm, top=2.5cm, bottom=1.5cm]{geometry}
+
+%\usepackage{mathtools} % gives \widthof
+%% headers
+\usepackage[automark, singlespacing=true]{scrlayer-scrpage}
+%\usepackage[automark]{scrlayer-scrpage}
+\clearpairofpagestyles
+\pagestyle{scrheadings}
+\setlength{\headheight}{17.7pt}
+
+\newlength{\measten}\setlength{\measten}{1.5ex}
+\def\vline{\makebox[5ex][c]{\raisebox{-1.8ex}{\rule{.75pt}{.5cm}}}}
+\ihead*{%
+\hfill\footnotesize\textit{\color{white}M}\vline\makebox[\measten][r]{\textit{\thepage}}\hspace*{-\measten}\hspace*{-2.5ex}%
+}
+\ihead{%
+\hfill
+\footnotesize\textit{\leftmark}\vline\makebox[\measten][r]{\textit{\thepage}}\hspace*{-\measten}\hspace*{-2.5ex}%
+}
+
+% 1.5 text and math spacing
+\usepackage[nodisplayskipstretch]{setspace}
+\setstretch{1.3}
+
+
+
+% chapter settings (requires report or book with the option twolinechapter)
+%\documentclass[11pt, oneside, headings=twolinechapter]{scrreprt}
+\renewcommand{\chapterformat}{{\Large\chaptername~\thechapter}}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{\thechapter.\ #1}}
