@@ -1,0 +1,38 @@
+%\documentclass[11pt, oneside]{article}
+%\documentclass[11pt, oneside]{scrartcl}
+\documentclass[11pt, oneside, headings=twolinechapter]{scrreprt}
+%\documentclass[11pt, oneside]{scrbook}
+\usepackage[utf8]{inputenc}
+
+\usepackage{paperHeaderSpaces}
+
+\usepackage{graphicx}
+\graphicspath{{imgs/}}
+\usepackage{configTables}
+
+
+\usepackage[english]{babel}
+
+
+\usepackage{blindtext}
+\begin{document}
+%% title and CTA
+% see coverpages.tex
+
+\pagenumbering{Roman}%
+
+\chapter*{Dedicatoria}
+\clearpage
+\chapter*{Abstract}
+\clearpage
+
+\tableofcontents
+
+
+\cleardoublepage
+\pagenumbering{arabic}%
+
+\include{"./chapters/ch0.tex"}
+
+
+\end{document}
