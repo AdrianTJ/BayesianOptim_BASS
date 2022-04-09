@@ -11,8 +11,8 @@ library(BASS)
 ```
 
 ```{r function, echo=TRUE}
-f <- function(x) {
-  return((6 * x - 2)^2 * sin(12 * x - 4))
+f <- function(x1,x2) {
+  return((6 * x1 - 2)^2 * sin(12 * x2 - 4))
 }
 ```
 
@@ -21,11 +21,12 @@ f <- function(x) {
 n0 <- 8
 evaluations <- matrix(
   as.numeric(NA),
-  ncol = 2, nrow = n0,
-  dimnames = list(NULL, c("x", "y"))
+  ncol = 3, nrow = n0,
+  dimnames = list(NULL, c("x1", "x2", "y"))
 )
-evaluations[, "x"] <- seq(0, 1, length.out = n0)
-evaluations[, "y"] <- f(evaluations[, "x"]) 
+evaluations[, "x1"] <- seq(0, 1, length.out = n0)
+evaluations[, "x2"] <- seq(0, 1, length.out = n0)
+evaluations[, "y"] <- f(evaluations[, "x1"],evaluations[, "x2"]) 
 evaluations %>%
   as_tibble
 ```
@@ -35,38 +36,22 @@ evaluations %>%
 ```{r}
 max_iterations = 15
 
-f <- function(x) {
-  return((6 * x - 2)^2 * sin(12 * x - 4))
-}
-
-
-
-# seed with a few evaluations:
-n0 <- 12
-evaluations <- matrix(
-  as.numeric(NA),
-  ncol = 2, nrow = n0,
-  dimnames = list(NULL, c("x", "y"))
-)
-evaluations[, "x"] <- seq(0, 1, length.out = n0)
-evaluations[, "y"] <- f(evaluations[, "x"]) 
-
-for (iteration in 1:max_iterations) {
+#for (iteration in 1:max_iterations) {
 
 fit <- bass(
-  xx = evaluations[, "x"],
+  xx = evaluations[, 1:2],
   y = evaluations[, "y"],
   degree = 2,
   verbose = F
 )
 
 
-x_new <- seq(0, 1, length.out = 1000)
+x_new <- data.frame(seq(0,1, length.out = 1000),seq(0,1, length.out = 1000))
 pred <- predict(fit, newdata = data.frame(x = x_new))
 mu <- pred[1000,]
-X <- evaluations[, "x"]
+X <- evaluations[, 1:2]
 
-mesh <- seq(0,1, length.out = 1000)
+mesh <- data.frame(seq(0,1, length.out = 1000),seq(0,1, length.out = 1000))
 
 y  <- NULL;
 for (elem in 1:length(X)){
@@ -80,9 +65,10 @@ sigma <- finals * 3
 kappa <- 20 # tunable
 lower_confidence_bound <- mu - kappa * sigma
 
+minimo <- x_new[which.min(lower_confidence_bound),which.min(lower_confidence_bound)]
 
-evaluations <- rbind(evaluations,c(x_new[which.min(lower_confidence_bound)] , f(x_new[which.min(lower_confidence_bound)])))
-}
+evaluations <- rbind(evaluations, c(minimo,minimo, f(minimo,minimo)))
+#}
 ```
 
 ```{r}
