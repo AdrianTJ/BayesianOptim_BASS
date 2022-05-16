@@ -1,2 +1,2 @@
-# Msc_Thesis
-Documents pertaining to my MSc in Data Science thesis. On BASS as an optimization algorithm. 
+# Bayesian Optimization with a BASS prior
+On BASS as an underpinning to bayesian optimization. 
