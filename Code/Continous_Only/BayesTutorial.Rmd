@@ -1,0 +1,301 @@
+---
+title: "https://github.com/bearloga/bayesopt-tutorial-r/blob/master/index.Rmd"
+output: html_notebook
+---
+
+```{r packages}
+library(purrr)
+library(gt)
+library(GPfit)
+```
+
+```{r function, echo=TRUE}
+f <- function(x) {
+  y <- x * 2 + 0.5
+  return((sin(10 * pi * y)/(2 * y) + (y-1)^4))
+}
+```
+
+```{r function3, echo=TRUE}
+f <- function(x) {
+  s <- x * 10
+  return(sin(2 * pi * s / 10 ) + sin(2 * pi * s / 2.5))
+}
+```
+
+```{r evaluations}
+# seed with a few evaluations:
+n0 <- 8
+evaluations <- matrix(
+  as.numeric(NA),
+  ncol = 2, nrow = n0,
+  dimnames = list(NULL, c("x", "y"))
+)
+evaluations[, "x"] <- seq(0, 1, length.out = n0)
+evaluations[, "y"] <- f(evaluations[, "x"])
+evaluations %>%
+  as.data.frame %>%
+  gt() %>%
+  cols_label(y = "f(x)") %>%
+  fmt_number(c(x, y), decimals = 3) %>%
+  tab_header(
+    "Initial evaluations"
+  )
+```
+
+```{r fit, echo=TRUE}
+fit <- GP_fit(
+  X = evaluations[, "x"],
+  Y = evaluations[, "y"],
+  corr = list(type = "exponential", power = 1.95)
+)
+```
+
+```{r pred, echo=TRUE}
+x_new <- seq(0, 1, length.out = 100)
+pred <- predict.GP(fit, xnew = data.frame(x = x_new))
+mu <- pred$Y_hat
+sigma <- sqrt(pred$MSE)
+```
+
+```{r, fig.width=8, fig.height=4}
+plot_posterior <- function() {
+  plot(
+    x_new, mu,
+    type = "l", col = "blue", lwd = 2, lty = "dotted",
+    ylim = c(-1, 5),
+    xlab = "x", ylab = "f(x)", main = "Posterior of f"
+  )
+  polygon(
+    c(x_new, rev(x_new)),
+    c(mu + sigma, rev(mu - sigma)),
+    col = rgb(0, 0, 1, 0.25), border = NA
+  )
+  points(evaluations, pch = 16)
+  legend(
+    "topleft",
+    c(expression(f[n[0]]), expression(mu(x)), expression(mu(x) %+-% sigma(x)), expression(f)),
+    col = c("black", "blue", "blue", "red"), pch = c(16, NA, NA, NA),
+    lty = c(NA, "dotted", NA, NA), lwd = c(NA, 2, 1,NA), bty = "n",
+    fill = c(NA, NA, rgb(0, 0, 1, 0.25), rgb(1, 0, 0, 1)),
+    border = c(NA, NA, NA, NA), ncol = 4, text.width = 0.1
+  )
+  lines(seq(0, 1, length.out = 1000), f(seq(0, 1, length.out = 1000)), col = 'red')
+}
+par(cex = 1.1, mfrow = c(1, 1), mar = c(5.1, 4.1, 4.1, 2.1))
+plot_posterior()
+```
+
+```{r y_best, echo=TRUE}
+y_best <- min(evaluations[, "y"])
+y_best
+```
+
+```{r probability_improvement, echo=TRUE}
+probability_improvement <- map2_dbl(
+  mu,
+  sigma,
+  function(m, s) {
+    if (s == 0) return(0)
+    else {
+      poi <- pnorm((y_best - m) / s)
+      # poi <- 1 - poi (if maximizing)
+      return(poi)
+    }
+  }
+)
+```
+
+```{r, layout="l-body-outset", fig.width=10, fig.height=5}
+par(cex = 1.1, mfrow = c(1, 2))
+plot(
+  x_new, probability_improvement,
+  type = "l", col = "red",
+  ylim = c(0, 1), xlab = "x", ylab = expression("a"["POI"]),
+  main = "Probability of improvement"
+)
+plot_posterior()
+```
+
+```{r expected_improvement, echo=TRUE}
+expected_improvement <- map2_dbl(
+  mu, sigma,
+  function(m, s) {
+    if (s == 0) return(0)
+    gamma <- (y_best - m) / s
+    phi <- pnorm(gamma)
+    return(s * (gamma * phi + dnorm(gamma)))
+  }
+)
+```
+
+```{r, layout="l-body-outset", fig.width=10, fig.height=5}
+par(cex = 1.1, mfrow = c(1, 2))
+plot(
+  x_new, expected_improvement,
+  type = "l", col = "red",
+  xlab = "x", ylab = expression("a"["EI"]),
+  main = "Expected improvement"
+)
+plot_posterior()
+```
+
+```{r lcb, echo=TRUE}
+kappa <- 2 # tunable
+lower_confidence_bound <- mu - kappa * sigma
+# if maximizing: upper_confidence_bound <- mu + kappa * sigma
+```
+
+```{r, layout="l-body-outset", fig.width=10, fig.height=5}
+par(cex = 1.1, mfrow = c(1, 2))
+plot(
+  x_new, lower_confidence_bound,
+  type = "l", col = "red",
+  xlab = "x", ylab = expression("a"["LCB"]),
+  main = "GP lower confidence bound"
+)
+plot_posterior()
+```
+
+```{r}
+x_new[which.min(lower_confidence_bound)]
+```
+
+```{r}
+x_new[which.max(expected_improvement)]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+max_iterations = 2
+
+f <- function(x) {
+  return((6 * x - 2)^2 * sin(12 * x - 4))
+}
+
+# seed with a few evaluations:
+n0 <- 4
+evaluations <- matrix(
+  as.numeric(NA),
+  ncol = 2, nrow = n0,
+  dimnames = list(NULL, c("x", "y"))
+)
+evaluations[, "x"] <- seq(0, 1, length.out = n0)
+evaluations[, "y"] <- f(evaluations[, "x"])
+
+x_new <- seq(0, 1, length.out = 1000)
+
+for (iteration in 1:max_iterations) {
+
+fit <- GP_fit(
+      X = evaluations[, "x"],
+      Y = evaluations[, "y"],
+      corr = list(type = "exponential", power = 1.95)
+      )
+
+pred <- predict.GP(fit, xnew = data.frame(x = x_new))
+mu <- pred$Y_hat
+sigma <- sqrt(pred$MSE)
+
+evaluations <- rbind(evaluations , c(x_new[which.max(expected_improvement)] , f(x_new[which.max(expected_improvement)])))
+}
+
+evaluations
+```
+
+
+
+
+
+
+
+
+
+
+```{r}
+# seed with a few evaluations:
+n0 <- 4
+evaluations <- matrix(
+  as.numeric(NA),
+  ncol = 2, nrow = n0,
+  dimnames = list(NULL, c("x", "y"))
+)
+evaluations[, "x"] <- seq(0, 1, length.out = n0)
+evaluations[, "y"] <- f(evaluations[, "x"])
+```
+
+```{r}
+f <- function(x) {
+  return((6 * x - 2)^2 * sin(12 * x - 4))
+}
+
+fit <- GP_fit(
+  X = evaluations[, "x"],
+  Y = evaluations[, "y"],
+  corr = list(type = "exponential", power = 1.95)
+)
+
+x_new <- seq(0, 1, length.out = 1000)
+pred <- predict.GP(fit, xnew = data.frame(x = x_new))
+mu <- pred$Y_hat
+sigma <- sqrt(pred$MSE)
+
+evaluations <- rbind(evaluations,c(x_new[which.min(lower_confidence_bound)] , f(x_new[which.min(lower_confidence_bound)])))
+
+
+evaluations
+```
+
+
+
+
+
+```{r}
+pred0 <- pred
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
