@@ -1,0 +1,33 @@
+---
+title: "BASS Testing"
+author: "ATJ"
+date: "2022-08-06"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+results <- scan(file = "Branin-Hoo_Results_BASS.csv")
+results <- matrix(results, ncol = 100, byrow = TRUE)
+
+Group <- 1:100
+Mean <- apply(results[11:110,], 1, mean)
+SD <- apply(results[11:110,], 1, sd) 
+df <- data.frame(Group,Mean,SD)
+```
+
+```{r}
+ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
+  geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD), width=.1) +
+  geom_line()+
+  geom_point()
+```
+
+
+
+
+
+
