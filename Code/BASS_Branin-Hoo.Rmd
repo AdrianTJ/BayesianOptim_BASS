@@ -88,21 +88,39 @@ for (iteration in 1:max_iterations) {
 ```
 
 ```{r}
-get_bass_2d(max_iterations = 10)
+one_run <- get_bass_2d(max_iterations = 10)
+
+plot(one_run)
 ```
 
 ```{r}
-results <- replicate(10, get_bass_2d(max_iterations = 100), simplify="array")
+results <- replicate(100, get_bass_2d(max_iterations = 100), simplify="array")
 ```
 
 ```{r}
-results
+library(MASS)
+write.matrix(results,file="Branin-Hoo_Results_BASS.csv")
 ```
 
+```{r}
+plot( apply(results, 1, mean) )
+```
 
+```{r}
+results <- scan(file = "Branin-Hoo_Results_BASS.csv")
+results <- matrix(results, ncol = 100, byrow = TRUE)
 
+Group <- 1:100
+Mean <- apply(results[11:110,], 1, mean)
+SD <- apply(results[11:110,], 1, sd) 
+df <- data.frame(Group,Mean,SD)
 
-
+library(ggplot2)
+ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
+  geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD), width=.1) +
+  geom_line()+
+  geom_point()
+```
 
 
 
