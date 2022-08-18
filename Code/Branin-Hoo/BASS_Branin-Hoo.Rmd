@@ -12,6 +12,7 @@ library(GPfit)
 library(BASS)
 library(lhs)
 library(plotly)
+library(MASS)
 ```
 
 ```{r function, echo=TRUE}
@@ -98,28 +99,11 @@ results <- replicate(100, get_bass_2d(max_iterations = 100), simplify="array")
 ```
 
 ```{r}
-library(MASS)
 write.matrix(results,file="Branin-Hoo_Results_BASS.csv")
 ```
 
 ```{r}
 plot( apply(results, 1, mean) )
-```
-
-```{r}
-results <- scan(file = "Branin-Hoo_Results_BASS.csv")
-results <- matrix(results, ncol = 100, byrow = TRUE)
-
-Group <- 1:100
-Mean <- apply(results[11:110,], 1, mean)
-SD <- apply(results[11:110,], 1, sd) 
-df <- data.frame(Group,Mean,SD)
-
-library(ggplot2)
-ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
-  geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD), width=.1) +
-  geom_line()+
-  geom_point()
 ```
 
 
