@@ -10,7 +10,7 @@ library(ggplot2)
 ```
 
 ```{r}
-results <- scan(file = "Branin-Hoo_Results_BASS.csv")
+results <- scan(file = "Branin-Hoo_Results_BASS.txt")
 results <- matrix(results, ncol = 100, byrow = TRUE)
 
 Group <- 1:100
@@ -27,6 +27,25 @@ ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
 ```
 
 
+```{r}
+tpe <- read.csv(file = 'TPE_hyperopt_100x100.csv')
+
+
+Group <- 1:100
+Mean <- apply(tpe, 1, mean)
+SD <- apply(tpe, 1, sd) 
+df_tpe <- data.frame(Group,Mean,SD)
+
+ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
+  geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD)) +
+  geom_line()+
+  geom_point() + 
+  geom_line(data = df_tpe,aes(x=Group,y=Mean),colour="red")+
+  geom_point(data = df_tpe,aes(x=Group,y=Mean),colour="red") + 
+  geom_errorbar(data=df_tpe,aes(ymin=Mean-SD,ymax=Mean+SD),colour="red")
+
+
+```
 
 
 
