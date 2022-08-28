@@ -38,13 +38,13 @@ f <- function(x1,x2) {
 ```
 
 ```{r}
-n0 = 20
-XX <- maximinLHS(30, 2)
+n0 = 10
+XX <- maximinLHS(n0, 2)
 Y <- f(XX[,1], XX[,2])
 ```
 
 ```{r}
-fit <- bass(XX,Y, verbose = FALSE)
+fit <- bass(XX,Y, verbose = FALSE, nmcmc = 100000, nburn = 90000)
 ```
 
 ```{r}
@@ -66,30 +66,29 @@ for (iteration in 1:max_iterations) {
     y = Y,
     degree = 1,
     verbose = F,
-    #nmcmc = 600,
-    #nburn=300,
     #thin = 10
+    nmcmc=1000,
+    nburn=900
     )
 
   x_new <- maximinLHS(1000,dims)
   pred <- predict(fit, newdata = data.frame(x = x_new))
   mu <- apply(pred,2,mean)
   
-  kappa <- 9 # tunable
+  kappa <- 90 # tunable
   sigma <- apply(pred,2,sd)
   lower_confidence_bound <- mu - kappa * sigma
   
   XX <- rbind(XX, x_new[which.min(lower_confidence_bound),])
   Y <- append(Y, f(x_new[which.min(lower_confidence_bound),][1],x_new[which.min(lower_confidence_bound),][2]))
-
+  print(iteration)
 }
-  
   return(Y)
 }
 ```
 
 ```{r}
-one_run <- get_bass_2d(max_iterations = 10)
+one_run <- get_bass_2d(max_iterations = 1)
 
 plot(one_run)
 ```
