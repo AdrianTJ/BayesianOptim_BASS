@@ -47,6 +47,26 @@ ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
 
 ```
 
+```{r}
+gp <- read.csv(file = 'GP_hyperopt_Branin.csv')
+gp <- t(gp)
+
+Group <- 1:100
+Mean <- apply(gp[11:110,], 1, mean)
+SD <- apply(gp[11:110,], 1, sd) 
+gp_df <- data.frame(Group,Mean,SD)
+
+ggplot(data=df, aes(x=Group, y=Mean, group=1)) +
+  geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD)) +
+  geom_line()+
+  geom_point() + 
+  geom_line(data = df_tpe,aes(x=Group,y=Mean),colour="red")+
+  geom_point(data = df_tpe,aes(x=Group,y=Mean),colour="red") + 
+  geom_errorbar(data=df_tpe,aes(ymin=Mean-SD,ymax=Mean+SD),colour="red") + 
+  geom_line(data = gp_df,aes(x=Group,y=Mean),colour="blue")+
+  geom_point(data = gp_df,aes(x=Group,y=Mean),colour="blue") + 
+  geom_errorbar(data=gp_df,aes(ymin=Mean-SD,ymax=Mean+SD),colour="blue")
+```
 
 
 
