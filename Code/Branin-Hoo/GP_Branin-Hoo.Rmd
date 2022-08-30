@@ -1,0 +1,112 @@
+---
+title: "BASS Testing"
+author: "ATJ"
+date: "2022-08-06"
+output: html_document
+---
+
+```{r packages}
+library(tidyverse)
+library(GPfit)
+library(BASS)
+library(lhs)
+library(MASS)
+```
+
+```{r Branin-Hoo, echo=TRUE}
+f <- function(x1,x2) {
+  y1 <- x1 * 15
+  y2 <- x2 * 20 - 5
+  a <- 1
+  b <- 5.1 / (4 * pi ^2)
+  c <- 5 / pi
+  r <- 6
+  s <- 10
+  t <- 1 / (8 * pi)
+  return(a * (y2 - b * y1^2 + c * y1 - r)^2 + s * (1-t) * cos(y1) + s)
+}
+```
+
+```{r}
+n0 = 10
+XX <- maximinLHS(n0, 2)
+Y <- f(XX[,1], XX[,2])
+```
+
+```{r}
+fit <- GP_fit(
+  X = XX,
+  Y = Y
+)
+```
+
+```{r}
+plot(fit)
+```
+
+
+```{r}
+get_bass_2d <- function(max_iterations = 100){
+n0 <- 10
+dims <- 2
+XX <- maximinLHS(n0, dims)
+Y <- f(XX[,1], XX[,2])
+
+for (iteration in 1:max_iterations) {
+
+    fit <- GP_fit(
+      X = XX,
+      Y = Y,
+      corr = list(type = "exponential", power = 1.95)
+    )
+
+  x_new <- maximinLHS(1000,dims)
+  pred <- predict(fit, newdata = data.frame(x = x_new))
+  mu <- pred$Y_hat
+  sigma <- sqrt(pred$Y_hat)
+  
+  kappa <- 1 # tunable
+  lower_confidence_bound <- mu - kappa * sigma
+  
+  XX <- rbind(XX, x_new[which.min(lower_confidence_bound),])
+  Y <- append(Y, f(x_new[which.min(lower_confidence_bound),][1],x_new[which.min(lower_confidence_bound),][2]))
+}
+  print(iteration)
+  return(Y)
+}
+```
+
+```{r}
+fit <- GP_fit(
+      X = XX,
+      Y = Y,
+      corr = list(type = "exponential", power = 1.95)
+    )
+
+
+```
+
+
+```{r}
+one_run <- get_bass_2d(max_iterations = 10)
+
+plot(one_run)
+```
+
+```{r}
+results <- replicate(100, get_bass_2d(max_iterations = 100), simplify="array")
+```
+
+```{r}
+write.matrix(results,file="Branin-Hoo_Results_GP.txt")
+```
+
+```{r}
+plot( apply(results, 1, mean) )
+```
+
+
+
+
+
+

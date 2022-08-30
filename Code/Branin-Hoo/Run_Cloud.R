@@ -1,14 +1,9 @@
-install.packages(c("gt", "GPfit", "BASS", "lhs", 'plotly', 'MASS', 'mcreplicate'))
+install.packages(c("BASS", "lhs", 'MASS', 'mcreplicate'))
 
-library(gt)
-library(GPfit)
 library(BASS)
 library(lhs)
-library(plotly)
 library(MASS)
 library(mcreplicate)
-
-parallel::detectCores()
 
 f <- function(x1,x2) {
   y1 <- x1 * 15
@@ -33,10 +28,8 @@ get_bass_2d <- function(max_iterations = 100){
     fit <- bass(
       xx = XX,
       y = Y,
-      degree = 2,
+      degree = 1,
       verbose = F,
-      nmcmc = 1000,
-      nburn=900,
       #thin = 10
     )
     
