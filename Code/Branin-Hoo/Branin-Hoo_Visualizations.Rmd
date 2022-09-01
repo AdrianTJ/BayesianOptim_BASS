@@ -10,7 +10,7 @@ library(ggplot2)
 ```
 
 ```{r}
-results <- scan(file = "Branin-Hoo_Results_BASS.txt")
+results <- scan(file = "Branin-Hoo_Results_BASS_100k.txt")
 results <- matrix(results, ncol = 100, byrow = TRUE)
 
 Group <- 1:100
