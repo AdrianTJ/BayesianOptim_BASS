@@ -18,6 +18,12 @@ James Bergstra, Dan Yamins, David~D Cox, et~al.
 \newblock In {\em Proceedings of the 12th Python in science conference},
   volume~13, page~20. Citeseer, 2013.
 
+\bibitem[Chu60]{chung_markov_1960}
+Kai~Lai Chung.
+\newblock {\em Markov chains with stationary transition probabilities}.
+\newblock Springer, Berlin, 1960.
+\newblock OCLC: 682058891.
+
 \bibitem[DMS98]{Denison_Mallick_Smith_1998}
 D.~G.~T. Denison, B.~K. Mallick, and A.~F.~M. Smith.
 \newblock Bayesian mars.
