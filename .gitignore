@@ -3,4 +3,5 @@
 **/.DS_Store
 Referencias
 OldCode
-.Rproj.user
+**/.Rproj.user
+./Code/renv
