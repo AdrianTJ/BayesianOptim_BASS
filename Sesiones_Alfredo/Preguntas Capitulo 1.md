@@ -7,3 +7,5 @@
 * Donde incluir el teorema de extension de Kolmogorov? 
 
 * Si estan bien los indices de $p_{n,k}^{(k)}$? Me suenan medio raros viendolos asi. 
+
+* Need to check the indices of the proof of chapman kolmogorov. Need to be in terms of $n+m$ not in terms of $m, m-r$. 
