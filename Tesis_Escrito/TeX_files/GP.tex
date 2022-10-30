@@ -1,0 +1,63 @@
+\chapter{Stochastic Processes}
+
+Before starting, we would like to note that sections of this chapter where constructed using different references as primary guides. The section on Markov chains primarily uses the references \cite{Zitkovic_2010} and \cite{hohendorff_introduction_2005}. 
+
+\section{General Definitions}
+
+Stochastic processes play a very important part in basically every part of this work. First, the basis of traditional Bayesian Optimization is Gaussian processes, which are a specific class of stochastic process in which all the points or vectors have a conjoined multi-normal distribution. This is not the only place where stochastic processes play a role, as BASS is a Bayesian method, and modern Bayesian methods generally rely on simulation methods such as Markov Chain Monte Carlo (MCMC) to numerically approximate complex posterior distributions. We use a particular class of MCMC algorithms called reverse jump MCMC when dealing with our alternate surrogate function, but that is detailed much later when we talk about the Bayesian Adaptive Regression Spline method. 
+
+All in all, stochastic processes are generally important to the content of this work so we include some important results and definitions, starting with the definition of a stochastic process itself, taken from \cite[\S 3.0]{Zitkovic_2010}. 
+
+\begin{definition}
+	Let $\Theta \subseteq \mathbb{R}^+$ A \textit{stochastic process} $\{ X_\theta, \theta \in \Theta \}$ is a collection of random variables, indexed by a parameter $\theta$, such that $\theta$ belongs to some index set $\Theta$. When $\Theta = \mathbb{N}$ (or $\Theta = \mathbb{N}_0$), then it is called a \textit{discrete-time process}, and if $\Theta = \mathbb{R}^+$, then it is called a \textit{continuous-time process}. 
+\end{definition}
+
+To distinguish between a discrete and continuous time process, we use the index $n$ for discrete-time processes and $t$ for continuous-time processes. 
+In all applications of this work the indexes refer to time, as the function spaces $\mathcal{X}$ on which the functions are evaluated are time dependent. 
+This definition is very broad, as for example, if we take the case where $\Theta = \{1\}$, then the stochastic process $\{ X_\theta, \theta \in \Theta \}$ is really just $X_1$, a random variable. 
+As with many other areas of mathematics though, the introduction of infinities in the values the indexes can take introduces a large amount of complexity, and things like vector distributions do no extend nicely to these new cases. 
+
+% Duda
+Another more formal definition of a stochastic process defines it as a function of the index and an element of the sample space, as follows: 
+
+\begin{definition}
+	Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space\footnote{Billingsley's classic book \cite{billingsley2012probability} has all the theoretical foundation of probability spaces and provides a thorough run down of these concepts.} where $\Omega$ is a sample space, $\mathcal{F}$ is a $\sigma$-algebra and $\mathbb{P}: \mathcal{F} \mapsto [0,1]$ a probability measure. Taking $\Theta$ an arbitrary index space, a stochastic process is a function 
+	\[ X: \Omega \times \Theta \mapsto \mathbb{R} \]
+	such that for all  $\theta \in \Theta$,
+	\[ X_\theta : \omega \mapsto X(\omega, \theta) \equiv X_\theta : \Omega \mapsto \mathbb{R} \]
+	is a measurable function, which is equivalent to saying that $X_\theta$ is a random variable.
+\end{definition}
+
+% Duda
+When $\omega$ is known, $\theta \mapsto X(\omega, \theta): \Theta \mapsto \mathbb{R}$ is a sample function, also known as a realization of the stochastic process. These realizations are the trajectories or paths that are famous in diagrams such as the one shown in Figure \ref{trajectories}. An example application of this type of structure are time series, where the fundamental properties of stochastic processes are used to generate a function whose realizations move through time. 
+
+\begin{figure}[h]
+	\includegraphics[width=4cm]{Figures/missing.png}
+	\centering
+	\label{trajectories}
+\end{figure}
+
+As was mentioned earlier, the two main types of stochastic process that can be defined are ones where the realizations of the process occur in a discrete fashion, and the other is when they occur in a continuous fashion. It so happens that the two main structures relating to stochastic processes that we need to go into detail on are Markov chains, a discrete process, and Gaussian processes, which are continuous. We go in depth in the following sections into each of these types of stochastic processes, starting with Markov chains since Gaussian processes lead nicely onto the next chapter. 
+
+\section{Markov Chains}
+
+Markov chains are ubiquitous in their applications, since they represent a relatively simple but very powerful concept; the mathematical structure on which we can define phase transitions of position changes that are governed by probabilistic rules. The fundamental property which will be explored later is that independently of the past, the only important factor in determining the future state of the process is the current state of it. We begin with a formal definition and take a constructive approach in building this model. 
+
+\begin{definition}
+	Let $\{ X_n, n \in \mathbb{N}_0 \}$ be a stochastic process defined on a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ such that
+	\[ X_n: \omega \mapsto X(\omega, n) \equiv X_n : \Omega \mapsto \mathcal{S}, \]
+	where $\mathcal{S}$ is a finite state space of cardinality $k$, such that $\mathcal{S} = \{ s_1, s_2, \ldots , s_k \}$. 
+	We call $\{ X_n, n \in \mathbb{N}_0\}$ a Markov chain if 
+	\[ \mathbb{P}(X_{n} = s_{n} | X_{n-1} = s_{n-1}, X_{n-2} = s_{n-2} , \ldots , X_0 = s_0 ) = \mathbb{P}(X_{n} = s_{n} | X_{n-1} = s_{n-1}) \]
+	for all $n \in \mathbb{N}_0$ and all $s_0, s_1, \ldots , s_{n} \in \mathcal{S}$ whenever the two conditional probabilities are well defined, this is, when $\mathbb{P}(X_{n} = s_{n}, X_{n-1} = s_{n-1}, \ldots , X_0 = s_0) > 0$. 
+\end{definition}
+
+Intuitively, this means that the next state in the chain is only dependent on the current state of the chain, and that the history of how the chain got to the current state is irrelevant to the next step. 
+This behaviour is known as the Markov property, and one very valuable insight that emerges from this behaviour is being able to completely determine all properties of the chain given only the initial state of it and the knowledge of how the chain behaves at all of its possible states. 
+
+The initial state or initial probability is self-explanatory, it tells us the expected behaviour of the first element in the chain, $X_0$. Formally, we call $\mu^{(0)} = \{ \mu_s^{(0)} : s \in \mathcal{S} \}$ with $\mu_s^{(0)} = \mathbb{P}(X_0 = s)$ the initial probability distribution of the process. 
+
+The other important component to fully describe a Markov chain is the transition probabilities from one state $s_i$ to another $s_j$ for all $s_i, s_j \in \mathcal{S}$. We identify this probability as 
+\[ p_{i,j} = \mathbb{P}(X_{n} = s_j | X_{n-1} = s_i). \]
+If we take all combinations of the states the chain can be in and map them to all other states, we get what is known as the transition matrix $P$, where each entry in the matrix denotes the probability of moving from one specific state to another. 
+

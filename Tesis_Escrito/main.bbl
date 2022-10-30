@@ -1,0 +1,107 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{DMTK20}
+
+\bibitem[BBBK]{Bergstra_Bardenet_Bengio_Kégl}
+James~S Bergstra, Rémi Bardenet, Yoshua Bengio, and Balázs Kégl.
+\newblock Algorithms for hyper-parameter optimization.
+\newblock page~9.
+
+\bibitem[Bil12]{billingsley2012probability}
+P.~Billingsley.
+\newblock {\em Probability and Measure}.
+\newblock Wiley Series in Probability and Statistics. Wiley, 2012.
+
+\bibitem[BYC{\etalchar{+}}13]{Bergstra_Yamins_Cox_others_2013}
+James Bergstra, Dan Yamins, David~D Cox, et~al.
+\newblock Hyperopt: A python library for optimizing the hyperparameters of
+  machine learning algorithms.
+\newblock In {\em Proceedings of the 12th Python in science conference},
+  volume~13, page~20. Citeseer, 2013.
+
+\bibitem[DMS98]{Denison_Mallick_Smith_1998}
+D.~G.~T. Denison, B.~K. Mallick, and A.~F.~M. Smith.
+\newblock Bayesian mars.
+\newblock {\em Statistics and Computing}, 8(4):337–346, 1998.
+
+\bibitem[DMTK20]{Daxberger_Makarova_Turchetta_Krause_2020}
+Erik Daxberger, Anastasia Makarova, Matteo Turchetta, and Andreas Krause.
+\newblock Mixed-variable bayesian optimization.
+\newblock In {\em Proceedings of the Twenty-Ninth International Joint
+  Conference on Artificial Intelligence}, page 2633–2639, Jul 2020.
+\newblock arXiv:1907.01329 [cs, stat].
+
+\bibitem[Fra18]{Frazier_2018}
+Peter~I. Frazier.
+\newblock A tutorial on bayesian optimization.
+\newblock (arXiv:1807.02811), Jul 2018.
+\newblock arXiv:1807.02811 [cs, math, stat].
+
+\bibitem[Fri91]{Friedman_1991}
+Jerome~H. Friedman.
+\newblock Multivariate adaptive regression splines.
+\newblock {\em The Annals of Statistics}, 19(1), Mar 1991.
+
+\bibitem[FS20]{Francom_Sansó_2020}
+Devin Francom and Bruno Sansó.
+\newblock Bass : An r package for fitting and performing sensitivity analysis
+  of bayesian adaptive spline surfaces.
+\newblock {\em Journal of Statistical Software}, 94(8), 2020.
+
+\bibitem[GMHL20]{Garrido-Merchán_Hernández-Lobato_2020}
+Eduardo~C. Garrido-Merchán and Daniel Hernández-Lobato.
+\newblock Dealing with categorical and integer-valued variables in bayesian
+  optimization with gaussian processes.
+\newblock {\em Neurocomputing}, 380:20–35, Mar 2020.
+\newblock arXiv:1805.03463 [cs, stat].
+
+\bibitem[Gre95]{Green_1995}
+Peter~J. Green.
+\newblock Reversible jump markov chain monte carlo computation and bayesian
+  model determination.
+\newblock {\em Biometrika}, 82(4):711–732, 1995.
+
+\bibitem[HR05]{hohendorff_introduction_2005}
+Johannes~M Hohendorff and J~Rosenthal.
+\newblock An introduction to markov chain monte carlo.
+\newblock {\em University of Toronto, Department of Statistics, supervised
+  reading report (http://www. probability. ca/jeff/grad. html)}, 2005.
+
+\bibitem[KFB{\etalchar{+}}17]{Klein_Falkner_Bartels_Hennig_Hutter_2017}
+Aaron Klein, Stefan Falkner, Simon Bartels, Philipp Hennig, and Frank Hutter.
+\newblock Fast bayesian optimization of machine learning hyperparameters on
+  large datasets.
+\newblock (arXiv:1605.07079), Mar 2017.
+\newblock arXiv:1605.07079 [cs, stat].
+
+\bibitem[LGN{\etalchar{+}}19]{Luong_Gupta_Nguyen_Rana_Venkatesh_2019}
+Phuc Luong, Sunil Gupta, Dang Nguyen, Santu Rana, and Svetha Venkatesh.
+\newblock {\em Bayesian Optimization with Discrete Variables}, volume 11919 of
+  {\em Lecture Notes in Computer Science}, page 473–484.
+\newblock Springer International Publishing, Cham, 2019.
+
+\bibitem[Ros96]{Ross_1996}
+Sheldon~M. Ross.
+\newblock {\em Stochastic processes}.
+\newblock Wiley series in probability and statistics. Wiley, New York, 2nd ed
+  edition, 1996.
+
+\bibitem[SB]{Surjanovic_Bingham}
+S.~Surjanovic and D.~Bingham.
+\newblock Virtual library of simulation experiments: Test functions and
+  datasets.
+\newblock Published: Retrieved September 10, 2022, from http://www.sfu.ca/
+  ssurjano.
+
+\bibitem[SLA12]{Snoek_Larochelle_Adams_2012}
+Jasper Snoek, Hugo Larochelle, and Ryan~P. Adams.
+\newblock Practical bayesian optimization of machine learning algorithms.
+\newblock (arXiv:1206.2944), Aug 2012.
+\newblock arXiv:1206.2944 [cs, stat].
+
+\bibitem[Ži10]{Zitkovic_2010}
+Gordan Žitković.
+\newblock Introduction to stochastic processes-lecture notes.
+\newblock {\em Department of Mathematics, The University of Texas at Austin},
+  2010.
+
+\end{thebibliography}
