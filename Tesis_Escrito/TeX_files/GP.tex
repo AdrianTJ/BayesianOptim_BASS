@@ -57,7 +57,66 @@ This behaviour is known as the Markov property, and one very valuable insight th
 
 The initial state or initial probability is self-explanatory, it tells us the expected behaviour of the first element in the chain, $X_0$. Formally, we call $\mu^{(0)} = \{ \mu_s^{(0)} : s \in \mathcal{S} \}$ with $\mu_s^{(0)} = \mathbb{P}(X_0 = s)$ the initial probability distribution of the process. 
 
+% Duda
 The other important component to fully describe a Markov chain is the transition probabilities from one state $s_i$ to another $s_j$ for all $s_i, s_j \in \mathcal{S}$. We identify this probability as 
 \[ p_{i,j} = \mathbb{P}(X_{n} = s_j | X_{n-1} = s_i). \]
-If we take all combinations of the states the chain can be in and map them to all other states, we get what is known as the transition matrix $P$, where each entry in the matrix denotes the probability of moving from one specific state to another. 
+If we take all combinations of the states the chain can be in and map them to all other states, we get what is known as the transition matrix $P$, where each entry in the matrix denotes the probability of moving from one specific state to another. This matrix, because it is fundamentally a matrix made up of probabilities, has two interesting properties for the purposes of this work: 
+\begin{itemize}
+	\item $p_{i,j} \geq 0$ for all $i,j \in \{ 1, 2, \ldots, n \}$
+	\item $\sum_{i=1}^{n} p_{i,j} = 1$ for all $j \in \{ 1, 2, \ldots, n \}$.  
+\end{itemize}
+We note that these two properties are the definition of a stochastic matrix, and therefore, by construction, Markov chain transition matrices are stochastic matrices. We have only described that we can fully determine the Markov chain from its initial state and its transition probabilities, but we have not shown this concept concretely. The following theorem ties these loose ends together and formally describes this property.
+
+\begin{theorem}
+	Let $\{ X_n, n \in \mathbb{N}_0 \}: \Omega \mapsto \mathcal{S}$ be a stochastic process defined on the probability space $(\Omega, \mathcal{F}, \mathbb{P})$ with $\mathcal{S}$ a finite state space. Then, $\{ X_n, n \in \mathbb{N}_0 \}$ is a Markov chain if and only if there exists a stochastic matrix $P$ such that 
+	\[ \mathbb{P}(X_n = s_n | X_{n-1} = s_{n-1}, \ldots , X_0 = s_0) = p_{n-1, n} \]
+	for all $n \in \mathbb{N}_0$ and all $s_0, s_1, \ldots , s_n \in \mathcal{S}$ such that $\mathbb{P}(X_{n-1} = s_{n-1}, \ldots , X_0 = s_0) > 0$. 
+\end{theorem}
+
+This theorem is of great importance in the area of study of Markov chains, and we refer the interested reader to \cite[\S 1.2]{chung_markov_1960} for a detailed proof. this theorem establishes a bridge between the theory of Markov processes in general and the properties of linear algebra and matrix theory. One such interesting property is the use of eigenvectors and eigenvalues of the transition matrix used to define a stationary distribution, which is what we are ultimately building towards this section. 
+
+% Duda
+We have seen that the transition matrix $P$ governs the behaviour and the changes that happen from one state of the Markov chain to the next. 
+A natural follow up question arises from trying to understand the behaviour of the chain an arbitrary $k > 1$ steps in the future instead of a single step, such as if we wanted to calculate $\mathbb{P}(X_{i+k} = s_{i+k} | X_i = s_i)$. 
+We first note that this multi-step transition probability can be simplified, assuming that the Markov chain is homogenous, to the following: 
+\[ \mathbb{P}(X_{i+k} = s_{i+k} | X_i = s_i) = \mathbb{P}(X_{k} = s_{k} | X_0 = s_0) \]
+which we denote as $p_{n,k}^{(k)}$. Because we can define the individual probabilities of transitioning from one step to another after $k$ steps, it stands to reason that there would be a transition matrix to describe this behaviour.
+The theorem that establishes the way these relationships work is the Chapman-Kolmogorov theorem and equation, which we present now. The formulation of this theorem presented in this work is taken from \cite[\S 8.3]{Zitkovic_2010}. 
+
+\begin{theorem}[Chapman-Kolmogorov Theorem]
+	Let $n,m \in \mathbb{N}_0$ and $s_i, s_j \in \mathcal{S}$. Then, $p_{i,j}^{(n+m)}$, which is the probability that starting from state $i$ at step $n$ we end up in state $j$ after $m$ steps is given by: 
+	\[ p_{i,j}^{(n+m)}  = \sum_{k \in \mathcal{S}} p_{i,k}^{(n)} \, p_{k,j}^{(m)}. \]
+\end{theorem} 
+
+% Duda
+\begin{proof}
+	We will prove the case when the Markov process is homogenous. We begin by noting that $p_{i,j}^{(n+m)} = \mathbb{P}(X_{n+m} = s_j | X_n = s_i) = \mathbb{P}(X_m = s_j | X_0 = s_i) = p_{i,j}^{(m)}$. Applying the law of total probability and using the Markov property, 
+	\begin{align*} 
+		p_{i,j}^{n+m} &= \\ 
+		&= \mathbb{P}(X_{n+m} = s_j | X_n = s_i) \\
+		&= \mathbb{P}(X_{m} = s_j | X_0 = s_i) \\
+		&= \sum_{k \in \mathcal{S}} \frac{\mathbb{P}(X_m = s_j, X_r = s_k, X_0 = s_i)}{\mathbb{P}(X_0 = s_i)} \\
+		&= \sum_{k \in \mathcal{S}} \mathbb{P}(X_m = s_j | X_r = s_k) \mathbb{P}(X_r = s_k | X_0 = s_i) \\
+		&= \sum_{k \in \mathcal{S}} p_{i,k}^{(r)} \, p_{k,j}^{(m-r)}. 
+	\end{align*}
+\end{proof}
+
+We now introduce the following lemma that takes advantage of this property to provide an alternative way of computing and understanding the transition matrix $P$. 
+
+\begin{lemma}
+	Let $P^k$ be the $k$-th order matrix power of the transition matrix $P$ for a homogeneous Markov chain $\{ X_n, n \in \mathbb{N}_0 \}$. Then, 
+	\[ p_{i,j}^{(k)} = (P^k)_{i,j} \text{ for } i,j \in \mathcal{S}. \]
+\end{lemma}
+
+
+
+
+
+
+
+
+
+
+
+
 
