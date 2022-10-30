@@ -1,0 +1,29 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+
+\begin{document}
+	
+\newtheorem{definition}{Definition}
+
+\author{Adrian TJ}
+\title{BASS as a Surrogate Model for Bayesian Optimization}
+\date{September 2022}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\include{./TeX_files/GP}
+\include{./TeX_files/GP_reg}
+
+\backmatter
+% bibliography, glossary and index would go here.
+\bibliographystyle{alpha}
+\nocite{*}
+\bibliography{./TeX_files/Bibliography}
+
+\end{document}
