@@ -80,7 +80,7 @@ We have seen that the transition matrix $P$ governs the behaviour and the change
 A natural follow up question arises from trying to understand the behaviour of the chain an arbitrary $k > 1$ steps in the future instead of a single step, such as if we wanted to calculate $\mathbb{P}(X_{i+k} = s_{i+k} | X_i = s_i)$. 
 We first note that this multi-step transition probability can be simplified, assuming that the Markov chain is homogenous, to the following: 
 \[ \mathbb{P}(X_{i+k} = s_{i+k} | X_i = s_i) = \mathbb{P}(X_{k} = s_{k} | X_0 = s_0) \]
-which we denote as $p_{n,k}^{(k)}$. Because we can define the individual probabilities of transitioning from one step to another after $k$ steps, it stands to reason that there would be a transition matrix to describe this behaviour.
+which we denote as $p_{i,k}^{(k)}$. Because we can define the individual probabilities of transitioning from one step to another after $k$ steps, it stands to reason that there would be a transition matrix to describe this behaviour.
 The theorem that establishes the way these relationships work is the Chapman-Kolmogorov theorem and equation, which we present now. The formulation of this theorem presented in this work is taken from \cite[\S 8.3]{Zitkovic_2010}. 
 
 \begin{theorem}[Chapman-Kolmogorov Theorem]
@@ -92,12 +92,12 @@ The theorem that establishes the way these relationships work is the Chapman-Kol
 \begin{proof}
 	We will prove the case when the Markov process is homogenous. We begin by noting that $p_{i,j}^{(n+m)} = \mathbb{P}(X_{n+m} = s_j | X_n = s_i) = \mathbb{P}(X_m = s_j | X_0 = s_i) = p_{i,j}^{(m)}$. Applying the law of total probability and using the Markov property, 
 	\begin{align*} 
-		p_{i,j}^{n+m} &= \\ 
+		p_{i,j}^{(n+m)} &= \\ 
 		&= \mathbb{P}(X_{n+m} = s_j | X_n = s_i) \\
 		&= \mathbb{P}(X_{m} = s_j | X_0 = s_i) \\
-		&= \sum_{k \in \mathcal{S}} \frac{\mathbb{P}(X_m = s_j, X_r = s_k, X_0 = s_i)}{\mathbb{P}(X_0 = s_i)} \\
-		&= \sum_{k \in \mathcal{S}} \mathbb{P}(X_m = s_j | X_r = s_k) \mathbb{P}(X_r = s_k | X_0 = s_i) \\
-		&= \sum_{k \in \mathcal{S}} p_{i,k}^{(r)} \, p_{k,j}^{(m-r)}. 
+		&= \sum_{k \in \mathcal{S}} \frac{\mathbb{P}(X_m = s_j, X_{n} = s_k, X_0 = s_i)}{\mathbb{P}(X_0 = s_i)} \\
+		&= \sum_{k \in \mathcal{S}} \mathbb{P}(X_m = s_j | X_n = s_k) \mathbb{P}(X_n = s_k | X_0 = s_i) \\
+		&= \sum_{k \in \mathcal{S}} p_{i,k}^{(n)} \, p_{k,j}^{(m-n)}. 
 	\end{align*}
 \end{proof}
 
@@ -108,6 +108,12 @@ We now introduce the following lemma that takes advantage of this property to pr
 	\[ p_{i,j}^{(k)} = (P^k)_{i,j} \text{ for } i,j \in \mathcal{S}. \]
 \end{lemma}
 
+There is a way to prove this lemma by induction directly, but we opt instead to use the Chapman-Kolmogorov Equation n-1 times to achieve the final result, as follows. 
+
+\begin{proof}
+	First, we begin by noting that $p_{i,j}^{(k)} = \mathbb{P}(X_{i+j} = s_{i + k} | X_i = s_i) = \mathbb{P}(X_{j} = s_{k} | X_0 = s_i)$. Therefore, 
+	
+\end{proof}
 
 
 
