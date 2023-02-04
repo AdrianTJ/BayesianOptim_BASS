@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.1.1)  2 JAN 2023 11:29
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.1.1)  4 FEB 2023 10:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -135,54 +135,85 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 LaTeX Info: Redefining \[ on input line 2938.
 LaTeX Info: Redefining \] on input line 2939.
 )
+(/usr/local/texlive/2022/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2022/02/07 v1.28a mathematical typesetting tools
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count268
+\calc@Bcount=\count269
+\calc@Adimen=\dimen150
+\calc@Bdimen=\dimen151
+\calc@Askip=\skip55
+\calc@Bskip=\skip56
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count270
+\calc@Cskip=\skip57
+)
+(/usr/local/texlive/2022/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
+)
+\g_MT_multlinerow_int=\count271
+\l_MT_multwidth_dim=\dimen152
+\origjot=\skip58
+\l_MT_shortvdotswithinadjustabove_dim=\dimen153
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen154
+\l_MT_above_intertext_sep=\dimen155
+\l_MT_below_intertext_sep=\dimen156
+\l_MT_above_shortintertext_sep=\dimen157
+\l_MT_below_shortintertext_sep=\dimen158
+\xmathstrut@box=\box52
+\xmathstrut@dim=\dimen159
+)
 (/usr/local/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 
 (|extractbb --version)
-\c__kernel_sys_dvipdfmx_version_int=\count268
-\l__color_backend_stack_int=\count269
-\g__color_backend_stack_int=\count270
-\g__graphics_track_int=\count271
-\l__pdf_internal_box=\box52
-\g__pdf_backend_object_int=\count272
-\g__pdf_backend_annotation_int=\count273
-\g__pdf_backend_link_int=\count274
+\c__kernel_sys_dvipdfmx_version_int=\count272
+\l__color_backend_stack_int=\count273
+\g__color_backend_stack_int=\count274
+\g__graphics_track_int=\count275
+\l__pdf_internal_box=\box53
+\g__pdf_backend_object_int=\count276
+\g__pdf_backend_annotation_int=\count277
+\g__pdf_backend_link_int=\count278
 ) (./main.aux (./TeX_files/GP.aux)
 (./TeX_files/GP_reg.aux))
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 8.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 8
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 9.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 9
 .
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-\c@definition=\count275
-\c@theorem=\count276
-\c@lemma=\count277
-LaTeX Font Info:    Trying to load font information for U+msa on input line 19.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+\c@definition=\count279
+\c@theorem=\count280
+\c@lemma=\count281
+LaTeX Font Info:    Trying to load font information for U+msa on input line 20.
 
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 19.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 20.
 
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -221,17 +252,17 @@ L/cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 s[]\OMS/cmsy/m/n/12 j\OML/
 cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 s[]\OT1/cmr/m/n/12 )
  []
 
-[3] [4] [5]) [6]
+[3] [4] [5] [6]) [7]
 \openout2 = `./TeX_files/GP_reg.aux'.
 
- (./TeX_files/GP_reg.tex
+ (./TeX_files/GP_reg.tex [8
+
+
+
+
+]
 Chapter 2.
-) [7
-
-
-
-
-] [8
+) [9] [10
 
 
 
@@ -247,16 +278,16 @@ Underfull \hbox (badness 3029) in paragraph at lines 40--44
 
 Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=t
 ex-text;!
-[9
+[11
 
-]) [10] (./main.aux (./TeX_files/GP.aux) (./TeX_files/GP_reg.aux)) ) 
+]) [12] (./main.aux (./TeX_files/GP.aux) (./TeX_files/GP_reg.aux)) ) 
 Here is how much of TeX's memory you used:
- 2039 strings out of 476179
- 34013 string characters out of 5809545
- 336710 words of memory out of 5000000
- 22750 multiletter control sequences out of 15000+600000
+ 2653 strings out of 476179
+ 45520 string characters out of 5809545
+ 350075 words of memory out of 5000000
+ 23353 multiletter control sequences out of 15000+600000
  477268 words of font info for 75 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 55i,9n,62p,831b,257s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 55i,9n,62p,831b,304s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (14 pages).
+Output written on main.pdf (16 pages).

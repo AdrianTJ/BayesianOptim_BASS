@@ -111,15 +111,47 @@ We now introduce the following lemma that takes advantage of this property to pr
 There is a way to prove this lemma by induction directly, but we opt instead to use the Chapman-Kolmogorov Equation n-1 times to achieve the final result, as follows. 
 
 \begin{proof}
-	First, we begin by noting that $p_{i,j}^{(k)} = \mathbb{P}(X_{i+j} = s_{i + k} | X_i = s_i) = \mathbb{P}(X_{j} = s_{k} | X_0 = s_i)$. Therefore, 
+	First, we begin by noting that $p_{i,j}^{(k)} = \mathbb{P}(X_{i+j} = s_{i + k} | X_i = s_i) = \mathbb{P}(X_{j} = s_{k} | X_0 = s_i)$. Therefore, NEED TO FINISH THIS PROOF. 
 	
 \end{proof}
 
+This lemma becomes useful in proving the following theorem. 
 
+\begin{theorem}
+	Let $n,m \in \mathbb{N}_0$ and $i,j \in \mathcal{S}$. Then, $p_{i,j}^{(n+m)}$, which is the probability that starting from state $i$ in step $n$ we end up in state $j$ after $m$ steps is given by: 
+	\[ p_{i,j}^{(n+m)} = \sum_{k \in \mathcal{S}} p_{i,k}^{(m)} \cdot p_{k,j}^{(n)}. \]
+\end{theorem}
 
+\begin{proof}
+	Supposing a homogeneous Markov chain, then we begin by noting that 
+	\[ p_{i,j}^{(n+m)} = \mathbb{P}(X_{n+m} = j | X_n = i) = \mathbb{P}(X_m = j | X_0 = i) = p_{i,j}^{(m)}. \] 
+	Using the law of total probability and the Markov property, NEED TO FINISH THIS PROOF.
+\end{proof}
 
+From here, we now present two definitions relating to the properties of matrices which will become important when further exploring the types of Markov chains we are interested in. 
 
+\begin{definition}
+	A matrix $A \in \mathbb{R}^{n \times m}$ is called non-negative if $a_{i,j} \geq 0$ for all $1 \leq i \leq n$ and $1 \leq j \leq m$. 
+\end{definition}
 
+Before continuing, we note that with stochastic matrices being just glorified assortments of probabilities that are neatly ordered, they are always non-negative. 
+
+\begin{definition}
+	Let $A$ be a non-negative matrix. If there exists $N_0 \geq 1$ such that all elements of $A^{n_0}$ are positive, then we call $A$ a quasi-positive matrix. 
+\end{definition}
+
+These two definitions are necessary building blocks to get to the property we are truly interested in, ergodicity. 
+
+\begin{definition}
+	A Markov chain $\{ X_n: n \in \mathbb{N}_0 \}$ is called ergodic if the limit $\pi_j \coloneqq \lim_{n \rightarrow \infty} p_{i,j}^{(n)}$
+	\begin{itemize}
+		\item Exists for all $j \in \{1,2,\ldots,k\}$. 
+		\item Is positive and does not depend on $i$. 
+		\item $\pi = (\pi_1 , \pi_2 , \ldots , \pi_k)$ is a probability distribution on $\mathcal{S}$. 
+	\end{itemize}
+\end{definition}
+
+Ergodicity is an incredibly powerful property that is not native to stochastic processes per say, but rather it is inherited from measure theory. 
 
 
 
