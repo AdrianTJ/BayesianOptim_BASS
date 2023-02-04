@@ -151,10 +151,48 @@ These two definitions are necessary building blocks to get to the property we ar
 	\end{itemize}
 \end{definition}
 
-Ergodicity is an incredibly powerful property that is not native to stochastic processes per say, but rather it is inherited from measure theory. 
+Ergodicity is an incredibly powerful property that is not native to stochastic processes per say, but rather it is inherited from measure theory. In a sense, for a system to be ergodic it needs to be governed by constant or unchanging probability laws, irregardless of a change in state, or in the context of time-centric processes, changes in time. As a simple example, we consider throwing a fair coin in the air 100 times. We would (on average) get the same result if 100 people throw one coin compared to one person throwing the coin 100 times. This would be an ergodic system. On the other hand, if we change the coin to one that is imbalanced or unfair after 50 throws are completed, then the laws governing the change themselves would not remain constantas time passes or we change states, and this would be an example of a non-ergodic system. 
 
+The scope of this work does not cover this theory in as much detail as the author would like, but the interested reader is directed to sections 24 and 36 of \cite{billingsley2012probability} for a much more complete rundown of Ergodicity looked at through the lenses of measure theory and stochastic processes. The result ergodicity provides that is the foundation for MCMC applications is the following theorem. 
 
+\begin{theorem}
+	Let $\{ X_n: n \in \mathbb{N}_0\}$ be an ergodic Markov chain, such that 
+	\[ \pi_j = \lim_{n \rightarrow \infty} p_{i,j}^{(n)}, \text{ for all } j \in \mathcal{S}. \]
+	Then, the vector $\pi$ is a unique solution of 
+	\[ \pi^T = \pi^T P \]
+	further, $\pi$ is a probability distribution on $\mathcal{S}$. 
+\end{theorem}
 
+\begin{proof}
+	Let $j$ be an arbitrary member of $\mathcal{S}$. Then, 
+	\begin{align*}
+		\pi_j &= \lim_{n \rightarrow \infty} p_{i,j}^{(n)} \\
+		&= \lim_{n \rightarrow \infty} p_{i,j}^{(n+1)} \\
+		&= \lim_{n \rightarrow \infty} p_{i,j}^{(n)} \cdot p_{i,j} \\
+		&= \pi_j \cdot p_{i,j}.
+	\end{align*}
+	Since this hods true for all $j \in \mathcal{S}$, then in particular it holds true for the vectorized version of this equation, this being 
+	\[ \begin{bmatrix}
+		\pi_1 \\
+		\pi_2 \\
+		\vdots \\
+	\end{bmatrix} = 
+	\begin{bmatrix}
+		\pi_1, &
+		\pi_2, &
+		\ldots 
+	\end{bmatrix} 
+	\begin{bmatrix}
+		p_{i,1} \\
+		p_{i,2} \\
+		\vdots \\
+	\end{bmatrix} \]
+Which is equivalent to saying that $\pi^T = \pi^T P$.
+\end{proof}
+
+If we construct a Markov chain in a way that it is ergodic an control the distribution $\pi$ so that it is something that we want, we can guarantee that after a sufficiently large amount of iterations $n$ we will be sampling from the stationary distribution of the process, which is invariant through time because of the property presented in the above theorem. This is the crux of understanding the Markov Chain Monte Carlo technique which is the central object of study of this section. Delving into the construction of the Metropolis-Hastings algorithm and the fundamental building blocks needed to construct these chains that eventually lead to interesting stationary distributions would make this work exceedingly long, but MISSING REFERENCE and MISSING REFERENCE are good resources for a detailed rundown of these topics. We will return much later in this work when discussing the BASS method to MCMC and why it is so essential to this process. We will not look at pure MCMC though but an interesting modification to the base algorithm known as the Reversible Jump Markov Chain Monte Carlo (RJMCMC) algorithm. 
+
+For now though we move on to the other interesting sub-case of stochastic processes relevant to this work, the continuous-time Gaussian Process. 
 
 
 
