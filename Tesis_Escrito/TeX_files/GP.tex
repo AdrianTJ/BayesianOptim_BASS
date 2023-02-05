@@ -194,5 +194,30 @@ If we construct a Markov chain in a way that it is ergodic an control the distri
 
 For now though we move on to the other interesting sub-case of stochastic processes relevant to this work, the continuous-time Gaussian Process. 
 
+\section{Gaussian Processes}
+
+A Gaussian process can be thought of as a generalization of the Gaussian (normal) distribution when viewed from the lens of stochastic processes. Stochastic processes, as we saw before, are indexed by a parameter, which itself belongs to an index set. The Gaussian process extends the definition of the Gaussian distribution from being valued on scalars or vectors to a more general index set, to a set $T \subseteq \mathbb{R}^+$. Note that this set can contain an infinite number of points, which is the main difference between the Gaussian distribution and the Gaussian process. This extension is not trivial though, and to specify the structure of these particular types of stochastic processes, we aid ourselves with finite dimensional distributions. We now provide a formal definition of these types of distributions. 
+
+\begin{definition}
+	Let $\{ t_i \}_{i \leq k}$ be a sequence of points\footnote{Sometimes referred to as time points, considering this index not as an abstract set but a representation of the progress of time as indexed by a subset of the positive reals.} such that $\{ t_i \}_{i \leq k} \subseteq T$. The $k$-dimensional random vector $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ has a distribution $\mu_{t_1, t_2, \ldots, t_k}$ over $\mathbb{R}^k$. These measures $\mu_{t_1, t_2, \ldots, t_k}$ are the finite dimensional distributions of the process. 
+\end{definition}
+
+With this auxiliary distribution out of the way, we can now proceed to define the Gaussian process. 
+
+\begin{definition}
+	Let $\{ X_t: t \in \mathbb{R}^+ \}$ be a continuous-time stochastic process. We call $\{ X_t: t \in \mathbb{R}^+ \}$ a Gaussian process if for every set $\{ t_i \}_{i \leq k}$ and every finite $k$, the finite-dimensional distribution of the $k$-dimensional random vector $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ has a Gaussian multivariate distribution when $k>1$ and a Gaussian univariate distribution when $k=1$. 
+\end{definition} 
+
+An important extension of this is that we can consider the Gaussian process a function $f$ and evaluate it at certain points $x$, where $x \in \mathcal{X}^\Theta$, the input space. This is, for each $x$, there is a random variable $f(x)$ that represents the possible output of the function $f$ at this location, or a realization of a certain Gaussian distribution at location $x$. This can also be understood as taking a sample from the distribution $f(x)$. As with any version of a Gaussian distribution, $f(x)$ can be completely be defined by it's mean and variance. Unlike the finite-dimensional cases though, by definition we can have infinitely many values in the index space $T$, and therefore the reasonable approach to defining the mean and variance of functions of elements in the index space. We denote the mean function of the process as: 
+\[ m(x) = \mathbb{E}[f(x)] \]
+and the covariance function (or kernel) as: 
+\[ k(x, x') = \mathbb{E}[(f(x) - m(x))(f(x') - m(x'))]. \]
+
+
+
+
+
+
+
 
 
