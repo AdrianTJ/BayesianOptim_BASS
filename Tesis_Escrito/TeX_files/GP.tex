@@ -210,9 +210,14 @@ With this auxiliary distribution out of the way, we can now proceed to define th
 
 An important extension of this is that we can consider the Gaussian process a function $f$ and evaluate it at certain points $x$, where $x \in \mathcal{X}^\Theta$, the input space. This is, for each $x$, there is a random variable $f(x)$ that represents the possible output of the function $f$ at this location, or a realization of a certain Gaussian distribution at location $x$. This can also be understood as taking a sample from the distribution $f(x)$. As with any version of a Gaussian distribution, $f(x)$ can be completely be defined by it's mean and variance. Unlike the finite-dimensional cases though, by definition we can have infinitely many values in the index space $T$, and therefore the reasonable approach to defining the mean and variance of functions of elements in the index space. We denote the mean function of the process as: 
 \[ m(x) = \mathbb{E}[f(x)] \]
-and the covariance function (or kernel) as: 
+and the covariance function as: 
 \[ k(x, x') = \mathbb{E}[(f(x) - m(x))(f(x') - m(x'))]. \]
 
+The main reason why the covariance function is denoted by $k$ is that this name alludes to the fact that $k$ is a kernel of the terms in the input space. We now present a formal definition of this type of function, followed by some intuition on its interpretation. 
+
+\begin{definition}
+	Let $\mathcal{X}$ be an input space like the ones we have previously defined (in the case of Gaussian processes, $\mathcal{X} = \{ X_t : t \in T \subseteq \mathbb{R}^+ \}$), and let $V$ be a vector space equipped with an inner product. Also, let $\varphi$ be a mapping such that $\varphi: \mathcal{X} \times \mathcal{X} \rightarrow V$. We call the function $k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ a kernel or kernel function when $k(x, x') = \langle \varphi (x), \varphi (x') \rangle_V$. 
+\end{definition}
 
 
 
