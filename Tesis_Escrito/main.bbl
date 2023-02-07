@@ -53,6 +53,11 @@ Devin Francom and Bruno Sansó.
   of bayesian adaptive spline surfaces.
 \newblock {\em Journal of Statistical Software}, 94(8), 2020.
 
+\bibitem[Gha11]{ghahramani2011tutorial}
+Zoubin Ghahramani.
+\newblock A tutorial on gaussian processes (or why i don’t use svms).
+\newblock In {\em Proc. MLSS Workshop Talk Gaussian Processes}, 2011.
+
 \bibitem[GMHL20]{Garrido-Merchán_Hernández-Lobato_2020}
 Eduardo~C. Garrido-Merchán and Daniel Hernández-Lobato.
 \newblock Dealing with categorical and integer-valued variables in bayesian

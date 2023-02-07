@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.1.1)  6 FEB 2023 19:31
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.1.1)  7 FEB 2023 15:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -178,8 +178,11 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 \g__pdf_backend_object_int=\count276
 \g__pdf_backend_annotation_int=\count277
 \g__pdf_backend_link_int=\count278
-) (./main.aux (./TeX_files/GP.aux)
-(./TeX_files/GP_reg.aux))
+) (./main.aux (./TeX_files/GP.aux
+
+LaTeX Warning: Label `trajectories' multiply defined.
+
+) (./TeX_files/GP_reg.aux))
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
@@ -252,17 +255,26 @@ L/cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 s[]\OMS/cmsy/m/n/12 j\OML/
 cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 s[]\OT1/cmr/m/n/12 )
  []
 
-[3] [4] [5] [6] [7] [8]) [9]
+[3] [4] [5] [6] [7] [8] [9]
+File: Figures/missing.png Graphic file (type bmp)
+<Figures/missing.png>
+
+Overfull \hbox (7.76242pt too wide) in paragraph at lines 230--231
+[]\TU/lmr/m/n/12 Basically, all major properties such as smoothness, differenti
+ability, sparcity
+ []
+
+) [10]
 \openout2 = `./TeX_files/GP_reg.aux'.
 
- (./TeX_files/GP_reg.tex [10
-
-
-
-
-]
+ (./TeX_files/GP_reg.tex
 Chapter 2.
-) [11] [12
+) [11
+
+
+
+
+] [12
 
 
 
@@ -280,12 +292,16 @@ Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=
 ex-text;!
 [13
 
-]) [14] (./main.aux (./TeX_files/GP.aux) (./TeX_files/GP_reg.aux)) ) 
+]) [14] (./main.aux (./TeX_files/GP.aux) (./TeX_files/GP_reg.aux))
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2653 strings out of 476179
- 45520 string characters out of 5809545
+ 2654 strings out of 476179
+ 45544 string characters out of 5809545
  352075 words of memory out of 5000000
- 23353 multiletter control sequences out of 15000+600000
+ 23354 multiletter control sequences out of 15000+600000
  477268 words of font info for 75 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  55i,9n,62p,1170b,304s stack positions out of 10000i,1000n,20000p,200000b,200000s
