@@ -219,8 +219,19 @@ The main reason why the covariance function is denoted by $k$ is that this name 
 	Let $\mathcal{X}$ be an input space like the ones we have previously defined (in the case of Gaussian processes, $\mathcal{X} = \{ X_t : t \in T \subseteq \mathbb{R}^+ \}$), and let $V$ be a vector space equipped with an inner product. Also, let $\varphi$ be a mapping such that $\varphi: \mathcal{X} \times \mathcal{X} \rightarrow V$. We call the function $k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ a kernel or kernel function when $k(x, x') = \langle \varphi (x), \varphi (x') \rangle_V$. 
 \end{definition}
 
+What this kernel function allows us to do is basically borrow an inner product from a different space, in this definition $V$, and apply it to the transformed elements of our input or feature space. This allows us to cheat in some regard and compute dot products or metrics in the input space without knowing or needing to know the properties of that space. Tying back the kernel to Gaussian processes, we note that while the mean only controls the average value across realizations of the process $f$, the covariance or kernel function actually controls the underlying behavior of the realizations or Gaussian processes. As an example of this, we borrow the following figure from \cite{ghahramani2011tutorial}. 
 
+\begin{figure}[h]
+	\includegraphics[width=4cm]{Figures/missing.png}
+	\centering
+	\label{trajectories}
+\end{figure}
 
+Basically, all major properties such as smoothness, differentiability, sparcity and range (to name only a few) are controlled by the choice of the kernel function. 
+
+While the kernel function can be basically anything that fulfills the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
+\[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')}{2} \right), \]
+where $\sigma_f^2$ and $\ell$ are hyperparameters. 
 
 
 
