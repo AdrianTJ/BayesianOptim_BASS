@@ -213,7 +213,8 @@ An important extension of this is that we can consider the Gaussian process a fu
 and the covariance function as: 
 \[ k(x, x') = \mathbb{E}[(f(x) - m(x))(f(x') - m(x'))]. \]
 
-The main reason why the covariance function is denoted by $k$ is that this name alludes to the fact that $k$ is a kernel of the terms in the input space. We now present a formal definition of this type of function, followed by some intuition on its interpretation. 
+The main reason why the covariance function is denoted by $k$ is that this name alludes to the fact that $k$ is a kernel of the terms in the input space. We now present a formal definition of this type of function, followed by some intuition on its interpretation. With these definitions though, we write the distribution function for $f$ as 
+\[ f(x) \sim \mathcal{GP}(m(x), k(x,x')). \]
 
 \begin{definition}
 	Let $\mathcal{X}$ be an input space like the ones we have previously defined (in the case of Gaussian processes, $\mathcal{X} = \{ X_t : t \in T \subseteq \mathbb{R}^+ \}$), and let $V$ be a vector space equipped with an inner product. Also, let $\varphi$ be a mapping such that $\varphi: \mathcal{X} \times \mathcal{X} \rightarrow V$. We call the function $k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ a kernel or kernel function when $k(x, x') = \langle \varphi (x), \varphi (x') \rangle_V$. 
@@ -231,7 +232,9 @@ Basically, all major properties such as smoothness, differentiability, sparcity 
 
 While the kernel function can be basically anything that fulfills the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
 \[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')}{2} \right), \]
-where $\sigma_f^2$ and $\ell$ are hyperparameters. 
+where $\sigma_f^2$ and $\ell$ are hyperparameters. While we do not go into too much detail as to why this is a good choice for a kernel, we refer the interested reader to \cite[\S 2.1]{garnett_bayesoptbook_2023}. 
+
+The hyperparameters defined previously each control the general behavior of the process when fitting data points. A more detailed run down of these points is given in the next chapter, which talks about Gaussian process regression. This is the method by which uncertainty is measured and function approximations are conducted in the traditional approach to Bayesian optimization. 
 
 
 

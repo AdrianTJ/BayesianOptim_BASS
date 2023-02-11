@@ -53,6 +53,12 @@ Devin Francom and Bruno Sansó.
   of bayesian adaptive spline surfaces.
 \newblock {\em Journal of Statistical Software}, 94(8), 2020.
 
+\bibitem[Gar23]{garnett_bayesoptbook_2023}
+Roman Garnett.
+\newblock {\em {Bayesian Optimization}}.
+\newblock Cambridge University Press, 2023.
+\newblock to appear.
+
 \bibitem[Gha11]{ghahramani2011tutorial}
 Zoubin Ghahramani.
 \newblock A tutorial on gaussian processes (or why i don’t use svms).
