@@ -111,7 +111,7 @@ We now introduce the following lemma that takes advantage of this property to pr
 There is a way to prove this lemma by induction directly, but we opt instead to use the Chapman-Kolmogorov Equation n-1 times to achieve the final result, as follows. 
 
 \begin{proof}
-	First, we begin by noting that $p_{i,j}^{(k)} = \mathbb{P}(X_{i+j} = s_{i + k} | X_i = s_i) = \mathbb{P}(X_{j} = s_{k} | X_0 = s_i)$. Therefore, NEED TO FINISH THIS PROOF. 
+	First, we begin by noting that $p_{i,j}^{(k)} = \mathbb{P}(X_{i+j} = s_{i + k} | X_i = s_i) = \mathbb{P}(X_{j} = s_{k} | X_0 = s_i)$. Therefore, \textcolor{red}{NEED TO FINISH THIS PROOF}. 
 	
 \end{proof}
 
@@ -125,7 +125,7 @@ This lemma becomes useful in proving the following theorem.
 \begin{proof}
 	Supposing a homogeneous Markov chain, then we begin by noting that 
 	\[ p_{i,j}^{(n+m)} = \mathbb{P}(X_{n+m} = j | X_n = i) = \mathbb{P}(X_m = j | X_0 = i) = p_{i,j}^{(m)}. \] 
-	Using the law of total probability and the Markov property, NEED TO FINISH THIS PROOF.
+	Using the law of total probability and the Markov property, \textcolor{red}{NEED TO FINISH THIS PROOF}.
 \end{proof}
 
 From here, we now present two definitions relating to the properties of matrices which will become important when further exploring the types of Markov chains we are interested in. 
@@ -190,7 +190,7 @@ The scope of this work does not cover this theory in as much detail as the autho
 Which is equivalent to saying that $\pi^T = \pi^T P$.
 \end{proof}
 
-If we construct a Markov chain in a way that it is ergodic an control the distribution $\pi$ so that it is something that we want, we can guarantee that after a sufficiently large amount of iterations $n$ we will be sampling from the stationary distribution of the process, which is invariant through time because of the property presented in the above theorem. This is the crux of understanding the Markov Chain Monte Carlo technique which is the central object of study of this section. Delving into the construction of the Metropolis-Hastings algorithm and the fundamental building blocks needed to construct these chains that eventually lead to interesting stationary distributions would make this work exceedingly long, but MISSING REFERENCE and MISSING REFERENCE are good resources for a detailed rundown of these topics. We will return much later in this work when discussing the BASS method to MCMC and why it is so essential to this process. We will not look at pure MCMC though but an interesting modification to the base algorithm known as the Reversible Jump Markov Chain Monte Carlo (RJMCMC) algorithm. 
+If we construct a Markov chain in a way that it is ergodic an control the distribution $\pi$ so that it is something that we want, we can guarantee that after a sufficiently large amount of iterations $n$ we will be sampling from the stationary distribution of the process, which is invariant through time because of the property presented in the above theorem. This is the crux of understanding the Markov Chain Monte Carlo technique which is the central object of study of this section. Delving into the construction of the Metropolis-Hastings algorithm and the fundamental building blocks needed to construct these chains that eventually lead to interesting stationary distributions would make this work exceedingly long, but \textcolor{red}{MISSING REFERENCE} and \textcolor{red}{MISSING REFERENCE} are good resources for a detailed rundown of these topics. We will return much later in this work when discussing the BASS method to MCMC and why it is so essential to this process. We will not look at pure MCMC though but an interesting modification to the base algorithm known as the Reversible Jump Markov Chain Monte Carlo (RJMCMC) algorithm. 
 
 For now though we move on to the other interesting sub-case of stochastic processes relevant to this work, the continuous-time Gaussian Process. 
 
@@ -230,11 +230,11 @@ What this kernel function allows us to do is basically borrow an inner product f
 
 Basically, all major properties such as smoothness, differentiability, sparcity and range (to name only a few) are controlled by the choice of the kernel function. 
 
-While the kernel function can be basically anything that fulfills the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
+While the kernel function can be basically anything that fulfils the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
 \[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')}{2} \right), \]
 where $\sigma_f^2$ and $\ell$ are hyperparameters. While we do not go into too much detail as to why this is a good choice for a kernel, we refer the interested reader to \cite[\S 2.1]{garnett_bayesoptbook_2023}. 
 
-The hyperparameters defined previously each control the general behavior of the process when fitting data points. A more detailed run down of these points is given in the next chapter, which talks about Gaussian process regression. This is the method by which uncertainty is measured and function approximations are conducted in the traditional approach to Bayesian optimization. 
+The hyperparameters defined previously each control the general behaviour of the process when fitting data points. A more detailed run down of these points is given in the next chapter, which talks about Gaussian process regression. This is the method by which uncertainty is measured and function approximations are conducted in the traditional approach to Bayesian optimization. 
 
 
 

@@ -3,3 +3,4 @@
 \contentsline {section}{\numberline {1.2}Markov Chains}{3}{}%
 \contentsline {section}{\numberline {1.3}Gaussian Processes}{8}{}%
 \contentsline {chapter}{\numberline {2}Gaussian Process Regression}{13}{}%
+\contentsline {subsection}{\numberline {2.0.1}Preamble to Gaussian Process Regression: A Rehash on Regression Analysis}{14}{}%
