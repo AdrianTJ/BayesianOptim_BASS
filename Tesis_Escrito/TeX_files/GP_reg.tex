@@ -1,3 +1,27 @@
 \chapter{Gaussian Process Regression}
 
-One of the applications of Gaussian processes is to use them as a method to perform supervised learning using it. The method generates from data a mean function and then uses that mean function to extrapolate or predict on points where there is no data observed. As we described in the last chapter, we can fully specify or determine a particular Gaussian process by specifying its mean $m(x) = \mathbb{E}[f(x)]$ and its kernel function $k(x,x')$. While in the last chapter we started with the Gaussian process and from that generate the values on the rest of the input space, in this chapter we are going to be doing somewhat of the inverse of that. We will be starting from a set of data $\{ x_i \}_{i \leq n} = X \subset \mathcal{X}$, and adjusting the properties of the kernel and mean to achieve the best fit Gaussian process to the points and minimize the error. 
+One of the applications of Gaussian processes is to use them as a method to perform supervised learning using it. The method generates from data a mean function and then uses that mean function to extrapolate or predict on points where there is no data observed. As we described in the last chapter, we can fully specify or determine a particular Gaussian process by specifying its mean $m(x) = \mathbb{E}[f(x)]$ and its kernel function $k(x,x')$. While in the last chapter we started with the Gaussian process and from that generate the values on the rest of the input space, in this chapter we are going to be doing somewhat of the inverse of that. We will be starting from a set of data $\{ x_i \}_{i \leq n} = \mathcal{D} \subset \mathcal{X}$, and adjusting the properties of the kernel and mean to achieve the best fit Gaussian process to the points and minimize the error. 
+
+One of the advantages of Gaussian process regression over other forms of supervised learning algorithms (such as linear regression) is the fact that Gaussian processes are a non-parametric model. Without delving too much into the specifics, this means that the number of parameters controlling the model is not fixed at a certain quantity, but rather is adaptive. The amount of parameters can grow and shrink depending on the data that is being fit. 
+
+This however does not mean that we do not have control over the behavior of the function we decide to adjust to the points. In the following figure, we can see how changing the hyperparameter $\ell$ in the squared exponential covariance function changes the relative smoothness of the fit function. 
+
+\begin{figure}[h]
+	\includegraphics[width=4cm]{Figures/missing.png}
+	\centering
+	\caption{Gaussian Processes for ML, page 20.}
+	\label{trajectories}
+\end{figure}
+
+We also note how radically the confidence intervals change from one adjustment to the next based on moving this hyperparameter around. Because we can define an infinite amount of Gaussian processes based on our choice of hyperparameters (and further even by changing the kernel function), \textcolor{red}{HOW TO STATE THIS AS A MINIMIZATION PROBLEM?}
+This problem translates to finding under the given assumptions the function that best adjusts to these points in the sense that it minimizes the uncertainty present. This will involve the selection of the best\footnote{Best is a dangerous word in this context. Obviously depending on the problem and the minimization objectives, this best set of hyperparameters that define this function can change, but here we simply refer to the one or family of functions that solves the above minimization problem.} hyperparameters given the constraints of the problem and using that defined mean function to predict values not in the data set.
+
+To get there, we will begin by going over regression in general, then make the link to the formal theory of Gaussian process regression to show how supervised learning can be performed by this method. 
+
+\subsection{Preamble to Gaussian Process Regression: A Rehash on Regression Analysis}
+
+The central task of this section is regression, which is the process of estimating or generating understanding of a theoretical function $f: \mathcal{X} \rightarrow \mathbb{R}$ that describes the relationship between a response variable $y$ and a group or single input variable described by the vector $\boldsymbol{x}$. While we do not know the exact behavior of $f$ the function that describes this relationship\footnote{We will discuss this in later chapters, but this is actually one of the greatest advantages of Bayesian Optimization, in that in can work on so called \textit{black-box} functions}, what we do have is a set of observations $\mathcal{D} \subset \mathcal{X}$ that constitute point wise realizations of the function $f$. From that, for a set of new unknown points $\boldsymbol{x}_*$ we want to predict or infer the quantity $f(x_{i*}) = y_*$, which would be point-wise estimates of these unseen or unknown realizations of $f$. 
+
+One example of another method od solving this problem is the well known and well loved linear regression, that assumes that the function $f$ is of the general form 
+\[ y = f(x) = x^T \beta + \epsilon \]
+where $\epsilon \sim \mathcal{N}(0, \sigma^2)$. The error variance $\sigma^2$ and the coefficients $\beta$ are generated by a process of minimizing the error of the outputs generated. 
