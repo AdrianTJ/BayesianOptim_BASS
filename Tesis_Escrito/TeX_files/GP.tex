@@ -110,23 +110,12 @@ We now introduce the following lemma that takes advantage of this property to pr
 
 There is a way to prove this lemma by induction directly, but we opt instead to use the Chapman-Kolmogorov Equation n-1 times to achieve the final result, as follows. 
 
-\begin{proof}
-	First, we begin by noting that $p_{i,j}^{(k)} = \mathbb{P}(X_{i+j} = s_{i + k} | X_i = s_i) = \mathbb{P}(X_{j} = s_{k} | X_0 = s_i)$. Therefore, \textcolor{red}{NEED TO FINISH THIS PROOF}. 
-	
-\end{proof}
-
 This lemma becomes useful in proving the following theorem. 
 
 \begin{theorem}
 	Let $n,m \in \mathbb{N}_0$ and $i,j \in \mathcal{S}$. Then, $p_{i,j}^{(n+m)}$, which is the probability that starting from state $i$ in step $n$ we end up in state $j$ after $m$ steps is given by: 
 	\[ p_{i,j}^{(n+m)} = \sum_{k \in \mathcal{S}} p_{i,k}^{(m)} \cdot p_{k,j}^{(n)}. \]
 \end{theorem}
-
-\begin{proof}
-	Supposing a homogeneous Markov chain, then we begin by noting that 
-	\[ p_{i,j}^{(n+m)} = \mathbb{P}(X_{n+m} = j | X_n = i) = \mathbb{P}(X_m = j | X_0 = i) = p_{i,j}^{(m)}. \] 
-	Using the law of total probability and the Markov property, \textcolor{red}{NEED TO FINISH THIS PROOF}.
-\end{proof}
 
 From here, we now present two definitions relating to the properties of matrices which will become important when further exploring the types of Markov chains we are interested in. 
 
@@ -201,6 +190,10 @@ A Gaussian process can be thought of as a generalization of the Gaussian (normal
 \begin{definition}
 	Let $\{ t_i \}_{i \leq k}$ be a sequence of points\footnote{Sometimes referred to as time points, considering this index not as an abstract set but a representation of the progress of time as indexed by a subset of the positive reals.} such that $\{ t_i \}_{i \leq k} \subseteq T$. The $k$-dimensional random vector $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ has a distribution $\mu_{t_1, t_2, \ldots, t_k}$ over $\mathbb{R}^k$. These measures $\mu_{t_1, t_2, \ldots, t_k}$ are the finite dimensional distributions of the process. 
 \end{definition}
+
+One logical follow up is to ask if the inverse of this definition is also true. This would be, starting from a consistent\footnote{Consistency is a fuzzy term with a lot of meanings, but its meaning in this context will become clear with the theorems that follow.} joint distribution of the random variables $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ , with $k \in \mathbb{N}$, then would it be possible to define a probability measure $\mu_{t_1, t_2, \ldots, t_k}$ on a higher cardinality set, in this case $\mathbb{R}^k$ that matches these distributions exactly? The positive answer to this question is the Kolmogorov Extension Theorem, an incredibly deep and powerful results that guarantees the existence of stochastic processes by only defining a finite set of distributions that share some consistency requirements. 
+
+\textcolor{red}{MISSING THEOREM STATEMENT AND DEEP DIVE.}
 
 With this auxiliary distribution out of the way, we can now proceed to define the Gaussian process. 
 
