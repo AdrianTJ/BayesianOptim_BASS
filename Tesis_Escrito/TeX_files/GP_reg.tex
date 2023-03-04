@@ -20,7 +20,7 @@ To get there, we will begin by going over regression in general, then make the l
 
 \subsection{Preamble to Gaussian Process Regression: A Rehash on Regression Analysis}
 
-The central task of this section is regression, which is the process of estimating or generating understanding of a theoretical function $f: \mathcal{X} \rightarrow \mathbb{R}$ that describes the relationship between a response variable $y$ and a group or single input variable described by the vector $\boldsymbol{x}$. While we do not know the exact behavior of $f$ the function that describes this relationship\footnote{We will discuss this in later chapters, but this is actually one of the greatest advantages of Bayesian Optimization, in that in can work on so called \textit{black-box} functions}, what we do have is a set of observations $\mathcal{D} \subset \mathcal{X}$, where $\mathcal{D} = \{ (x_i, y_i), i = 1,2,\ldots, n \}$ and $x_i \in \mathbb{R}^d$ and $y_i \in \mathbb{R}$. These observations constitute point wise realizations of the function $f$. From that, for a set of new unknown points $\boldsymbol{x}_*$ we want to predict or infer the quantity $f(x_{i*}) = y_*$, which would be point-wise estimates of these unseen or unknown realizations of $f$. 
+The central task of this section is regression, which is the process of estimating or generating understanding of a theoretical function $f: \mathcal{X} \rightarrow \mathbb{R}$ that describes the relationship between a response variable $y$ and a group or single input variable described by the vector $\boldsymbol{x}$. While we do not know the exact behavior of $f$ the function that describes this relationship\footnote{We will discuss this in later chapters, but this is actually one of the greatest advantages of Bayesian Optimization, in that in can work on so called \textit{black-box} functions}, what we do have is a set of observations $\mathcal{D} \subset \mathcal{X}$, where $\mathcal{D} = \{ (x_i, y_i), i = 1,2,\ldots, n \}$ and $x_i \in \mathbb{R}^d$ and $y_i \in \mathbb{R}$. These observations constitute point-wise realizations of the function $f$. From that, for a set of new unknown points $\boldsymbol{x}_*$ we want to predict or infer the quantity $f(x_{i*}) = y_*$, which would be point-wise estimates of these unseen or unknown realizations of $f$. 
 
 One example of another method od solving this problem is the well known and well loved linear regression, that assumes that the function $f$ is of the general form 
 \[ y = f(x) = x^T \beta + \epsilon \]
@@ -41,7 +41,7 @@ The key insight to understanding Gaussian process regression from a statistician
 
 \subsection{Theory of Gaussian Process Regression (from the function space view)}
 
-
+We can split up the set $\mathcal{D}$ into training and test, defining $\mathcal{D}_{train} = \{ x_i , y_i \}_{i=1}^n$, and $\mathcal{D}_{test} = \{ x^*_i , y^*_i \}_{i=1}^{n'}$, with $x_i, x^*_i \in \mathbb{R}^d$ and $y_i, y^*_i \in \mathbb{R}$. As described before, what we want to achieve is basically generating out of sample predictions ofr the test set $D_{test}$. Since the function $f = m$ defined is the mean of the process we defined before, we can simply evaluate the out of sample points $x_i^*$ on $f$ and we have an estimate for $y_i^*$.
 
  
 
