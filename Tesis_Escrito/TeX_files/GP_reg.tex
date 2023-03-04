@@ -41,7 +41,28 @@ The key insight to understanding Gaussian process regression from a statistician
 
 \subsection{Theory of Gaussian Process Regression (from the function space view)}
 
-We can split up the set $\mathcal{D}$ into training and test, defining $\mathcal{D}_{train} = \{ x_i , y_i \}_{i=1}^n$, and $\mathcal{D}_{test} = \{ x^*_i , y^*_i \}_{i=1}^{n'}$, with $x_i, x^*_i \in \mathbb{R}^d$ and $y_i, y^*_i \in \mathbb{R}$. As described before, what we want to achieve is basically generating out of sample predictions ofr the test set $D_{test}$. Since the function $f = m$ defined is the mean of the process we defined before, we can simply evaluate the out of sample points $x_i^*$ on $f$ and we have an estimate for $y_i^*$.
+This section of the text is heavily based on the work and structure of \cite{rasmussen2006gaussian} and to a much lesser extent \cite{wang2020intuitive}. The book Gaussian Processes for Machine Learning is the go-to reference and source for modern applications of Gaussian processes in general and it would be a disservice to the reader to not follow that structure and argumentation. 
 
+We can split up the set $\mathcal{D}$ into training and test, defining $\mathcal{D}_{train} = \{ x_i , y_i \}_{i=1}^n$, and $\mathcal{D}_{test} = \{ x^*_i , y^*_i \}_{i=1}^{^*}$, with $x_i, x^*_i \in \mathbb{R}^d$ and $y_i, y^*_i \in \mathbb{R}$. As described before, what we want to achieve is basically generating out of sample predictions for the test set $D_{test}$. Since the function $f = m$ defined is the mean of the process we defined before, we can simply evaluate the out of sample points $x_i^*$ on $f$ and we have an estimate for $y_i^*$. For simplicity and by convention, we denote the set of of test outputs $\boldsymbol{f}_*$. Because of the structure we have defined, formally, the regression function $f$ is really a normal distribution when conditioned by the training dataset $\mathcal{D}_{train}$, which would be
+\[ \mathbb{P}(\boldsymbol{f} | \boldsymbol{X}) = \mathcal{N}(f | \mu, k) \]
+where $\boldsymbol{X} = [ x_1, x_2, \ldots , x_n ]$, $\boldsymbol{f} = [ f(x_1), f(x_2), \ldots, f(x_n) ]$, $\mu= [ m(x_1), m(x_2), \ldots, m(x_n) ]$ and $k$ the kernel or covariance function of the process. By convention, it is customary to set $m(\boldsymbol{X}) = 0$, but there is a reasoning behind this. When dealing with the type of data generally modelled by these types of functions, it is common (encouraged even) to normalize the data before applying these methods to it. Another important piece of shorthand notation we will use is $K=k(\boldsymbol{X}, \boldsymbol{X})$, $K_*=k(\boldsymbol{X}, \boldsymbol{X}_*)$, and $K_{**}=k(\boldsymbol{X}_*, \boldsymbol{X}_*)$. Note that since the number of training points need not equal the number of test points, then $n$ has not attributable relationship with $n^*$ and we cannot state any properties of the matrix $K_*$, much less say that it is a square matrix. 
+
+Since we have formally defined the distribution of $\boldsymbol{f}$ and we know that $\boldsymbol{f}_*$ is the same distribution but considering a different set of data points $\boldsymbol{X}_* = [x^*_1, \ldots, x^*_n]$, we can define the joint distribution of these vectors as 
+\[ \begin{bmatrix}
+	\boldsymbol{f} \\
+	\boldsymbol{f}_*
+\end{bmatrix} \sim \mathcal{N}\left( \begin{bmatrix}
+0 \\
+0
+\end{bmatrix} , \begin{bmatrix}
+K & K_* \\
+K_*^T & K_{**}
+\end{bmatrix} \right), 
+\]
+
+which is the joint probability distribution $\mathbb{P}(\boldsymbol{f}, \boldsymbol{f}_* | \boldsymbol{X}, \boldsymbol{X}_*)$. This is a massive step in constructing the regression model but we are still missing one component. When dealing with regression and prediction of values outside of the original training dataset, we do not need the joint probability, but the conditional probability of the test set given everything else we know. Formally, this means that we need to find the probability distribution of $\mathbb{P}(\boldsymbol{f}_* | \boldsymbol{X}, \boldsymbol{X}_*, \boldsymbol{f})$. Luckily, since we are dealing with Gaussian distributions, there is a very neat closed form expression that describes this probability. Referring to section $A.2$ of \cite{rasmussen2006gaussian}, and noting that the mean for both $\boldsymbol{f}$ and $\boldsymbol{f}_*$ is 0, then 
+\[ \boldsymbol{f}_* | \boldsymbol{f} \sim \mathcal{N}(K_*^T K^{-1} \boldsymbol{f}, K_{**} - K_*^T K^{-1} K_*). \]
+
+This probability function is what is used to calculate out of sample predictions for the out of sample data $\boldsymbol{X}_*$. 
  
 
