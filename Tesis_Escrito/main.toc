@@ -5,3 +5,4 @@
 \contentsline {chapter}{\numberline {2}Gaussian Process Regression}{13}{}%
 \contentsline {subsection}{\numberline {2.0.1}Preamble to Gaussian Process Regression: A Rehash on Regression Analysis}{14}{}%
 \contentsline {subsection}{\numberline {2.0.2}Theory of Gaussian Process Regression (from the function space view)}{16}{}%
+\contentsline {subsubsection}{Gaussian Process Regression Over Noisy Observations}{17}{}%
