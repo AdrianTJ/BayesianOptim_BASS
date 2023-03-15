@@ -2,7 +2,7 @@ This is BibTeX, Version 0.99d (TeX Live 2022)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 A level-1 auxiliary file: ./TeX_files/GP.aux
-A level-1 auxiliary file: ./TeX_files/GP_reg.aux
+A level-1 auxiliary file: ./TeX_files/BO.aux
 The style file: alpha.bst
 Database file #1: ./TeX_files/Bibliography.bib
 Warning--empty journal in Bergstra_Bardenet_Bengio_Kégl
@@ -16,7 +16,7 @@ Warning--empty journal in Snoek_Larochelle_Adams_2012
 Warning--there's a number but no volume in Snoek_Larochelle_Adams_2012
 You've used 22 entries,
             2543 wiz_defined-function locations,
-            711 strings with 8642 characters,
+            711 strings with 8638 characters,
 and the built_in function-call counts, 8256 in all, are:
 = -- 799
 > -- 394

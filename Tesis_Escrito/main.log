@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.4.16)  11 MAR 2023 12:23
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.4.16)  15 MAR 2023 11:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -198,14 +198,13 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 
 LaTeX Warning: Label `trajectories' multiply defined.
 
-) (./TeX_files/GP_reg.aux
 
 LaTeX Warning: Label `trajectories' multiply defined.
 
 
 LaTeX Warning: Label `trajectories' multiply defined.
 
-))
+) (./TeX_files/BO.aux))
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
@@ -219,7 +218,8 @@ LaTeX Font Info:    ... okay on input line 12.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 1
 2.
- (/usr/local/texlive/2022/texmf-dist/tex/latex/base/ts1cmr.fd
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 12.
@@ -286,29 +286,21 @@ Overfull \hbox (7.76242pt too wide) in paragraph at lines 224--225
 ability, sparcity
  []
 
-[10]) [11]
-\openout2 = `./TeX_files/GP_reg.aux'.
-
- (./TeX_files/GP_reg.tex [12
-
-
-
-
-]
-Chapter 2.
+[10]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
+
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[13] [14]
+[11] [12]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
 Underfull \vbox (badness 4001) has occurred while \output is active []
 
- [15]
-Overfull \hbox (56.60707pt too wide) in paragraph at lines 47--49
+ [13]
+Overfull \hbox (56.60707pt too wide) in paragraph at lines 278--280
 \TU/lmr/m/n/12 where $[] \OT1/cmr/m/n/12 = [\OML/cmm/m/it/12 x[]; x[]; [] ; x[]
 \OT1/cmr/m/n/12 ]$\TU/lmr/m/n/12 , $[] \OT1/cmr/m/n/12 = [\OML/cmm/m/it/12 f\OT
 1/cmr/m/n/12 (\OML/cmm/m/it/12 x[]\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; f\OT1/cmr
@@ -320,11 +312,23 @@ T1/cmr/m/n/12 )\OML/cmm/m/it/12 ; [] ; m\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x[]\O
 T1/cmr/m/n/12 )]$
  []
 
-[16]) [17] [18
+[14]) [15]
+\openout2 = `./TeX_files/BO.aux'.
+
+ (./TeX_files/BO.tex [16
 
 
 
-] (./main.bbl
+
+]
+Chapter 2.
+[17])
+Overfull \hbox (1.06003pt too wide) in paragraph at lines 19--28
+[]\TU/lmr/m/n/12 The final component of the Bayesian optimization algorithm is 
+the method
+ []
+
+[18] (./main.bbl
 Underfull \hbox (badness 1400) in paragraph at lines 33--38
 \TU/lmr/m/it/12 Proceedings of the Twenty-Ninth International Joint Con-
  []
@@ -338,14 +342,17 @@ Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=
 ex-text;!
 [19
 
-] [20]) [21] (./main.aux (./TeX_files/GP.aux) (./TeX_files/GP_reg.aux))
+
+
+
+] [20]) [21] (./main.aux (./TeX_files/GP.aux) (./TeX_files/BO.aux))
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
  3164 strings out of 476179
- 51802 string characters out of 5809544
+ 51690 string characters out of 5809544
  364400 words of memory out of 5000000
  23843 multiletter control sequences out of 15000+600000
  480061 words of font info for 87 fonts, out of 8000000 for 9000
