@@ -1,0 +1,19 @@
+\chapter{Bayesian Optimization}
+
+\section{Introduction}
+
+Bayesian optimization is a sequential model-based approach to optimizing black-box functions that are expensive to evaluate. The goal is to find the input $x$ that maximizes the objective function $f(x)$ with the minimum number of function evaluations.
+
+The Bayesian optimization algorithm consists of three main components: a prior distribution over the objective function, an acquisition function, and a method for updating the prior distribution based on the observed data.
+
+Let $f(x)$ be the objective function that we want to maximize, and let $D$ be the set of observations we have made so far, which consists of pairs $(x_i, y_i)$ where $x_i$ is the input and $y_i$ is the corresponding output of the function $f(x_i)$. We want to find the input $x$ that maximizes the function $f(x)$, i.e., $x^* = \arg\max_x f(x)$.
+
+The prior distribution over the objective function $f(x)$ is usually assumed to be a Gaussian process (GP), which is a probabilistic model that defines a distribution over functions. Given a set of observations $D$, the GP defines a posterior distribution over functions that takes into account the uncertainty in the observations.
+
+The acquisition function is a criterion that measures the utility of each point in the input space $x$ for the purpose of optimization. The most commonly used acquisition function is the expected improvement (EI), which measures the expected improvement in the objective function if we were to evaluate the function at a particular input $x$. The EI is defined as:
+
+\[ EI(x) = \mathbb{E}[max(f(x) - f(x_{best}), 0)], \]
+
+where $x_{\text{best}}$ is the current best input found so far, and $\mathbb{E}[\cdot]$ is the expectation operator. The idea is to select the input $x$ that maximizes the EI, which balances exploration (trying new inputs) and exploitation (focusing on inputs that are likely to be good).
+
+The final component of the Bayesian optimization algorithm is the method for updating the prior distribution based on the observed data. This is done using Bayes' rule, which allows us to compute the posterior distribution over the objective function given the prior distribution and the observed data. The posterior distribution is then used as the prior distribution for the next iteration of the algorithm.
