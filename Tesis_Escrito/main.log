@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.4.16)  18 MAR 2023 22:21
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.4.16)  19 MAR 2023 14:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -322,21 +322,16 @@ T1/cmr/m/n/12 )]$
 
 ]
 Chapter 2.
+[17]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Underfull \vbox (badness 1142) has occurred while \output is active []
-
- [17]
-[18])
-Overfull \hbox (1.06003pt too wide) in paragraph at lines 27--28
-[]\TU/lmr/m/n/12 The final component of the Bayesian optimization algorithm is 
-the method
+ [18]
+Overfull \hbox (1.05205pt too wide) in paragraph at lines 21--22
+[]\TU/lmr/m/n/12 Determining a probabilistic model that captures the observed b
+ehaviour
  []
 
-[19] [20
-
-
-
-] (./main.bbl
+[19]) [20] (./main.bbl
 Underfull \hbox (badness 1400) in paragraph at lines 33--38
 \TU/lmr/m/it/12 Proceedings of the Twenty-Ninth International Joint Con-
  []
@@ -350,18 +345,26 @@ Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=
 ex-text;!
 [21
 
-] [22]) [23] (./main.aux (./TeX_files/GP.aux) (./TeX_files/BO.aux))
+
+
+
+]
+Underfull \hbox (badness 1112) in paragraph at lines 124--127
+[]\TU/lmr/m/n/12 Amar Shah, Andrew G Wilson, and Zoubin Ghahramani.
+ []
+
+[22]) [23] (./main.aux (./TeX_files/GP.aux) (./TeX_files/BO.aux))
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3164 strings out of 476179
- 51690 string characters out of 5809544
+ 3166 strings out of 476179
+ 51721 string characters out of 5809544
  364400 words of memory out of 5000000
- 23843 multiletter control sequences out of 15000+600000
+ 23845 multiletter control sequences out of 15000+600000
  480061 words of font info for 87 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 55i,13n,62p,1669b,263s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 55i,13n,62p,1687b,263s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on main.pdf (27 pages).

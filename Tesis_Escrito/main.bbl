@@ -120,10 +120,20 @@ Jasper Snoek, Hugo Larochelle, and Ryan~P. Adams.
 \newblock (arXiv:1206.2944), Aug 2012.
 \newblock arXiv:1206.2944 [cs, stat].
 
+\bibitem[SWG13]{shah2013bayesian}
+Amar Shah, Andrew~G Wilson, and Zoubin Ghahramani.
+\newblock Bayesian optimization using student-t processes.
+\newblock In {\em NIPS Workshop on Bayesian Optimization}, 2013.
+
 \bibitem[Wan20]{wang2020intuitive}
 Jie Wang.
 \newblock An intuitive tutorial to gaussian processes regression.
 \newblock {\em arXiv preprint arXiv:2009.10862}, 2020.
+
+\bibitem[WLX{\etalchar{+}}]{wangpoisson}
+Xiaoxing Wang, Jiaxing Li, Chao Xue, Wei Liu, Chaoyue Wang, Weifeng Liu,
+  Xiaokang Yang, Junchi Yan, and Dacheng Tao.
+\newblock Poisson process for bayesian optimization.
 
 \bibitem[Ži10]{Zitkovic_2010}
 Gordan Žitković.
