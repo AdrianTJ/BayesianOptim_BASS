@@ -8,3 +8,5 @@
 \contentsline {subsubsection}{Gaussian Process Regression Over Noisy Observations}{15}{}%
 \contentsline {chapter}{\numberline {2}Bayesian Optimization}{17}{}%
 \contentsline {section}{\numberline {2.1}Introduction}{17}{}%
+\contentsline {section}{\numberline {2.2}Components of BO}{19}{}%
+\contentsline {section}{\numberline {2.3}Formalization}{20}{}%
