@@ -37,7 +37,29 @@ The final component of BO is the method for updating the prior distribution base
 
 This process begins by setting the prior distribution $\mathbb{P}(\phi | x)$ which is our belief of possible values for $\phi$ before observation of the unknown $x$. 
 
-Assuming we observe the objective function at $x$ and measure $y$, our optimization model assumes that the distribution of this measurement is determined by the value of interest $\phi$ through the observation model $\mathbb{P}(y | x, \phi)$. With this new value $y$ we can update our beliefs and generate the posterior function through the use of Bayes' theorem: 
+Assuming we observe the objective function at $x$ and measure $y$, our optimization model supposes that the distribution of this measurement is determined by the value of interest $\phi$ through the observation model $\mathbb{P}(y | x, \phi)$. With this new value $y$ we can update our beliefs and generate the posterior function through the use of Bayes' theorem: 
 \[ \mathbb{P}(\phi | x, y) = \frac{\mathbb{P}(\phi | x) \cdot \mathbb{P}(y | x, \phi)}{\mathbb{P}(y | x)}. \] 
 
-\textcolor{red}{PAGES 7 and 8 of BO BOOK is where we are at.}
+As with all applications of Bayes' theorem such as this one, the denominator is simply a constant term used to scale the probability. This means that we can simplify the expression by only keeping the kernel of the distribution and dropping the normalizing term, and using the proportionality operator $\propto$, as follows. 
+\[ \mathbb{P}(\phi | x, y) \propto \mathbb{P}(\phi | x) \cdot \mathbb{P}(y | x, \phi). \] 
+
+In the Bayesian framework, the posterior distribution is often not the final goal but a starting point for further tasks such as prediction or decision-making. This builds on the iterative process under which we are working in Bayesian optimization, where new information is added to the approximation of the function every time a function evaluation happens. As an example, consider the case where we want to predict the outcome of an independent, repeated noisy observation at $x, y'$. We can treat the outcome as a random variable and derive its distribution by integrating our posterior belief about $\phi$ against the observation model:
+
+\[ \mathbb{P}(y' | x, \mathcal{D}) = \int \mathbb{P}(\phi | x, \mathcal{D}) \cdot \mathbb{P}\left(y' | x, \phi\right) \, d \phi. \]
+
+This equation represents the posterior predictive distribution for $y'$ given we know $x$ and a set of data $\mathcal{D}$. By integrating over all possible values of $\phi$, weighted by their plausibility, the posterior predictive distribution naturally accounts for uncertainty in the unknown objective function value.
+
+From here is where the link to Gaussian Processes lies. 
+
+
+
+
+
+
+
+
+
+
+
+
+
