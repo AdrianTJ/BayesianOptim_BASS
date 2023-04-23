@@ -49,7 +49,12 @@ In the Bayesian framework, the posterior distribution is often not the final goa
 
 This equation represents the posterior predictive distribution for $y'$ given we know $x$ and a set of data $\mathcal{D}$. By integrating over all possible values of $\phi$, weighted by their plausibility, the posterior predictive distribution naturally accounts for uncertainty in the unknown objective function value.
 
-From here is where the link to Gaussian Processes lies. 
+From here is where the link to Gaussian Processes lies. Gaussian Processes serve as a natural bridge between the Bayesian framework and Bayesian optimization. They provide a flexible, non-parametric prior of the form $\mathbb{P}(f)$ over a certain function $f$, and their posterior predictive distributions can be efficiently computed and used to guide the search for the optimal input value. The acquisition function, which is derived from the GP's posterior predictive distribution, plays a crucial role in balancing exploration and exploitation during the optimization process.
+
+\textcolor{red}{Continue here on the final part of chapter one of BO.}
+
+
+
 
 
 
