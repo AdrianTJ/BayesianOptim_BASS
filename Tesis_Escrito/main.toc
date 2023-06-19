@@ -10,3 +10,4 @@
 \contentsline {section}{\numberline {2.1}Introduction}{17}{}%
 \contentsline {section}{\numberline {2.2}Components of BO}{19}{}%
 \contentsline {section}{\numberline {2.3}Formalization}{20}{}%
+\contentsline {chapter}{\numberline {3}Bayesian Adaptive Spline Surfaces and their Roots}{23}{}%
