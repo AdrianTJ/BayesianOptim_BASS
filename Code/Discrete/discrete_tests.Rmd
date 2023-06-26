@@ -1,0 +1,53 @@
+---
+title: "Discrete Tests"
+author: "Adrian TJ"
+date: "2023-06-26"
+output: html_document
+---
+
+```{r packages}
+library(tidyverse)
+library(gt)
+library(GPfit)
+library(BASS)
+library(lhs)
+library(plotly)
+library(MASS)
+```
+
+```{r}
+# Load the necessary packages
+library(glmnet)
+library(MASS)  # For the Boston housing dataset
+```
+
+```{r}
+# Load the Boston housing dataset
+housing <- as.data.frame(Boston)
+
+# Split the data into training and testing sets
+set.seed(123)
+train_indices <- sample(1:nrow(housing), 0.7 * nrow(housing))
+train_data <- housing[train_indices, ]
+test_data <- housing[-train_indices, ]
+
+# Preprocess the data (scale and center)
+train_data_scaled <- scale(train_data[, -14])  # Exclude the response variable (column 14)
+test_data_scaled <- scale(test_data[, -14])  # Exclude the response variable (column 14)
+
+# Create matrices for the predictors and response variables
+x_train <- as.matrix(train_data_scaled[, -14])  # Exclude the response variable (column 14)
+y_train <- train_data[, 14]  # Select only the response variable (column 14)
+x_test <- as.matrix(test_data_scaled[, -14])  # Exclude the response variable (column 14)
+y_test <- test_data[, 14]  # Select only the response variable (column 14)
+
+# Perform elastic net regression
+enet_model <- glmnet(x_train, y_train, alpha = 0.5)  # alpha = 0.5 for balanced elastic net
+
+# Predict on the test set
+enet_predictions <- predict(enet_model, newx = x_test)
+
+# Calculate the root mean squared error (RMSE) on the test set
+rmse <- sqrt(mean((enet_predictions - y_test)^2))
+cat("RMSE:", rmse)
+```

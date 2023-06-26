@@ -1,0 +1,86 @@
+---
+title: "Discrete_BASS"
+author: "Adrian TJ"
+date: "2023-06-26"
+output: html_document
+---
+
+```{r}
+library(BASS)
+```
+
+```{r}
+# Simulate data using the Friedman function with discrete variables
+f <- function(x) {
+  ifelse(x[, 11] == "A",
+         10 * sin(pi * x[, 1] * x[, 2]) + 20 * (x[, 3] - 0.5)^2 + 10 * x[, 4] + 5 * x[, 5],
+         20 * sin(pi * x[, 1] * x[, 2]) + 20 * (x[, 3] - 0.5)^2 + 10 * x[, 4] + 5 * x[, 5])
+}
+
+sigma <- 1  # Noise standard deviation
+n <- 500  # Number of observations
+x <- matrix(runif(n * 10), n, 10)  # 10 variables, only first 5 matter
+x_df <- data.frame(x)
+x_df[, 11] <- factor(sample(c("A", "B", "C"), n, replace = TRUE))  # Discrete variable (sample from categories)
+y <- rnorm(n, f(x_df), sigma)
+
+# Fit BASS without tempering
+mod <- bass(x_df, y, verbose = FALSE,)
+plot(mod)
+
+```
+
+```{r}
+
+f <- function(x) {
+  ifelse(x[, 3] == "A",
+         10 * sin(pi * x[, 1] * x[, 2]) + 20 * (x[, 1] - 0.5)^2 + 10 * x[, 2] + 5 * x[, 1],
+         20 * sin(pi * x[, 1] * x[, 2]) + 20 * (x[, 1] - 0.5)^2 + 10 * x[, 2] + 5 * x[, 1])
+}
+
+
+get_bass_2d <- function(max_iterations = 10){
+  n0 <- 10
+  dims <- 2
+  x <- matrix(runif(n0 * dims), n0, dims)
+  x_df <- data.frame(x)
+  x_df[, 3] <- factor(sample(c("A", "B", "C"), n0, replace = TRUE))
+  y <- rnorm(n0, f(x_df), sigma)
+  
+  for (iteration in 1:max_iterations) {
+    fit <- bass(x_df, y, verbose = FALSE)
+    
+    x_new <- matrix(runif(1000 * dims), 1000, dims)
+    x_new_df <- data.frame(x_new)
+    x_new_df[, 3] <- factor(sample(c("A", "B", "C"), 1000, replace = TRUE))
+    pred <- predict(fit, newdata = x_new_df)
+    mu <- apply(pred, 2, mean)
+    
+    kappa <- 9 # tunable
+    sigma <- apply(pred, 2, sd)
+    lower_confidence_bound <- mu - kappa * sigma
+    
+    selected_index <- which.min(lower_confidence_bound)
+    x_selected <- x_new[selected_index, ]
+    y_selected <- rnorm(1, f(data.frame(x_selected)), sigma)
+    
+    x <- rbind(x, x_selected)
+    x_df <- rbind(x_df, data.frame(x_selected))
+    y <- append(y, y_selected)
+    
+    print(iteration)
+  }
+  
+  return(y)
+}
+
+# Call the modified function
+get_bass_2d()
+
+```
+
+
+
+
+
+

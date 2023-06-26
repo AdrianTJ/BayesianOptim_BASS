@@ -5,6 +5,12 @@ date: "2022-08-06"
 output: html_document
 ---
 
+```{r}
+packageurl <- "https://cran.r-project.org/src/contrib/Archive/BASS/BASS_1.2.0.tar.gz"
+install.packages(packageurl, type="source", dependencies = TRUE)
+```
+
+
 ```{r packages}
 library(tidyverse)
 library(gt)
@@ -44,7 +50,7 @@ Y <- f(XX[,1], XX[,2])
 ```
 
 ```{r}
-fit <- bass(XX,Y, verbose = FALSE, nmcmc = 100000, nburn = 90000)
+fit <- bass(XX,Y, verbose = FALSE, nmcmc = 1000, nburn = 9000)
 ```
 
 ```{r}
@@ -75,7 +81,7 @@ for (iteration in 1:max_iterations) {
   pred <- predict(fit, newdata = data.frame(x = x_new))
   mu <- apply(pred,2,mean)
   
-  kappa <- 90 # tunable
+  kappa <- 9 # tunable
   sigma <- apply(pred,2,sd)
   lower_confidence_bound <- mu - kappa * sigma
   
