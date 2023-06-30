@@ -50,7 +50,7 @@ Y <- f(XX[,1], XX[,2])
 ```
 
 ```{r}
-fit <- bass(XX,Y, verbose = FALSE, nmcmc = 1000, nburn = 9000)
+fit <- bass(XX,Y, verbose = FALSE, nmcmc = 10000, nburn = 9000)
 ```
 
 ```{r}
