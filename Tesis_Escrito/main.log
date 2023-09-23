@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.4.22)  18 JUN 2023 22:23
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.4.22)  23 SEP 2023 14:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -176,6 +176,23 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 \xmathstrut@box=\box53
 \xmathstrut@dim=\dimen161
 )
+(/usr/local/texlive/2023/texmf-dist/tex/latex/dirtytalk/dirtytalk.sty
+Package: dirtytalk 2010/11/21 A package making "quoting" easier
+
+(/usr/local/texlive/2023/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+
+(/usr/local/texlive/2023/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+)
+(/usr/local/texlive/2023/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+))
+(/usr/local/texlive/2023/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+)
+\c@dirtytalk@qdepth=\count272
+)
 (/usr/local/texlive/2023/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2022/06/12 v2.14 LaTeX color extensions (UK)
 
@@ -196,13 +213,13 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1376.
 )
 (/usr/local/texlive/2023/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 File: l3backend-xetex.def 2023-01-16 L3 backend support: XeTeX
-\g__graphics_track_int=\count272
+\g__graphics_track_int=\count273
 \l__pdf_internal_box=\box54
-\g__pdf_backend_object_int=\count273
-\g__pdf_backend_annotation_int=\count274
-\g__pdf_backend_link_int=\count275
+\g__pdf_backend_object_int=\count274
+\g__pdf_backend_annotation_int=\count275
+\g__pdf_backend_link_int=\count276
 )
-(./main.aux (./TeX_files/GP.aux
+(./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux
 
 LaTeX Warning: Label `trajectories' multiply defined.
 
@@ -215,38 +232,38 @@ LaTeX Warning: Label `trajectories' multiply defined.
 ) (./TeX_files/BO.aux) (./TeX_files/BASS.aux))
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 1
-2.
+3.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-\c@definition=\count276
-\c@theorem=\count277
-\c@lemma=\count278
-LaTeX Font Info:    Trying to load font information for U+msa on input line 23.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+\c@definition=\count277
+\c@theorem=\count278
+\c@lemma=\count279
+LaTeX Font Info:    Trying to load font information for U+msa on input line 24.
 
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 23.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 24.
 
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -265,17 +282,25 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
  [3] [4
 
 ]
-\openout2 = `./TeX_files/GP.aux'.
+\openout2 = `./TeX_files/Quote.aux'.
 
- (./TeX_files/GP.tex
-Chapter 1.
-[1
+ (./TeX_files/Quote.tex) [1
 
 
 ]
+\openout2 = `./TeX_files/GP.aux'.
+
+ (./TeX_files/GP.tex [2
+
+
+
+
+]
+Chapter 1.
+[3]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
- [2]
+ [4]
 Overfull \hbox (14.79184pt too wide) detected at line 51
 \U/msb/m/n/12 P\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm
 /m/it/12 s[]\OMS/cmsy/m/n/12 j\OML/cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m
@@ -285,7 +310,7 @@ L/cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 s[]\OMS/cmsy/m/n/12 j\OML/
 cmm/m/it/12 X[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 s[]\OT1/cmr/m/n/12 )
  []
 
-[3] [4] [5] [6] [7] [8] [9]
+[5] [6] [7] [8] [9] [10] [11]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
@@ -294,20 +319,20 @@ Overfull \hbox (7.76242pt too wide) in paragraph at lines 224--225
 ability, sparcity
  []
 
-[10]
+[12]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[11] [12]
+[13] [14]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
 Underfull \vbox (badness 4001) has occurred while \output is active []
 
- [13]
+ [15]
 Overfull \hbox (56.60707pt too wide) in paragraph at lines 278--280
 \TU/lmr/m/n/12 where $[] \OT1/cmr/m/n/12 = [\OML/cmm/m/it/12 x[]; x[]; [] ; x[]
 \OT1/cmr/m/n/12 ]$\TU/lmr/m/n/12 , $[] \OT1/cmr/m/n/12 = [\OML/cmm/m/it/12 f\OT
@@ -320,48 +345,50 @@ T1/cmr/m/n/12 )\OML/cmm/m/it/12 ; [] ; m\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x[]\O
 T1/cmr/m/n/12 )]$
  []
 
-[14]) [15]
+[16]) [17]
 \openout2 = `./TeX_files/BO.aux'.
 
- (./TeX_files/BO.tex [16
+ (./TeX_files/BO.tex [18
 
 
 
 
 ]
 Chapter 2.
-[17]
+[19]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [18]
+ [20]
 Overfull \hbox (1.05205pt too wide) in paragraph at lines 21--22
 []\TU/lmr/m/n/12 Determining a probabilistic model that captures the observed b
 ehaviour
  []
 
-[19] [20]
+[21] [22]
 Overfull \hbox (0.50003pt too wide) in paragraph at lines 52--53
 \TU/lmr/m/n/12 cesses serve as a natural bridge between the Bayesian framework 
 and Bayesian
  []
 
-) [21]
+) [23]
 \openout2 = `./TeX_files/BASS.aux'.
 
- (./TeX_files/BASS.tex [22
+ (./TeX_files/BASS.tex [24
 
 
 
 
 ]
 Chapter 3.
-) [23]
+File: Figures/missing.png Graphic file (type bmp)
+<Figures/missing.png>
+) [25]
 Overfull \hbox (51.98958pt too wide) has occurred while \output is active
-\TU/lmr/m/n/12 24 \TU/lmr/m/sl/12 CHAPTER 3.  BAYESIAN ADAPTIVE SPLINE SURFACES
+\TU/lmr/m/n/12 26 \TU/lmr/m/sl/12 CHAPTER 3.  BAYESIAN ADAPTIVE SPLINE SURFACES
  AND THEIR ROOTS
  []
 
-[24
+[26
 
 
 
@@ -377,26 +404,26 @@ Underfull \hbox (badness 3029) in paragraph at lines 40--44
 
 Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=t
 ex-text;!
-[25
+[27
 
 ]
 Underfull \hbox (badness 1112) in paragraph at lines 124--127
 []\TU/lmr/m/n/12 Amar Shah, Andrew G Wilson, and Zoubin Ghahramani.
  []
 
-[26]) [27] (./main.aux (./TeX_files/GP.aux) (./TeX_files/BO.aux)
-(./TeX_files/BASS.aux))
+[28]) [29] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
+(./TeX_files/BO.aux) (./TeX_files/BASS.aux))
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3267 strings out of 476683
- 53994 string characters out of 5804047
+ 3742 strings out of 476683
+ 63186 string characters out of 5804047
  1858018 words of memory out of 5000000
- 23433 multiletter control sequences out of 15000+600000
+ 23882 multiletter control sequences out of 15000+600000
  523089 words of font info for 91 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  55i,13n,62p,1701b,264s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (31 pages).
+Output written on main.pdf (33 pages).

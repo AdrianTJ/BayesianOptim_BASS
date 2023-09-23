@@ -1,3 +1,13 @@
 \chapter{Bayesian Adaptive Spline Surfaces and their Roots}
 
-The main change we are developing in this work is the use of a BASS model as the surrogate model in the framework of Bayesian Optimization rather than a traditional Gaussian Process. To understand this method and why it is useful for this purpose, we develop first the theory that lead to the construction of this method, and then explain it's behaviour in some detail. 
+The main proposal in this work is the use of a BASS model as the surrogate model in the framework of Bayesian Optimization rather than a traditional Gaussian Process. To understand this method and why it is useful for this purpose, we develop first the theory that lead to the construction of this method, and then explain it's behaviour in some detail. 
+
+As with most other algorithms used for regression tasks, BASS is built upon a rich history of work that was previously done in the field. It begins with CART and decision trees, which MARS models are based on, and in turn BMARS (Bayesian MARS) uses the same model form as MARS but builds the model using the traditional Bayesian approach of defining a prior and constructing from there. Finally, BASS is a specific case of the BMARS model. This is much more clear when viewed as a diagram, as shown in the following figure. 
+
+\begin{figure}[h]
+	\includegraphics[width=4cm]{Figures/missing.png}
+	\centering
+	\caption{The theoretical basis for BASS.}
+	\label{building_BASS}
+\end{figure}
+
