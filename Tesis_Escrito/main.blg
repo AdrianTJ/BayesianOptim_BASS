@@ -18,45 +18,45 @@ Warning--empty journal in Snoek_Larochelle_Adams_2012
 Warning--there's a number but no volume in Snoek_Larochelle_Adams_2012
 Warning--empty journal in wangpoisson
 Warning--empty year in wangpoisson
-You've used 36 entries,
+You've used 37 entries,
             2543 wiz_defined-function locations,
-            775 strings with 10853 characters,
-and the built_in function-call counts, 14592 in all, are:
-= -- 1419
-> -- 747
-< -- 26
-+ -- 268
-- -- 259
-* -- 1019
-:= -- 2418
-add.period$ -- 120
-call.type$ -- 36
-change.case$ -- 229
-chr.to.int$ -- 31
-cite$ -- 47
-duplicate$ -- 622
-empty$ -- 1015
-format.name$ -- 300
-if$ -- 2985
+            779 strings with 10999 characters,
+and the built_in function-call counts, 14855 in all, are:
+= -- 1444
+> -- 755
+< -- 27
++ -- 270
+- -- 261
+* -- 1030
+:= -- 2457
+add.period$ -- 123
+call.type$ -- 37
+change.case$ -- 234
+chr.to.int$ -- 32
+cite$ -- 48
+duplicate$ -- 633
+empty$ -- 1040
+format.name$ -- 304
+if$ -- 3041
 int.to.chr$ -- 6
 int.to.str$ -- 0
 missing$ -- 44
-newline$ -- 190
-num.names$ -- 108
-pop$ -- 265
+newline$ -- 195
+num.names$ -- 111
+pop$ -- 275
 preamble$ -- 1
-purify$ -- 273
+purify$ -- 279
 quote$ -- 0
-skip$ -- 504
+skip$ -- 516
 stack$ -- 0
-substring$ -- 588
-swap$ -- 130
-text.length$ -- 26
-text.prefix$ -- 13
+substring$ -- 595
+swap$ -- 131
+text.length$ -- 27
+text.prefix$ -- 14
 top$ -- 0
-type$ -- 252
+type$ -- 260
 warning$ -- 11
-while$ -- 120
+while$ -- 122
 width$ -- 44
-write$ -- 476
+write$ -- 488
 (There were 11 warnings)
