@@ -1,6 +1,6 @@
 \chapter{BASS and their Origins}
 
-The main proposal in this work is the use of a BASS model as the surrogate model in the framework of Bayesian Optimization rather than a traditional Gaussian Process. To understand this method and why it is useful for this purpose, we develop first the theory that lead to the construction of this method, and then explain it's behaviour in some detail. 
+The main proposal in this work is the use of a BASS model as the surrogate model in the framework of Bayesian Optimization rather than a traditional Gaussian Process. To understand this method and why it is useful for this purpose, we develop first the theory that lead to the construction of this method, and then explain its behaviour in some detail. 
 
 As with most other algorithms used for regression tasks, BASS is built upon a rich history of work that was previously done in the field. It begins with CART and decision trees, which MARS models are based on, and in turn BMARS (Bayesian MARS) uses the same model form as MARS but builds the model using the traditional Bayesian approach of defining a prior and constructing from there. Finally, BASS is a specific case of the BMARS model. This is much more clear when viewed as a diagram, as shown in the following figure. 
 
@@ -22,15 +22,15 @@ Decision trees are a fundamental and versatile tool that comes in two main flavo
 	\label{building_BASS}
 \end{figure}
 
-In classification tree analysis, the primary objective is to predict the discrete class or category to which a given data point belongs. This technique finds relevance in numerous applications, including disease diagnosis, sentiment analysis, and fraud detection. The decision tree algorithm partitions the data into subsets based on input features and assigns each data point to a specific class by following a path through the tree.
+In classification tree analysis, the primary objective is to predict the discrete class or category to which a given data point belongs. The decision tree algorithm partitions the data into subsets based on input features and assigns each data point to a specific class by following a path through the tree.
 
-On the other hand, regression tree analysis is employed when the predicted outcome is a continuous, real-valued number. Tasks like predicting housing prices, stock market trends, or a patient's length of stay in a hospital rely on regression trees. Similar to classification trees, regression trees partition the data based on input features. However, in this context, the goal is to estimate a numeric value for each data point, typically by computing the average of the target variable within each leaf node.
+On the other hand, regression tree analysis is employed when the predicted outcome is a continuous, real-valued number. Similar to classification trees, regression trees partition the data based on input features. However, in this context, the goal is to estimate a numeric value for each data point, typically by computing the average of the target variable within each leaf node.
 
 In both cases, the decision tree serves as a transparent and interpretable model, making it valuable for exploratory data analysis and predictive modelling. The tree's structure allows for a straightforward understanding of how decisions are made, and predictions for new data points are obtained by navigating the tree from the root node to an appropriate leaf node, where the final prediction is based on the characteristics of the training samples within that leaf.
 
 The versatility and comprehensibility of decision trees have contributed significantly to their widespread use in various fields, and the distinctions between classification and regression trees make them adaptable tools for addressing a wide range of data analysis and prediction tasks. One problem that these methods tend to have though is overfitting, since if we allow the model to keep generating new nodes or leafs, the tree ultimately becomes too complex and every data point that we would like to analyse is simply too narrow to be useful as an aggregation scheme. 
 
-While decision trees are useful on their own their real power comes from the versatility they provide, leading to a wide range of methods being born from the basic idea of splitting decisions into paths. These methods are sometimes called \textit{ensemble} methods, because they involve the creation and combination of multiple models to form a more robust and accurate predictive model. As an interesting side note, the term ensemble is borrowed from the world of music and theatre. Instead of relying on a single predictive model, these models create an ensemble of multiple models, each of which may have its own strengths and weaknesses. These individual models, often referred to as \say{base models} or \say{weak learners}, are combined in a way that leverages their collective intelligence to make better predictions.
+While decision trees are useful on their own their real power comes from the versatility they provide, leading to a wide range of methods being born from the basic idea of splitting decisions into paths. These methods are sometimes called \textit{ensemble} methods, because they involve the creation and combination of multiple models to form a more robust and accurate predictive model. As an interesting side note, the term ensemble is borrowed from the world of music and theatre. Instead of relying on a single predictive model, these models create an ensemble of multiple models, each of which may have its own strengths and weaknesses. These individual models, often referred to as base models or weak learners, are combined in a way that leverages their collective intelligence to make better predictions.
 
 Ensemble methods work on the premise that combining diverse models can reduce the risk of overfitting, enhance generalization, and improve predictive accuracy. Each model in the ensemble may make errors on some portions of the data, but by aggregating their predictions, the ensemble can produce more accurate and stable results. Common ensemble methods include Random Forest, Gradient Boosting, Adaptive Boosting, Bagging, and many others. The difference in these models is how they combine these different decision trees to achieve a more stable model. 
 
@@ -50,9 +50,9 @@ $$
 	0 & \mbox{if } x \leq t. \end{cases}
 $$
 
-Each function is piecewise linear with a slope change at the value $t$, which makes them linear splines. Each pair divided at the value $t$ is referred to as a \say{reflected pair}. The idea of the method is to form reflected pairs for each input variable $X_j$ with slope changes at each observed value $x_{ij}$. Following this construction and considering a variable $X_j$, the collection of basis functions is:
+Each function is piecewise linear with a slope change at the value $t$, which makes them linear splines. Each pair divided at the value $t$ is referred to as a \say{reflected pair}. The idea of the method is to form reflected pairs for each input variable $X_j$ with slope changes a selection of observed values $x_{ij}$. Following this construction and considering a variable $X_j$, the collection of basis functions is:
 $$
-\mathcal{C} = \{ (X_j - t)_+, (t - X_j)_+ \}, \text{ con } t \in \{ x_{1,j}, x_{2,j}, \ldots x_{N,j} \}, \text{ y } \,\, j = 1,2, \ldots , p.
+\mathcal{C} = \{ (X_j - t)_+, (t - X_j)_+ \}, \text{ with } t \in \{ x_{1,j}, x_{2,j}, \ldots x_{N,j} \}, \text{ y } \,\, j = 1,2, \ldots , p.
 $$
 And each reflected pair appears as follows, and are shown in figure \ref{reflected_pairs}: 
 $$
