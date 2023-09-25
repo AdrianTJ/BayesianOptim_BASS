@@ -4,12 +4,12 @@ Before starting, we would like to note that sections of this chapter where const
 
 \section{General Definitions}
 
-Stochastic processes play a very important role in basically every part of this work. First, the basis of traditional Bayesian Optimization is Gaussian processes, which are a specific class of stochastic process in which all the points or vectors have a conjoined multi-normal distribution. This is not the only place where stochastic processes play a role, as BASS is a Bayesian method, and modern Bayesian methods generally rely on simulation strategies such as Markov Chain Monte Carlo (MCMC) to numerically approximate complex posterior distributions. We use a particular class of MCMC algorithms called reverse jump MCMC when dealing with our alternate surrogate function, but that is detailed much later when we talk about the Bayesian Adaptive Regression Spline method. 
+Stochastic processes play a very important role in basically every part of this work. First, the basis of traditional Bayesian Optimization is Gaussian processes, which are a specific class of stochastic process in which all the points or vectors have a conjoined multi-normal distribution. This is not the only place where stochastic processes play a role, as BASS is a Bayesian method and modern Bayesian methods generally rely on simulation strategies such as Markov Chain Monte Carlo (MCMC) to numerically approximate complex posterior distributions. We use a particular class of MCMC algorithms called reverse jump MCMC when dealing with our alternate surrogate function, but that is detailed much later when we talk about the Bayesian Adaptive Regression Spline method. 
 
 All in all, stochastic processes are generally important to the content of this work so we include some important results and definitions, starting with the definition of a stochastic process itself, taken from \cite[\S 3.0]{Zitkovic_2010}. 
 
 \begin{definition}
-	Let $\Theta \subseteq \mathbb{R}^+$ A \textit{stochastic process} $\{ X_\theta, \theta \in \Theta \}$ is a collection of random variables, indexed by a parameter $\theta$, such that $\theta$ belongs to some index set $\Theta$. When $\Theta = \mathbb{N}$ (or $\Theta = \mathbb{N}_0$), then it is called a \textit{discrete-time process}, and if $\Theta = \mathbb{R}^+$, then it is called a \textit{continuous-time process}. 
+	Let $\Theta \subseteq \mathbb{R}^+$. A \textit{stochastic process} $\{ X_\theta, \theta \in \Theta \}$ is a collection of random variables, indexed by a parameter $\theta$, such that $\theta$ belongs to some index set $\Theta$. When $\Theta = \mathbb{N}$ (or $\Theta = \mathbb{N}_0$), then it is called a \textit{discrete-time process}, and if $\Theta = \mathbb{R}^+$, then it is called a \textit{continuous-time process}. 
 \end{definition}
 
 To distinguish between a discrete and continuous time process, we use the index $n$ for discrete-time processes and $t$ for continuous-time processes. 
@@ -185,21 +185,39 @@ For now though we move on to the other interesting sub-case of stochastic proces
 
 \section{Gaussian Processes}
 
-A Gaussian process can be thought of as a generalization of the Gaussian (normal) distribution when viewed from the lens of stochastic processes. Stochastic processes, as we saw before, are indexed by a parameter, which itself belongs to an index set. The Gaussian process extends the definition of the Gaussian distribution from being valued on scalars or vectors to a more general index set, to a set $T \subseteq \mathbb{R}^+$. Note that this set can contain an infinite number of points, which is the main difference between the Gaussian distribution and the Gaussian process. This extension is not trivial though, and to specify the structure of these particular types of stochastic processes, we aid ourselves with finite dimensional distributions. We now provide a formal definition of these types of distributions. 
+A Gaussian process can be thought of as a generalization of the Gaussian (normal) distribution when viewed from the lens of stochastic processes. Stochastic processes, as we saw before, are indexed by a parameter, which itself belongs to an index set. The Gaussian process extends the definition of the Gaussian distribution from being valued on scalars or vectors to a more general index set of the form $T \subseteq \mathbb{R}^+$. Note that this set can contain an infinite number of points, which is the main difference between the Gaussian distribution and the Gaussian process. This extension is not trivial though, and to specify the structure of these particular types of stochastic processes, we aid ourselves with finite dimensional distributions. We now provide a formal definition of these types of distributions. 
 
 \begin{definition}
 	Let $\{ t_i \}_{i \leq k}$ be a sequence of points\footnote{Sometimes referred to as time points, considering this index not as an abstract set but a representation of the progress of time as indexed by a subset of the positive reals.} such that $\{ t_i \}_{i \leq k} \subseteq T$. The $k$-dimensional random vector $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ has a distribution $\mu_{t_1, t_2, \ldots, t_k}$ over $\mathbb{R}^k$. These measures $\mu_{t_1, t_2, \ldots, t_k}$ are the finite dimensional distributions of the process. 
 \end{definition}
 
-One logical follow up is to ask if the inverse of this definition is also true. This would be, starting from a consistent\footnote{Consistency is a fuzzy term with a lot of meanings, but its meaning in this context will become clear with the theorems that follow.} joint distribution of the random variables $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ , with $k \in \mathbb{N}$, then would it be possible to define a probability measure $\mu_{t_1, t_2, \ldots, t_k}$ on a higher cardinality set, in this case $\mathbb{R}^k$ that matches these distributions exactly? The positive answer to this question is the Kolmogorov Extension Theorem, an incredibly deep and powerful result that guarantees the existence of stochastic processes by only defining a finite set of distributions that share some consistency requirements. 
+One logical follow up is to ask if the inverse of this definition is also true. This would be, starting from a consistent\footnote{Consistency is a fuzzy term with a lot of meanings, but its meaning in this context will become clear with the theorems that follow.} joint distribution of the random variables $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ , with $k \in \mathbb{N}$, then would it be possible to define a probability measure $\mu_{t_1, t_2, \ldots, t_k}$ on a higher cardinality set, in this case $\mathbb{R}^k$ that matches these distributions exactly? The positive answer to this question is the Kolmogorov Extension Theorem, an incredibly deep and powerful result that guarantees the existence of stochastic processes by only defining a finite set of distributions that share some consistency requirements. This particular formulation of the theorem is taken from \cite{enwiki:1176088789}. 
 
 \begin{theorem}[Kolmogorov Existence Theorem]
-	Given a collection of random variables $\{X_{t_1}, X_{t_2}, \ldots, X_{t_k}\}$, indexed by $t_1, t_2, \ldots, t_k \in \mathbb{R}$, such that for any finite subset of time points $t_{i_1}, t_{i_2}, \ldots, t_{i_m}$, the joint distribution of $(X_{t_{i_1}}, X_{t_{i_2}}, \ldots, X_{t_{i_m}})$ is consistent, there exists a stochastic process $\{X_t\}_{t \in \mathbb{R}}$ on a higher-dimensional space $\mathbb{R}^k$ such that for all $t_1, t_2, \ldots, t_k \in \mathbb{R}$, the marginal distributions of $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ coincide with the original given distributions.
+	Let $T$ denote some interval, and let $n \in \mathbb{N}$. For each $k \in \mathbb{N}$ and finite sequence of distinct times $t_1, \ldots, t_k \in T$, let $\nu_{t_1 \ldots t_k}$ be a probability measure on $(\mathbb{R}^n)^k$. Suppose that these measures satisfy two consistency conditions:
+	
+	\begin{enumerate}
+		\item For all permutations $\pi$ of $\{1, \ldots, k\}$ and measurable sets $F_i \subseteq \mathbb{R}^n$,
+		\[
+		\nu_{t_{\pi(1)}\ldots t_{\pi(k)}}\left(F_{\pi(1)} \times \ldots \times F_{\pi(k)}\right) = \nu_{t_1 \ldots t_k}\left(F_1 \times \ldots \times F_k\right);
+		\]
+		\item For all measurable sets $F_i \subseteq \mathbb{R}^n$, $m \in \mathbb{N}$,
+		\[
+		\nu_{t_1 \ldots t_k}(F_1 \times \ldots \times F_k) = \nu_{t_1 \ldots t_k, t_{k+1}, \ldots, t_{k+m}}\left(F_1 \times \ldots \times F_k \times \underbrace{\mathbb{R}^n \times \ldots \times \mathbb{R}^n}_m\right).
+		\]
+	\end{enumerate}
+	
+	Then there exists a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a stochastic process $X: T \times \Omega \to \mathbb{R}^n$ such that
+	\[
+	\nu_{t_1 \ldots t_k}(F_1 \times \ldots \times F_k) = \mathbb{P}(X_{t_1} \in F_1, \ldots, X_{t_k} \in F_k)
+	\]
+	for all $t_i \in T$, $k \in \mathbb{N}$, and measurable sets $F_i \subseteq \mathbb{R}^n$, i.e., $X$ has $\nu_{t_1 \ldots t_k}$ as its finite-dimensional distributions relative to times $t_1 \ldots t_k$.
+	
 \end{theorem}
 
-The Kolmogorov Existence Theorem addresses the question of whether we can construct a stochastic process given only a finite set of joint distributions. These joint distributions need to satisfy a consistency condition, which means that any finite subset of random variables should have joint distributions that are compatible with each other.
+The Kolmogorov Extension Theorem addresses the question of whether we can construct a stochastic process given only a finite set of joint distributions. These joint distributions need to satisfy a consistency condition, which means that any finite subset of random variables should have joint distributions that are compatible with each other.
 
-The theorem states that if such consistent joint distributions exist, then it is possible to define a stochastic process on a higher-dimensional space, often denoted as $\mathbb{R}^k$, such that the original given distributions match the marginal distributions of this process. In essence, the Kolmogorov Existence Theorem provides a way to create a stochastic process that captures the dependencies and correlations between random variables at different time points, even when we only have limited information about their joint distributions. 
+The theorem states that if such consistent joint distributions exist, then it is possible to define a stochastic process on a higher-dimensional space, often denoted as $\mathbb{R}^k$, such that the original given distributions match the marginal distributions of this process. In essence, the Kolmogorov Extension Theorem provides a way to create a stochastic process that captures the dependencies and correlations between random variables at different time points, even when we only have limited information about their joint distributions. 
 
 In the case of Gaussian processes, this means that if we have a finite set of random variables following consistent joint Gaussian distributions, we can construct a Gaussian process on a continuous domain (typically a subset of $\mathbb{R}$) such that any finite subset of the process is jointly Gaussian with the desired covariance structure. 
 
@@ -208,6 +226,8 @@ With this auxiliary distribution out of the way, we can now proceed to define th
 \begin{definition}
 	Let $\{ X_t: t \in \mathbb{R}^+ \}$ be a continuous-time stochastic process. We call $\{ X_t: t \in \mathbb{R}^+ \}$ a Gaussian process if for every set $\{ t_i \}_{i \leq k}$ and every finite $k$, the finite-dimensional distribution of the $k$-dimensional random vector $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ has a Gaussian multivariate distribution when $k>1$ and a Gaussian univariate distribution when $k=1$. 
 \end{definition} 
+
+
 
 An important extension of this is that we can consider the Gaussian process a function $f$ and evaluate it at certain points $x$, where $x \in \mathcal{X}^\Theta$, the input space. This is, for each $x$, there is a random variable $f(x)$ that represents the possible output of the function $f$ at this location, or a realization of a certain Gaussian distribution at location $x$. This can also be understood as taking a sample from the distribution $f(x)$. As with any version of a Gaussian distribution, $f(x)$ can be completely be defined by it's mean and variance. Unlike the finite-dimensional cases though, by definition we can have infinitely many values in the index space $T$, and therefore the reasonable approach to defining the mean and variance of functions of elements in the index space. We denote the mean function of the process as: 
 \[ m(x) = \mathbb{E}[f(x)] \]
@@ -274,7 +294,7 @@ One of the disadvantages of these types of methods is that they only give one fu
 	\label{trajectories}
 \end{figure}
 
-Notice how for the training dataset $\mathcal{D}$, all of these functions have error zero! The only recourse we have is to restrict these functions to generate one function (or at least a finite family of functions), and not an infinity of them. As with many other areas of mathematics, there is a trade off that we have to choose to perform between how general a solution to a problem is and how many solutions to that problem we wish to get. \textcolor{red}{Expand on this.} 
+Notice how for the training dataset $\mathcal{D}$, all of these functions have error zero! The only recourse we have is to restrict these functions to generate one function (or at least a finite family of functions), and not an infinity of them. As with many other areas of mathematics, there is a trade off that we have to choose to perform between how general a solution to a problem is and how many solutions to that problem we wish to get.
 
 The key insight to understanding Gaussian process regression from a statistician's point of view is changing the way we think about regression. Instead of going the traditional way and providing restrictions to generate particular approximations, why don't we consider the space of possible functions that can fit these points as coming from a probability model? What if the observed functions in the past figure are realizations of a more general class of random variable that is coherent in the function space, rather than the discrete variable or vector space? From this groundwork is where Gaussian processes come into the picture. The only added restriction that we impose on the functions is that as a family, they come from a generalization to infinite dimensions of the multivariate normal distribution, and with that, we generate the entire conceptual framework from which we derive and generate the Gaussian process regresion method. Having now set the expectation of what we wish to accomplish, we can now construct the theory of this different class of regression analysis. 
 
@@ -336,6 +356,8 @@ These equations are for the entire training and test set though. For a test poin
 	\bar{f_*} &= \boldsymbol{k}_*^T(K + \sigma^2 I)^{-1} \boldsymbol{y}, \\
 	\mathbb{V}(\bar{f_*}) &= k(x_*, x_*) - \boldsymbol{k}_*^T (K + \sigma^2 I)^{-1} \boldsymbol{k}_*.
 \end{align*}
+
+\textcolor{red}{close this chapter off properly.}
 
 
 
