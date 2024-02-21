@@ -4,6 +4,7 @@ The top-level auxiliary file: main.aux
 A level-1 auxiliary file: ./TeX_files/Quote.aux
 A level-1 auxiliary file: ./TeX_files/GP.aux
 A level-1 auxiliary file: ./TeX_files/BO.aux
+A level-1 auxiliary file: ./TeX_files/SMBO.aux
 A level-1 auxiliary file: ./TeX_files/BASS.aux
 The style file: alpha.bst
 Database file #1: ./TeX_files/Bibliography.bib
@@ -18,45 +19,45 @@ Warning--empty journal in Snoek_Larochelle_Adams_2012
 Warning--there's a number but no volume in Snoek_Larochelle_Adams_2012
 Warning--empty journal in wangpoisson
 Warning--empty year in wangpoisson
-You've used 37 entries,
+You've used 45 entries,
             2543 wiz_defined-function locations,
-            779 strings with 10999 characters,
-and the built_in function-call counts, 14855 in all, are:
-= -- 1444
-> -- 755
-< -- 27
-+ -- 270
-- -- 261
-* -- 1030
-:= -- 2457
-add.period$ -- 123
-call.type$ -- 37
-change.case$ -- 234
-chr.to.int$ -- 32
-cite$ -- 48
-duplicate$ -- 633
-empty$ -- 1040
-format.name$ -- 304
-if$ -- 3041
+            825 strings with 12387 characters,
+and the built_in function-call counts, 17984 in all, are:
+= -- 1756
+> -- 937
+< -- 29
++ -- 337
+- -- 326
+* -- 1270
+:= -- 2994
+add.period$ -- 147
+call.type$ -- 45
+change.case$ -- 289
+chr.to.int$ -- 40
+cite$ -- 56
+duplicate$ -- 740
+empty$ -- 1240
+format.name$ -- 378
+if$ -- 3650
 int.to.chr$ -- 6
 int.to.str$ -- 0
-missing$ -- 44
-newline$ -- 195
-num.names$ -- 111
-pop$ -- 275
+missing$ -- 51
+newline$ -- 235
+num.names$ -- 135
+pop$ -- 317
 preamble$ -- 1
-purify$ -- 279
+purify$ -- 342
 quote$ -- 0
-skip$ -- 516
+skip$ -- 614
 stack$ -- 0
-substring$ -- 595
-swap$ -- 131
-text.length$ -- 27
-text.prefix$ -- 14
+substring$ -- 738
+swap$ -- 139
+text.length$ -- 29
+text.prefix$ -- 16
 top$ -- 0
-type$ -- 260
+type$ -- 324
 warning$ -- 11
-while$ -- 122
-width$ -- 44
-write$ -- 488
+while$ -- 152
+width$ -- 50
+write$ -- 590
 (There were 11 warnings)
