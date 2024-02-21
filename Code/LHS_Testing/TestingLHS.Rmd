@@ -1,0 +1,38 @@
+---
+title: "TestingLHS"
+output: html_notebook
+---
+
+```{r}
+library(lhs)   # For Latin Hypercube Sampling
+library(grid)  # For grid search
+```
+
+```{r}
+# Set the number of samples
+n <- 20  # Number of samples
+# Define the input space bounds
+bounds <- matrix(c(0, 0, 1, 1), ncol = 2)  # Bounds for both dimensions
+```
+
+```{r}
+# Latin Hypercube Sampling
+lhs_samples <- randomLHS(n, 2) * (bounds[, 2] - bounds[, 1]) + bounds[, 1]
+
+# Grid Search
+grid_samples <- as.matrix(expand.grid(seq(bounds[1, 1], bounds[1, 2], length.out = sqrt(n)),
+                                      seq(bounds[2, 1], bounds[2, 2], length.out = sqrt(n))))
+
+# Random Search
+random_samples <- matrix(runif(n * 2, min = bounds[, 1], max = bounds[, 2]), ncol = 2)
+
+# Plot the results
+par(mfrow = c(1, 3))
+plot(lhs_samples, main = "Latin Hypercube Sampling", xlim = c(0, 1), ylim = c(0, 1))
+plot(grid_samples, main = "Grid Search", xlim = c(0, 1), ylim = c(0, 1))
+plot(random_samples, main = "Random Search", xlim = c(0, 1), ylim = c(0, 1))
+```
+
+
+
+
