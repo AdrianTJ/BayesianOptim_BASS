@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.4.22)  24 SEP 2023 19:28
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.4.19)  21 FEB 2024 08:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -229,7 +229,7 @@ LaTeX Warning: Label `trajectories' multiply defined.
 
 LaTeX Warning: Label `trajectories' multiply defined.
 
-) (./TeX_files/BO.aux) (./TeX_files/BASS.aux
+) (./TeX_files/BO.aux) (./TeX_files/SMBO.aux) (./TeX_files/BASS.aux
 
 LaTeX Warning: Label `building_BASS' multiply defined.
 
@@ -278,16 +278,15 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ] [2
 
 ]
-(./main.toc)
+(./main.toc [3])
 \tf@toc=\write3
 \openout3 = `main.toc'.
 
- [3] [4
-
-]
+ [4]
 \openout2 = `./TeX_files/Quote.aux'.
 
  (./TeX_files/Quote.tex) [1
+
 
 
 ]
@@ -373,28 +372,41 @@ and Bayesian
  []
 
 ) [23]
-\openout2 = `./TeX_files/BASS.aux'.
+\openout2 = `./TeX_files/SMBO.aux'.
 
- (./TeX_files/BASS.tex [24
+ (./TeX_files/SMBO.tex [24
 
 
 
 
 ]
 Chapter 3.
+[25] [26] [27] [28] [29] [30])
+Overfull \hbox (5.60016pt too wide) has occurred while \output is active
+\TU/lmr/m/sl/12 3.2.  OTHER TECHNIQUES FOR OPTIMIZING HYPERPARAMETERS \TU/lmr/m
+/n/12 31
+ []
+
+[31]
+\openout2 = `./TeX_files/BASS.aux'.
+
+ (./TeX_files/BASS.tex [32
+
+
+
+
+]
+Chapter 4.
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 3428) has occurred while \output is active []
 
- [25]
+ [33]
 File: Figures/missing.png Graphic file (type bmp)
 <Figures/missing.png>
 
-[26]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [27]
+[34] [35]
 File: Figures/3ref_pair.png Graphic file (type bmp)
 <Figures/3ref_pair.png>
 File: Figures/3hinge.png Graphic file (type bmp)
@@ -406,13 +418,13 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[28] [29]
+[36] [37]
 Overfull \hbox (0.47284pt too wide) in paragraph at lines 110--111
 []\TU/lmr/m/n/12 In conclusion, our exploration of Multivariate Adaptive Regres
 sion Splines
  []
 
-[30]
+[38]
 Overfull \hbox (3.08873pt too wide) in paragraph at lines 120--121
 \TU/lmr/m/it/12 if $\OT1/cmr/m/n/12 [\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 (1\OML/c
 mm/m/it/12 ; i\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; [] ; x\OT1/cmr/m/n/12 (\OML/c
@@ -422,40 +434,43 @@ tation of $\OT1/cmr/m/n/12 [\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 (1\OML/cmm/m/it/1
 2 J[]; j\OT1/cmr/m/n/12 )]$\TU/lmr/m/it/12 .
  []
 
+[39] [40] [41] [42])
+Overfull \hbox (5.73758pt too wide) has occurred while \output is active
+\TU/lmr/m/sl/12 4.5.  BASS MODELS AS SURROGATES IN BAYESIAN OPTIMIZATION \TU/lm
+r/m/n/12 43
+ []
 
-Underfull \vbox (badness 1748) has occurred while \output is active []
-
- [31]
-[32] [33]) [34] (./main.bbl [35
+[43] [44
 
 
 
+] (./main.bbl [45
 
 ]
-Underfull \hbox (badness 1152) in paragraph at lines 63--68
+Underfull \hbox (badness 1152) in paragraph at lines 73--78
 \TU/lmr/m/it/12 Proceedings of the Twenty-Ninth International Joint Con-
  []
 
 
-Underfull \hbox (badness 2735) in paragraph at lines 70--74
+Underfull \hbox (badness 2735) in paragraph at lines 80--84
 []\TU/lmr/m/n/12 Peter I. Frazier.  A tutorial on bayesian optimization.
  []
 
 Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=t
 ex-text;!
-[36] [37]) [38] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
-(./TeX_files/BO.aux) (./TeX_files/BASS.aux))
+[46] [47] [48]) [49] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
+(./TeX_files/BO.aux) (./TeX_files/SMBO.aux) (./TeX_files/BASS.aux))
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3774 strings out of 476683
- 63860 string characters out of 5804047
+ 3810 strings out of 476683
+ 64949 string characters out of 5804047
  1859018 words of memory out of 5000000
- 23912 multiletter control sequences out of 15000+600000
+ 23941 multiletter control sequences out of 15000+600000
  523089 words of font info for 91 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  55i,13n,62p,1695b,264s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (42 pages).
+Output written on main.pdf (53 pages).

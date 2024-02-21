@@ -7,10 +7,20 @@ Takuya Akiba, Shotaro Sano, Toshihiko Yanase, Takeru Ohta, and Masanori Koyama.
 \newblock In {\em Proceedings of the 25th ACM SIGKDD international conference
   on knowledge discovery \& data mining}, pages 2623--2631, 2019.
 
+\bibitem[BB12]{bergstra2012random}
+James Bergstra and Yoshua Bengio.
+\newblock Random search for hyper-parameter optimization.
+\newblock {\em Journal of machine learning research}, 13(2), 2012.
+
 \bibitem[BBBK]{Bergstra_Bardenet_Bengio_Kégl}
 James~S Bergstra, Rémi Bardenet, Yoshua Bengio, and Balázs Kégl.
 \newblock Algorithms for hyper-parameter optimization.
 \newblock page~9.
+
+\bibitem[BBBK11]{bergstra2011algorithms}
+James Bergstra, R{\'e}mi Bardenet, Yoshua Bengio, and Bal{\'a}zs K{\'e}gl.
+\newblock Algorithms for hyper-parameter optimization.
+\newblock {\em Advances in neural information processing systems}, 24, 2011.
 
 \bibitem[Bil12]{billingsley2012probability}
 P.~Billingsley.
@@ -112,6 +122,13 @@ Eduardo~C. Garrido-Merchán and Daniel Hernández-Lobato.
 \newblock {\em Neurocomputing}, 380:20–35, Mar 2020.
 \newblock arXiv:1805.03463 [cs, stat].
 
+\bibitem[GOV22]{grinsztajn2022tree}
+L{\'e}o Grinsztajn, Edouard Oyallon, and Ga{\"e}l Varoquaux.
+\newblock Why do tree-based models still outperform deep learning on typical
+  tabular data?
+\newblock {\em Advances in Neural Information Processing Systems}, 35:507--520,
+  2022.
+
 \bibitem[Gre95a]{green1995reversible}
 Peter~J Green.
 \newblock Reversible jump markov chain monte carlo computation and bayesian
@@ -149,11 +166,23 @@ Emilie Kaufmann, Nathaniel Korda, and R{\'e}mi Munos.
 \newblock In {\em International conference on algorithmic learning theory},
   pages 199--213. Springer, 2012.
 
+\bibitem[Koe18]{conceptualBO}
+Will Koehrsen.
+\newblock A conceptual explanation of bayesian hyperparameter optimization for
+  machine learning, 2018.
+\newblock Accessed: 15 Feb 2023.
+
 \bibitem[LGN{\etalchar{+}}19]{Luong_Gupta_Nguyen_Rana_Venkatesh_2019}
 Phuc Luong, Sunil Gupta, Dang Nguyen, Santu Rana, and Svetha Venkatesh.
 \newblock {\em Bayesian Optimization with Discrete Variables}, volume 11919 of
   {\em Lecture Notes in Computer Science}, page 473–484.
 \newblock Springer International Publishing, Cham, 2019.
+
+\bibitem[MBC00]{mckay2000comparison}
+Michael~D McKay, Richard~J Beckman, and William~J Conover.
+\newblock A comparison of three methods for selecting values of input variables
+  in the analysis of output from a computer code.
+\newblock {\em Technometrics}, 42(1):55--61, 2000.
 
 \bibitem[RCC99]{robert1999monte}
 Christian~P Robert, George Casella, and George Casella.
@@ -189,6 +218,12 @@ Jasper Snoek, Hugo Larochelle, and Ryan~P. Adams.
 \newblock (arXiv:1206.2944), Aug 2012.
 \newblock arXiv:1206.2944 [cs, stat].
 
+\bibitem[Ste87]{stein1987large}
+Michael Stein.
+\newblock Large sample properties of simulations using latin hypercube
+  sampling.
+\newblock {\em Technometrics}, 29(2):143--151, 1987.
+
 \bibitem[SWG13]{shah2013bayesian}
 Amar Shah, Andrew~G Wilson, and Zoubin Ghahramani.
 \newblock Bayesian optimization using student-t processes.
@@ -205,10 +240,21 @@ Jie Wang.
   encyclopedia, 2023.
 \newblock [Online; accessed 25-September-2023].
 
+\bibitem[WJSO23]{wang2023recent}
+Xilu Wang, Yaochu Jin, Sebastian Schmitt, and Markus Olhofer.
+\newblock Recent advances in bayesian optimization.
+\newblock {\em ACM Computing Surveys}, 55(13s):1--36, 2023.
+
 \bibitem[WLX{\etalchar{+}}]{wangpoisson}
 Xiaoxing Wang, Jiaxing Li, Chao Xue, Wei Liu, Chaoyue Wang, Weifeng Liu,
   Xiaokang Yang, Junchi Yan, and Dacheng Tao.
 \newblock Poisson process for bayesian optimization.
+
+\bibitem[XYB{\etalchar{+}}20]{xiao2020efficient}
+Xueli Xiao, Ming Yan, Sunitha Basodi, Chunyan Ji, and Yi~Pan.
+\newblock Efficient hyperparameter optimization in deep learning using a
+  variable length genetic algorithm.
+\newblock {\em arXiv preprint arXiv:2006.12703}, 2020.
 
 \bibitem[Ži10]{Zitkovic_2010}
 Gordan Žitković.

@@ -22,10 +22,10 @@ f <- function(x) {
 
 ```{r Tunable Parameters}
 # Sets the initial number of evaluations to 'n0', this is the warm up number, the first iteration of BASS will begin on point n0 + 1
-n0 <- 8
+n0 <- 5
 
 # Sets the maximum number of iterations for the iterative run
-max_iterations = 50  
+max_iterations = 30
 
 # Tunes sigma scaling value
 hyper1 <- 3
@@ -68,6 +68,9 @@ evaluations[, "x"] <- seq(0, 1, length.out = n0)
 # Populates the 'y' column of 'evaluations' by applying the function 'f' to each value in the 'x' column
 evaluations[, "y"] <- f(evaluations[, "x"]) 
 
+# Vector to store selected 'x' values
+selected_x <- numeric()
+
 # Performs the iterative run for 'max_iterations' iterations
 for (iteration in 1:max_iterations) {
   # Fits a Bayesian adaptive sampling model using the 'bass' function
@@ -90,8 +93,11 @@ for (iteration in 1:max_iterations) {
   # Extracts the 'x' values from 'evaluations'
   X <- evaluations[, "x"]
   
+  # Removes previously selected 'x' values from consideration
+  available_x <- setdiff(x_new, selected_x)
+  
   # Generates a mesh of values from 0 to 1 for calculating distances
-  mesh <- seq(0,1, length.out = 1000)
+  mesh <- seq(0, 1, length.out = 1000)
   
   # Calculates the absolute differences between each 'x' value and the mesh
   y  <- NULL
@@ -112,9 +118,13 @@ for (iteration in 1:max_iterations) {
   
   # Adds a new row to 'evaluations' with the 'x' value that minimizes the lower confidence bound
   # and its corresponding 'y' value
+  min_lower_bound_idx <- which.min(lower_confidence_bound)
+  selected_x_value <- available_x[min_lower_bound_idx]
+  selected_x <- c(selected_x, selected_x_value)
+  
   evaluations <- rbind(evaluations,
-                       c(x_new[which.min(lower_confidence_bound)] ,
-                       f(x_new[which.min(lower_confidence_bound)])))
+                       c(selected_x_value ,
+                         f(selected_x_value)))
 }
 ```
 
