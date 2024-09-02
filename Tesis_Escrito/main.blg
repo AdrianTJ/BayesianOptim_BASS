@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2023)
+This is BibTeX, Version 0.99d (TeX Live 2024)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 A level-1 auxiliary file: ./TeX_files/Quote.aux
@@ -6,6 +6,7 @@ A level-1 auxiliary file: ./TeX_files/GP.aux
 A level-1 auxiliary file: ./TeX_files/BO.aux
 A level-1 auxiliary file: ./TeX_files/SMBO.aux
 A level-1 auxiliary file: ./TeX_files/BASS.aux
+A level-1 auxiliary file: ./TeX_files/Experiment.aux
 The style file: alpha.bst
 Database file #1: ./TeX_files/Bibliography.bib
 Warning--empty journal in Bergstra_Bardenet_Bengio_Kégl
@@ -19,45 +20,45 @@ Warning--empty journal in Snoek_Larochelle_Adams_2012
 Warning--there's a number but no volume in Snoek_Larochelle_Adams_2012
 Warning--empty journal in wangpoisson
 Warning--empty year in wangpoisson
-You've used 45 entries,
+You've used 46 entries,
             2543 wiz_defined-function locations,
-            825 strings with 12387 characters,
-and the built_in function-call counts, 17984 in all, are:
-= -- 1756
-> -- 937
+            828 strings with 12491 characters,
+and the built_in function-call counts, 18305 in all, are:
+= -- 1787
+> -- 956
 < -- 29
-+ -- 337
-- -- 326
-* -- 1270
-:= -- 2994
-add.period$ -- 147
-call.type$ -- 45
-change.case$ -- 289
++ -- 344
+- -- 332
+* -- 1286
+:= -- 3047
+add.period$ -- 150
+call.type$ -- 46
+change.case$ -- 295
 chr.to.int$ -- 40
-cite$ -- 56
-duplicate$ -- 740
-empty$ -- 1240
-format.name$ -- 378
-if$ -- 3650
-int.to.chr$ -- 6
+cite$ -- 57
+duplicate$ -- 750
+empty$ -- 1265
+format.name$ -- 385
+if$ -- 3717
+int.to.chr$ -- 7
 int.to.str$ -- 0
 missing$ -- 51
-newline$ -- 235
-num.names$ -- 135
-pop$ -- 317
+newline$ -- 240
+num.names$ -- 138
+pop$ -- 328
 preamble$ -- 1
-purify$ -- 342
+purify$ -- 349
 quote$ -- 0
-skip$ -- 614
+skip$ -- 625
 stack$ -- 0
-substring$ -- 738
-swap$ -- 139
+substring$ -- 745
+swap$ -- 140
 text.length$ -- 29
 text.prefix$ -- 16
 top$ -- 0
-type$ -- 324
+type$ -- 332
 warning$ -- 11
-while$ -- 152
-width$ -- 50
-write$ -- 590
+while$ -- 155
+width$ -- 51
+write$ -- 601
 (There were 11 warnings)
