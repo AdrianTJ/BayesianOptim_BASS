@@ -205,7 +205,13 @@ Carl~Edward Rasmussen, Christopher~KI Williams, et~al.
 \newblock {\em Gaussian processes for machine learning}, volume~1.
 \newblock Springer, 2006.
 
-\bibitem[SB]{Surjanovic_Bingham}
+\bibitem[SBa]{simulationlib}
+S.~Surjanovic and D.~Bingham.
+\newblock Virtual library of simulation experiments: Test functions and
+  datasets.
+\newblock Retrieved August 25, 2024, from \url{http://www.sfu.ca/~ssurjano}.
+
+\bibitem[SBb]{Surjanovic_Bingham}
 S.~Surjanovic and D.~Bingham.
 \newblock Virtual library of simulation experiments: Test functions and
   datasets.

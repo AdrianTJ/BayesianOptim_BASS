@@ -1,0 +1,87 @@
+\chapter{Experimental Validation}
+
+\section{Introduction}
+
+In the previous chapters, we explored the theoretical underpinnings of Bayesian Optimization (BO) using BASS models as surrogates. We have discussed the challenges of initializing these models, the intricacies of discretizing the function domain, and the methods to estimate uncertainty, especially in the context of unexplored regions. With these foundations laid, it becomes essential to validate the effectiveness of this approach through systematic experimentation.
+
+This chapter focuses on thegroundwork for experimental validation of the BASS-based hyperparameter optimization method, comparing its performance against other established optimization techniques. While the BASS model presents unique advantages in handling complex, high-dimensional spaces, its performance in real-world scenarios, particularly in overcoming challenges like cold starts and efficient exploration of the parameter space, remains to be tested practically.
+
+The experiments described herein are designed to evaluate both the power and viability of the BASS model in comparison with other hyperparameter optimization methods, such as Grid Search, Random Search, and Bayesian Optimization using Gaussian Processes (GPs). By conducting these experiments across various models and datasets, we aim to provide a comprehensive assessment of how well BASS performs under different conditions and to identify the contexts in which it offers significant benefits or detrements. 
+
+Throughout this chapter, we will detail the experimental setup, including the selection of models, datasets, and the metrics used for evaluation. We will also discuss the results of these experiments, highlighting the strengths and weaknesses of the BASS method in comparison to other approaches. This analysis will not only validate the theoretical considerations discussed in previous chapters but also guide future applications and refinements of hyperparameter optimization techniques.
+
+In the following sections, we will begin by outlining the experimental design, including the methodologies used for comparison, followed by a presentation and discussion of the results. Finally, we will conclude with insights and recommendations based on the experimental findings, providing a bridge to potential future research in this domain.
+
+\section{Experimental Design}
+
+\subsection{Objective and Scope}
+
+The primary objective of this experiment is to evaluate the performance of the BASS model as a surrogate in Bayesian Optimization (BO) against other hyperparameter optimization methods. The comparison will focus on two key aspects: the effectiveness of each method in optimizing the performance of machine learning models and some classical optimization problems (in this case some of the well defined functions in \cite{simulationlib}) and the efficiency in terms of computational resources required, measuered in terms of number of iterations it takes to get to good solutions. This is chosen as a metric because the entire point of Bayesian Optimization and SMBO in general is to minimize the number of calls to the objective function and still get  good results.
+
+\subsection{Hyperparameter Optimization Methods}
+
+The hyperparameter optimization methods selected for comparison in this study are:
+
+\begin{itemize}
+	\item BASS-Based Bayesian Optimization (BASS-BO): The method under investigation, which uses BASS models as surrogates within the BO framework. This approach is designed to efficiently explore and exploit the parameter space by incorporating prior knowledge and adjusting to observed data iteratively.
+	
+	\item Grid Search: A traditional exhaustive search method that evaluates every possible combination of hyperparameters within a predefined grid. Although computationally expensive, Grid Search provides a baseline for performance comparison.
+	
+	\item Random Search: A stochastic approach that samples hyperparameters randomly from a predefined distribution. While less exhaustive than Grid Search, Random Search can often find good hyperparameters more efficiently.
+	
+	\item Gaussian Process-Based Bayesian Optimization (GP-BO): A widely used BO method that utilizes Gaussian Processes as surrogates. GP-BO is known for its ability to model uncertainty and make informed decisions about the next points to evaluate.
+	
+\end{itemize}
+
+\textcolor{red}{YOU ARE HERE}
+
+\subsection{Models and Datasets}
+
+To ensure that the comparison is robust and generalizable, we selected a diverse set of machine learning models and datasets:
+
+Models:
+
+Decision Tree: A simple, interpretable model that benefits from hyperparameter tuning, particularly in terms of tree depth and splitting criteria.
+Support Vector Machine (SVM): A model sensitive to hyperparameters such as the regularization parameter (C) and kernel type.
+Neural Network: A more complex model where hyperparameter tuning can significantly impact performance, especially regarding learning rate, number of layers, and units per layer.
+Datasets:
+
+Synthetic Datasets: Generated to test specific properties of the optimization methods, such as the ability to navigate high-dimensional spaces or handle noisy data.
+Benchmark Datasets: Standard datasets commonly used in machine learning, such as MNIST for image classification, UCI datasets for various classification and regression tasks, and others with varying degrees of complexity and dimensionality.
+\subsection{Experimental Procedure}
+
+Initialization: Each experiment begins with an initial set of hyperparameters evaluated using a random search. This ensures that all methods start with the same set of information, mitigating the cold start problem and allowing for a fair comparison.
+
+Optimization Process:
+
+BASS-BO: BASS models are trained on the initial data points and iteratively updated as new points are evaluated. The acquisition function, incorporating uncertainty estimates, guides the selection of new points.
+Grid Search and Random Search: These methods proceed according to their predefined strategies, evaluating hyperparameters either exhaustively (Grid Search) or randomly (Random Search).
+GP-BO: Gaussian Processes are used to model the response surface, and the acquisition function selects new points to evaluate based on the trade-off between exploration and exploitation.
+Evaluation Metrics:
+
+Performance Metrics: For each model-dataset combination, we record the best performance achieved (e.g., accuracy, F1-score, mean squared error) as well as the average performance across all iterations.
+Efficiency Metrics: We track the time taken for optimization, the number of hyperparameter evaluations required to reach the best performance, and computational resource usage (e.g., CPU/GPU time).
+Replication and Randomization: To account for variability in model performance due to random initialization or data splits, each experiment is repeated multiple times with different random seeds. The order in which methods are applied to each model-dataset combination is randomized to avoid systematic biases.
+
+\subsection{Statistical Analysis}
+
+After completing the experiments, we conduct a statistical analysis to compare the performance of the hyperparameter optimization methods:
+
+Comparison of Means: We use paired t-tests or ANOVA to compare the mean performance and efficiency metrics across methods.
+
+Effect Size: To quantify the practical significance of any observed differences, we calculate effect sizes, providing insight into the magnitude of improvements or degradations.
+
+Confidence Intervals: Confidence intervals are constructed for the differences in performance metrics between methods, offering a range within which the true difference likely lies.
+
+Robustness Checks: Additional analyses are performed to check the robustness of the results across different models, datasets, and random seeds. This includes assessing how sensitive each method is to the choice of initial points, the discretization scheme, and the inherent variability in the data.
+
+\subsection{Experimental Assumptions and Limitations}
+
+While the experimental design is thorough, certain assumptions and limitations are inherent in the study:
+
+Assumption of Model Generalizability: We assume that the selected models and datasets are representative of a wide range of real-world scenarios, though results may vary in highly specific applications.
+
+Fixed Search Space: The hyperparameter search space is predefined and consistent across all methods, which may limit the exploration potential of some methods, particularly those that adaptively expand the search space.
+
+Computational Constraints: Given the resource-intensive nature of some methods (e.g., Grid Search), we limit the number of hyperparameter evaluations to ensure that all methods can be compared within a reasonable timeframe. This may disadvantage exhaustive methods that perform better with more evaluations.
+
