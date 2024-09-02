@@ -3,6 +3,6 @@
 **/.DS_Store
 Referencias
 **/.Rproj.user
-./Code/renv
+./**/renv
 .Rproj.user
 
