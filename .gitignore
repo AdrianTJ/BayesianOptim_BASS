@@ -2,7 +2,8 @@
 .DS_Store
 **/.DS_Store
 **/.Rproj.user
-./**/renv
+**/renv
 .Rproj.user
 **/.Rhistory
-**/*.RProj
+*.RProj
+*/.Rprofile
