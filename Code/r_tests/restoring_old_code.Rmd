@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+# A one dimensional example to start. 
+
 ```{r packages}
 library(tidyverse)  # Loads the tidyverse package, which is a collection of packages for data manipulation and visualization
 library(gt)  # Loads the gt package for creating nicely formatted tables
@@ -13,13 +15,152 @@ library(BASS)  # Loads the BASS package for Bayesian adaptive sampling
 library(lhs) # For Latin Hyperspace Sampling
 ```
 
+```{r function, echo=TRUE}
+# Defines a function named 'f' that takes a single argument 'x'
+f <- function(x) {
+  scaled_x <- x * 2 * pi  # Scales 'x' by multiplying it with 2 * pi
+  output <- ifelse(scaled_x < pi, sin(scaled_x), sin(scaled_x) + 2)  # Computes the output based on the value of 'scaled_x'
+  return(output)  # Returns the computed output
+}
+```
 
+```{r Tunable Parameters}
+# Sets the initial number of evaluations to 'n0', this is the warm up number, the first iteration of BASS will begin on point n0 + 1
+n0 <- 5
 
+# Sets the maximum number of iterations for the iterative run
+max_iterations = 30
 
+# Tunes sigma scaling value
+hyper1 <- 3
 
+# Tunes kappa scaling value, parameter of GP Upper Confidence Bound; increasing kappa will make the exploration tend towards new points rather than points closer to one another.
+hyper2 <- 2
 
+```
 
+```{r evaluations}
 
+# Creates a matrix named 'evaluations' with 'n0' rows and 2 columns ('x' and 'y')
+evaluations <- matrix(
+  as.numeric(NA),
+  ncol = 2, nrow = n0,
+  dimnames = list(NULL, c("x", "y"))
+)
+# Populates the 'x' column of 'evaluations' with values ranging from 0 to 1
+evaluations[, "x"] <- maximinLHS(n0,1)[,1]
+# Populates the 'y' column of 'evaluations' by applying the function 'f' to each value in the 'x' column
+evaluations[, "y"] <- f(evaluations[, "x"]) 
+# Converts 'evaluations' to a tibble (a modern data frame)
+evaluations %>%
+  as_tibble
+
+```
+
+```{r}
+# Creates a matrix named 'evaluations' with 'n0' rows and 2 columns ('x' and 'y')
+evaluations <- matrix(
+  as.numeric(NA),
+  ncol = 2, nrow = n0,
+  dimnames = list(NULL, c("x", "y"))
+)
+# Populates the 'x' column of 'evaluations' with values ranging from 0 to 1
+evaluations[, "x"] <- seq(0, 1, length.out = n0)
+# Populates the 'y' column of 'evaluations' by applying the function 'f' to each value in the 'x' column
+evaluations[, "y"] <- f(evaluations[, "x"]) 
+
+# Vector to store selected 'x' values
+selected_x <- numeric()
+
+# Performs the iterative run for 'max_iterations' iterations
+for (iteration in 1:max_iterations) {
+  # Fits a Bayesian adaptive sampling model using the 'bass' function
+  fit <- bass(
+    xx = evaluations[, "x"],
+    y = evaluations[, "y"],
+    degree = 2,
+    verbose = F
+  )
+  
+  # Generates a sequence of 'x' values for prediction
+  x_new <- seq(0, 1, length.out = 1000)
+  
+  # Predicts the 'y' values for the 'x_new' values using the fitted model
+  pred <- predict(fit, newdata = data.frame(x = x_new))
+  
+  # Extracts the predicted mean ('mu') for the last 'x_new' value
+  mu <- pred[1000,]
+  
+  # Extracts the 'x' values from 'evaluations'
+  X <- evaluations[, "x"]
+  
+  # Removes previously selected 'x' values from consideration
+  available_x <- setdiff(x_new, selected_x)
+  
+  # Generates a mesh of values from 0 to 1 for calculating distances
+  mesh <- seq(0, 1, length.out = 1000)
+  
+  # Calculates the absolute differences between each 'x' value and the mesh
+  y  <- NULL
+  for (elem in 1:length(X)){
+    tmp <- abs(mesh - X[elem])
+    y <- rbind(y, tmp)
+  }
+  # Calculates the minimum values along each column of 'y' to obtain the final distances
+  finals <- y |> apply(2,min)
+  
+  # Multiplies the final distances by 3 to obtain 'sigma'
+  sigma <- finals * hyper1
+  
+  kappa <- hyper2  # Sets the value of 'kappa'
+  
+  # Calculates the lower confidence bound using 'mu', 'sigma', and 'kappa'
+  lower_confidence_bound <- mu - kappa * sigma
+  
+  # Adds a new row to 'evaluations' with the 'x' value that minimizes the lower confidence bound
+  # and its corresponding 'y' value
+  min_lower_bound_idx <- which.min(lower_confidence_bound)
+  selected_x_value <- available_x[min_lower_bound_idx]
+  selected_x <- c(selected_x, selected_x_value)
+  
+  evaluations <- rbind(evaluations,
+                       c(selected_x_value ,
+                         f(selected_x_value)))
+}
+```
+
+```{r}
+evaluations  # Displays the final 'evaluations' matrix
+```
+
+```{r, fig.width=8, fig.height=4}
+# Defines a function named 'plot_posterior' for plotting the posterior of 'f'
+plot_posterior <- function() {
+  plot(
+    x_new, mu,
+    type = "l", col = "blue", lwd = 2, lty = "dotted",
+    ylim = c(-1, 3),
+    xlab = "x", ylab = "f(x)", main = "Posterior of f"
+  )
+  polygon(
+    c(x_new, rev(x_new)),
+    c(mu + sigma, rev(mu - sigma)),
+    col = rgb(0, 0, 1, 0.25), border = NA
+  )
+  points(evaluations, pch = 16)
+  legend(
+    "topleft",
+    c(expression(f[n[0]]), expression(mu(x)), expression(mu(x) %+-% sigma(x))),
+    col = c("black", "blue", "blue"), pch = c(16, NA, NA),
+    lty = c(NA, "dotted", NA), lwd = c(NA, 2, 1), bty = "n",
+    fill = c(NA, NA, rgb(0, 0, 1, 0.25)),
+    border = c(NA, NA, NA), ncol = 3, text.width = 0.1
+  )
+}
+
+par(cex = 1.1, mfrow = c(1, 1), mar = c(5.1, 4.1, 4.1, 2.1))
+plot_posterior()  # Calls the 'plot_posterior' function to create the plot
+```
 
 
 
