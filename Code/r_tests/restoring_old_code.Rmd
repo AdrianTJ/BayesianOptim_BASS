@@ -29,13 +29,13 @@ f <- function(x) {
 n0 <- 5
 
 # Sets the maximum number of iterations for the iterative run
-max_iterations = 30
+max_iterations = 100
 
 # Tunes sigma scaling value
 hyper1 <- 3
 
 # Tunes kappa scaling value, parameter of GP Upper Confidence Bound; increasing kappa will make the exploration tend towards new points rather than points closer to one another.
-hyper2 <- 2
+hyper2 <- 5
 
 ```
 
