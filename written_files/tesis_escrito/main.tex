@@ -1,0 +1,44 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{dirtytalk}
+\usepackage{url}
+
+% To be removed later, since these won't be used in the final version. 
+\usepackage{xcolor}
+
+\begin{document}
+	
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\author{Adrian TJ}
+\title{BASS as a Surrogate Model for Bayesian Optimization}
+\date{INSERT DATE HERE WHEN DONE}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\include{./TeX_files/Quote}
+\include{./TeX_files/GP}
+\include{./TeX_files/BO}
+\include{./TeX_files/SMBO}
+\include{./TeX_files/BASS}
+\include{./TeX_files/Experiment}
+
+
+\backmatter
+
+% bibliography, glossary and index go here.
+\bibliographystyle{alpha}
+\nocite{*}
+\bibliography{./TeX_files/Bibliography}
+
+\end{document}

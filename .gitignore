@@ -5,6 +5,7 @@
 **/.Rhistory
 *.RProj
 **/.Rprofile
+**/renv.*
 
 **/.Rproj.user
 .Rproj.user
