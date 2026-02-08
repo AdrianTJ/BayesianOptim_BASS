@@ -300,28 +300,6 @@ summary_tbl %>%
   tab_header(title = paste0("Final Best Objective by Method (d = ", d, ")"))
 ```
 
-```{r visualization-2-dim}
-# Optional: visualize sampled locations only when d = 2
-evals_bass <- as_tibble(res_bass$X_eval, .name_repair = ~ c("x1","x2")) %>%
-  mutate(method = "BASS-BO")
-evals_gp <- as_tibble(res_gp$X_eval, .name_repair = ~ c("x1","x2")) %>%
-  mutate(method = "GP-BO")
-evals_rand <- as_tibble(res_rand$X_eval, .name_repair = ~ c("x1","x2")) %>%
-  mutate(method = "Random Search")
-
-evals_all <- bind_rows(evals_bass, evals_gp, evals_rand)
-
-ggplot(evals_all, aes(x = x1, y = x2)) +
-  geom_point(alpha = 0.6, size = 1.2) +
-  facet_wrap(~method) +
-  coord_equal() +
-  labs(
-    title = "Sampled Locations in [0,1]^2",
-    x = "x1", y = "x2"
-  ) +
-  theme_minimal()
-```
-
 
 
 
