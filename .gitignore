@@ -9,3 +9,19 @@
 
 **/.Rproj.user
 .Rproj.user
+
+# LaTeX temporary files
+*.aux
+*.log
+*.blg
+*.bbl
+*.synctex.gz
+*.toc
+*.dvi
+*.out
+*.nav
+*.snm
+*.fdb_latexmk
+*.fls
+*.lot
+*.lof
