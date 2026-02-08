@@ -1,43 +1,20 @@
-# Bayesian Optimization with a BASS prior
+# MastersBASSBO
 
-On BASS as an underpinning to bayesian optimization. Code is in `BASS_1D` repository for now, but will be moved over at the end of the semester. 
+This repository contains the work for my Master's thesis in Data Science. The project, titled "Bayesian Active Supervised Learning for Optimal Experimental Design (BASSBO)", explores hyperparameter optimization algorithms, particularly Bayesian optimization, and investigates changing the underlying surrogate model for the iterative process.
 
-### Status
+## Project Structure
 
-Chapter 1 and 2 mostly done. Minor corrections need to be made and adding to specific sections. 
+The repository is organized as follows:
 
-Need to write intro and outro for each chapter. 
+-   `class_presentation/`: Contains materials related to class presentations, including Beamer slides and supporting figures.
+    -   `Presentacion/`: LaTeX source files and generated PDF for presentations.
+    -   `ReporteFinal/`: LaTeX source files and related assets for the final report.
+-   `code_files/`: Houses the R Markdown (Rmd) files used for simulations, analysis, and experiments.
+    -   `1_base_loop/`: Rmd scripts for the core experimental loops and comparisons.
+-   `written_files/`: Contains the written components of the thesis.
+    -   `tesis_escrito/`: LaTeX source files for the main thesis document, including chapters and bibliography.
+    -   `tesis_formato/`: LaTeX templates and configuration files for thesis formatting, including cover pages and custom styles.
 
-### Missing Chapters to LaTeX
+## Purpose
 
-3. Bayesian Optimization
-   
-   1. Intro & Traditional BO
-   
-   2. Building blocks of BO
-   
-   3. A Generalist Framework for BO
-
-4. BASS and general MARS Models
-   
-   1. Intro
-   
-   2. MARS Models
-   
-   3. BMARS Models
-   
-   4. BASS model
-   
-   5. BASS as a surrogate model for BO
-
-5. Experiment Design
-   
-   1. Intro & Purpose
-   
-   2. Use cases that needed to be explored
-   
-   3. Sensitivity Analysis
-
-6. Computational Experiments and Results
-
-7. Conclusion and Next Steps
+The primary purpose of this project is to develop and validate hyperparameter optimization algorithms, particularly Bayesian optimization (BO), and explore the impact of changing the underlying surrogate model for the iterative BO process, within the context of a Master's thesis in Data Science.
