@@ -14,45 +14,23 @@ The chapter is organized as follows. First, we describe the experimental design,
 
 \subsection{Objective and Scope}
 
-The primary objective is to evaluate BASS-BO against established hyperparameter optimization methods on two dimensions:
+The primary objective is to evaluate BASS-BO against established hyperparameter optimization methods on two dimensions: optimization effectiveness and optimization efficiency. 
 
-\begin{enumerate}
-	\item \textbf{Optimization effectiveness}: the quality of the best configuration found.
-	\item \textbf{Optimization efficiency}: the number of objective evaluations and runtime required to reach strong solutions.
-\end{enumerate}
-
-This evaluation criterion is consistent with the central motivation of BO and Sequential Model-Based Optimization (SMBO): reduce expensive objective function calls while maintaining strong optimization performance. The study includes both machine learning tasks and classical benchmark functions (including functions from \cite{simulationlib}) to test behavior under controlled and application-oriented conditions.
+This evaluation criterion is consistent with the central motivation of BO and Sequential Model-Based Optimization, namely to reduce expensive objective function calls while maintaining strong optimization performance. The study includes classical benchmark functions (functions from \cite{simulationlib}) to test behavior under controlled and application-oriented conditions.
 
 \subsection{Hyperparameter Optimization Methods}
 
-The methods compared are:
+The methods compared are the ones previously mentioned in this work along with the new framework woth BASS as the surrogate:
 
 \begin{itemize}
 	\item \textbf{BASS-Based Bayesian Optimization (BASS-BO)}: the proposed method. BASS surrogates model the response surface and uncertainty, and an acquisition function selects new evaluations iteratively.
 	
-	\item \textbf{Grid Search}: exhaustive evaluation over a predefined grid. This method serves as a strong baseline when the search space is small, although it scales poorly.
-	
-	\item \textbf{Random Search}: random sampling from predefined hyperparameter distributions. It is often more efficient than Grid Search in moderate to high dimensions.
+	\item \textbf{Random Search}: random sampling from predefined hyperparameter distributions. It is often more efficient than Grid Search in moderate to high dimensions, as shown in \cite{bergstra2012random}.
 	
 	\item \textbf{Gaussian Process-Based Bayesian Optimization (GP-BO)}: a standard BO baseline using Gaussian Processes for surrogate modeling and uncertainty-guided acquisition.
 \end{itemize}
 
-\subsection{Models and Datasets}
-
-To support robust comparisons, experiments include diverse model classes and datasets.
-
-\paragraph{Models}
-\begin{itemize}
-	\item \textbf{Decision Tree}: sensitive to depth, splitting criterion, and minimum sample constraints.
-	\item \textbf{Support Vector Machine (SVM)}: sensitive to regularization, kernel choice, and kernel-specific parameters.
-	\item \textbf{Neural Network}: sensitive to learning rate, architecture depth/width, and regularization settings.
-\end{itemize}
-
-\paragraph{Datasets}
-\begin{itemize}
-	\item \textbf{Synthetic datasets}: designed to test specific properties, such as nonlinearity, noise, and increasing dimensionality.
-	\item \textbf{Benchmark datasets}: standard tasks from widely used repositories, including image and tabular classification/regression problems with varying complexity.
-\end{itemize}
+The dataset in particular we will be using is the Virtual Library of Simulation Experiments: Test Functions and Datasets \cite{simulationlib}. This suite is composed of standard functions such as the Branin-Hoo function, commonly used to test Bayesian Optimization problems.
 
 \subsection{Experimental Procedure}
 
@@ -75,32 +53,125 @@ A fixed evaluation budget is used per task to make efficiency comparisons meanin
 \paragraph{4) Repetitions and randomization}
 Each configuration is repeated across multiple random seeds. Method order and data split assignments are randomized to reduce systematic effects.
 
-\subsection{Evaluation Metrics}
+\subsection{Evaluation}
 
-\paragraph{Performance metrics}
-\begin{itemize}
-	\item Best objective value reached within budget.
-	\item Final test performance of selected configuration (for ML tasks).
-	\item Area under the best-so-far curve, to capture optimization quality over time.
-\end{itemize}
-
-\paragraph{Efficiency metrics}
-\begin{itemize}
-	\item Number of evaluations to reach a predefined performance threshold.
-	\item Wall-clock optimization time.
-	\item Surrogate overhead relative to objective evaluation cost.
-\end{itemize}
+As for evaluation of the methods, the central trade-off at the heart of Bayesian Optimization is that we want to achieve great returns at the lowest possible cost. On those axes, we define a performance metric and some efficiency metrics as well to test out our methods. The performance metric is simply the best objective value reached within budget. As for the efficiency metric, we track the evaluations over time to see how the methods behave under different constraints. 
 
 \subsection{Statistical Analysis}
 
-To compare methods rigorously, we use:
+To compare methods rigorously, we use confidence intervals to make sure we have a wide understanding of the behavior of the methods themselves, as well as effect sizes to quantify practical significance. 
+
+\subsection{Initial Testing Conditions}
+
+The initial testing conditions used in this study are listed below. Full implementation details, including scripts, targets, and output files, are available in the project repository: \url{github.com/AdrianTJ/BayesianOptim_BASS}.
 
 \begin{itemize}
-	\item \textbf{Paired comparisons} across seeds and tasks (paired t-tests when assumptions are satisfied, non-parametric alternatives otherwise).
-	\item \textbf{ANOVA or mixed-effects analysis} for multi-factor effects (method, dataset type, model class).
-	\item \textbf{Effect sizes} to quantify practical significance.
-	\item \textbf{Confidence intervals} for key differences.
+	\item Branin-Hoo function ($2d$), bounded domain)
+	\item Rasteguin ($4d$, bounded domain)
+	\item Additional benchmark functions (to be added after completion of all runs)
 \end{itemize}
 
-We also include robustness analyses for initialization sensitivity, discretization choices, and seed variability.
+All methods are compared under a fixed evaluation budget and identical initialization strategy. For each replicate, an initial design of size $n_0=\max(2d+1,8)$ is generated via maximin Latin Hypercube Sampling (LHS) where $d$ is the dimension of the particular problem, and each optimizer proceeds for a fixed number of iterations. Results are aggregated over multiple random seeds (in our testing, 25 of them), and convergence is summarized using the best-so-far objective value at each iteration. Particular care was taken for these function evaluations to ensure reproducibility, so the set seed alsways starts at the default value of 1001, and proceeds to seed 1026. 
+
+\subsection{BASS-BO Hyperparameters and Practical Tuning Space}
+
+A central advantage of the proposed BASS-BO framework is that it exposes several tunable controls that directly affect exploration, exploitation, uncertainty calibration, and local refinement. In contrast to a more rigid surrogate setup, these controls allow the optimizer to adapt its behavior to the objective landscape and the available evaluation budget. In the current implementation, the most relevant BASS-BO parameters are:
+
+\begin{itemize}
+	\item \texttt{bass\_kappa\_start}, \texttt{bass\_kappa\_end}: define the exploration schedule in the lower confidence bound (LCB) acquisition rule. A larger early value encourages broader search, while a smaller late value emphasizes refinement.
+	
+	\item \texttt{n\_cand}: number of candidate points sampled per iteration for acquisition maximization/minimization. Larger values improve candidate quality but increase computation.
+	
+	\item \texttt{bass\_local\_frac}: fraction of candidates sampled locally around the current best point. Higher values increase local exploitation.
+	
+	\item \texttt{bass\_local\_sd}: local sampling spread around the current best point in normalized coordinates. Larger values widen local search neighborhoods.
+	
+	\item \texttt{bass\_explore\_every}: frequency of forced exploration steps. At this interval, candidate selection prioritizes posterior uncertainty rather than LCB score.
+	
+	\item \texttt{bass\_degree\_early}, \texttt{bass\_degree\_late}, \texttt{bass\_switch\_after}: control surrogate complexity over time. Lower early degree can improve stability with limited data, while higher late degree increases expressiveness once more observations are available.
+	
+	\item \texttt{bass\_sd\_inflate}: multiplicative inflation factor applied to posterior standard deviation for acquisition. This counteracts early overconfidence and increases exploratory behavior.
+	
+	\item \texttt{bass\_sd\_floor}: minimum uncertainty floor to prevent near-zero posterior variance from collapsing exploration.
+\end{itemize}
+
+These parameters make BASS-BO highly configurable. The same flexibility is also a source of sensitivity, since poor settings can degrade convergence and it can become easy to shoot oneself in the foot with so much freedom. For this reason, we treat parameter selection as part of the method design, and report both the defaults and tuned settings used in each experiment. All reported numbers are with the default parameter set in the code, presented below. 
+
+\begin{itemize}
+	\item \texttt{bass\_kappa\_start} $= 3.5$
+	\item \texttt{bass\_kappa\_end} $= 1.5$
+	\item \texttt{bass\_sd\_floor} $= 10^{-3}$
+	\item \texttt{bass\_sd\_inflate} $= 1.20$
+	\item \texttt{bass\_local\_frac} $= 0.35$
+	\item \texttt{bass\_local\_sd} $= 0.08$
+	\item \texttt{bass\_explore\_every} $= 7$
+	\item \texttt{bass\_degree\_early} $= 1$
+	\item \texttt{bass\_degree\_late} $= 2$
+	\item \texttt{bass\_switch\_after} $= 40$
+\end{itemize}
+
+This configuration is intended to provide strong early exploration, gradual transition to exploitation, and robust behavior against early uncertainty collapse.
+
+\subsection{Interpretation of BASS-BO Controls}
+
+The BASS-BO controls can be grouped into four functional categories:
+
+\begin{enumerate}
+	\item \textbf{Exploration--Exploitation Controls}:
+	\texttt{bass\_kappa\_start}, \texttt{bass\_kappa\_end}, and \texttt{bass\_explore\_every}. These govern how aggressively the method explores uncertain regions versus exploiting known promising areas.
+	
+	\item \textbf{Candidate-Set Design Controls}:
+	\texttt{n\_cand}, \texttt{bass\_local\_frac}, and \texttt{bass\_local\_sd}. These determine whether search is globally diverse, locally concentrated, or hybrid.
+	
+	\item \textbf{Surrogate Complexity Controls}:
+	\texttt{bass\_degree\_early}, \texttt{bass\_degree\_late}, and \texttt{bass\_switch\_after}. These control how quickly model complexity increases as data accumulates.
+	
+	\item \textbf{Uncertainty Calibration Controls}:
+	\texttt{bass\_sd\_inflate} and \texttt{bass\_sd\_floor}. These reduce overconfident behavior and improve robustness in early iterations.
+\end{enumerate}
+
+Empirically, these groups interact. For example, increasing \texttt{n\_cand} without revisiting \texttt{bass\_kappa\_*} may not yield better search behavior, and adding strong local sampling (\texttt{bass\_local\_frac}) can require stronger uncertainty inflation (\texttt{bass\_sd\_inflate}) to avoid premature convergence. An important type of test that should be run with these types of parameters is sensitivity analysis, but that is outside the reach of this current project. 
+
+\section{Results}
+
+What follows are the graphs representing some runs from the BASS-BO cycle, compared to GP-BO and Random Search. We ran these optimizers across 10 different functions, as to get wider coverage into the actual performance of the optimizers. 
+
+\subsection{Branin-Hoo Function}
+
+Formally, defined as: 
+
+\begin{equation}
+	f(x_1,x_2)=
+	\left(x_2-\frac{5.1}{4\pi^2}x_1^2+\frac{5}{\pi}x_1-6\right)^2
+	+10\left(1-\frac{1}{8\pi}\right)\cos(x_1)+10,
+\end{equation}
+
+with $ x_1 \in [-5,10], \qquad x_2 \in [0,15].$
+
+\begin{figure}[h]
+	\includegraphics[width=14cm]{Figures/branin.png}
+	\centering
+\end{figure}
+
+\subsection{Rastrigin Function}
+
+\begin{equation}
+	f(\mathbf{x}) = A n + \sum_{i=1}^{n}\left[x_i^2 - A\cos\left(2\pi x_i\right)\right],
+\end{equation}
+\[
+\mathbf{x}=(x_1,\dots,x_n), \qquad x_i \in [-5.12,\,5.12], \quad i=1,\dots,n,
+\]
+where \(A=10\) is the standard choice. We used the 4 dimensional version of this function. 
+
+
+
+
+
+
+
+
+
+
+
+
 
