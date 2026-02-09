@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.8)  6 FEB 2026 09:06
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.8)  9 FEB 2026 16:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -444,9 +444,9 @@ Chapter 3.
 
 [28]
 
-[29]
+[29])
 
-[30])
+[30]
 
 
 Overfull \hbox (5.60016pt too wide) has occurred while \output is active
@@ -556,27 +556,67 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [45]
 
 [46]
-Overfull \hbox (1.82085pt too wide) in paragraph at lines 48--49
-[]\TU/lmr/bx/n/12 Neural Network\TU/lmr/m/n/12 : sensitive to learning rate, ar
-chitecture depth/width,
- []
-
-
-Overfull \hbox (2.884pt too wide) in paragraph at lines 76--77
+Overfull \hbox (2.884pt too wide) in paragraph at lines 54--55
  \TU/lmr/bx/n/12 4) Repetitions and randomization[] \TU/lmr/m/n/12 Each configu
 ration is repeated across
  []
 
 
 
-[47])
+[47]
 
-[48] (./main.bbl
+[48]
 
-[49
+[49]
+Overfull \hbox (44.82484pt too wide) in paragraph at lines 120--122
+[]\TU/lmr/bx/n/12 Exploration–Exploitation Controls\TU/lmr/m/n/12 : \TU/lmtt/m/
+n/12 bass_kappa_start\TU/lmr/m/n/12 , \TU/lmtt/m/n/12 bass_kappa_end\TU/lmr/m/n
+/12 ,
+ []
+
+
+Overfull \hbox (43.02484pt too wide) in paragraph at lines 126--128
+[]\TU/lmr/bx/n/12 Surrogate Complexity Controls\TU/lmr/m/n/12 : \TU/lmtt/m/n/12
+ bass_degree_early\TU/lmr/m/n/12 , \TU/lmtt/m/n/12 bass_degree_late\TU/lmr/m/n/
+12 ,
+ []
+
+
+Overfull \hbox (41.49603pt too wide) in paragraph at lines 129--131
+[]\TU/lmr/bx/n/12 Uncertainty Calibration Controls\TU/lmr/m/n/12 : \TU/lmtt/m/n
+/12 bass_sd_inflate \TU/lmr/m/n/12 and \TU/lmtt/m/n/12 bass_sd_floor\TU/lmr/m/n
+/12 .
+ []
+
+
+Overfull \hbox (1.51282pt too wide) in paragraph at lines 133--134
+\TU/lmr/m/n/12 out revisiting \TU/lmtt/m/n/12 bass_kappa_* \TU/lmr/m/n/12 may n
+ot yield better search behavior, and adding
+ []
+
+File: Figures/branin.png Graphic file (type bmp)
+<Figures/branin.png>
+
+Overfull \hbox (8.33858pt too wide) in paragraph at lines 152--154
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
+[50])
+
+[51]
+
+[52
+
+
+
+] (./main.bbl
+
+[53
 
 ]
 Underfull \hbox (badness 1152) in paragraph at lines 73--78
@@ -592,13 +632,13 @@ Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=
 ex-text;!
 
 
-[50]
+[54]
 
-[51]
+[55]
 
-[52])
+[56])
 
-[53] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
+[57] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
 (./TeX_files/BO.aux) (./TeX_files/SMBO.aux) (./TeX_files/BASS.aux)
 (./TeX_files/Experiment.aux))
  ***********
@@ -611,12 +651,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3882 strings out of 473832
- 64877 string characters out of 5729482
+ 3891 strings out of 473832
+ 65079 string characters out of 5729482
  466065 words of memory out of 5000000
- 26823 multiletter control sequences out of 15000+600000
+ 26831 multiletter control sequences out of 15000+600000
  569647 words of font info for 96 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 57i,13n,65p,1695b,270s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,13n,65p,1695b,269s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (57 pages).
+Output written on main.pdf (61 pages).
