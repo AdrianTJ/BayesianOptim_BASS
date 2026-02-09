@@ -236,6 +236,7 @@ run_experiment <- function(seeds,
 args <- commandArgs(trailingOnly = TRUE)
 
 # Defaults
+target_name <- "branin"
 n_reps <- 10
 seed_start <- 1001
 d <- 3
@@ -255,6 +256,8 @@ for (a in args) {
   if (grepl("^--kappa=", a)) kappa <- as.numeric(sub("^--kappa=", "", a))
   if (grepl("^--verbose=", a)) verbose <- tolower(sub("^--verbose=", "", a)) %in% c("1","true","t","yes","y")
   if (grepl("^--out_dir=", a)) out_dir <- sub("^--out_dir=", "", a)
+  if (grepl("^--target=", a)) target_name <- sub("^--target=", "", a)
+  
 }
 
 seeds <- seed_start + 0:(n_reps - 1)
