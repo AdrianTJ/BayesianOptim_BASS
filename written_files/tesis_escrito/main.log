@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.8)  10 FEB 2026 10:28
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.8)  10 FEB 2026 15:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -631,32 +631,27 @@ Chapter 6.
 
 
 ]
-
-[54
-
-]
-Chapter 7.
-
-
-[55]
 Overfull \hbox (4.54218pt too wide) in paragraph at lines 15--16
 []\TU/lmr/m/n/12 The practical takeaway is therefore balanced. For smooth, low-
 dimensional
  []
 
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[56])
 
-[57]
 
-[58
+[54])
+
+[55]
+
+[56
 
 
 
 ] (./main.bbl
 
-[59
+[57
 
 ]
 Underfull \hbox (badness 1152) in paragraph at lines 73--78
@@ -672,13 +667,13 @@ Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=
 ex-text;!
 
 
-[60]
+[58]
 
-[61]
+[59]
 
-[62])
+[60])
 
-[63] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
+[61] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
 (./TeX_files/BO.aux) (./TeX_files/SMBO.aux) (./TeX_files/BASS.aux)
 (./TeX_files/Experiment.aux) (./TeX_files/Conclusions.aux))
  ***********
@@ -699,4 +694,4 @@ Here is how much of TeX's memory you used:
  1348 hyphenation exceptions out of 8191
  57i,13n,65p,1695b,269s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (67 pages).
+Output written on main.pdf (65 pages).
