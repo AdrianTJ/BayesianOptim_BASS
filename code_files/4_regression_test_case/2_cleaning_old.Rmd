@@ -1,0 +1,77 @@
+---
+title: "old_code_cleaned"
+output: html_document
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+# Reproducibility
+set.seed(123)
+
+# Packages
+library(tidyverse)
+library(MASS)     # Boston dataset
+library(glmnet)   # Elastic net
+library(BASS)     # BASS model
+library(gt)       # Tables
+
+```
+
+```{r data-loading}
+
+# Load Boston data
+data("Boston", package = "MASS")
+housing <- as_tibble(Boston)
+
+# Train/test split
+n <- nrow(housing)
+train_idx <- sample(seq_len(n), size = floor(0.70 * n))
+train <- housing[train_idx, ]
+test  <- housing[-train_idx, ]
+
+# Separate predictors/response
+x_train_raw <- as.matrix(select(train, -medv))
+x_test_raw  <- as.matrix(select(test, -medv))
+y_train <- train$medv
+y_test  <- test$medv
+
+# Scale predictors using TRAIN statistics only
+x_center <- colMeans(x_train_raw)
+x_scale  <- apply(x_train_raw, 2, sd)
+x_scale[x_scale == 0] <- 1
+
+x_train <- scale(x_train_raw, center = x_center, scale = x_scale)
+x_test  <- scale(x_test_raw,  center = x_center, scale = x_scale)
+
+```
+
+```{r elastic-net}
+
+# Elastic Net with cross-validation to choose lambda
+set.seed(123)
+cv_enet <- cv.glmnet(
+  x = x_train,
+  y = y_train,
+  alpha = 0.5,           # balanced elastic net
+  nfolds = 5,
+  standardize = FALSE
+)
+
+# Predictions on test set
+pred_enet <- as.numeric(predict(cv_enet, newx = x_test, s = "lambda.min"))
+
+# RMSE
+rmse_enet <- sqrt(mean((pred_enet - y_test)^2))
+rmse_enet
+
+```
+
+
+
+
+
+
+
+
+
+
+
