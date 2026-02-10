@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.8)  9 FEB 2026 16:03
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.8)  10 FEB 2026 10:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -236,7 +236,7 @@ LaTeX Warning: Label `trajectories' multiply defined.
 
 LaTeX Warning: Label `building_BASS' multiply defined.
 
-) (./TeX_files/Experiment.aux))
+) (./TeX_files/Experiment.aux) (./TeX_files/Conclusions.aux))
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
@@ -606,17 +606,57 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[50])
+[50]
+File: Figures/branin.png Graphic file (type bmp)
+<Figures/branin.png>
+
+Overfull \hbox (8.33858pt too wide) in paragraph at lines 167--169
+ [][] 
+ []
+
+)
 
 [51]
 
-[52
+[52]
+\openout2 = `./TeX_files/Conclusions.aux'.
+
+ (./TeX_files/Conclusions.tex
+Chapter 6.
+
+
+[53
+
+
+
+
+]
+
+[54
+
+]
+Chapter 7.
+
+
+[55]
+Overfull \hbox (4.54218pt too wide) in paragraph at lines 15--16
+[]\TU/lmr/m/n/12 The practical takeaway is therefore balanced. For smooth, low-
+dimensional
+ []
+
+
+
+[56])
+
+[57]
+
+[58
 
 
 
 ] (./main.bbl
 
-[53
+[59
 
 ]
 Underfull \hbox (badness 1152) in paragraph at lines 73--78
@@ -632,15 +672,15 @@ Missing character: There is no   (U+202F) in font [lmroman12-regular]:mapping=
 ex-text;!
 
 
-[54]
+[60]
 
-[55]
+[61]
 
-[56])
+[62])
 
-[57] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
+[63] (./main.aux (./TeX_files/Quote.aux) (./TeX_files/GP.aux)
 (./TeX_files/BO.aux) (./TeX_files/SMBO.aux) (./TeX_files/BASS.aux)
-(./TeX_files/Experiment.aux))
+(./TeX_files/Experiment.aux) (./TeX_files/Conclusions.aux))
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -651,12 +691,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3891 strings out of 473832
- 65079 string characters out of 5729482
- 466065 words of memory out of 5000000
- 26831 multiletter control sequences out of 15000+600000
+ 3916 strings out of 473832
+ 66008 string characters out of 5729482
+ 466404 words of memory out of 5000000
+ 26849 multiletter control sequences out of 15000+600000
  569647 words of font info for 96 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  57i,13n,65p,1695b,269s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (61 pages).
+Output written on main.pdf (67 pages).
