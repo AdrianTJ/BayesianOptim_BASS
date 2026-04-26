@@ -8,9 +8,8 @@ As with most other algorithms used for regression tasks, BASS is built upon a ri
 	\includegraphics[width=4cm]{Figures/missing.png}
 	\centering
 	\caption{The theoretical basis for BASS.}
-	\label{building_BASS}
-\end{figure}
-
+	\label{building_BASS_origins}
+	\end{figure}
 \section{Decision Trees}
 
 Decision trees are a fundamental and versatile tool that comes in two main flavours: classification trees and regression trees. These two types of trees serve distinct purposes and are employed to make predictions in different contexts. The term "Classification and Regression Tree" (CART) analysis serves as an umbrella term that encompasses both classification and regression tree procedures. CART was first introduced by Breiman et al. in 1984 \cite{breiman2017classification}, and it represents a unified framework for decision tree modelling, allowing for flexibility in handling both classification and regression tasks within the same algorithm. While classification and regression trees share common principles, such as recursive binary splitting and impurity measures (e.g., Gini impurity for classification and mean squared error for regression), they also exhibit some differences in terms of the criteria used to determine the best feature and split point at each node. The final predictions for a new data point are obtained by traversing the tree from the root node to a leaf node and returning the average (for regression) of the target variable for the training samples in that leaf node.
@@ -19,9 +18,8 @@ Decision trees are a fundamental and versatile tool that comes in two main flavo
 	\includegraphics[width=4cm]{Figures/missing.png}
 	\centering
 	\caption{A decision tree.}
-	\label{building_BASS}
-\end{figure}
-
+	\label{building_BASS_tree}
+	\end{figure}
 In classification tree analysis, the primary objective is to predict the discrete class or category to which a given data point belongs. The decision tree algorithm partitions the data into subsets based on input features and assigns each data point to a specific class by following a path through the tree.
 
 On the other hand, regression tree analysis is employed when the predicted outcome is a continuous, real-valued number. Similar to classification trees, regression trees partition the data based on input features. However, in this context, the goal is to estimate a numeric value for each data point, typically by computing the average of the target variable within each leaf node.
