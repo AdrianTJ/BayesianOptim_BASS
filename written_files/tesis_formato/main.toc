@@ -1,3 +1,0 @@
-\babel@toc {english}{}
-\contentsline {chapter}{\numberline {1}Motivation}{1}{}%
-\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
