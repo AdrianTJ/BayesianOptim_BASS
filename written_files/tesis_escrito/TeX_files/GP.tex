@@ -1,12 +1,12 @@
 \chapter{Stochastic Processes}
 
-Before starting, we would like to note that sections of this chapter where constructed using different references as primary guides. The section on Markov chains primarily uses the references \citep{Zitkovic_2010} and \cite{hohendorff_introduction_2005}. 
-
-\section{General Definitions}
+Before starting, we would like to note that sections of this chapter where constructed using different references as primary guides. The section on Markov chains primarily uses the references \cite{Zitkovic_2010} and \cite{hohendorff_introduction_2005}. 
 
 Stochastic processes play a very important role in basically every part of this work. First, the basis of traditional Bayesian Optimization is Gaussian processes, which are a specific class of stochastic process in which all the points or vectors have a conjoined multi-normal distribution. This is not the only place where stochastic processes play a role, as BASS is a Bayesian method and modern Bayesian methods generally rely on simulation strategies such as Markov Chain Monte Carlo (MCMC) to numerically approximate complex posterior distributions. We use a particular class of MCMC algorithms called reverse jump MCMC when dealing with our alternate surrogate function, but that is detailed much later when we talk about the Bayesian Adaptive Regression Spline method. 
 
-All in all, stochastic processes are generally important to the content of this work so we include some important results and definitions, starting with the definition of a stochastic process itself, taken from \cite[\S 3.0]{Zitkovic_2010}. 
+\section{General Definitions}
+
+All in all, stochastic processes are generally important to the content of this work so we include some important results and definitions, starting with the definition of a stochastic process itself, taken from \cite{Zitkovic_2010}. 
 
 \begin{definition}
 	Let $\Theta \subseteq \mathbb{R}^+$. A \textit{stochastic process} $\{ X_\theta, \theta \in \Theta \}$ is a collection of random variables, indexed by a parameter $\theta$, such that $\theta$ belongs to some index set $\Theta$. When $\Theta = \mathbb{N}$ (or $\Theta = \mathbb{N}_0$), then it is called a \textit{discrete-time process}, and if $\Theta = \mathbb{R}^+$, then it is called a \textit{continuous-time process}. 
@@ -21,7 +21,7 @@ As with many other areas of mathematics though, the introduction of infinities i
 Another more formal definition of a stochastic process defines it as a function of the index and an element of the sample space, as follows: 
 
 \begin{definition}
-	Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space\footnote{Billingsley's classic book \cite{billingsley2012probability} has all the theoretical foundation of probability spaces and provides a thorough run down of these concepts.} where $\Omega$ is a sample space, $\mathcal{F}$ is a $\sigma$-algebra and $\mathbb{P}: \mathcal{F} \mapsto [0,1]$ a probability measure. Taking $\Theta$ an arbitrary index space, a stochastic process is a function 
+	Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space\footnote{Billingsley's classic book \cite{billingsley2012probability} has all the theoretical foundation of probability spaces and provides a thorough run down of these concepts.} where $\Omega$ is a sample space, $\mathcal{F}$ is a $\sigma$-algebra \green{on $\Omega$} and $\mathbb{P}: \mathcal{F} \mapsto [0,1]$ a probability measure. Taking $\Theta$ an arbitrary index space, a stochastic process is a function 
 	\[ X: \Omega \times \Theta \mapsto \mathbb{R} \]
 	such that for all  $\theta \in \Theta$,
 	\[ X_\theta : \omega \mapsto X(\omega, \theta) \equiv X_\theta : \Omega \mapsto \mathbb{R} \]
@@ -37,7 +37,7 @@ When $\omega$ is known, $\theta \mapsto X(\omega, \theta): \Theta \mapsto \mathb
 	\label{trajectories}
 \end{figure}
 
-As was mentioned earlier, the two main types of stochastic process that can be defined are ones where the realizations of the process occur in a discrete fashion, and the other is when they occur in a continuous fashion. It so happens that the two main structures relating to stochastic processes that we need to go into detail on are Markov chains, a discrete process, and Gaussian processes, which are continuous. We go in depth in the following sections into each of these types of stochastic processes, starting with Markov chains since Gaussian processes lead nicely onto the next chapter. 
+As was mentioned earlier, the two main types of stochastic process that can be defined are ones where the realizations of the process occur in a discrete \green{time}, and the other is when they occur in a continuous fashion. It so happens that the two main structures relating to stochastic processes that we need to go into detail on are Markov chains, a discrete process, and Gaussian processes, which are continuous. We go in depth in the following sections into each of these types of stochastic processes, starting with Markov chains since Gaussian processes lead nicely onto the next chapter. 
 
 \section{Markov Chains}
 
