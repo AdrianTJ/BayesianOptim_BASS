@@ -28,13 +28,13 @@ Another more formal definition of a stochastic process defines it as a function 
 	is a measurable function, which is equivalent to saying that $X_\theta$ is a random variable.
 \end{definition}
 
-% Duda
-When $\omega$ is known, $\theta \mapsto X(\omega, \theta): \Theta \mapsto \mathbb{R}$ is a sample function, also known as a realization of the stochastic process. These realizations are the trajectories or paths that are famous in diagrams such as the one shown in Figure \ref{trajectories}. An example application of this type of structure are time series, where the fundamental properties of stochastic processes are used to generate a function whose realizations move through time. 
+\green{When $\omega$ is fixed, the map $\theta \mapsto X(\omega, \theta) : \Theta \to \mathbb{R}$ is called a \textbf{sample function}, or a \textbf{realization} of the stochastic process. Geometrically, each realization traces a trajectory which is a single path through the range of $X$. These types of trajectories are of the kind shown in Figure \ref{trajectories}, which displays 100 simulated realizations of a Gaussian random walk, a more concrete example of these types of functions. A natural application of this framework is \textbf{time series analysis}, where $\Theta$ is taken to be a time index set and each realization represents one possible evolution of the process over time.}
 
-\begin{figure}[h]
-	\includegraphics[width=4cm]{Figures/missing.png}
+\begin{figure}[!h]
+	\includegraphics[width=12cm]{Figures/random_walks.png}
 	\centering
 	\label{trajectories}
+	\caption{\green{Random walks across a parameter $t$, where $\Theta$ is taken to be a time index set (with elements conventionally denoted $t$), and each realization represents one possible evolution of the process over time.}}
 \end{figure}
 
 As was mentioned earlier, the two main types of stochastic process that can be defined are ones where the realizations of the process occur in a discrete \green{time}, and the other is when they occur in a continuous fashion. It so happens that the two main structures relating to stochastic processes that we need to go into detail on are Markov chains, a discrete process, and Gaussian processes, which are continuous. We go in depth in the following sections into each of these types of stochastic processes, starting with Markov chains since Gaussian processes lead nicely onto the next chapter. 
