@@ -7,9 +7,12 @@
 \usepackage{mathtools}
 \usepackage{dirtytalk}
 \usepackage{url}
+\usepackage[round]{natbib}
 
 % To be removed later, since these won't be used in the final version. 
 \usepackage{xcolor}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
 
 \begin{document}
 	
@@ -39,7 +42,7 @@
 \backmatter
 
 % bibliography, glossary and index go here.
-\bibliographystyle{alpha}
+\bibliographystyle{plainnat}
 \nocite{*}
 \bibliography{./TeX_files/Bibliography}
 
