@@ -15,6 +15,7 @@
 *.log
 *.blg
 *.bbl
+*.synctex
 *.synctex.gz
 *.toc
 *.dvi
@@ -25,3 +26,16 @@
 *.fls
 *.lot
 *.lof
+*.run.xml
+*.bcf
+*.pdf
+*.upa
+*.upb
+
+# Keep specific PDF assets and main outputs
+!**/logo_ITAM.pdf
+!**/aipguide4-1.pdf
+!written_files/corrections.pdf
+!written_files/tesis_escrito/main.pdf
+!written_files/tesis_formato/main.pdf
+!written_files/tesis_formato/coverpages.pdf
