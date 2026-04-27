@@ -41,7 +41,7 @@ As was mentioned earlier, the two main types of stochastic process that can be d
 
 \section{Markov Chains}
 
-Markov chains are ubiquitous in their applications, since they represent a relatively simple but very powerful concept; the mathematical structure on which we can define phase transitions of position changes that are governed by probabilistic rules. The fundamental property which will be explored later is that independently of the past, the only important factor in determining the future state of the process is the current state of it. We begin with a formal definition and take a constructive approach in building this model. 
+Markov chains are ubiquitous in their applications, since they represent a relatively simple but very powerful concept\green{:} the mathematical structure on which we can define phase transitions of position changes that are governed by probabilistic rules. The fundamental property which will be explored later is that independently of the past, the only important factor in determining the future state of the process is the current state of it. We begin with a formal definition and \green{build up the general theory of Markov Chains from there}. 
 
 \begin{definition}
 	Let $\{ X_n, n \in \mathbb{N}_0 \}$ be a stochastic process defined on a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ such that
@@ -49,10 +49,10 @@ Markov chains are ubiquitous in their applications, since they represent a relat
 	where $\mathcal{S}$ is a finite state space of cardinality $k$, such that $\mathcal{S} = \{ s_1, s_2, \ldots , s_k \}$. 
 	We call $\{ X_n, n \in \mathbb{N}_0\}$ a Markov chain if 
 	\[ \mathbb{P}(X_{n} = s_{n} | X_{n-1} = s_{n-1}, X_{n-2} = s_{n-2} , \ldots , X_0 = s_0 ) = \mathbb{P}(X_{n} = s_{n} | X_{n-1} = s_{n-1}) \]
-	for all $n \in \mathbb{N}_0$ and all $s_0, s_1, \ldots , s_{n} \in \mathcal{S}$ whenever the two conditional probabilities are well defined, this is, when $\mathbb{P}(X_{n} = s_{n}, X_{n-1} = s_{n-1}, \ldots , X_0 = s_0) > 0$. 
+	for all $n \in \mathbb{N}_0$ and all $s_0, s_1, \ldots , s_{\green{k}} \in \mathcal{S}$ whenever the two conditional probabilities are well defined, this is, when $\mathbb{P}(X_{n-1} = s_{n-1}, \ldots , X_0 = s_0) > 0$. 
 \end{definition}
 
-Intuitively, this means that the next state in the chain is only dependent on the current state of the chain, and that the history of how the chain got to the current state is irrelevant to the next step. 
+Intuitively, this means that the next state in the chain \green{(the sequence $\{ X_n, n \in \mathbb{N}_0 \}$)} is only dependent its current state, and that the history of how the chain got to the current state is irrelevant to the next step. 
 This behaviour is known as the Markov property, and one very valuable insight that emerges from this behaviour is being able to completely determine all properties of the chain given only the initial state of it and the knowledge of how the chain behaves at all of its possible states. 
 
 The initial state or initial probability is self-explanatory, it tells us the expected behaviour of the first element in the chain, $X_0$. Formally, we call $\mu^{(0)} = \{ \mu_s^{(0)} : s \in \mathcal{S} \}$ with $\mu_s^{(0)} = \mathbb{P}(X_0 = s)$ the initial probability distribution of the process. 
@@ -62,7 +62,7 @@ The other important component to fully describe a Markov chain is the transition
 \[ p_{i,j} = \mathbb{P}(X_{n} = s_j | X_{n-1} = s_i). \]
 If we take all combinations of the states the chain can be in and map them to all other states, we get what is known as the transition matrix $P$, where each entry in the matrix denotes the probability of moving from one specific state to another. This matrix, because it is fundamentally a matrix made up of probabilities, has two interesting properties for the purposes of this work: 
 \begin{itemize}
-	\item $p_{i,j} \geq 0$ for all $i,j \in \{ 1, 2, \ldots, n \}$
+	\item $p_{i,j} \geq 0$ for all $i,j \in \{ 1, 2, \ldots, n \}$\green{,}
 	\item $\sum_{i=1}^{n} p_{i,j} = 1$ for all $j \in \{ 1, 2, \ldots, n \}$.  
 \end{itemize}
 We note that these two properties are the definition of a stochastic matrix, and therefore, by construction, Markov chain transition matrices are stochastic matrices. We have only described that we can fully determine the Markov chain from its initial state and its transition probabilities, but we have not shown this concept concretely. The following theorem ties these loose ends together and formally describes this property.
