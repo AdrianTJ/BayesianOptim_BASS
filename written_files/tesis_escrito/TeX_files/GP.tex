@@ -4,6 +4,8 @@ Before starting, we would like to note that sections of this chapter where const
 
 Stochastic processes play a very important role in basically every part of this work. First, the basis of traditional Bayesian Optimization is Gaussian processes, which are a specific class of stochastic process in which all the points or vectors have a conjoined multi-normal distribution. This is not the only place where stochastic processes play a role, as BASS is a Bayesian method and modern Bayesian methods generally rely on simulation strategies such as Markov Chain Monte Carlo (MCMC) to numerically approximate complex posterior distributions. We use a particular class of MCMC algorithms called reverse jump MCMC when dealing with our alternate surrogate function, but that is detailed much later when we talk about the Bayesian Adaptive Regression Spline method. 
 
+\green{This chapter develops the theoretical foundations required to construct and reason about Gaussian processes, with the goal of arriving at Gaussian process regression as a principled framework for supervised learning under uncertainty. The exposition follows a deliberate progression: we begin with the theory of Markov chains, establish the ergodic properties that justify their use in sampling-based inference, and then build toward Gaussian processes as a continuous generalization of the finite--dimensional Gaussian distribution. Central to this development is the role of the kernel function, which encodes prior assumptions about the structure of the process and determines the qualitative behavior of its realizations. The chapter concludes with Gaussian process regression, which is the mechanism by which uncertainty is quantified and function approximations are constructed in the  traditional approach to Bayesian optimization.}
+
 \section{General Definitions}
 
 All in all, stochastic processes are generally important to the content of this work so we include some important results and definitions, starting with the definition of a stochastic process itself, taken from \cite{Zitkovic_2010}. 
@@ -255,6 +257,7 @@ The main reason why the covariance function is denoted by $k$ is that this name 
 \[ f(x) \sim \mathcal{GP}(m(x), k(x,x')). \]
 
 \begin{definition}
+	\label{kernel}
 	Let $\mathcal{X} \subseteq \mathbb{R}^d$ be a nonempty input space, 
 	and let $V$ be a vector space equipped with an inner product 
 	$\langle \cdot, \cdot \rangle_V$. Let $\varphi : \mathcal{X} 
@@ -284,9 +287,9 @@ the character of sample paths drawn from a Gaussian process.}
 	\label{fig:gp_kernels}
 \end{figure} 
 
-Basically all major properties such as smoothness, differentiability, sparcity and range (to name only a few) are controlled by the choice of the kernel function. While the kernel function can be basically anything that fulfils the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
+Basically all major properties such as smoothness, differentiability, and range (to name only a few) are controlled by the choice of the kernel function. While the kernel function can be basically anything that fulfils the above \green{definition \ref{kernel}}, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
 \[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')}{2} \right), \]
-where $\sigma_f^2$ and $\ell$ are hyperparameters. While we do not go into too much detail as to why this is a good choice for a kernel, we refer the interested reader to \cite[\S 2.1]{garnett_bayesoptbook_2023}. 
+where $\sigma_f^2$ and $\ell$ are hyperparameters. While we do not go into too much detail as to why this is a good choice for a kernel, we refer the interested reader to \cite{garnett_bayesoptbook_2023}. 
 
 The hyperparameters defined previously each control the general behaviour of the process when fitting data points. A more detailed run down of these points is given in the next section, which talks about Gaussian process regression. This is the method by which uncertainty is measured and function approximations are conducted in the traditional approach to Bayesian optimization. 
 
