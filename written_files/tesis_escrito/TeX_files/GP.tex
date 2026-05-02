@@ -78,9 +78,9 @@ This theorem is of great importance in the area of study of Markov chains, and w
 % Duda
 We have seen that the transition matrix $P$ governs the behaviour and the changes that happen from one state of the Markov chain to the next. 
 A natural follow up question arises from trying to understand the behaviour of the chain an arbitrary $k > 1$ steps in the future instead of a single step, such as if we wanted to calculate $\mathbb{P}(X_{i+k} = s_{i+k} | X_i = s_i)$. 
-We first note that this multi-step transition probability can be simplified, assuming that the Markov chain is homogenous, to the following: 
+We first note that this multi-step transition probability can be simplified, assuming that the Markov chain is homogenous \footnote{\green{A Markov chain is homogenous if the probability of transitioning from one state to another remains constant as we increase $n$.}}, to the following: 
 \[ \mathbb{P}(X_{i+k} = s_{i+k} | X_i = s_i) = \mathbb{P}(X_{k} = s_{k} | X_0 = s_0) \]
-which we denote as $p_{i,k}^{(k)}$. Because we can define the individual probabilities of transitioning from one step to another after $k$ steps, it stands to reason that there would be a transition matrix to describe this behaviour.
+which we denote as $p_{i,k}^{(k)}$. Because we can define the individual probabilities of transitioning from one \green{state} to another after $k$ steps, it stands to reason that there would be a transition matrix to describe this behaviour.
 The theorem that establishes the way these relationships work is the Chapman-Kolmogorov theorem and equation, which we present now. The formulation of this theorem presented in this work is taken from \cite[\S 8.3]{Zitkovic_2010}. 
 
 \begin{theorem}[Chapman-Kolmogorov Theorem]
@@ -132,54 +132,50 @@ Before continuing, we note that with stochastic matrices being just glorified as
 These two definitions are necessary building blocks to get to the property we are truly interested in, ergodicity. 
 
 \begin{definition}
-	A Markov chain $\{ X_n: n \in \mathbb{N}_0 \}$ is called ergodic if the limit $\pi_j \coloneqq \lim_{n \rightarrow \infty} p_{i,j}^{(n)}$
-	\begin{itemize}
-		\item Exists for all $j \in \{1,2,\ldots,k\}$. 
-		\item Is positive and does not depend on $i$. 
-		\item $\pi = (\pi_1 , \pi_2 , \ldots , \pi_k)$ is a probability distribution on $\mathcal{S}$. 
-	\end{itemize}
+	A Markov chain $\{ X_n: n \in \mathbb{N}_0 \}$ is called ergodic if the limit $\pi_j \coloneqq \lim_{n \rightarrow \infty} p_{i,j}^{(n)}$ \green{exists for all $j \in \{1,2,\ldots,k\}$, is positive and does not depend on $i$, and $\pi = (\pi_1 , \pi_2 , \ldots , \pi_k)$ is a probability distribution on $\mathcal{S}$. }
 \end{definition}
 
-Ergodicity is an incredibly powerful property that is not native to stochastic processes per say, but rather it is inherited from measure theory. In a sense, for a system to be ergodic it needs to be governed by constant or unchanging probability laws, irregardless of a change in state, or in the context of time-centric processes, changes in time. As a simple example, we consider throwing a fair coin in the air 100 times. We would (on average) get the same result if 100 people throw one coin compared to one person throwing the coin 100 times. This would be an ergodic system. On the other hand, if we change the coin to one that is imbalanced or unfair after 50 throws are completed, then the laws governing the change themselves would not remain constantas time passes or we change states, and this would be an example of a non-ergodic system. 
+\green{Ergodicity is a powerful property that does not arise intrinsically within the theory of stochastic processes, but is instead inherited from measure theory. Informally, a system is ergodic if the probability laws governing it remain invariant or unchanged by transitions between states or, in the case of time-indexed processes, by the passage of time. As a concrete illustration, consider tossing a fair coin 100 times. The distribution of outcomes observed by a single person performing all 100 tosses is, on average, identical to that obtained from 100 independent people each tossing the coin once; the underlying probability law is the same in both cases, and this system is ergodic. By contrast, suppose the coin is replaced by a biased one after 50 tosses. The probability law now changes mid-process and it is therefore not invariant across time or states which means that the system is therefore non-ergodic.}
 
-The scope of this work does not cover this theory in as much detail as the author would like, but the interested reader is directed to sections 24 and 36 of \cite{billingsley2012probability} for a much more complete rundown of Ergodicity looked at through the lenses of measure theory and stochastic processes. The result ergodicity provides that is the foundation for MCMC applications is the following theorem. 
+\green{A thorough treatment of ergodicity lies beyond the scope of this work; the interested reader is directed to Sections 24 and 36 of \cite{billingsley2012probability} for a rigorous development through the lenses of measure theory and stochastic processes, respectively. At its core, ergodicity formalizes the equivalence between time averages and ensemble averages: rather than observing many independent realizations of a system simultaneously, one can instead observe a single realization over a long period of time and recover the same statistical quantities. This equivalence is precisely what makes ergodic Markov chains computationally tractable. The result that makes this precise, and upon which the theoretical justification for Markov Chain Monte Carlo (MCMC) methods rests, is the Ergodic Theorem, stated below.}
 
 \begin{theorem}
-	Let $\{ X_n: n \in \mathbb{N}_0\}$ be an ergodic Markov chain, such that 
-	\[ \pi_j = \lim_{n \rightarrow \infty} p_{i,j}^{(n)}, \text{ for all } j \in \mathcal{S}. \]
-	Then, the vector $\pi$ is a unique solution of 
-	\[ \pi^T = \pi^T P \]
-	further, $\pi$ is a probability distribution on $\mathcal{S}$. 
+	Let $\{X_n : n \in \mathbb{N}_0\}$ be an ergodic Markov chain such that
+	\[
+	\pi_j = \lim_{n \to \infty} p_{i,j}^{(n)}, \quad \text{for all } j \in \mathcal{S}.
+	\]
+	Then the vector $\pi$ is the unique solution of
+	\[
+	\pi^T = \pi^T P,
+	\]
+	and $\pi$ is a probability distribution on $\mathcal{S}$.
 \end{theorem}
 
 \begin{proof}
-	Let $j$ be an arbitrary member of $\mathcal{S}$. Then, 
-	\begin{align*}
-		\pi_j &= \lim_{n \rightarrow \infty} p_{i,j}^{(n)} \\
-		&= \lim_{n \rightarrow \infty} p_{i,j}^{(n+1)} \\
-		&= \lim_{n \rightarrow \infty} p_{i,j}^{(n)} \cdot p_{i,j} \\
-		&= \pi_j \cdot p_{i,j}.
-	\end{align*}
-	Since this hods true for all $j \in \mathcal{S}$, then in particular it holds true for the vectorized version of this equation, this being 
-	\[ \begin{bmatrix}
-		\pi_1 \\
-		\pi_2 \\
-		\vdots \\
-	\end{bmatrix} = 
-	\begin{bmatrix}
-		\pi_1, &
-		\pi_2, &
-		\ldots 
-	\end{bmatrix} 
-	\begin{bmatrix}
-		p_{i,1} \\
-		p_{i,2} \\
-		\vdots \\
-	\end{bmatrix} \]
-Which is equivalent to saying that $\pi^T = \pi^T P$.
+	\green{Let $j$ be an arbitrary element of $\mathcal{S}$. By the
+		Chapman--Kolmogorov equations (Theorem 3),}
+	
+	\[
+	p_{i,j}^{(n+1)} = \sum_{k \in \mathcal{S}} p_{i,k}^{(n)}\, p_{k,j}.
+	\]
+	
+	\green{Taking the limit as $n \to \infty$ and applying $\pi_k = \lim_{n \to \infty} p_{i,k}^{(n)}$ for each $k \in \mathcal{S}$ gives}
+	
+	\[
+	\pi_j = \sum_{k \in \mathcal{S}} \pi_k\, p_{k,j}.
+	\]
+	
+	\green{Since $j \in \mathcal{S}$ was arbitrary, this holds for all $j$, which is precisely the component-wise form of $\pi^T = \pi^T P$.}
+	
+	\green{To verify that $\pi$ is a probability distribution: since
+		$p_{i,j}^{(n)} \geq 0$ for all $n$, we have $\pi_j \geq 0$ for all
+		$j \in \mathcal{S}$. Furthermore, since $\sum_{j \in \mathcal{S}} p_{i,j}^{(n)} = 1$ for all $n$, taking the limit yields $\sum_{j \in \mathcal{S}} \pi_j = 1$. Hence $\pi$ is a valid probability distribution on $\mathcal{S}$.}
+	
+	\green{Uniqueness follows from the ergodicity assumption: an ergodic (irreducible and aperiodic) chain admits exactly one stationary distribution, so $\pi$ is the unique solution of $\pi^T = \pi^T P$.}
+	
 \end{proof}
 
-If we construct a Markov chain in a way that it is ergodic an control the distribution $\pi$ so that it is something that we want, we can guarantee that after a sufficiently large amount of iterations $n$ we will be sampling from the stationary distribution of the process, which is invariant through time because of the property presented in the above theorem. This is the crux of understanding the Markov Chain Monte Carlo technique which is the central object of study of this section. Delving into the construction of the Metropolis-Hastings algorithm and the fundamental building blocks needed to construct these chains that eventually lead to interesting stationary distributions would make this work exceedingly long, but \cite{rubinstein2016simulation} and \cite{robert1999monte} are good resources for a detailed rundown of these topics. We will return much later in this work when discussing the BASS method to MCMC and why it is so essential to this process. We will not look at pure MCMC though but an interesting modification to the base algorithm known as the Reversible Jump Markov Chain Monte Carlo (RJMCMC) algorithm. 
+If we construct a Markov chain in a way that it is ergodic an control the distribution $\pi$ so that it is something that we want, we can guarantee that after a sufficiently large amount of iterations $n$ we will be sampling from the stationary distribution of the process, which is invariant through time because of the property presented in the above theorem. This is the crux of understanding the Markov Chain Monte Carlo technique which is the central object of study of this section. Further diving into the construction of the Metropolis\green{--}Hastings algorithm and the fundamental building blocks needed to construct these chains that eventually lead to stationary distributions \green{we care about} would make this work exceedingly long, but \cite{rubinstein2016simulation} and \cite{robert1999monte} are good resources for a detailed rundown of these topics. We will return much later in this work when discussing the BASS method to MCMC and why it is so essential to this process. We will not look at pure MCMC though but an interesting modification to the base algorithm known as the Reversible Jump Markov Chain Monte Carlo (RJMCMC) algorithm. 
 
 For now though we move on to the other interesting sub-case of stochastic processes relevant to this work, the continuous-time Gaussian Process. 
 
