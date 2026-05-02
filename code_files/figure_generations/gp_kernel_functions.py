@@ -1,3 +1,7 @@
+# /// script
+# dependencies = ["numpy", "matplotlib"]
+# ///
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -23,6 +27,10 @@ def kernel_periodic(x1, x2, length_scale=1.0, variance=1.0, period=2.0):
 def kernel_linear(x1, x2, variance=1.0, offset=0.0):
     return variance * (x1[:, None] - offset) * (x2[None, :] - offset)
 
+def kernel_rq(x1, x2, length_scale=1.0, variance=1.0, alpha=1.0):
+    sq_dist = (x1[:, None] - x2[None, :]) ** 2
+    return variance * (1 + sq_dist / (2 * alpha * length_scale**2)) ** (-alpha)
+
 # --- GP sampler ---
 def sample_gp(kernel, x, n_samples=5, noise=1e-6, **kwargs):
     K = kernel(x, x, **kwargs)
@@ -43,6 +51,7 @@ kernels = [
     (kernel_matern32,  "Matérn $\\nu = 3/2$",         {"length_scale": 1.0, "variance": 1.0}),
     (kernel_periodic,  "Periodic",                    {"length_scale": 1.0, "variance": 1.0, "period": 2.0}),
     (kernel_linear,    "Linear",                      {"variance": 0.3,     "offset": 0.0}),
+    (kernel_rq,        "Rational Quadratic",          {"length_scale": 1.0, "variance": 1.0, "alpha": 1.0}),
 ]
 
 fig = plt.figure(figsize=(16, 10))
@@ -50,7 +59,7 @@ fig.suptitle("Gaussian Process Samples Under Different Kernel Functions",
              fontsize=15, fontweight="bold", y=1.01)
 
 gs = GridSpec(2, 3, figure=fig, hspace=0.45, wspace=0.3)
-axes = [fig.add_subplot(gs[i // 3, i % 3]) for i in range(5)]
+axes = [fig.add_subplot(gs[i // 3, i % 3]) for i in range(6)]
 
 for ax, (kernel_fn, title, kwargs) in zip(axes, kernels):
     samples = sample_gp(kernel_fn, x, n_samples=n_samples, **kwargs)

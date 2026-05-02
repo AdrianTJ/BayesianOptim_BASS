@@ -267,17 +267,24 @@ The main reason why the covariance function is denoted by $k$ is that this name 
 	\]
 \end{definition}
 
-What this kernel function allows us to do is basically borrow an inner product from a different space, in this definition $V$, and apply it to the transformed elements of our input or feature space. This allows us to cheat in some regard and compute dot products or metrics in the input space without knowing or needing to know the properties of that space. Tying back the kernel to Gaussian processes, we note that while the mean only controls the average value across realizations of the process $f$, the covariance or kernel function actually controls the underlying behavior of the realizations or Gaussian processes. As an example of this, we borrow the following figure from \cite{ghahramani2011tutorial}. 
+\green{What this kernel function allows us to do is essentially borrow an inner product from the feature space $V$ and apply it to transformed elements of the input space $\mathcal{X}$. This allows us to compute inner products in a potentially high-dimensional or implicit feature space without requiring explicit knowledge of its structure. Tying the kernel back to Gaussian processes, we note that while the mean function 
+controls only the average value across realizations of $f$, the 
+covariance function — that is, the kernel — governs the underlying 
+behavior and structure of those realizations. Different choices of kernel encode different prior assumptions about the process, such as smoothness, periodicity, or stationarity. The rational quadratic kernel is a noteworthy case: it can be interpreted as a scale mixture of RBF kernels with different length scales, and interpolates between smooth and rough sample path behavior depending on the parameter $\alpha$. Figure~\ref{fig:gp_kernels} illustrates how the choice of kernel affects 
+the character of sample paths drawn from a Gaussian process.}
 
 \begin{figure}[h]
-	\includegraphics[width=4cm]{Figures/missing.png}
 	\centering
-	\label{trajectories_kernels}
-\end{figure}
+	\includegraphics[width=\textwidth]{Figures/gp_kernels.pdf}
+	\caption{Sample paths from a zero-mean Gaussian process under six
+		kernel functions: the RBF (squared exponential), Matérn $\nu = 1/2$,
+		Matérn $\nu = 3/2$, periodic, linear, and rational quadratic kernels.
+		Each colored trajectory represents an independent sample from the
+		process.}
+	\label{fig:gp_kernels}
+\end{figure} 
 
-Basically, all major properties such as smoothness, differentiability, sparcity and range (to name only a few) are controlled by the choice of the kernel function. 
-
-While the kernel function can be basically anything that fulfils the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
+Basically all major properties such as smoothness, differentiability, sparcity and range (to name only a few) are controlled by the choice of the kernel function. While the kernel function can be basically anything that fulfils the above definition, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
 \[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')}{2} \right), \]
 where $\sigma_f^2$ and $\ell$ are hyperparameters. While we do not go into too much detail as to why this is a good choice for a kernel, we refer the interested reader to \cite[\S 2.1]{garnett_bayesoptbook_2023}. 
 
