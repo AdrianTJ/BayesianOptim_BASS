@@ -304,11 +304,12 @@ One of the advantages of Gaussian process regression over other forms of supervi
 This however does not mean that we do not have control over the behavior of the function we decide to adjust to the points. In the following figure, we can see how changing the hyperparameter $\ell$ in the squared exponential covariance function changes the relative smoothness of the fit function. 
 
 \begin{figure}[h]
-	\includegraphics[width=4cm]{Figures/missing.png}
+	\includegraphics[width=14cm]{Figures/gp_regression_ell.pdf}
 	\centering
-	\caption{Gaussian Processes for ML, page 20.}
+	\caption{How different values of $\ell$ change the behaviour of the Gaussian process.}
 	\label{trajectories_smoothness}
 	\end{figure}
+
 We also note how radically the confidence intervals change from one adjustment to the next based on moving this hyperparameter around. Because we can define an infinite amount of Gaussian processes based on our choice of hyperparameters (and further even by changing the kernel function), \textcolor{red}{HOW TO STATE THIS AS A MINIMIZATION PROBLEM?}
 This problem translates to finding under the given assumptions the function that best adjusts to these points in the sense that it minimizes the uncertainty present. This will involve the selection of the best\footnote{Best is a dangerous word in this context. Obviously depending on the problem and the minimization objectives, this best set of hyperparameters that define this function can change, but here we simply refer to the one or family of functions that solves the above minimization problem.} hyperparameters given the constraints of the problem and using that defined mean function to predict values not in the data set.
 
