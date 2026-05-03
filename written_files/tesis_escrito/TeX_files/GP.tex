@@ -288,7 +288,7 @@ the character of sample paths drawn from a Gaussian process.}
 \end{figure} 
 
 Basically all major properties such as smoothness, differentiability, and range (to name only a few) are controlled by the choice of the kernel function. While the kernel function can be basically anything that fulfils the above \green{definition \ref{kernel}}, there are some particularly useful or popular kernel functions when dealing with Gaussian processes. Chief among them is the squared exponential kernel, also known as the radial basis function. This kernel is defined as
-\[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')}{2} \right), \]
+\[ k(x, x') = \sigma_f^2 \exp \left( \frac{- \ell (x - x')^2}{2} \right), \]
 where $\sigma_f^2$ and $\ell$ are hyperparameters. While we do not go into too much detail as to why this is a good choice for a kernel, we refer the interested reader to \cite{garnett_bayesoptbook_2023}. 
 
 The hyperparameters defined previously each control the general behaviour of the process when fitting data points. A more detailed run down of these points is given in the next section, which talks about Gaussian process regression. This is the method by which uncertainty is measured and function approximations are conducted in the traditional approach to Bayesian optimization. 
