@@ -17,4 +17,4 @@ The repository is organized as follows:
 
 ## Purpose
 
-The primary purpose of this project is to develop and validate hyperparameter optimization algorithms, particularly Bayesian optimization (BO), and explore the impact of changing the underlying surrogate model for the iterative BO process, within the context of a Master's thesis in Data Science.
+The primary purpose of this project is to develop and validate hyperparameter optimization algorithms, particularly Bayesian optimization (BO), and explore the impact of changing the underlying surrogate model for the iterative BO process.
