@@ -50,7 +50,7 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 
 The project primarily uses **R** for the optimization loops and **Python** for specific visualization components.
 
-- **R Packages**: `BASS`, `DiceKriging`, `DiceOptim`, `lhs`, `ggplot2`
+- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr), `future`, `furrr`, `gt`
 - **Python Libraries**: `numpy`, `scipy`, `matplotlib`, `scikit-learn`
 
 ### Running Experiments
