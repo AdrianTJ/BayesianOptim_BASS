@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![R-Project](https://img.shields.io/badge/R-Project-blue.svg)](https://www.r-project.org/)
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Release-v1.0.0-green.svg)](https://github.com/AdrianTJ/BayesianOptim_BASS/releases)
+[![Version](https://img.shields.io/badge/Release-v0.8.1-orange.svg)](https://github.com/AdrianTJ/BayesianOptim_BASS/releases)
 
 This repository contains the research and implementation for a Master's thesis in Data Science focused on **Bayesian Active Supervised Learning for Optimal Experimental Design (BASS-BO)**. The project investigates the efficacy of **Bayesian Adaptive Spline Surfaces (BASS)** as a surrogate model for Bayesian Optimization (BO), providing a flexible, non-parametric alternative to traditional Gaussian Processes (GP).
 
