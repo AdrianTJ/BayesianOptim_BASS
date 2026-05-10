@@ -378,23 +378,25 @@ Since we have formally defined the distribution of $\boldsymbol{f}$ and we know 
 		\boldsymbol{f} \\
 		\boldsymbol{f}_*
 	\end{bmatrix} \sim \mathcal{N}\left( \begin{bmatrix}
-		0 \\
-		0
+		\boldsymbol{0} \\
+		\boldsymbol{0}
 	\end{bmatrix} , \begin{bmatrix}
 		K & K_* \\
 		K_*^T & K_{**}
 	\end{bmatrix} \right), 
 \end{equation}
 
-which is the joint probability distribution $\mathbb{P}(\boldsymbol{f}, \boldsymbol{f}_* | \boldsymbol{X}, \boldsymbol{X}_*)$. This is a massive step in constructing the regression model but we are still missing one component. When dealing with regression and prediction of values outside of the original training dataset, we do not need the joint probability, but the conditional probability of the test set given everything else we know. Formally, this means that we need to find the probability distribution of $\mathbb{P}(\boldsymbol{f}_* | \boldsymbol{X}, \boldsymbol{X}_*, \boldsymbol{f})$. Luckily, since we are dealing with Gaussian distributions, there is a very neat closed form expression that describes this probability. Referring to section $A.2$ of \cite{rasmussen2006gaussian}, and noting that the mean for both $\boldsymbol{f}$ and $\boldsymbol{f}_*$ is 0, then 
+which is the joint probability distribution $\boldsymbol{f}, \boldsymbol{f}_* | \boldsymbol{X}, \boldsymbol{X}_*$. This is a massive step in constructing the regression model but we are still missing one component. When dealing with regression and prediction of values outside of the original training dataset, we do not need the joint probability, but the conditional probability of the test set given everything else we know. Formally, this means that we need to find the probability distribution of $\mathbb{P}(\boldsymbol{f}_* | \boldsymbol{X}, \boldsymbol{X}_*, \boldsymbol{f})$. Luckily, since we are dealing with Gaussian distributions, there is a very neat closed form expression that describes this probability. Referring to section $A.2$ of \cite{rasmussen2006gaussian}, and noting that the mean for both $\boldsymbol{f}$ and $\boldsymbol{f}_*$ is 0, then 
 \[ \boldsymbol{f}_* | \boldsymbol{f} \sim \mathcal{N}(K_*^T K^{-1} \boldsymbol{f}, K_{**} - K_*^T K^{-1} K_*). \]
 
-This probability function is what is used to calculate out of sample predictions for the out of sample data $\boldsymbol{X}_*$. 
+\green{This probability function is what is used to calculate out of sample predictions for the out of sample data $\boldsymbol{X}_*$. Concretely, the mean of this conditional distribution, $K_*^T K^{-1} \boldsymbol{f}$, is the point prediction we assign to $\boldsymbol{f}_*$ for each test point in $\boldsymbol{X}_*$. The intuition here is fairly straightforward, $K^{-1}\boldsymbol{f}$ can be thought of as a set of weights learned from the training data, and $K_*^T$ projects those weights onto the test points by measuring how similar each test point is to each training point through the kernel $k$. Points in $\boldsymbol{X}_*$ that are close to training points in $\boldsymbol{X}$ will borrow more heavily from nearby observed function values, while points far from all training data will have their predictions pulled back toward the prior mean of zero.}
+
+\green{Equally important is the second component, the covariance $K_{**} - K_*^T K^{-1} K_*$. This matrix tells us how uncertain we are about our predictions: $K_{**}$ is the prior covariance between test points before seeing any data, and $K_*^T K^{-1} K_*$ is how much of that uncertainty we can explain away given the training observations. The diagonal entries of this matrix give the predictive variance at each test point, which we can use to construct credible intervals around our predictions. This is one of the more appealing properties of Gaussian process regression, that we get a full probability distribution over predictions rather than just point estimates.}
 
 \subsubsection{Gaussian Process Regression Over Noisy Observations}
 
 When there is inherent randomness or noise in the signals being calculated, the structure of the problem itself changes. If we can assume that the noisy signals we are receiving are of the form $y = f(\boldsymbol{x}) + \varepsilon$ with the noise or inherent randomness captured by $\varepsilon$ and these being independent, identically distributed observations of a normal or Gaussian distribution, the covariance \green{matrix} of the observations therefore becomes 
-\[ \text{cov}(\boldsymbol{y}) = K(\boldsymbol{X}, \boldsymbol{X}) + \sigma^2 I, \]
+\[ \text{cov}(\boldsymbol{y}) = \sum \boldsymbol{y} = K(\boldsymbol{X}, \boldsymbol{X}) + \sigma^2 I, \]
 with $I$ the identity matrix. In practical terms this means that the inherent variance of every observation is present as an added term on the diagonal of the covariance matrix (this is because of the assumption that the noise is independent). This change causes the joint distribution originally defined in equation \ref{joint_dist} to
 \[ 
 \begin{bmatrix}
