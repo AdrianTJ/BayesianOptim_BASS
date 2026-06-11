@@ -1,5 +1,14 @@
 #!/usr/bin/env Rscript
 
+#' Parallel Bayesian Optimization Benchmarking on Test Targets
+#' 
+#' This script runs a parallel comparison of BASS-BO, GP-BO, and Random Search
+#' on standard optimization benchmark functions (e.g., Branin, Rastrigin).
+#' It handles target vectorization, domain scaling, and results collation.
+#'
+#' Author: Adrian TJ
+#' Date: June 2026
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(lhs)
@@ -10,17 +19,19 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-# =========================
-# Parallel setup
-# =========================
+# ==============================================================================
+# Parallel Setup
+# ==============================================================================
+# Detect available cores and initialize a multisession plan for furrr/future.
 n_workers <- max(1L, parallel::detectCores() - 1L)
 plan(multisession, workers = n_workers)
 
-# =========================
-# CLI arguments
-# =========================
+# ==============================================================================
+# Configuration & CLI Arguments
+# ==============================================================================
 args <- commandArgs(trailingOnly = TRUE)
 
+# Default Experiment Settings
 n_reps <- 10
 seed_start <- 1001
 d <- 2
@@ -32,7 +43,7 @@ verbose <- FALSE
 out_dir <- "results"
 target_name <- "branin"
 
-# BASS defaults
+# BASS-specific Tuning Parameters
 bass_kappa_start <- 3.5
 bass_kappa_end <- 1.5
 bass_sd_floor <- 1e-3
@@ -45,6 +56,7 @@ bass_degree_late <- 2
 bass_switch_after <- 40
 bass_print_every <- 10
 
+# Parse arguments in --key=value format
 for (a in args) {
   if (grepl("^--reps=", a)) n_reps <- as.integer(sub("^--reps=", "", a))
   if (grepl("^--seed_start=", a)) seed_start <- as.integer(sub("^--seed_start=", "", a))
@@ -58,32 +70,40 @@ for (a in args) {
   if (grepl("^--target=", a)) target_name <- sub("^--target=", "", a)
 }
 
-# =========================
-# Load target
-# =========================
+# ==============================================================================
+# Target Loading & Vectorization
+# ==============================================================================
+# Source utilities and the specific target function file.
 source("targets/target_utils.R", local = TRUE)
 source(file.path("targets", paste0(target_name, ".R")), local = TRUE)
 
 target_fn     <- get(target_name, inherits = TRUE)
 target_bounds <- get(paste0(target_name, "_bounds"), inherits = TRUE)
 
+# Validate dimensionality
 if (d != length(target_bounds$lower))
-  stop("Dimension mismatch with target")
+  stop(sprintf("Dimension mismatch: target expects %d, but got %d", 
+               length(target_bounds$lower), d))
 
+# Convert scalar-eval target to matrix-eval target with domain scaling [0,1]^d -> [L, U]
 f <- vectorize_target(target_fn, target_bounds)
 
-# =========================
-# Utilities
-# =========================
+# ==============================================================================
+# Utility Functions
+# ==============================================================================
+
+#' Euclidean Duplicate Check
 is_duplicate <- function(x, X, tol = 1e-10) {
   x <- as.numeric(x)
   X <- as.matrix(X)
   any(rowSums((X - matrix(x, nrow(X), ncol(X), byrow = TRUE))^2) <= tol^2)
 }
 
-# =========================
-# Optimizers
-# =========================
+# ==============================================================================
+# Optimization Algorithms
+# ==============================================================================
+
+#' BASS-BO Optimizer
 run_bass_bo <- function(X_init, y_init) {
   X_eval <- X_init
   y_eval <- y_init
@@ -93,6 +113,7 @@ run_bass_bo <- function(X_init, y_init) {
   best[1] <- min(y_eval)
   
   for (t in 1:budget) {
+    # Fit adaptive splines surrogate
     y_mean <- mean(y_eval)
     y_sd <- sd(y_eval); if (!is.finite(y_sd) || y_sd < 1e-12) y_sd <- 1
     y_std <- (y_eval - y_mean) / y_sd
@@ -100,12 +121,13 @@ run_bass_bo <- function(X_init, y_init) {
     deg <- if (nrow(X_eval) < bass_switch_after) bass_degree_early else bass_degree_late
     fit <- bass(xx = X_eval, y = y_std, degree = deg, verbose = FALSE)
     
+    # Exploration parameter decay
     kappa_t <- bass_kappa_start +
       (bass_kappa_end - bass_kappa_start) * (t - 1) / max(1, budget - 1)
     
+    # Hybrid candidate generation (Global LHS + Local Gaussian)
     n_local <- max(1L, round(n_cand * bass_local_frac))
     n_global <- n_cand - n_local
-    
     X_cand <- rbind(
       maximinLHS(n_global, d),
       pmin(pmax(matrix(
@@ -116,6 +138,7 @@ run_bass_bo <- function(X_init, y_init) {
       ), 0), 1)
     )
     
+    # Prediction and Acquisition (LCB)
     pred <- predict(fit, newdata = as.data.frame(X_cand))
     pred_mat <- as.matrix(pred)
     if (ncol(pred_mat) != nrow(X_cand)) pred_mat <- t(pred_mat)
@@ -124,24 +147,25 @@ run_bass_bo <- function(X_init, y_init) {
     sd_post <- apply(pred_mat, 2, sd) * y_sd
     sd_post <- pmax(sd_post * bass_sd_inflate, bass_sd_floor)
     
+    # Acquisition Logic: Mixture of Exploitation (LCB) and Exploration (SD)
     ord <- if (t %% bass_explore_every == 0)
       order(sd_post, decreasing = TRUE) else order(mu - kappa_t * sd_post)
     
-    pick <- ord[!sapply(ord, function(i)
-      is_duplicate(X_cand[i, ], X_eval))][1]
+    # Duplicate-safe pick
+    pick <- ord[!sapply(ord, function(i) is_duplicate(X_cand[i, ], X_eval))][1]
     if (is.na(pick)) pick <- ord[1]
     
+    # Sequential Update
     x_next <- X_cand[pick, , drop = FALSE]
     y_next <- f(x_next)
-    
     X_eval <- rbind(X_eval, x_next)
     y_eval <- c(y_eval, y_next)
     best[t + 1] <- min(y_eval)
   }
-  
   best
 }
 
+#' GP-BO Baseline
 run_gp_bo <- function(X_init, y_init) {
   X_eval <- X_init
   y_eval <- y_init
@@ -155,21 +179,19 @@ run_gp_bo <- function(X_init, y_init) {
     lcb <- p$Y_hat - kappa * sqrt(pmax(p$MSE, 0) + eps)
     
     ord <- order(lcb)
-    pick <- ord[!sapply(ord, function(i)
-      is_duplicate(X_cand[i, ], X_eval))][1]
+    pick <- ord[!sapply(ord, function(i) is_duplicate(X_cand[i, ], X_eval))][1]
     if (is.na(pick)) pick <- ord[1]
     
     x_next <- X_cand[pick, , drop = FALSE]
     y_next <- f(x_next)
-    
     X_eval <- rbind(X_eval, x_next)
     y_eval <- c(y_eval, y_next)
     best[t + 1] <- min(y_eval)
   }
-  
   best
 }
 
+#' Random Search Baseline
 run_random_search <- function(X_init, y_init) {
   X_eval <- X_init
   y_eval <- y_init
@@ -186,13 +208,14 @@ run_random_search <- function(X_init, y_init) {
     y_eval <- c(y_eval, y)
     best[t + 1] <- min(y_eval)
   }
-  
   best
 }
 
-# =========================
-# One seed
-# =========================
+# ==============================================================================
+# Simulation Harness
+# ==============================================================================
+
+#' Run all methods for a single seed
 run_one_seed <- function(seed) {
   set.seed(seed)
   n0 <- max(2 * d + 1, 8)
@@ -209,24 +232,23 @@ run_one_seed <- function(seed) {
     pivot_longer(-c(seed, iter), names_to = "method", values_to = "best")
 }
 
-# =========================
-# Run (parallel)
-# =========================
+# ==============================================================================
+# Execution & Persistence
+# ==============================================================================
+
 seeds <- seed_start + 0:(n_reps - 1)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
+cat(sprintf("Running experiment on target: %s (d=%d) | %d reps\n", target_name, d, n_reps))
 
-
+# Execute in parallel across seeds
 all_runs <- future_map_dfr(
   seeds,
   run_one_seed,
   .options = furrr_options(seed = TRUE)
 )
 
-# =========================
-# Summaries
-# =========================
-
+# Collate convergence statistics
 summary_curve <- all_runs %>%
   group_by(method, iter) %>%
   summarize(
@@ -241,6 +263,7 @@ summary_curve <- all_runs %>%
     ci_high = mean_best + 1.96 * se
   )
 
+# Compute final performance summary
 final_summary <- all_runs %>%
   group_by(seed, method) %>%
   filter(iter == max(iter)) %>%
@@ -253,13 +276,12 @@ final_summary <- all_runs %>%
   ) %>%
   arrange(mean_final)
 
-
+# Save datasets
 write_csv(all_runs, file.path(out_dir, "all_runs.csv"))
 write_csv(summary_curve, file.path(out_dir, "summary_curve.csv"))
 write_csv(final_summary, file.path(out_dir, "final_summary.csv"))
 
-
-
+# Visualize results
 p <- ggplot(
   summary_curve,
   aes(x = iter, y = mean_best, color = method, fill = method)
@@ -268,7 +290,9 @@ p <- ggplot(
               alpha = 0.15, linewidth = 0) +
   geom_line(linewidth = 1) +
   labs(
-    title = sprintf("Mean Convergence Across %d Seeds (d=%d)", n_reps, d),
+    title = sprintf("Mean Convergence: %s (%d-Dimensional)", 
+                    str_to_title(target_name), d),
+    subtitle = sprintf("Aggregated across %d seeds with 95%% CI", n_reps),
     x = "Iteration (after initialization)",
     y = "Best objective so far (lower is better)"
   ) +
@@ -281,5 +305,10 @@ ggsave(
   height = 4,
   dpi = 150
 )
+
+# Output final stats to console
+print(final_summary)
+cat(sprintf("\nArtifacts saved in: %s\n", normalizePath(out_dir)))
+
 
 
