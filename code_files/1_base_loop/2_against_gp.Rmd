@@ -1,7 +1,16 @@
 ---
-title: "2_against_gp"
-output: html_document
+title: "BASS-BO vs GP-BO: One-Dimensional Comparison"
+author: "Adrian TJ"
+date: "June 2026"
+output: 
+  html_document:
+    toc: true
+    theme: united
 ---
+
+# Introduction
+
+This notebook compares **Bayesian Adaptive Spline Surfaces (BASS)** and **Gaussian Processes (GP)** as surrogate models for Bayesian Optimization in a one-dimensional setting. We evaluate their ability to navigate a complex, non-linear objective function with oscillations, a jump discontinuity, and local features.
 
 ```{r packages, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -11,10 +20,17 @@ library(GPfit)
 library(gt)
 ```
 
+# Objective Function
+
+The objective function $f(x)$ is defined on the unit interval $[0, 1]$. It includes:
+- A sinusoidal base.
+- A jump discontinuity at $x = 0.62$.
+- A local bump and a local valley to test surrogate sensitivity.
+
 ```{r objective-and-settings}
 set.seed(123)
 
-# Objective function to minimize
+#' Complex 1D Objective Function
 f <- function(x) {
   x <- pmin(pmax(x, 0), 1)  # clamp to [0,1]
   term1 <- sin(10 * pi * x) * (1 - x)
@@ -26,32 +42,40 @@ f <- function(x) {
 }
 
 # Experiment settings
-n0 <- 5
-budget <- 80
-grid_n <- 1000
-kappa <- 2.0
-eps <- 1e-8
+n0 <- 5             # Initial design size
+budget <- 80        # Number of sequential BO steps
+grid_n <- 1000      # Resolution of the candidate grid
+kappa <- 2.0        # LCB exploration parameter
+eps <- 1e-8         # Small nugget for GP stability
 
 x_grid <- seq(0, 1, length.out = grid_n)
 
-# Helper
+# Helper: Find the index of the closest value on the grid
 closest_idx <- function(x, grid) which.min(abs(grid - x))
 ```
 
+# Initialization
+
+Both methods start with the same initial design points generated via **Maximin Latin Hypercube Sampling (LHS)**.
+
 ```{r initialization}
-# Shared initialization across all methods
 x_init <- maximinLHS(n0, 1)[, 1]
 y_init <- f(x_init)
 
 init_df <- tibble(x = x_init, y = y_init)
-init_df
+init_df %>% gt() %>% tab_header("Initial Design Points")
 ```
+
+# Optimization Algorithms
+
+## BASS-BO
+BASS uses Bayesian Adaptive Splines. It is flexible and handles discontinuities better than standard GPs because it doesn't assume a stationary kernel.
 
 ```{r bass-bo-function}
 run_bass_bo <- function(x_init, y_init, x_grid, budget, kappa) {
   evals <- tibble(x = x_init, y = y_init)
   
-  # Avoid exact repeats on the candidate grid
+  # Tracking grid usage to avoid re-evaluating same points
   used <- rep(FALSE, length(x_grid))
   for (x0 in evals$x) used[closest_idx(x0, x_grid)] <- TRUE
   
@@ -59,26 +83,18 @@ run_bass_bo <- function(x_init, y_init, x_grid, budget, kappa) {
   best_so_far[1] <- min(evals$y)
   
   for (t in 1:budget) {
-    fit <- bass(
-      xx = matrix(evals$x, ncol = 1),
-      y = evals$y,
-      degree = 2,
-      verbose = FALSE
-    )
+    # Fit BASS (Degree 2 for interactions/curves)
+    fit <- bass(matrix(evals$x, ncol = 1), evals$y, degree = 2, verbose = FALSE)
     
-    # Posterior predictive draws
+    # Predict on grid (posterior draws)
     pred <- predict(fit, newdata = data.frame(x = x_grid))
     pred_mat <- as.matrix(pred)
-    
-    # Robust orientation: rows = draws, cols = candidates
-    if (ncol(pred_mat) != length(x_grid) && nrow(pred_mat) == length(x_grid)) {
-      pred_mat <- t(pred_mat)
-    }
+    if (ncol(pred_mat) != length(x_grid) && nrow(pred_mat) == length(x_grid)) pred_mat <- t(pred_mat)
     
     mu <- colMeans(pred_mat)
     sd_post <- apply(pred_mat, 2, sd)
     
-    # Lower Confidence Bound (minimization)
+    # Lower Confidence Bound
     lcb <- mu - kappa * sd_post
     lcb[used] <- Inf
     
@@ -90,15 +106,16 @@ run_bass_bo <- function(x_init, y_init, x_grid, budget, kappa) {
     used[idx_next] <- TRUE
     best_so_far[t + 1] <- min(evals$y)
   }
-  
   list(evals = evals, best_so_far = best_so_far)
 }
 ```
 
+## GP-BO
+Standard Gaussian Process regression with a Matérn-like kernel (implied by `GPfit`).
+
 ```{r gp-bo-function}
 run_gp_bo <- function(x_init, y_init, x_grid, budget, kappa, eps = 1e-8) {
   evals <- tibble(x = x_init, y = y_init)
-  
   used <- rep(FALSE, length(x_grid))
   for (x0 in evals$x) used[closest_idx(x0, x_grid)] <- TRUE
   
@@ -106,15 +123,8 @@ run_gp_bo <- function(x_init, y_init, x_grid, budget, kappa, eps = 1e-8) {
   best_so_far[1] <- min(evals$y)
   
   for (t in 1:budget) {
-    fit <- GP_fit(
-      X = matrix(evals$x, ncol = 1),
-      Y = evals$y
-    )
-    
-    pred <- predict(
-      object = fit,
-      xnew = matrix(x_grid, ncol = 1)
-    )
+    fit <- GP_fit(X = matrix(evals$x, ncol = 1), Y = evals$y)
+    pred <- predict(fit, xnew = matrix(x_grid, ncol = 1))
     
     mu <- as.numeric(pred$Y_hat)
     sd_gp <- sqrt(pmax(as.numeric(pred$MSE), 0) + eps)
@@ -130,15 +140,16 @@ run_gp_bo <- function(x_init, y_init, x_grid, budget, kappa, eps = 1e-8) {
     used[idx_next] <- TRUE
     best_so_far[t + 1] <- min(evals$y)
   }
-  
   list(evals = evals, best_so_far = best_so_far)
 }
 ```
 
+## Random Search
+Baseline for comparison.
+
 ```{r random-search-function}
 run_random_search <- function(x_init, y_init, budget) {
   evals <- tibble(x = x_init, y = y_init)
-  
   best_so_far <- numeric(budget + 1)
   best_so_far[1] <- min(evals$y)
   
@@ -148,10 +159,11 @@ run_random_search <- function(x_init, y_init, budget) {
     evals <- bind_rows(evals, tibble(x = x_next, y = y_next))
     best_so_far[t + 1] <- min(evals$y)
   }
-  
   list(evals = evals, best_so_far = best_so_far)
 }
 ```
+
+# Execution
 
 ```{r experiment-run}
 res_bass <- run_bass_bo(x_init, y_init, x_grid, budget, kappa)
@@ -159,294 +171,71 @@ res_gp   <- run_gp_bo(x_init, y_init, x_grid, budget, kappa, eps)
 res_rand <- run_random_search(x_init, y_init, budget)
 ```
 
-```{r convergence-data}
+# Results
+
+## Convergence Comparison
+
+```{r convergence-plot, fig.width=10, fig.height=5}
 conv_df <- bind_rows(
   tibble(iter = 0:budget, best = res_bass$best_so_far, method = "BASS-BO"),
   tibble(iter = 0:budget, best = res_gp$best_so_far,   method = "GP-BO"),
   tibble(iter = 0:budget, best = res_rand$best_so_far, method = "Random Search")
 )
 
-head(conv_df)
-```
-
-```{r convergence-plot, fig.width=8, fig.height=4}
 ggplot(conv_df, aes(x = iter, y = best, color = method)) +
   geom_line(linewidth = 1) +
-  labs(
-    title = "Convergence Comparison (Best-So-Far Objective)",
-    x = "Iteration (after initialization)",
-    y = "Best objective value found"
-  ) +
+  labs(title = "Convergence: Best Objective Found vs Iteration",
+       x = "Iteration", y = "Min Objective") +
   theme_minimal()
 ```
 
-```{r summary-table}
-summary_tbl <- conv_df %>%
-  group_by(method) %>%
-  summarize(
-    final_best = best[which.max(iter)],
-    .groups = "drop"
-  ) %>%
-  arrange(final_best)
+## Posterior Visualizations
 
-summary_tbl
-```
+We visualize the final surrogate fit and uncertainty bands for each method.
 
-```{r summary-gt}
-summary_tbl %>%
-  gt() %>%
-  tab_header(title = "Final Best Objective by Method")
-```
-
-```{r}
-# Candidate grid for plotting
-x_new <- seq(0, 1, length.out = 1000)
-
-# --- BASS posterior (mean + sd from posterior draws) ---
+```{r plotting-helpers, echo=FALSE}
+# Internal helpers for generating plotting data
 get_bass_posterior <- function(evals, x_grid, degree = 2) {
-  fit <- bass(
-    xx = matrix(evals$x, ncol = 1),
-    y = evals$y,
-    degree = degree,
-    verbose = FALSE
-  )
-  
+  fit <- bass(matrix(evals$x, ncol = 1), evals$y, degree = degree, verbose = FALSE)
   pred <- predict(fit, newdata = data.frame(x = x_grid))
   pred_mat <- as.matrix(pred)
-  
-  # Robust orientation handling: rows=draws, cols=x_grid
-  if (ncol(pred_mat) != length(x_grid) && nrow(pred_mat) == length(x_grid)) {
-    pred_mat <- t(pred_mat)
-  }
-  
-  mu <- colMeans(pred_mat)
-  sigma <- apply(pred_mat, 2, sd)
-  
-  list(mu = mu, sigma = sigma)
-}
-
-# --- GP posterior (mean + sd from predictive MSE) ---
-get_gp_posterior <- function(evals, x_grid, eps = 1e-8) {
-  fit <- GP_fit(
-    X = matrix(evals$x, ncol = 1),
-    Y = evals$y
-  )
-  
-  pred <- predict(fit, xnew = matrix(x_grid, ncol = 1))
-  mu <- as.numeric(pred$Y_hat)
-  sigma <- sqrt(pmax(as.numeric(pred$MSE), 0) + eps)
-  
-  list(mu = mu, sigma = sigma)
-}
-
-```
-
-```{r}
-plot_posterior_panel <- function(x_grid, evals, title,
-                                 mu = NULL, sigma = NULL,
-                                 show_posterior = TRUE) {
-  y_true <- f(x_grid)
-  
-  y_lim <- range(
-    c(y_true, evals$y,
-      if (!is.null(mu) && !is.null(sigma)) mu + sigma else NA,
-      if (!is.null(mu) && !is.null(sigma)) mu - sigma else NA),
-    na.rm = TRUE
-  )
-  
-  # True function
-  plot(
-    x_grid, y_true, type = "l", lwd = 1.5,
-    xlab = "x", ylab = "f(x)", main = title, ylim = y_lim
-  )
-  
-  if (show_posterior && !is.null(mu) && !is.null(sigma)) {
-    polygon(
-      c(x_grid, rev(x_grid)),
-      c(mu + sigma, rev(mu - sigma)),
-      col = rgb(0, 0, 1, 0.20), border = NA
-    )
-    lines(x_grid, mu, lwd = 2, lty = "dotted")
-  }
-  
-  # Evaluated points
-  points(evals$x, evals$y, pch = 16, cex = 0.7)
-}
-
-```
-
-```{r, fig.width=16, fig.height=4}
-# Compute posteriors for surrogate-based methods
-post_bass <- get_bass_posterior(res_bass$evals, x_new)
-post_gp   <- get_gp_posterior(res_gp$evals, x_new)
-
-par(cex = 1.0, mfrow = c(1, 3), mar = c(4, 4, 3, 1))
-
-# 1) BASS-BO posterior
-plot_posterior_panel(
-  x_grid = x_new,
-  evals = res_bass$evals,
-  title = "BASS-BO Posterior",
-  mu = post_bass$mu,
-  sigma = post_bass$sigma,
-  show_posterior = TRUE
-)
-
-# 2) GP-BO posterior
-plot_posterior_panel(
-  x_grid = x_new,
-  evals = res_gp$evals,
-  title = "GP-BO Posterior",
-  mu = post_gp$mu,
-  sigma = post_gp$sigma,
-  show_posterior = TRUE
-)
-
-# 3) Random Search (no surrogate posterior)
-plot_posterior_panel(
-  x_grid = x_new,
-  evals = res_rand$evals,
-  title = "Random Search (No Posterior)",
-  show_posterior = FALSE
-)
-
-```
-
-
-
-```{r fig.width=16, fig.height=4}
-# Add iteration number to eval data frame
-add_iter <- function(evals, n0) {
-  evals %>%
-    mutate(
-      iter = row_number() - 1,                 # starts at 0
-      phase = ifelse(iter < n0, "init", "bo")
-    )
-}
-
-plot_posterior_panel <- function(x_grid, evals, title,
-                                 n0,
-                                 mu = NULL, sigma = NULL,
-                                 show_posterior = TRUE) {
-  y_true <- f(x_grid)
-  
-  y_lim <- range(
-    c(y_true, evals$y,
-      if (!is.null(mu) && !is.null(sigma)) mu + sigma else NA,
-      if (!is.null(mu) && !is.null(sigma)) mu - sigma else NA),
-    na.rm = TRUE
-  )
-  
-  # Base: true function
-  plot(
-    x_grid, y_true, type = "l", lwd = 1.5,
-    xlab = "x", ylab = "f(x)", main = title, ylim = y_lim
-  )
-  
-  # Posterior ribbon + mean
-  if (show_posterior && !is.null(mu) && !is.null(sigma)) {
-    polygon(
-      c(x_grid, rev(x_grid)),
-      c(mu + sigma, rev(mu - sigma)),
-      col = rgb(0, 0, 1, 0.20), border = NA
-    )
-    lines(x_grid, mu, lwd = 2, lty = "dotted")
-  }
-  
-  # Color points by iteration: red -> green
-  evals2 <- add_iter(evals, n0)
-  n_pts <- nrow(evals2)
-  cols <- grDevices::colorRampPalette(c("red", "green"))(n_pts)
-  
-  points(evals2$x, evals2$y, pch = 16, cex = 0.85, col = cols)
-  
-  # Optional: highlight initial points with black border
-  idx_init <- which(evals2$iter < n0)
-  if (length(idx_init) > 0) {
-    points(evals2$x[idx_init], evals2$y[idx_init], pch = 1, cex = 1.05, lwd = 1)
-  }
-  
-  legend(
-    "topright",
-    legend = c("True f(x)", "Posterior mean", "±1 sd band", "Early → Late"),
-    lty = c(1, 3, NA, NA),
-    lwd = c(1.5, 2, NA, NA),
-    pch = c(NA, NA, 15, 16),
-    pt.cex = c(NA, NA, 1.2, 1),
-    col = c("black", "black", rgb(0, 0, 1, 0.20), "red"),
-    bty = "n"
-  )
-}
-
-x_new <- seq(0, 1, length.out = 1000)
-
-get_bass_posterior <- function(evals, x_grid, degree = 2) {
-  fit <- bass(
-    xx = matrix(evals$x, ncol = 1),
-    y = evals$y,
-    degree = degree,
-    verbose = FALSE
-  )
-  
-  pred <- predict(fit, newdata = data.frame(x = x_grid))
-  pred_mat <- as.matrix(pred)
-  
-  if (ncol(pred_mat) != length(x_grid) && nrow(pred_mat) == length(x_grid)) {
-    pred_mat <- t(pred_mat)
-  }
-  
-  mu <- colMeans(pred_mat)
-  sigma <- apply(pred_mat, 2, sd)
-  list(mu = mu, sigma = sigma)
+  if (ncol(pred_mat) != length(x_grid) && nrow(pred_mat) == length(x_grid)) pred_mat <- t(pred_mat)
+  list(mu = colMeans(pred_mat), sigma = apply(pred_mat, 2, sd))
 }
 
 get_gp_posterior <- function(evals, x_grid, eps = 1e-8) {
-  fit <- GP_fit(
-    X = matrix(evals$x, ncol = 1),
-    Y = evals$y
-  )
-  
+  fit <- GP_fit(X = matrix(evals$x, ncol = 1), Y = evals$y)
   pred <- predict(fit, xnew = matrix(x_grid, ncol = 1))
-  mu <- as.numeric(pred$Y_hat)
-  sigma <- sqrt(pmax(as.numeric(pred$MSE), 0) + eps)
-  list(mu = mu, sigma = sigma)
+  list(mu = as.numeric(pred$Y_hat), sigma = sqrt(pmax(as.numeric(pred$MSE), 0) + eps))
 }
 
-
-# Build posteriors for surrogate-based methods
-post_bass <- get_bass_posterior(res_bass$evals, x_new)
-post_gp   <- get_gp_posterior(res_gp$evals, x_new)
-
-par(cex = 1.0, mfrow = c(1, 3), mar = c(4, 4, 3, 1))
-
-plot_posterior_panel(
-  x_grid = x_new,
-  evals = res_bass$evals,
-  title = "BASS-BO Posterior",
-  n0 = n0,
-  mu = post_bass$mu,
-  sigma = post_bass$sigma,
-  show_posterior = TRUE
-)
-
-plot_posterior_panel(
-  x_grid = x_new,
-  evals = res_gp$evals,
-  title = "GP-BO Posterior",
-  n0 = n0,
-  mu = post_gp$mu,
-  sigma = post_gp$sigma,
-  show_posterior = TRUE
-)
-
-plot_posterior_panel(
-  x_grid = x_new,
-  evals = res_rand$evals,
-  title = "Random Search (No Posterior)",
-  n0 = n0,
-  show_posterior = FALSE
-)
+plot_posterior_panel <- function(x_grid, evals, title, n0, mu = NULL, sigma = NULL, show_posterior = TRUE) {
+  y_true <- f(x_grid)
+  y_lim <- range(c(y_true, evals$y, if (show_posterior) c(mu+sigma, mu-sigma) else NA), na.rm = TRUE)
+  
+  plot(x_grid, y_true, type = "l", lwd = 1.5, xlab = "x", ylab = "f(x)", main = title, ylim = y_lim)
+  if (show_posterior) {
+    polygon(c(x_grid, rev(x_grid)), c(mu + sigma, rev(mu - sigma)), col = rgb(0, 0, 1, 0.20), border = NA)
+    lines(x_grid, mu, lwd = 2, lty = "dotted")
+  }
+  
+  # Color points by time (Red -> Green)
+  cols <- grDevices::colorRampPalette(c("red", "green"))(nrow(evals))
+  points(evals$x, evals$y, pch = 16, cex = 0.85, col = cols)
+  points(evals$x[1:n0], evals$y[1:n0], pch = 1, cex = 1.05, lwd = 1) # Circle initial points
+}
 ```
+
+```{r final-visuals, fig.width=16, fig.height=5}
+post_bass <- get_bass_posterior(res_bass$evals, x_grid)
+post_gp   <- get_gp_posterior(res_gp$evals, x_grid)
+
+par(mfrow = c(1, 3))
+plot_posterior_panel(x_grid, res_bass$evals, "BASS-BO Fit", n0, post_bass$mu, post_bass$sigma)
+plot_posterior_panel(x_grid, res_gp$evals, "GP-BO Fit", n0, post_gp$mu, post_gp$sigma)
+plot_posterior_panel(x_grid, res_rand$evals, "Random Search (Evaluations)", n0, show_posterior = FALSE)
+```
+
 
 
 
