@@ -1,50 +1,28 @@
+#' Rastrigin Benchmark Function
+#'
+#' A non-convex function used as a performance test problem for optimization algorithms.
+#' It is a typical example of a non-linear multimodal function. It was first proposed
+#' by Rastrigin as a 2-dimensional function and has been generalized by Rudolph.
+#'
+#' Features many local minima, but the global minimum is at x = (0, ..., 0) where f(x) = 0.
+#'
+#' @param xx A numeric vector of length d.
+#' @return The function value at xx.
 rastrigin <- function(xx)
 {
-  ##########################################################################
-  #
-  # RASTRIGIN FUNCTION
-  #
-  # Authors: Sonja Surjanovic, Simon Fraser University
-  #          Derek Bingham, Simon Fraser University
-  # Questions/Comments: Please email Derek Bingham at dbingham@stat.sfu.ca.
-  #
-  # Copyright 2013. Derek Bingham, Simon Fraser University.
-  #
-  # THERE IS NO WARRANTY, EXPRESS OR IMPLIED. WE DO NOT ASSUME ANY LIABILITY
-  # FOR THE USE OF THIS SOFTWARE.  If software is modified to produce
-  # derivative works, such modified software should be clearly marked.
-  # Additionally, this program is free software; you can redistribute it 
-  # and/or modify it under the terms of the GNU General Public License as 
-  # published by the Free Software Foundation; version 2.0 of the License. 
-  # Accordingly, this program is distributed in the hope that it will be 
-  # useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-  # of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-  # General Public License for more details.
-  #
-  # For function details and reference information, see:
-  # http://www.sfu.ca/~ssurjano/
-  #
-  ##########################################################################
-  #
-  # INPUT:
-  #
-  # xx = c(x1, x2, ..., xd)
-  #
-  ##########################################################################
-  
   d <- length(xx)
-  
-  sum <- sum(xx^2 - 10*cos(2*pi*xx))
-  
-  y <- 10*d + sum
+  sum_part <- sum(xx^2 - 10 * cos(2 * pi * xx))
+  y <- 10 * d + sum_part
   return(y)
 }
 
-# =========================
-# Domain (IMPORTANT)
-# =========================
-
+# ==============================================================================
+# Domain Configuration
+# ==============================================================================
+#' Rastrigin Domain Bounds
+#' Usually evaluated on the hypercube x_i in [-5.12, 5.12]
 rastrigin_bounds <- list(
   lower = c(-5.12, -5.12, -5.12, -5.12),
   upper = c(5.12, 5.12, 5.12, 5.12)
 )
+
