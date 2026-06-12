@@ -1,5 +1,19 @@
 #!/usr/bin/env Rscript
 
+#' Comprehensive Bayesian Optimization Benchmark: Elastic Net Tuning
+#' 
+#' This script performs a large-scale comparison of BASS-BO, GP-BO, and Random Search
+#' for tuning Elastic Net hyperparameters (alpha and lambda) on the Boston Housing dataset.
+#'
+#' Key Features:
+#' - Parallel execution via `future` and `furrr`.
+#' - Extensive CLI argument support for hyperparameter overrides.
+#' - Automated results persistence (CSV) and convergence visualization (PNG).
+#' - Robust surrogate modeling with uncertainty inflation and adaptive complexity.
+#'
+#' Author: Adrian TJ
+#' Date: June 2026
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(lhs)
@@ -11,15 +25,15 @@ suppressPackageStartupMessages({
   library(furrr)
 })
 
-# =========================
-# Parallel setup
-# =========================
+# ==============================================================================
+# Parallel Infrastructure Setup
+# ==============================================================================
 n_workers <- max(1L, parallel::detectCores() - 1L)
 plan(multisession, workers = n_workers)
 
-# =========================
-# CLI args
-# =========================
+# ==============================================================================
+# Configuration & CLI Arguments
+# ==============================================================================
 args <- commandArgs(trailingOnly = TRUE)
 
 # Core experiment defaults
@@ -30,7 +44,7 @@ n_cand <- 2000
 verbose <- FALSE
 out_dir <- "results_enet_bo"
 
-# Data/model defaults
+# ML Data & Model defaults
 train_frac <- 0.8
 nfolds <- 5
 lambda_log10_min <- -5
@@ -38,11 +52,11 @@ lambda_log10_max <- 1
 dup_tol <- 1e-10
 cache_digits <- 6
 
-# GP defaults
+# GP surrogate defaults
 gp_kappa <- 2.0
 eps <- 1e-10
 
-# BASS tuned defaults
+# BASS surrogate (tuned) defaults
 bass_kappa_start <- 3.0
 bass_kappa_end <- 1.2
 bass_sd_floor <- 1e-4
@@ -55,6 +69,7 @@ bass_degree_late <- 2
 bass_switch_after <- 30
 bass_print_every <- 10
 
+# CLI Argument Parsing Loop
 for (a in args) {
   if (grepl("^--reps=", a)) n_reps <- as.integer(sub("^--reps=", "", a))
   if (grepl("^--seed_start=", a)) seed_start <- as.integer(sub("^--seed_start=", "", a))
@@ -83,9 +98,9 @@ for (a in args) {
   if (grepl("^--bass_print_every=", a)) bass_print_every <- as.integer(sub("^--bass_print_every=", "", a))
 }
 
-# =========================
-# Helpers
-# =========================
+# ==============================================================================
+# Machine Learning Helpers
+# ==============================================================================
 decode_enet_params <- function(Xu, lmin = -5, lmax = 1) {
   Xu <- as.matrix(Xu)
   if (is.null(nrow(Xu))) Xu <- matrix(Xu, nrow = 1)
@@ -98,6 +113,7 @@ decode_enet_params <- function(Xu, lmin = -5, lmax = 1) {
   lambda <- 10^log10_lambda
   
   tibble(alpha = alpha, lambda = lambda, log10_lambda = log10_lambda)
+
 }
 
 is_duplicate <- function(x, X, tol = 1e-10) {
