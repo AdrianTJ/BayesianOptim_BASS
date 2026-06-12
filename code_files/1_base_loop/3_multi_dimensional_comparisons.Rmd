@@ -1,9 +1,18 @@
 ---
-title: "3_multi_dimensional_comparisons"
-output: html_document
+title: "Multi-Dimensional Bayesian Optimization: BASS vs GP"
+author: "Adrian TJ"
+date: "June 2026"
+output: 
+  html_document:
+    toc: true
+    theme: readable
 ---
 
-```{r installs, message=FALSE, warning=FALSE }
+# Introduction
+
+This notebook extends the comparison between **BASS-BO** and **GP-BO** to multi-dimensional spaces. We evaluate how the flexible basis functions of BASS compare against the kernel-based approach of Gaussian Processes in $d=3$ dimensions.
+
+```{r packages, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lhs)
 library(BASS)
@@ -11,57 +20,54 @@ library(GPfit)
 library(gt)
 ```
 
+# Objective Function
+
+We define a $d$-dimensional synthetic function characterized by:
+- A quadratic base "bowl".
+- Multi-dimensional oscillations and interactions.
+- Localized features (bumps/valleys) that require precise sampling.
+- A jump discontinuity in the first dimension.
+
 ```{r objective-and-settings}
 set.seed(1244)
 
-# =========================
-# Problem dimension
-# =========================
+# Dimension of the input space
 d <- 3
 
-# =========================
-# Objective function to minimize
-# Input: X is n x d (or vector length d)
-# Output: numeric vector length n
-#
-# This is a smooth + mildly nonstationary synthetic function on [0,1]^d
-# Keep this as your default, or replace with Branin/Hartmann wrappers.
-# =========================
+#' Synthetic Multi-Dimensional Objective Function
 f <- function(X) {
   X <- as.matrix(X)
   if (is.null(nrow(X))) X <- matrix(X, nrow = 1)
   
-  # Base bowl
+  # Quadratic trend
   base <- rowSums((X - 0.35)^2)
   
-  # Oscillation + interaction
+  # Nonlinear components
   osc1 <- sin(6 * pi * X[, 1]) * exp(-2 * X[, 1])
   osc2 <- if (ncol(X) >= 2) 0.35 * cos(5 * pi * X[, 2]^2) else 0
   inter <- if (ncol(X) >= 2) 0.5 * X[, 1] * X[, 2] else 0
   
-  # Local bump and local valley in d-D
+  # Localized bumps and valleys
   c1 <- rep(0.2, ncol(X))
   c2 <- rep(0.75, ncol(X))
-  bump <- 1.2 * exp(-35 * rowSums((X - matrix(c1, nrow(X), ncol(X), byrow = TRUE))^2))
+  bump   <- 1.2 * exp(-35 * rowSums((X - matrix(c1, nrow(X), ncol(X), byrow = TRUE))^2))
   valley <- -1.0 * exp(-28 * rowSums((X - matrix(c2, nrow(X), ncol(X), byrow = TRUE))^2))
   
-  # Small discontinuity in first coordinate
+  # Discontinuity
   jump <- ifelse(X[, 1] > 0.62, 0.4, 0)
   
   base + osc1 + osc2 + inter + bump + valley + jump
 }
 
-# =========================
-# Experiment settings
-# =========================
-n0 <- max(2 * d + 1, 8)   # initial design
-budget <- 80              # BO iterations after initialization
-n_cand <- 1000            # candidate pool size per iteration
+# Experiment Configuration
+n0 <- max(2 * d + 1, 8)   # Size of initial space-filling design
+budget <- 80              # Number of sequential BO steps
+n_cand <- 1000            # Size of candidate pool for acquisition
 kappa <- 2.0              # LCB exploration parameter
-eps <- 1e-10              # numerical floor for GP sd
-dup_tol <- 1e-10          # duplicate tolerance in Euclidean norm
+eps <- 1e-10              # Nugget for GP stability
+dup_tol <- 1e-10          # Tolerance for duplicate detection
 
-# Utility: duplicate check
+#' Utility: Check for points already evaluated
 is_duplicate <- function(x, X, tol = 1e-10) {
   X <- as.matrix(X)
   xmat <- matrix(x, nrow = nrow(X), ncol = ncol(X), byrow = TRUE)
@@ -69,236 +75,121 @@ is_duplicate <- function(x, X, tol = 1e-10) {
 }
 ```
 
+# Initialization
+
 ```{r initialization}
-# Shared initialization across all methods
+# Generate initial design via Maximin LHS
 X_init <- maximinLHS(n0, d)
 y_init <- f(X_init)
 
 init_df <- as_tibble(X_init, .name_repair = ~ paste0("x", seq_along(.))) %>%
   mutate(y = y_init)
 
-init_df
+init_df %>% gt() %>% tab_header(sprintf("Initial %d-D Design", d))
 ```
+
+# Optimization Algorithms
+
+## BASS-BO
+BASS fits an additive or interaction model using splines, which can adapt to local features without a global stationary assumption.
 
 ```{r bass-bo-function}
 run_bass_bo <- function(X_init, y_init, budget, n_cand, kappa, dup_tol = 1e-10) {
-  X_eval <- as.matrix(X_init)
-  y_eval <- as.numeric(y_init)
-  d <- ncol(X_eval)
-  
-  best_so_far <- numeric(budget + 1)
-  best_so_far[1] <- min(y_eval)
+  X_eval <- as.matrix(X_init); y_eval <- as.numeric(y_init); d <- ncol(X_eval)
+  best_so_far <- numeric(budget + 1); best_so_far[1] <- min(y_eval)
   
   for (t in 1:budget) {
-    fit <- bass(
-      xx = X_eval,
-      y = y_eval,
-      degree = 2,
-      verbose = FALSE
-    )
+    # Fit BASS surrogate
+    fit <- bass(xx = X_eval, y = y_eval, degree = 2, verbose = FALSE)
     
-    # Candidate pool in [0,1]^d
+    # Generate and predict on candidates
     X_cand <- maximinLHS(n_cand, d)
-    
-    # Posterior predictive draws
     pred <- predict(fit, newdata = as.data.frame(X_cand))
     pred_mat <- as.matrix(pred)
+    if (ncol(pred_mat) != nrow(X_cand)) pred_mat <- t(pred_mat)
     
-    # Ensure rows=draws, cols=candidates
-    if (ncol(pred_mat) != nrow(X_cand) && nrow(pred_mat) == nrow(X_cand)) {
-      pred_mat <- t(pred_mat)
-    }
-    
+    # Acquisition: Lower Confidence Bound
     mu <- colMeans(pred_mat)
     sd_post <- apply(pred_mat, 2, sd)
-    
-    # LCB (minimization)
     lcb <- mu - kappa * sd_post
     
-    # Pick best non-duplicate candidate
+    # Selection of best non-duplicate
     ord <- order(lcb)
     pick <- NA_integer_
     for (idx in ord) {
-      x_try <- X_cand[idx, ]
-      if (!is_duplicate(x_try, X_eval, tol = dup_tol)) {
-        pick <- idx
-        break
+      if (!is_duplicate(X_cand[idx, ], X_eval, tol = dup_tol)) {
+        pick <- idx; break
       }
     }
     if (is.na(pick)) pick <- ord[1]
     
-    x_next <- X_cand[pick, , drop = FALSE]
-    y_next <- f(x_next)
-    
-    X_eval <- rbind(X_eval, x_next)
-    y_eval <- c(y_eval, y_next)
-    
+    # Evaluate and Update
+    x_next <- X_cand[pick, , drop = FALSE]; y_next <- f(x_next)
+    X_eval <- rbind(X_eval, x_next); y_eval <- c(y_eval, y_next)
     best_so_far[t + 1] <- min(y_eval)
-    
-    # Print out the current iteration
-    cat(sprintf("Iteration %d / %d completed\n", t, budget))
   }
-  
-  list(
-    X_eval = X_eval,
-    y_eval = y_eval,
-    best_so_far = best_so_far
-  )
+  list(X_eval = X_eval, y_eval = y_eval, best_so_far = best_so_far)
 }
 ```
 
+## GP-BO
+
 ```{r gp-bo-function}
 run_gp_bo <- function(X_init, y_init, budget, n_cand, kappa, eps = 1e-10, dup_tol = 1e-10) {
-  X_eval <- as.matrix(X_init)
-  y_eval <- as.numeric(y_init)
-  d <- ncol(X_eval)
-  
-  best_so_far <- numeric(budget + 1)
-  best_so_far[1] <- min(y_eval)
+  X_eval <- as.matrix(X_init); y_eval <- as.numeric(y_init); d <- ncol(X_eval)
+  best_so_far <- numeric(budget + 1); best_so_far[1] <- min(y_eval)
   
   for (t in 1:budget) {
-    fit <- GP_fit(
-      X = X_eval,
-      Y = y_eval
-    )
-    
-    # Candidate pool
+    fit <- GP_fit(X = X_eval, Y = y_eval)
     X_cand <- maximinLHS(n_cand, d)
-    
-    pred <- predict(
-      object = fit,
-      xnew = X_cand
-    )
+    pred <- predict(fit, xnew = X_cand)
     
     mu <- as.numeric(pred$Y_hat)
     sd_gp <- sqrt(pmax(as.numeric(pred$MSE), 0) + eps)
     
+    # Acquisition: LCB
     lcb <- mu - kappa * sd_gp
-    
-    # Pick best non-duplicate candidate
     ord <- order(lcb)
     pick <- NA_integer_
     for (idx in ord) {
-      x_try <- X_cand[idx, ]
-      if (!is_duplicate(x_try, X_eval, tol = dup_tol)) {
-        pick <- idx
-        break
+      if (!is_duplicate(X_cand[idx, ], X_eval, tol = dup_tol)) {
+        pick <- idx; break
       }
     }
     if (is.na(pick)) pick <- ord[1]
     
-    x_next <- X_cand[pick, , drop = FALSE]
-    y_next <- f(x_next)
-    
-    X_eval <- rbind(X_eval, x_next)
-    y_eval <- c(y_eval, y_next)
-    
+    x_next <- X_cand[pick, , drop = FALSE]; y_next <- f(x_next)
+    X_eval <- rbind(X_eval, x_next); y_eval <- c(y_eval, y_next)
     best_so_far[t + 1] <- min(y_eval)
-    
-    # Print out the current iteration
-    cat(sprintf("Iteration %d / %d completed\n", t, budget))
   }
-  
-  list(
-    X_eval = X_eval,
-    y_eval = y_eval,
-    best_so_far = best_so_far
-  )
+  list(X_eval = X_eval, y_eval = y_eval, best_so_far = best_so_far)
 }
 ```
 
-```{r random-search-function}
-run_random_search <- function(X_init, y_init, budget, dup_tol = 1e-10) {
-  X_eval <- as.matrix(X_init)
-  y_eval <- as.numeric(y_init)
-  d <- ncol(X_eval)
-  
-  best_so_far <- numeric(budget + 1)
-  best_so_far[1] <- min(y_eval)
-  
-  for (t in 1:budget) {
-    # Keep trying until non-duplicate (usually immediate in continuous space)
-    repeat {
-      x_next <- matrix(runif(d), nrow = 1)
-      if (!is_duplicate(as.numeric(x_next), X_eval, tol = dup_tol)) break
-    }
-    
-    y_next <- f(x_next)
-    
-    X_eval <- rbind(X_eval, x_next)
-    y_eval <- c(y_eval, y_next)
-    
-    best_so_far[t + 1] <- min(y_eval)
-    
-    # Print out the current iteration
-    cat(sprintf("Iteration %d / %d completed\n", t, budget))
-  }
-  
-  list(
-    X_eval = X_eval,
-    y_eval = y_eval,
-    best_so_far = best_so_far
-  )
-}
+# Execution & Results
+
+```{r run-experiment, message=FALSE, results='hide'}
+res_bass <- run_bass_bo(X_init, y_init, budget, n_cand, kappa, dup_tol)
+res_gp   <- run_gp_bo(X_init, y_init, budget, n_cand, kappa, eps, dup_tol)
+res_rand <- run_random_search(X_init, y_init, budget, dup_tol)
 ```
 
-```{r run-experiment}
-res_bass <- run_bass_bo(
-  X_init = X_init, y_init = y_init,
-  budget = budget, n_cand = n_cand,
-  kappa = kappa, dup_tol = dup_tol
-)
+## Convergence Comparison
 
-res_gp <- run_gp_bo(
-  X_init = X_init, y_init = y_init,
-  budget = budget, n_cand = n_cand,
-  kappa = kappa, eps = eps, dup_tol = dup_tol
-)
-
-res_rand <- run_random_search(
-  X_init = X_init, y_init = y_init,
-  budget = budget, dup_tol = dup_tol
-)
-```
-
-```{r convergence-data}
+```{r convergence-plot, fig.width=10, fig.height=5}
 conv_df <- bind_rows(
   tibble(iter = 0:budget, best = res_bass$best_so_far, method = "BASS-BO"),
   tibble(iter = 0:budget, best = res_gp$best_so_far,   method = "GP-BO"),
   tibble(iter = 0:budget, best = res_rand$best_so_far, method = "Random Search")
 )
 
-head(conv_df)
-```
-
-```{r convergence-plot}
 ggplot(conv_df, aes(x = iter, y = best, color = method)) +
   geom_line(linewidth = 1) +
-  labs(
-    title = paste0("Convergence Comparison (d = ", d, ")"),
-    x = "Iteration (after initialization)",
-    y = "Best objective value found (lower is better)"
-  ) +
+  labs(title = sprintf("Multi-Dimensional Convergence (d=%d)", d),
+       x = "Iteration", y = "Best Objective Found") +
   theme_minimal()
 ```
 
-```{r summary-table}
-summary_tbl <- conv_df %>%
-  group_by(method) %>%
-  summarize(
-    final_best = best[which.max(iter)],
-    .groups = "drop"
-  ) %>%
-  arrange(final_best)
-
-summary_tbl
-```
-
-```{r summary-gt}
-summary_tbl %>%
-  gt() %>%
-  tab_header(title = paste0("Final Best Objective by Method (d = ", d, ")"))
-```
 
 
 
