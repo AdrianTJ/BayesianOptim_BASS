@@ -69,7 +69,7 @@ bass_degree_late <- 2
 bass_switch_after <- 30
 bass_print_every <- 10
 
-# CLI Argument Parsing Loop
+# CLI Argument Parsing
 for (a in args) {
   if (grepl("^--reps=", a)) n_reps <- as.integer(sub("^--reps=", "", a))
   if (grepl("^--seed_start=", a)) seed_start <- as.integer(sub("^--seed_start=", "", a))
@@ -99,7 +99,7 @@ for (a in args) {
 }
 
 # ==============================================================================
-# Machine Learning Helpers
+# Helpers
 # ==============================================================================
 decode_enet_params <- function(Xu, lmin = -5, lmax = 1) {
   Xu <- as.matrix(Xu)
@@ -113,7 +113,6 @@ decode_enet_params <- function(Xu, lmin = -5, lmax = 1) {
   lambda <- 10^log10_lambda
   
   tibble(alpha = alpha, lambda = lambda, log10_lambda = log10_lambda)
-
 }
 
 is_duplicate <- function(x, X, tol = 1e-10) {
@@ -302,7 +301,7 @@ run_gp_bo <- function(X_init, y_init, objective_fn, dup_tol = 1e-10) {
     ord <- order(lcb)
     
     pick <- ord[!sapply(ord, function(i) is_duplicate(X_cand[i, ], X_eval, tol = dup_tol))][1]
-    if (is.na(pick)) pick <- ord[1]
+    if (is_na(pick)) pick <- ord[1]
     
     x_next <- X_cand[pick, , drop = FALSE]
     y_next <- objective_fn(x_next)
