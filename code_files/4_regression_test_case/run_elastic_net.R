@@ -85,8 +85,8 @@ run_enet_seed <- function(seed, cfg) {
   )
   objective <- list(name = "elastic_net", d = 2, fn = obj_fn)
 
-  # Shared initial design, then run every method on it.
-  X_init  <- randomLHS(10, 2)
+  # Shared initial design (space-filling), then run every method on it.
+  X_init  <- maximinLHS(10, 2)
   y_init  <- obj_fn(X_init)
   methods <- make_methods(cfg)
   results <- lapply(methods, function(m) run_bo(objective, m, cfg, X_init, y_init))
