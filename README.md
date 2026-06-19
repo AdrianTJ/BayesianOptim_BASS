@@ -36,9 +36,18 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 │   ├── Presentacion/        # Beamer slides (LaTeX) for thesis defense
 │   └── ReporteFinal/        # Final project report and technical summaries
 ├── code_files/              # Core implementation and experiments
-│   ├── 1_base_loop/         # Core BO loop logic and initial comparisons
-│   ├── 2_generating_iterations/ # Execution scripts for BASS-BO runs
-│   ├── 3_test_functions/    # Benchmark targets (Branin, Rastrigin, etc.)
+│   ├── R/                   # Shared BO library (sourced, no build step)
+│   │   ├── bo_loop.R        #   one generic run_bo() loop + method definitions
+│   │   ├── surrogates.R     #   BASS and GP surrogates behind a common interface
+│   │   ├── candidates.R     #   candidate generators + duplicate detection
+│   │   ├── acquisition.R    #   LCB ranking and kappa decay schedule
+│   │   ├── config.R         #   default_config() + --key=value CLI parser
+│   │   ├── experiment.R     #   parallel multi-seed harness + summaries + plot
+│   │   └── objectives/      #   Branin, Rastrigin, and the synthetic surface
+│   ├── run_benchmark.R      # Single entry point for the synthetic benchmarks
+│   ├── tests/               # testthat unit-test suite for the library
+│   ├── 1_base_loop/         # Exploratory R Markdown notebooks (pedagogical)
+│   ├── 3_test_functions/    # Saved benchmark results
 │   ├── 4_regression_test_case/ # Real-world application (Elastic Net tuning)
 │   └── figure_generations/  # Python/R scripts for thesis visualizations
 ├── written_files/           # Thesis documentation
@@ -52,18 +61,42 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 
 The project primarily uses **R** for the optimization loops and **Python** for specific visualization components.
 
-- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr), `future`, `furrr`, `gt`
+- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr, readr, tibble), `future`, `furrr`, `testthat`
 - **Python Libraries**: `numpy`, `scipy`, `matplotlib`, `scikit-learn`
 
 ### Running Experiments
 
-To reproduce the benchmark results for the Branin function:
+All synthetic benchmarks run through a single entry point, `run_benchmark.R`,
+which compares BASS-BO, GP-BO and Random Search on one objective and writes the
+CSVs plus a convergence plot. Any setting in `default_config()` (see
+`code_files/R/config.R`) can be overridden with a `--key=value` flag.
 
-1. Navigate to `code_files/3_test_functions/`.
-2. Execute the parallel runner:
-   ```bash
-   Rscript run_parallel_target.R --target branin --iterations 80 --seeds 25
-   ```
+```bash
+# Branin (2-D), 80 iterations, 25 repetitions
+Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=25
+
+# Rastrigin (4-D)
+Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
+
+# The hand-built non-smooth surface (any dimension)
+Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+```
+
+### Running the Tests
+
+The library ships with a `testthat` unit-test suite:
+
+```bash
+Rscript code_files/tests/run_tests.R
+```
+
+### Adding a New Objective
+
+1. Drop a function (and, for a benchmark on a physical domain, its bounds) in
+   `code_files/R/objectives/`.
+2. Register its name in `load_objective()` (`code_files/R/objectives.R`).
+
+No changes to the BO loop are needed — it is agnostic to the objective.
 
 ## Results
 
