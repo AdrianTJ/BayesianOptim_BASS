@@ -38,17 +38,18 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 ├── code_files/              # Core implementation and experiments
 │   ├── R/                   # Shared BO library (sourced, no build step)
 │   │   ├── bo_loop.R        #   one generic run_bo() loop + method definitions
-│   │   ├── surrogates.R     #   BASS and GP surrogates behind a common interface
+│   │   ├── surrogates.R     #   BASS and GP surrogates as Expected-Improvement closures
 │   │   ├── candidates.R     #   candidate generators + duplicate detection
-│   │   ├── acquisition.R    #   LCB ranking and kappa decay schedule
+│   │   ├── acquisition.R    #   Expected Improvement (closed-form + Monte Carlo)
 │   │   ├── config.R         #   default_config() + --key=value CLI parser
 │   │   ├── experiment.R     #   parallel multi-seed harness + summaries + plot
 │   │   └── objectives/      #   Branin, Rastrigin, and the synthetic surface
 │   ├── run_benchmark.R      # Single entry point for the synthetic benchmarks
 │   ├── tests/               # testthat unit-test suite for the library
 │   ├── 1_base_loop/         # Exploratory R Markdown notebooks (pedagogical)
-│   ├── 3_test_functions/    # Saved benchmark results
-│   ├── 4_regression_test_case/ # Real-world application (Elastic Net tuning)
+│   ├── 4_regression_test_case/ # Real-world case study: Elastic Net tuning
+│   │   ├── run_elastic_net.R   #   driver (reuses the shared library)
+│   │   └── enet_objective.R    #   CV-RMSE objective over (alpha, lambda)
 │   └── figure_generations/  # Python/R scripts for thesis visualizations
 ├── written_files/           # Thesis documentation
 │   └── tesis_escrito/       # Main LaTeX source for the thesis document
@@ -85,6 +86,17 @@ Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results
 Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
 ```
 
+The real-world Elastic Net case study uses the **same** optimisers via a small
+driver of its own:
+
+```bash
+Rscript code_files/4_regression_test_case/run_elastic_net.R --reps=50 --budget=100
+```
+
+> Results are generated on demand and are not committed to the repository. See
+> [`RUNNING.md`](RUNNING.md) for a full, step-by-step guide (dependencies, every
+> command, outputs, and tips).
+
 ### Running the Tests
 
 The library ships with a `testthat` unit-test suite:
@@ -103,7 +115,7 @@ No changes to the BO loop are needed — it is agnostic to the objective.
 
 ## Results
 
-Experiments indicate that BASS-BO demonstrates competitive sample efficiency, particularly in landscapes where the underlying function exhibits piecewise linear behavior or sharp transitions that GPs may over-smooth. Detailed convergence plots and statistical summaries can be found in `code_files/3_test_functions/results_branin_b80/`.
+Experiments indicate that BASS-BO demonstrates competitive sample efficiency, particularly in landscapes where the underlying function exhibits piecewise linear behavior or sharp transitions that GPs may over-smooth. Convergence plots and statistical summaries are written to the chosen `--out_dir` when you run the benchmarks (they are not committed); see [`RUNNING.md`](RUNNING.md).
 
 ## Citation
 
