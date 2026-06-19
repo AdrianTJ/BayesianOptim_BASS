@@ -45,7 +45,12 @@ run_experiment <- function(objective, methods, cfg) {
   furrr::future_map_dfr(
     seeds,
     ~ run_one_seed(.x, objective, methods, cfg),
-    .options = furrr::furrr_options(seed = TRUE)
+    # `packages` ensures each parallel worker loads the surrogate namespaces so
+    # that predict() dispatches to predict.bass / predict.GP correctly.
+    .options = furrr::furrr_options(
+      seed = TRUE,
+      packages = c("BASS", "GPfit", "lhs")
+    )
   )
 }
 
