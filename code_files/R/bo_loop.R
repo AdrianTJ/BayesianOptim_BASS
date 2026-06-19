@@ -8,11 +8,12 @@
 # A "method" is just:
 #     list(
 #       name       = "BASS-BO",
-#       candidates = function(X_eval, y_eval, cfg) -> matrix,            # or NULL
-#       acquire    = function(X_eval, y_eval, X_cand, cfg) -> numeric    # or NULL
+#       candidates = function(X_eval, y_eval) -> matrix,            # or NULL
+#       acquire    = function(X_eval, y_eval, X_cand) -> numeric    # or NULL
 #     )
 # where `acquire` returns a score per candidate (higher = better). A NULL
-# `acquire` means Random Search, which needs no model.
+# `acquire` means Random Search, which needs no model. Both closures capture the
+# config when the method is built (see make_methods), so they take no cfg here.
 # =============================================================================
 
 #' Run one Bayesian Optimization method from a shared starting design.
@@ -46,8 +47,8 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
       }
     } else {
       # ---- Model-based step: propose, score, take the best new candidate ----
-      X_cand <- method$candidates(X_eval, y_eval, cfg)
-      score  <- method$acquire(X_eval, y_eval, X_cand, cfg)
+      X_cand <- method$candidates(X_eval, y_eval)
+      score  <- method$acquire(X_eval, y_eval, X_cand)
       # Rule out candidates that duplicate an already-evaluated point.
       score[min_sqdist(X_cand, X_eval) <= cfg$dup_tol^2] <- -Inf
       x_next <- X_cand[which.max(score), , drop = FALSE]
@@ -72,7 +73,7 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
 #' @param cfg Config list (see `default_config()`).
 #' @return Named list of methods: BASS-BO, GP-BO, Random.
 make_methods <- function(cfg) {
-  shared_candidates <- function(X_eval, y_eval, cfg)
+  shared_candidates <- function(X_eval, y_eval)
     hybrid_candidates(X_eval, y_eval, cfg$n_cand)
 
   list(

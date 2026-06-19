@@ -24,9 +24,9 @@ test_that("best-so-far is non-increasing and improves under an oracle", {
   # Oracle: score = -(true objective), so the loop greedily descends.
   oracle <- list(
     name       = "oracle",
-    candidates = function(X_eval, y_eval, cfg)
+    candidates = function(X_eval, y_eval)
       space_filling_candidates(cfg$n_cand, ncol(as.matrix(X_eval))),
-    acquire    = function(X_eval, y_eval, X_cand, cfg) -rowSums(X_cand^2)
+    acquire    = function(X_eval, y_eval, X_cand) -rowSums(X_cand^2)
   )
 
   X_init <- space_filling_candidates(8, 2)
