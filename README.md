@@ -16,14 +16,14 @@ BASS-BO leverages piecewise linear basis functions (hinge functions) to capture 
 ## Key Features
 
 - **BASS Surrogate Modeling**: Implementation of BASS as the underlying engine for Sequential Model-Based Optimization (SMBO).
+- **Parameter-free acquisition**: Both surrogates use **Expected Improvement** — closed-form for the GP, and **Monte Carlo EI computed directly from BASS's posterior draws** for BASS (with an optional single-draw Thompson-sampling variant). There are no exploration weights, uncertainty-inflation factors, or annealing schedules to tune, so the surrogate is the only thing that differs between methods.
 - **Comparative Analysis**: Rigorous benchmarking against standard GP-BO and baseline search strategies.
-- **Configurable Exploration/Exploitation**: Advanced acquisition function controls, including exploration schedules, local refinement sampling, and uncertainty inflation factors.
 - **Multi-Dimensional Support**: Evaluated on $2d$ (Branin-Hoo), $4d$ (Rastrigin), and higher-dimensional regression test cases.
 - **Reproducible Framework**: Comprehensive scripts for parallel target evaluation and result aggregation.
 
 ## Mathematical Intuition
 
-The core of BASS lies in its use of **hinge functions** of the form $(x - t)_+$ and $(t - x)_+$. By combining these into an additive model with interaction terms, BASS can approximate any continuous function. The Bayesian approach (BMARS) allows for robust uncertainty estimation via MCMC sampling, which is critical for the acquisition function (e.g., Lower Confidence Bound) to guide the optimization process effectively.
+The core of BASS lies in its use of **hinge functions** of the form $(x - t)_+$ and $(t - x)_+$. By combining these into an additive model with interaction terms, BASS can approximate any continuous function. The Bayesian approach (BMARS) yields a full posterior over response surfaces via MCMC sampling. We exploit this directly: rather than collapsing the posterior to a mean and standard deviation, we draw posterior samples and compute **Expected Improvement by Monte Carlo**, so the acquisition uses BASS's true (non-Gaussian) predictive distribution to guide the search.
 
 $$f(X) = \beta_0 + \sum_{m=1}^M \beta_m h_m(X)$$
 
@@ -80,6 +80,9 @@ Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
 
 # The hand-built non-smooth surface (any dimension)
 Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+
+# Use the fast single-draw Thompson-sampling acquisition for BASS instead of EI
+Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
 ```
 
 ### Running the Tests
