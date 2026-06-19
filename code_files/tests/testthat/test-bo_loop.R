@@ -31,7 +31,7 @@ test_that("best-so-far is non-increasing and improves under an oracle", {
 
   X_init <- space_filling_candidates(8, 2)
   y_init <- obj$fn(X_init)
-  best   <- run_bo(obj, oracle, cfg, X_init, y_init)
+  best   <- run_bo(obj, oracle, cfg, X_init, y_init)$best
 
   expect_length(best, cfg$budget + 1)
   expect_true(all(diff(best) <= 0))        # never gets worse
@@ -46,7 +46,7 @@ test_that("Random Search runs and never gets worse", {
 
   X_init <- space_filling_candidates(8, 2)
   y_init <- obj$fn(X_init)
-  best   <- run_bo(obj, rnd, cfg, X_init, y_init)
+  best   <- run_bo(obj, rnd, cfg, X_init, y_init)$best
 
   expect_length(best, cfg$budget + 1)
   expect_true(all(diff(best) <= 0))
@@ -65,7 +65,7 @@ test_that("real BASS (EI and Thompson) and GP run end to end (if installed)", {
     cfg$acquisition <- acq
     methods <- make_methods(cfg)
     for (nm in c("BASS-BO", "GP-BO")) {
-      best <- run_bo(obj, methods[[nm]], cfg, X_init, y_init)
+      best <- run_bo(obj, methods[[nm]], cfg, X_init, y_init)$best
       expect_length(best, cfg$budget + 1)
       expect_true(all(diff(best) <= 0))
     }
