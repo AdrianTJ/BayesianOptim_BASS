@@ -81,16 +81,28 @@ make_bass_acquire <- function(cfg) {
 #' Build the Gaussian Process acquisition closure (the baseline).
 #'
 #' Fits a GP and scores candidates with closed-form Expected Improvement -- the
-#' same acquisition principle as BASS, so only the surrogate differs.
+#' same acquisition principle as BASS, so only the surrogate differs. If the GP
+#' fit fails (e.g. a near-singular correlation matrix on a noisy objective), we
+#' fall back to a flat predictive (mean and spread of the data) so the run
+#' continues instead of crashing.
 #'
 #' @param cfg Config list. Uses `eps` (jitter on the predictive variance).
 #' @return An `acquire(X_eval, y_eval, X_cand, cfg)` function.
 make_gp_acquire <- function(cfg) {
   function(X_eval, y_eval, X_cand, cfg) {
-    fit  <- GPfit::GP_fit(X_eval, y_eval)
-    pred <- predict(fit, X_cand)
-    mu   <- pred$Y_hat
-    sd   <- sqrt(pmax(pred$MSE, 0) + cfg$eps)
+    n_cand <- nrow(as.matrix(X_cand))
+    fit <- tryCatch(GPfit::GP_fit(X_eval, y_eval), error = function(e) NULL)
+
+    if (is.null(fit)) {
+      y_spread <- sd(y_eval)
+      if (!is.finite(y_spread) || y_spread < 1e-12) y_spread <- 1e-6
+      mu <- rep(mean(y_eval), n_cand)
+      sd <- rep(y_spread,     n_cand)
+    } else {
+      pred <- predict(fit, X_cand)
+      mu   <- pred$Y_hat
+      sd   <- sqrt(pmax(pred$MSE, 0) + cfg$eps)
+    }
     ei_gaussian(mu, sd, min(y_eval))
   }
 }

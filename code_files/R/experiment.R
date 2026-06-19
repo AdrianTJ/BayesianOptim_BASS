@@ -28,7 +28,7 @@ run_one_seed <- function(seed, objective, methods, cfg) {
       seed   = seed,
       iter   = 0:cfg$budget,
       method = m$name,
-      best   = run_bo(objective, m, cfg, X_init, y_init)
+      best   = run_bo(objective, m, cfg, X_init, y_init)$best
     )
   })
   dplyr::bind_rows(curves)
