@@ -16,8 +16,10 @@
 scale01_to_bounds <- function(X, lower, upper) {
   X <- as.matrix(X)
   # column i  ->  lower[i] + X[, i] * (upper[i] - lower[i])
-  sweep(X, 2, lower, `+`) +
-    sweep(X, 2, upper - lower, `*`)
+  # Scale first, then shift. (The previous version added X an extra time, which
+  # distorted every benchmark's domain -- correct at the lower corner but off
+  # by X*1 elsewhere.)
+  sweep(sweep(X, 2, upper - lower, `*`), 2, lower, `+`)
 }
 
 #' Wrap a scalar-input benchmark into a matrix-input, unit-cube objective.
