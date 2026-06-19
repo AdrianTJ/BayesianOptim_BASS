@@ -23,8 +23,11 @@
 #' @param cfg       Config list (see `default_config()`).
 #' @param X_init    Initial design points (matrix, one per row, in [0,1]^d).
 #' @param y_init    Objective values at `X_init`.
-#' @return          Numeric vector of length `budget + 1`: best-so-far from the
-#'                  initial design (index 1) through every iteration.
+#' @return          A list with:
+#'                    * `best` : numeric vector of length `budget + 1`, best-so-far
+#'                               from the initial design (index 1) onward;
+#'                    * `X`    : every evaluated point (initial design + picks);
+#'                    * `y`    : the objective value at each evaluated point.
 run_bo <- function(objective, method, cfg, X_init, y_init) {
   f      <- objective$fn
   X_eval <- as.matrix(X_init)
@@ -57,7 +60,7 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
     best_so_far[t + 1] <- min(y_eval)
   }
 
-  best_so_far
+  list(best = best_so_far, X = X_eval, y = y_eval)
 }
 
 #' Build the three methods we compare, all from one config.
