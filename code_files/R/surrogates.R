@@ -42,9 +42,9 @@ BASS_KEEP  <- (BASS_NMCMC - BASS_NBURN) %/% BASS_THIN   # 200 stored draws
 #' positive affine standardisation, so no back-transform is needed.
 #'
 #' @param cfg Config list. Uses `acquisition` ("ei" or "thompson").
-#' @return An `acquire(X_eval, y_eval, X_cand, cfg)` function.
+#' @return An `acquire(X_eval, y_eval, X_cand)` function (captures `cfg`).
 make_bass_acquire <- function(cfg) {
-  function(X_eval, y_eval, X_cand, cfg) {
+  function(X_eval, y_eval, X_cand) {
     X_eval <- as.matrix(X_eval)
     n_cand <- nrow(as.matrix(X_cand))
 
@@ -87,9 +87,9 @@ make_bass_acquire <- function(cfg) {
 #' continues instead of crashing.
 #'
 #' @param cfg Config list. Uses `eps` (jitter on the predictive variance).
-#' @return An `acquire(X_eval, y_eval, X_cand, cfg)` function.
+#' @return An `acquire(X_eval, y_eval, X_cand)` function (captures `cfg`).
 make_gp_acquire <- function(cfg) {
-  function(X_eval, y_eval, X_cand, cfg) {
+  function(X_eval, y_eval, X_cand) {
     n_cand <- nrow(as.matrix(X_cand))
     fit <- tryCatch(GPfit::GP_fit(X_eval, y_eval), error = function(e) NULL)
 

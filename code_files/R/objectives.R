@@ -31,10 +31,8 @@ load_objective <- function(name, d) {
       bounds <- list(lower = rep(-5.12, d), upper = rep(5.12, d))
       vectorize_target(rastrigin, bounds)
     },
-    "synthetic" = {
-      # Already on [0, 1]^d -- no rescaling needed.
-      function(X) synthetic(X)
-    },
+    # Already on [0, 1]^d -- used directly, no rescaling needed.
+    "synthetic" = synthetic,
     stop(sprintf("Unknown objective '%s'. Choose: branin, rastrigin, synthetic.",
                  name))
   )
