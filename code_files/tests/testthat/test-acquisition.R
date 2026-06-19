@@ -1,24 +1,29 @@
-# Tests for the acquisition function and the kappa decay schedule.
+# Tests for the Expected Improvement acquisition functions.
 
-test_that("kappa_decay hits its endpoints and interpolates linearly", {
-  # First iteration uses kappa_start, last uses kappa_end.
-  expect_equal(kappa_decay(1,  budget = 10, kappa_start = 3.5, kappa_end = 1.5), 3.5)
-  expect_equal(kappa_decay(10, budget = 10, kappa_start = 3.5, kappa_end = 1.5), 1.5)
-  # Midpoint sits halfway between the two.
-  mid <- kappa_decay(5.5, budget = 10, kappa_start = 3.5, kappa_end = 1.5)
-  expect_equal(mid, 2.5)
+test_that("ei_gaussian is non-negative and correct at sd = 0", {
+  # With no uncertainty, EI is just the clamped improvement max(0, y_best - mu).
+  ei <- ei_gaussian(mu = c(0, 1, 2), sd = c(0, 0, 0), y_best = 1)
+  expect_equal(ei, c(1, 0, 0))
 })
 
-test_that("acquisition_order ranks by LCB by default", {
-  mu <- c(1.0, 0.0, 2.0)
-  sd <- c(0.0, 0.0, 0.0)
-  # With sd = 0, lowest mean wins: index 2, then 1, then 3.
-  expect_equal(acquisition_order(mu, sd, kappa = 1), c(2, 1, 3))
+test_that("ei_gaussian prefers a lower mean and rewards uncertainty", {
+  # Lower predicted mean -> higher EI at the same uncertainty.
+  e1 <- ei_gaussian(mu = c(0.0, 0.5), sd = c(1, 1), y_best = 1)
+  expect_gt(e1[1], e1[2])
+
+  # When the mean sits exactly at y_best (zero expected improvement from the
+  # mean), more uncertainty still yields more EI.
+  e2 <- ei_gaussian(mu = c(1, 1), sd = c(0.5, 1.0), y_best = 1)
+  expect_gt(e2[2], e2[1])
+
+  expect_true(all(e1 >= 0) && all(e2 >= 0))
 })
 
-test_that("acquisition_order in explore mode ranks by uncertainty", {
-  mu <- c(0.0, 0.0, 0.0)
-  sd <- c(0.1, 0.9, 0.5)
-  # Explore mode ignores mu and picks the most uncertain first: 2, 3, 1.
-  expect_equal(acquisition_order(mu, sd, kappa = 1, explore = TRUE), c(2, 3, 1))
+test_that("ei_mc averages improvement across posterior draws", {
+  # 3 samples x 2 candidates: candidate 1 always predicts 0, candidate 2 predicts 2.
+  draws <- matrix(c(0, 2,
+                    0, 2,
+                    0, 2), nrow = 3, byrow = TRUE)
+  # y_best = 1: candidate 1 improves by 1 every draw; candidate 2 never improves.
+  expect_equal(ei_mc(draws, y_best = 1), c(1, 0))
 })
