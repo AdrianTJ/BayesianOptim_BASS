@@ -1,79 +1,96 @@
 # =============================================================================
-# surrogates.R  --  The interchangeable surrogate models
+# surrogates.R  --  Surrogate models, each exposed as an "acquire" function
 # =============================================================================
-# A "surrogate" is a cheap model of the expensive objective. In our BO loop a
-# surrogate is just a function with a fixed shape:
+# In the BO loop a method is defined by how it scores candidates. Each surrogate
+# is therefore wrapped as a single closure:
 #
-#     surrogate(X_eval, y_eval, X_cand) -> list(mu, sd)
+#     acquire(X_eval, y_eval, X_cand, cfg) -> numeric (higher = more promising)
 #
-# i.e. given the points evaluated so far, predict the posterior mean (`mu`) and
-# standard deviation (`sd`) at each candidate. Because every surrogate has the
-# same shape, `run_bo()` (in bo_loop.R) does not care which one it is using.
-#
-# This file builds the two surrogates we compare -- BASS and a Gaussian Process
-# -- from a config list (see config.R). Random Search needs no model and is
-# handled directly inside the BO loop.
+# The closure fits the surrogate on the current data and returns the acquisition
+# value (Expected Improvement) at every candidate. Encapsulating "fit + predict +
+# score" behind one function is what lets run_bo() stay model-agnostic.
 # =============================================================================
 
-#' Build a BASS (Bayesian Adaptive Spline Surfaces) surrogate.
+# --- BASS MCMC settings -------------------------------------------------------
+# Internal numerical settings (NOT user tuning knobs). They trade a little
+# posterior resolution for speed inside the BO inner loop: ~4k RJMCMC iterations
+# instead of BASS's default 10k, keeping 200 posterior samples
+# ((NMCMC - NBURN) / THIN). This is the main BASS speed-up.
+BASS_NMCMC <- 4000L
+BASS_NBURN <- 2000L
+BASS_THIN  <- 10L
+BASS_KEEP  <- (BASS_NMCMC - BASS_NBURN) %/% BASS_THIN   # 200 stored draws
+
+#' Orient a predict.bass() matrix to rows = samples, columns = candidates.
 #'
-#' BASS is a Bayesian version of MARS: it fits piecewise-linear "hinge" basis
-#' functions, which capture sharp transitions that a smooth GP tends to wash
-#' out. We add a few numerical safeguards described inline.
+#' predict.bass can return either orientation; we know the candidate count, so
+#' transpose when the rows index candidates instead of samples.
 #'
-#' @param cfg Config list (see `default_config()`). Uses: `bass_sd_floor`,
-#'   `bass_sd_inflate`, `bass_degree_early`, `bass_degree_late`,
-#'   `bass_switch_after`.
-#' @return A surrogate function `(X_eval, y_eval, X_cand) -> list(mu, sd)`.
-make_bass_surrogate <- function(cfg) {
-  function(X_eval, y_eval, X_cand) {
+#' @param m      Matrix returned by predict.bass().
+#' @param n_cand Number of candidates that were predicted.
+#' @return       A samples x candidates matrix.
+.samples_by_cand <- function(m, n_cand) {
+  m <- as.matrix(m)
+  if (nrow(m) == n_cand) t(m) else m
+}
+
+#' Build the BASS acquisition closure.
+#'
+#' Fits BASS to the standardised responses, then scores candidates with either
+#' Monte Carlo Expected Improvement (default) or Thompson sampling. Both work on
+#' the standardised scale: EI and the Thompson argmin are invariant to the
+#' positive affine standardisation, so no back-transform is needed.
+#'
+#' @param cfg Config list. Uses `acquisition` ("ei" or "thompson").
+#' @return An `acquire(X_eval, y_eval, X_cand, cfg)` function.
+make_bass_acquire <- function(cfg) {
+  function(X_eval, y_eval, X_cand, cfg) {
     X_eval <- as.matrix(X_eval)
+    n_cand <- nrow(as.matrix(X_cand))
 
-    # Standardise y so BASS works on a well-scaled target. Guard against a zero
-    # spread (e.g. all-equal y early on), which would divide by ~0.
+    # Standardise y for BASS's numerics; guard a zero spread.
     y_mean <- mean(y_eval)
     y_sd   <- sd(y_eval)
     if (!is.finite(y_sd) || y_sd < 1e-12) y_sd <- 1
-    y_std <- (y_eval - y_mean) / y_sd
+    y_std      <- (y_eval - y_mean) / y_sd
+    y_best_std <- min(y_std)               # best so far, standardised
 
-    # Increase model complexity as data accumulates: start with additive linear
-    # splines (degree 1), switch to interaction splines (degree 2) once we have
-    # enough points to support them.
-    deg <- if (nrow(X_eval) < cfg$bass_switch_after) {
-      cfg$bass_degree_early
+    fit <- BASS::bass(
+      xx = X_eval, y = y_std,
+      nmcmc = BASS_NMCMC, nburn = BASS_NBURN, thin = BASS_THIN,
+      verbose = FALSE
+    )
+    newdata <- as.data.frame(X_cand)
+
+    if (identical(cfg$acquisition, "thompson")) {
+      # Thompson sampling: draw ONE plausible response surface from the
+      # posterior and head toward its minimum. Predicting a single draw is very
+      # cheap. Maximising the negated draw == minimising the sampled surface.
+      idx  <- sample.int(BASS_KEEP, 1)
+      draw <- as.numeric(predict(fit, newdata, mcmc.use = idx))
+      -draw
     } else {
-      cfg$bass_degree_late
+      # Monte Carlo Expected Improvement over the full posterior draws.
+      draws <- predict(fit, newdata, mcmc.use = seq_len(BASS_KEEP))
+      draws <- .samples_by_cand(draws, n_cand)
+      ei_mc(draws, y_best_std)
     }
-    fit <- BASS::bass(xx = X_eval, y = y_std, degree = deg, verbose = FALSE)
-
-    # BASS returns one prediction per posterior sample. The returned matrix
-    # orientation can vary, so transpose if needed to get samples-by-candidate.
-    pred_mat <- as.matrix(predict(fit, newdata = as.data.frame(X_cand)))
-    if (ncol(pred_mat) != nrow(X_cand)) pred_mat <- t(pred_mat)
-
-    # Posterior mean and SD per candidate, mapped back to the original y scale.
-    mu <- colMeans(pred_mat) * y_sd + y_mean
-    sd <- apply(pred_mat, 2, sd) * y_sd
-
-    # Inflate the SD a little and enforce a floor. Without this the surrogate can
-    # become overconfident and the search collapses onto one point too early.
-    sd <- pmax(sd * cfg$bass_sd_inflate, cfg$bass_sd_floor)
-
-    list(mu = mu, sd = sd)
   }
 }
 
-#' Build a Gaussian Process surrogate (the standard BO baseline).
+#' Build the Gaussian Process acquisition closure (the baseline).
 #'
-#' @param cfg Config list. Uses: `eps` (jitter added to the predictive variance
-#'   for numerical safety).
-#' @return A surrogate function `(X_eval, y_eval, X_cand) -> list(mu, sd)`.
-make_gp_surrogate <- function(cfg) {
-  function(X_eval, y_eval, X_cand) {
+#' Fits a GP and scores candidates with closed-form Expected Improvement -- the
+#' same acquisition principle as BASS, so only the surrogate differs.
+#'
+#' @param cfg Config list. Uses `eps` (jitter on the predictive variance).
+#' @return An `acquire(X_eval, y_eval, X_cand, cfg)` function.
+make_gp_acquire <- function(cfg) {
+  function(X_eval, y_eval, X_cand, cfg) {
     fit  <- GPfit::GP_fit(X_eval, y_eval)
     pred <- predict(fit, X_cand)
     mu   <- pred$Y_hat
     sd   <- sqrt(pmax(pred$MSE, 0) + cfg$eps)
-    list(mu = mu, sd = sd)
+    ei_gaussian(mu, sd, min(y_eval))
   }
 }

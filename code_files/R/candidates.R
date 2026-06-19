@@ -1,77 +1,104 @@
 # =============================================================================
-# candidates.R  --  Generating and de-duplicating candidate points
+# candidates.R  --  Proposing and de-duplicating candidate points
 # =============================================================================
-# Every Bayesian Optimization (BO) step needs a pool of candidate points in the
-# unit cube [0, 1]^d to score with the acquisition function. This file holds the
-# two candidate generators we use plus the duplicate check that stops us from
-# evaluating (almost) the same point twice.
+# Each BO step scores a pool of candidate points in the unit cube [0,1]^d with
+# the acquisition function and picks the best. We propose candidates with a
+# parameter-free hybrid:
 #
-# Pure functions only -- no model fitting, no global state. That makes them easy
-# to unit-test (see tests/testthat/test-candidates.R).
+#   * half from a space-filling Latin Hypercube (global exploration), and
+#   * half from a Gaussian cloud around the current best, whose width is the
+#     incumbent's nearest-neighbour distance -- a length scale read straight off
+#     the data that automatically shrinks as points cluster near the optimum.
+#
+# There are no local_frac / local_sd knobs to set: the split is a fixed 50/50
+# and the width is derived, not tuned.
+#
+# Pure functions -- easy to unit-test.
 # =============================================================================
 
 #' Is point `x` already (almost) present in the rows of `X`?
 #'
-#' Returns TRUE when `x` lies within Euclidean distance `tol` of any existing
-#' row. Used to avoid re-evaluating the objective at a point we already know.
-#'
 #' @param x   Numeric vector, the candidate point.
-#' @param X   Matrix of already-evaluated points (one point per row).
-#' @param tol Distance below which two points count as the same.
-#' @return    TRUE if `x` duplicates an existing row, otherwise FALSE.
+#' @param X   Matrix of evaluated points (one per row).
+#' @param tol Distance below which two points count as identical.
+#' @return    TRUE if `x` duplicates an existing row.
 is_duplicate <- function(x, X, tol = 1e-10) {
-  x <- as.numeric(x)
-  X <- as.matrix(X)
-  # Squared distance from x to every row, compared against tol^2 (cheaper than
-  # taking square roots).
-  xmat <- matrix(x, nrow = nrow(X), ncol = ncol(X), byrow = TRUE)
-  any(rowSums((X - xmat)^2) <= tol^2)
+  min(min_sqdist(matrix(as.numeric(x), nrow = 1), X)) <= tol^2
 }
 
-#' Plain space-filling candidates (used by the GP surrogate).
+#' Squared distance from each candidate to its nearest evaluated point.
 #'
-#' A maximin Latin Hypercube spreads `n` points evenly across [0, 1]^d.
+#' Vectorised over candidates; loops over the (few) evaluated points. Used to
+#' mask out candidates that duplicate something we have already measured.
+#'
+#' @param X_cand n x d matrix of candidates.
+#' @param X_eval m x d matrix of evaluated points.
+#' @return       Length-n vector of nearest squared distances.
+min_sqdist <- function(X_cand, X_eval) {
+  X_cand <- as.matrix(X_cand)
+  X_eval <- as.matrix(X_eval)
+  out <- rep(Inf, nrow(X_cand))
+  for (i in seq_len(nrow(X_eval))) {
+    diff <- sweep(X_cand, 2, X_eval[i, ], "-")
+    out  <- pmin(out, rowSums(diff^2))
+  }
+  out
+}
+
+#' Plain space-filling candidates via a (fast) random Latin Hypercube.
+#'
+#' We use randomLHS rather than maximinLHS: it is far cheaper to draw a fresh set
+#' every iteration and the coverage is plenty good for scoring candidates.
 #'
 #' @param n Number of candidates.
 #' @param d Dimension.
-#' @return  An `n` x `d` matrix of candidate points in [0, 1]^d.
-lhs_candidates <- function(n, d) {
-  lhs::maximinLHS(n, d)
+#' @return  An n x d matrix in [0,1]^d.
+space_filling_candidates <- function(n, d) {
+  lhs::randomLHS(n, d)
 }
 
-#' Hybrid global + local candidates (used by the BASS surrogate).
+#' A data-derived local search width: the incumbent's nearest-neighbour distance.
 #'
-#' Mixes two sources so the optimizer both explores widely and refines the
-#' current best:
-#'   - a global maximin Latin Hypercube covering the whole cube, and
-#'   - a local Gaussian cloud sampled around the best point found so far.
-#' The local points are clipped back into [0, 1]^d.
+#' Large early on (points are far apart, so we refine broadly), shrinking as the
+#' design fills in around the optimum. Clipped to a sane range so the local
+#' cloud is never degenerate or larger than the cube.
 #'
-#' @param X_eval     Matrix of evaluated points (one per row).
-#' @param y_eval     Numeric vector of objective values (we minimise, so the
-#'                   best point is the row with the smallest value).
-#' @param n_cand     Total number of candidates to return.
-#' @param local_frac Fraction of `n_cand` drawn from the local cloud (0..1).
-#' @param local_sd   Standard deviation of the local Gaussian cloud.
-#' @return           An `n_cand` x `d` matrix of candidate points in [0, 1]^d.
-hybrid_candidates <- function(X_eval, y_eval, n_cand, local_frac = 0.35,
-                              local_sd = 0.08) {
+#' @param X_eval   m x d matrix of evaluated points.
+#' @param best_idx Row index of the current best point.
+#' @return         A single positive standard deviation.
+local_scale <- function(X_eval, best_idx) {
+  X_eval <- as.matrix(X_eval)
+  if (nrow(X_eval) < 2) return(0.1)
+  others <- X_eval[-best_idx, , drop = FALSE]
+  diff   <- sweep(others, 2, X_eval[best_idx, ], "-")
+  dmin   <- sqrt(min(rowSums(diff^2)))
+  min(max(dmin, 1e-2), 0.5)
+}
+
+#' Hybrid global + adaptive-local candidate set (parameter-free).
+#'
+#' @param X_eval m x d matrix of evaluated points.
+#' @param y_eval Length-m objective values (best = smallest).
+#' @param n_cand Total number of candidates to return.
+#' @return       An n_cand x d matrix in [0,1]^d.
+hybrid_candidates <- function(X_eval, y_eval, n_cand) {
   X_eval <- as.matrix(X_eval)
   d <- ncol(X_eval)
 
-  # Split the budget between local refinement and global exploration.
-  n_local  <- max(1L, round(n_cand * local_frac))
+  n_local  <- floor(n_cand / 2)
   n_global <- n_cand - n_local
 
-  # Global half: spread evenly across the whole cube.
-  X_global <- lhs::maximinLHS(n_global, d)
+  # Global half: even coverage of the whole cube.
+  X_global <- space_filling_candidates(n_global, d)
 
-  # Local half: a Gaussian cloud centred on the current best point, then clipped
-  # to stay inside the unit cube.
-  x_best  <- X_eval[which.min(y_eval), ]
-  X_local <- matrix(
-    rnorm(n_local * d, mean = rep(x_best, each = n_local), sd = local_sd),
-    ncol = d, byrow = FALSE
+  # Local half: a Gaussian cloud around the incumbent, width set by the data,
+  # clipped back into the unit cube.
+  best_idx <- which.min(y_eval)
+  x_best   <- X_eval[best_idx, ]
+  s        <- local_scale(X_eval, best_idx)
+  X_local  <- matrix(
+    rnorm(n_local * d, mean = rep(x_best, each = n_local), sd = s),
+    ncol = d
   )
   X_local <- pmin(pmax(X_local, 0), 1)
 
