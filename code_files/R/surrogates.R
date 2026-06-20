@@ -41,9 +41,14 @@ BASS_KEEP  <- (BASS_NMCMC - BASS_NBURN) %/% BASS_THIN   # 200 stored draws
 #' the standardised scale: EI and the Thompson argmin are invariant to the
 #' positive affine standardisation, so no back-transform is needed.
 #'
-#' @param cfg Config list. Uses `acquisition` ("ei" or "thompson").
-#' @return An `acquire(X_eval, y_eval, X_cand)` function (captures `cfg`).
-make_bass_acquire <- function(cfg) {
+#' @param cfg    Config list. Uses `acquisition` ("ei" or "thompson").
+#' @param schema Optional input schema (see objective_utils.R). When it marks
+#'   categorical coordinates, the fit and prediction frames hand BASS genuine
+#'   factor columns so it uses its categorical (subset-of-levels) basis instead
+#'   of treating the coordinate as an ordered number. NULL => all-continuous, the
+#'   original behaviour.
+#' @return An `acquire(X_eval, y_eval, X_cand)` function (captures `cfg`, `schema`).
+make_bass_acquire <- function(cfg, schema = NULL) {
   function(X_eval, y_eval, X_cand) {
     X_eval <- as.matrix(X_eval)
     n_cand <- nrow(as.matrix(X_cand))
@@ -55,12 +60,17 @@ make_bass_acquire <- function(cfg) {
     y_std      <- (y_eval - y_mean) / y_sd
     y_best_std <- min(y_std)               # best so far, standardised
 
+    # With a categorical schema, fit/predict on factor frames; otherwise keep the
+    # plain numeric matrix / data frame the continuous benchmarks have always used.
+    xx_fit  <- if (is.null(schema)) X_eval else to_model_frame(X_eval, schema)
+    newdata <- if (is.null(schema)) as.data.frame(X_cand) else
+                 to_model_frame(X_cand, schema)
+
     fit <- BASS::bass(
-      xx = X_eval, y = y_std,
+      xx = xx_fit, y = y_std,
       nmcmc = BASS_NMCMC, nburn = BASS_NBURN, thin = BASS_THIN,
       verbose = FALSE
     )
-    newdata <- as.data.frame(X_cand)
 
     if (identical(cfg$acquisition, "thompson")) {
       # Thompson sampling: draw ONE plausible response surface from the

@@ -27,7 +27,7 @@
 #' @return Long tibble with columns: seed, iter, method, best.
 run_one_seed <- function(seed, cfg) {
   objective <- load_objective(cfg$objective, cfg$d)
-  methods   <- make_methods(cfg)
+  methods   <- make_methods(cfg, objective$schema)
 
   set.seed(seed)
   d  <- objective$d
