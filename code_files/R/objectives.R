@@ -34,7 +34,7 @@ load_objective <- function(name, d) {
   # Fixed-structure mixed benchmark: warn if the caller's d disagrees, then use
   # the benchmark's own dimension.
   fixed <- function(fn, schema, nat_d) {
-    if (!missing(d) && !is.null(d) && d != nat_d) {
+    if (!is.null(d) && d != nat_d) {
       warning(sprintf("'%s' has a fixed structure (d = %d); ignoring d = %d.",
                       name, nat_d, d))
     }
