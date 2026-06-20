@@ -70,9 +70,15 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
 #' (Expected Improvement), so the surrogate is the only thing that differs --
 #' which is exactly the comparison the thesis is about.
 #'
-#' @param cfg Config list (see `default_config()`).
+#' For categorical/mixed objectives the `schema` is forwarded only to BASS-BO, so
+#' BASS fits on genuine factors. GP-BO gets no schema on purpose: a plain GP has
+#' no categorical kernel, so it sees the raw [0,1] coordinate -- a continuous
+#' relaxation of the categories. That gap is the whole point of the comparison.
+#'
+#' @param cfg    Config list (see `default_config()`).
+#' @param schema Optional input schema from the objective (NULL = all continuous).
 #' @return Named list of methods: BASS-BO, GP-BO, Random.
-make_methods <- function(cfg) {
+make_methods <- function(cfg, schema = NULL) {
   shared_candidates <- function(X_eval, y_eval)
     hybrid_candidates(X_eval, y_eval, cfg$n_cand)
 
@@ -80,7 +86,7 @@ make_methods <- function(cfg) {
     "BASS-BO" = list(
       name       = "BASS-BO",
       candidates = shared_candidates,
-      acquire    = make_bass_acquire(cfg)
+      acquire    = make_bass_acquire(cfg, schema)
     ),
     "GP-BO" = list(
       name       = "GP-BO",
