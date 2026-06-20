@@ -39,14 +39,15 @@ cfg <- parse_cli_args(commandArgs(trailingOnly = TRUE))
 # --- Parallel backend: one worker per core, leaving one free -----------------
 plan(multisession, workers = max(1L, parallel::detectCores() - 1L))
 
-# --- Build the objective + methods, then run ----------------------------------
+# --- Run the experiment -------------------------------------------------------
+# The objective and methods are rebuilt from `cfg` inside each parallel worker
+# (see run_one_seed), so we only build a copy here for the result labels/plots.
 objective <- load_objective(cfg$objective, cfg$d)
-methods   <- make_methods(cfg)
 
 cat(sprintf("Running %s (d=%d) | budget=%d | reps=%d\n",
             cfg$objective, cfg$d, cfg$budget, cfg$reps))
 
-all_runs      <- run_experiment(objective, methods, cfg)
+all_runs      <- run_experiment(cfg)
 final_summary <- save_results(all_runs, objective, cfg)
 
 # --- Report -------------------------------------------------------------------
