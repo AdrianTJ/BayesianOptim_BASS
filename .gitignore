@@ -1,6 +1,11 @@
 # Ignore Mac DS_Store files
 .DS_Store
 **/.DS_Store
+
+# Generated experiment outputs (regenerate with the run_*.R scripts)
+code_files/**/results*/
+results*/
+
 **/renv/
 **/.Rhistory
 *.RProj
