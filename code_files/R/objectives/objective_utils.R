@@ -33,10 +33,6 @@ scale01_to_bounds <- function(X, lower, upper) {
 vectorize_target <- function(fn, bounds) {
   force(fn)
   force(bounds)
-  # Pull scale01_to_bounds into the local call frame so that when furrr
-  # serialises this closure to a parallel worker, the helper travels with it
-  # (workers get an empty global env and cannot find it via lexical scoping).
-  scale01_to_bounds <- scale01_to_bounds
 
   function(X) {
     X <- as.matrix(X)
