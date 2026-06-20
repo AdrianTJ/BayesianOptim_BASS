@@ -9,12 +9,26 @@
 
 #' Run every method once for a single seed, from a shared initial design.
 #'
-#' @param seed      Integer seed (controls the initial design and the run).
-#' @param objective Objective list from `load_objective()`.
-#' @param methods   Named list of methods from `make_methods()`.
-#' @param cfg       Config list.
+#' The objective and the methods are (re)built here from `cfg` rather than passed
+#' in. This is deliberate and load-bearing for the parallel path: when
+#' `run_experiment()` fans this out across furrr workers, future's globals
+#' detection can only export helpers it reaches by *inspecting function bodies*.
+#' Helpers hidden inside closures stored as list values -- e.g. `scale01_to_bounds`
+#' inside `objective$fn`, or `ei_mc` / the `BASS_*` constants inside
+#' `method$acquire` -- are invisible to that inspection. Building the objective and
+#' methods here keeps every dependency reachable by a chain of named calls
+#' (`run_one_seed` -> `load_objective` / `make_methods` -> ...), so each worker
+#' receives a complete, self-contained task. (This mirrors the elastic-net case
+#' study, which builds its methods inside the per-seed worker function too.)
+#'
+#' @param seed Integer seed (controls the initial design and the run).
+#' @param cfg  Config list (carries the objective name + dimension and the
+#'             method/acquisition knobs).
 #' @return Long tibble with columns: seed, iter, method, best.
-run_one_seed <- function(seed, objective, methods, cfg) {
+run_one_seed <- function(seed, cfg) {
+  objective <- load_objective(cfg$objective, cfg$d)
+  methods   <- make_methods(cfg)
+
   set.seed(seed)
   d  <- objective$d
   # A modest space-filling start: ~2d+1 points, but at least 8.
@@ -36,27 +50,23 @@ run_one_seed <- function(seed, objective, methods, cfg) {
 
 #' Run the full experiment across all seeds, in parallel.
 #'
-#' @param objective Objective list from `load_objective()`.
-#' @param methods   Named list of methods from `make_methods()`.
-#' @param cfg       Config list (uses `reps` and `seed_start`).
+#' Each worker rebuilds the objective and methods from `cfg` (see `run_one_seed`),
+#' which keeps every user-defined helper reachable by future's globals detection,
+#' so no explicit `globals` list is needed. `packages` is still required: it loads
+#' the surrogate namespaces on each worker so that `predict()` dispatches to
+#' `predict.bass` / `predict.GP` correctly.
+#'
+#' @param cfg Config list (uses `objective`, `d`, `reps`, `seed_start`, and the
+#'            method/acquisition knobs consumed downstream).
 #' @return Long tibble of every method's best-so-far curve for every seed.
-run_experiment <- function(objective, methods, cfg) {
+run_experiment <- function(cfg) {
   seeds <- cfg$seed_start + 0:(cfg$reps - 1)
   furrr::future_map_dfr(
     seeds,
-    ~ run_one_seed(.x, objective, methods, cfg),
-    # `packages` loads surrogate namespaces so predict() dispatches correctly.
-    # `globals` supplements auto-detection: functions embedded inside list-value
-    # closures (objective$fn, method$acquire, method$candidates) are not
-    # reachable by future's static analysis, so we name them explicitly.
+    ~ run_one_seed(.x, cfg),
     .options = furrr::furrr_options(
       seed = TRUE,
-      packages = c("BASS", "GPfit", "lhs"),
-      globals = c(
-        "hybrid_candidates", "space_filling_candidates", "local_scale",
-        "ei_mc", "ei_gaussian", ".samples_by_cand",
-        "BASS_NMCMC", "BASS_NBURN", "BASS_THIN", "BASS_KEEP"
-      )
+      packages = c("BASS", "GPfit", "lhs")
     )
   )
 }
