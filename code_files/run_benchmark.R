@@ -12,6 +12,10 @@
 #   Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=25
 #   Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=5
 #   Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+#   # Categorical / mixed benchmarks (d is fixed for func2C/func3C):
+#   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --out_dir=results_func2C
+#   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --out_dir=results_func3C
+#   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --out_dir=results_catackley
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -45,7 +49,7 @@ plan(multisession, workers = max(1L, parallel::detectCores() - 1L))
 objective <- load_objective(cfg$objective, cfg$d)
 
 cat(sprintf("Running %s (d=%d) | budget=%d | reps=%d\n",
-            cfg$objective, cfg$d, cfg$budget, cfg$reps))
+            cfg$objective, objective$d, cfg$budget, cfg$reps))
 
 all_runs      <- run_experiment(cfg)
 final_summary <- save_results(all_runs, objective, cfg)
