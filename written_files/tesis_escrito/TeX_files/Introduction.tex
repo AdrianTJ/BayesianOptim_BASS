@@ -1,3 +1,63 @@
 \chapter*{Introduction}
 
-\blue{This is where the introduction will go.} 
+Many of the most important optimization problems in machine learning and the
+sciences share an uncomfortable feature: the function we want to optimize is a
+black box that is expensive to evaluate. Tuning the hyperparameters of a learning
+algorithm, calibrating a simulator, or configuring a physical experiment all
+amount to searching for the input that minimizes some objective whose internal
+structure we cannot see and whose every evaluation costs real time or money.
+Bayesian Optimization (BO) has become the standard tool for this setting because
+it spends evaluations frugally: it fits a cheap probabilistic \emph{surrogate}
+to the data gathered so far and uses that surrogate, through an acquisition
+function, to decide where to evaluate next. The quality of a BO method is
+therefore largely the quality of its surrogate, and the default choice, by a wide
+margin, is the Gaussian process (GP).
+
+The Gaussian process owes its dominance to genuine strengths, chief among them a
+closed-form predictive uncertainty that the acquisition function can use directly.
+But that machinery rests on an assumption that is easy to overlook: a GP is built
+from a kernel that measures the similarity of two inputs through a numeric
+distance between them, and so it presumes the search space is a continuous subset
+of $\mathbb{R}^d$. A great many real problems are not of this form. Hyperparameter
+spaces routinely mix continuous parameters with \emph{categorical} ones, such as
+the choice of model family, kernel, or optimizer, whose values are unordered
+labels with no natural distance between them. Faced with such inputs a standard GP
+must resort to encodings that fabricate an ordering or distort the geometry its
+kernel relies on, or to specialized kernels and embeddings that are additional
+machinery rather than part of the model.
+
+This thesis investigates an alternative surrogate that does not share this
+restriction: the Bayesian Adaptive Spline Surface (BASS). BASS is a fully Bayesian
+spline-regression model in the lineage of MARS and Bayesian MARS, and it handles
+categorical predictors \emph{natively}, through basis functions defined on subsets
+of a factor's levels rather than on numeric distances. The central contribution of
+this work, as its title suggests, is the implementation and study of BASS as a
+surrogate model within the Bayesian Optimization framework, with particular
+attention to the capability that distinguishes it from the GP baseline: optimizing
+over categorical and mixed search spaces. In the language of the next chapters,
+the point of this work is to relax the continuity-and-numeric-inputs restriction
+that the GP framework quietly imposes.
+
+To study this honestly, we build a reproducible experimental pipeline in R that
+compares BASS-based BO (BASS-BO) against GP-based BO (GP-BO) and Random Search on
+a common protocol, with both surrogates driven by the same parameter-free Expected
+Improvement acquisition and the same candidate generator, so that any measured
+difference is attributable to the surrogate alone. The findings are deliberately
+balanced. On smooth, low-dimensional continuous benchmarks, where the GP's
+assumptions are well matched, GP-BO is the stronger method and converges faster.
+The advantage of BASS-BO is structural rather than a matter of tuning: on
+categorical and mixed problems, where a standard GP cannot operate without
+workarounds, BASS-BO applies directly. We make this contrast concrete with a set
+of categorical and mixed-variable benchmarks designed precisely to exercise it.
+
+The remainder of the thesis is organized as follows. We first develop the
+background needed to make these ideas precise: stochastic processes and Gaussian
+processes, the Bayesian Optimization framework and its acquisition functions, and
+the sequential model-based optimization (SMBO) view that unifies them. We then
+survey the surrogate models commonly used in this framework and their trade-offs,
+before turning to BASS itself, its origins in MARS and Bayesian MARS, and the
+specifics of using it as a surrogate, including how it handles categorical inputs
+and how its posterior supplies the uncertainty an acquisition function needs.
+Finally, we present the experimental validation across both continuous and
+categorical benchmarks, and conclude with a discussion of where each method is
+preferable and what should come next.
