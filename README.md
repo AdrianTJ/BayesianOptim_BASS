@@ -16,14 +16,14 @@ BASS-BO leverages piecewise linear basis functions (hinge functions) to capture 
 ## Key Features
 
 - **BASS Surrogate Modeling**: Implementation of BASS as the underlying engine for Sequential Model-Based Optimization (SMBO).
+- **Parameter-free acquisition**: Both surrogates use **Expected Improvement** — closed-form for the GP, and **Monte Carlo EI computed directly from BASS's posterior draws** for BASS (with an optional single-draw Thompson-sampling variant). There are no exploration weights, uncertainty-inflation factors, or annealing schedules to tune, so the surrogate is the only thing that differs between methods.
 - **Comparative Analysis**: Rigorous benchmarking against standard GP-BO and baseline search strategies.
-- **Configurable Exploration/Exploitation**: Advanced acquisition function controls, including exploration schedules, local refinement sampling, and uncertainty inflation factors.
 - **Multi-Dimensional Support**: Evaluated on $2d$ (Branin-Hoo), $4d$ (Rastrigin), and higher-dimensional regression test cases.
 - **Reproducible Framework**: Comprehensive scripts for parallel target evaluation and result aggregation.
 
 ## Mathematical Intuition
 
-The core of BASS lies in its use of **hinge functions** of the form $(x - t)_+$ and $(t - x)_+$. By combining these into an additive model with interaction terms, BASS can approximate any continuous function. The Bayesian approach (BMARS) allows for robust uncertainty estimation via MCMC sampling, which is critical for the acquisition function (e.g., Lower Confidence Bound) to guide the optimization process effectively.
+The core of BASS lies in its use of **hinge functions** of the form $(x - t)_+$ and $(t - x)_+$. By combining these into an additive model with interaction terms, BASS can approximate any continuous function. The Bayesian approach (BMARS) yields a full posterior over response surfaces via MCMC sampling. We exploit this directly: rather than collapsing the posterior to a mean and standard deviation, we draw posterior samples and compute **Expected Improvement by Monte Carlo**, so the acquisition uses BASS's true (non-Gaussian) predictive distribution to guide the search.
 
 $$f(X) = \beta_0 + \sum_{m=1}^M \beta_m h_m(X)$$
 
@@ -36,10 +36,20 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 │   ├── Presentacion/        # Beamer slides (LaTeX) for thesis defense
 │   └── ReporteFinal/        # Final project report and technical summaries
 ├── code_files/              # Core implementation and experiments
-│   ├── 1_base_loop/         # Core BO loop logic and initial comparisons
-│   ├── 2_generating_iterations/ # Execution scripts for BASS-BO runs
-│   ├── 3_test_functions/    # Benchmark targets (Branin, Rastrigin, etc.)
-│   ├── 4_regression_test_case/ # Real-world application (Elastic Net tuning)
+│   ├── R/                   # Shared BO library (sourced, no build step)
+│   │   ├── bo_loop.R        #   one generic run_bo() loop + method definitions
+│   │   ├── surrogates.R     #   BASS and GP surrogates as Expected-Improvement closures
+│   │   ├── candidates.R     #   candidate generators + duplicate detection
+│   │   ├── acquisition.R    #   Expected Improvement (closed-form + Monte Carlo)
+│   │   ├── config.R         #   default_config() + --key=value CLI parser
+│   │   ├── experiment.R     #   parallel multi-seed harness + summaries + plot
+│   │   └── objectives/      #   Branin, Rastrigin, and the synthetic surface
+│   ├── run_benchmark.R      # Single entry point for the synthetic benchmarks
+│   ├── tests/               # testthat unit-test suite for the library
+│   ├── 1_base_loop/         # Exploratory R Markdown notebooks (pedagogical)
+│   ├── 4_regression_test_case/ # Real-world case study: Elastic Net tuning
+│   │   ├── run_elastic_net.R   #   driver (reuses the shared library)
+│   │   └── enet_objective.R    #   CV-RMSE objective over (alpha, lambda)
 │   └── figure_generations/  # Python/R scripts for thesis visualizations
 ├── written_files/           # Thesis documentation
 │   └── tesis_escrito/       # Main LaTeX source for the thesis document
@@ -52,22 +62,60 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 
 The project primarily uses **R** for the optimization loops and **Python** for specific visualization components.
 
-- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr), `future`, `furrr`, `gt`
+- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr, readr, tibble), `future`, `furrr`, `testthat`
 - **Python Libraries**: `numpy`, `scipy`, `matplotlib`, `scikit-learn`
 
 ### Running Experiments
 
-To reproduce the benchmark results for the Branin function:
+All synthetic benchmarks run through a single entry point, `run_benchmark.R`,
+which compares BASS-BO, GP-BO and Random Search on one objective and writes the
+CSVs plus a convergence plot. Any setting in `default_config()` (see
+`code_files/R/config.R`) can be overridden with a `--key=value` flag.
 
-1. Navigate to `code_files/3_test_functions/`.
-2. Execute the parallel runner:
-   ```bash
-   Rscript run_parallel_target.R --target branin --iterations 80 --seeds 25
-   ```
+```bash
+# Branin (2-D), 80 iterations, 25 repetitions
+Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=25
+
+# Rastrigin (4-D)
+Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
+
+# The hand-built non-smooth surface (any dimension)
+Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+
+# Use the fast single-draw Thompson-sampling acquisition for BASS instead of EI
+Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
+```
+
+The real-world Elastic Net case study uses the **same** optimisers via a small
+driver of its own:
+
+```bash
+Rscript code_files/4_regression_test_case/run_elastic_net.R --reps=50 --budget=100
+```
+
+> Results are generated on demand and are not committed to the repository. See
+> [`RUNNING.md`](RUNNING.md) for a full, step-by-step guide (dependencies, every
+> command, outputs, and tips).
+
+### Running the Tests
+
+The library ships with a `testthat` unit-test suite:
+
+```bash
+Rscript code_files/tests/run_tests.R
+```
+
+### Adding a New Objective
+
+1. Drop a function (and, for a benchmark on a physical domain, its bounds) in
+   `code_files/R/objectives/`.
+2. Register its name in `load_objective()` (`code_files/R/objectives.R`).
+
+No changes to the BO loop are needed — it is agnostic to the objective.
 
 ## Results
 
-Experiments indicate that BASS-BO demonstrates competitive sample efficiency, particularly in landscapes where the underlying function exhibits piecewise linear behavior or sharp transitions that GPs may over-smooth. Detailed convergence plots and statistical summaries can be found in `code_files/3_test_functions/results_branin_b80/`.
+Experiments indicate that BASS-BO demonstrates competitive sample efficiency, particularly in landscapes where the underlying function exhibits piecewise linear behavior or sharp transitions that GPs may over-smooth. Convergence plots and statistical summaries are written to the chosen `--out_dir` when you run the benchmarks (they are not committed); see [`RUNNING.md`](RUNNING.md).
 
 ## Citation
 
