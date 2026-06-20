@@ -45,11 +45,18 @@ run_experiment <- function(objective, methods, cfg) {
   furrr::future_map_dfr(
     seeds,
     ~ run_one_seed(.x, objective, methods, cfg),
-    # `packages` ensures each parallel worker loads the surrogate namespaces so
-    # that predict() dispatches to predict.bass / predict.GP correctly.
+    # `packages` loads surrogate namespaces so predict() dispatches correctly.
+    # `globals` supplements auto-detection: functions embedded inside list-value
+    # closures (objective$fn, method$acquire, method$candidates) are not
+    # reachable by future's static analysis, so we name them explicitly.
     .options = furrr::furrr_options(
       seed = TRUE,
-      packages = c("BASS", "GPfit", "lhs")
+      packages = c("BASS", "GPfit", "lhs"),
+      globals = c(
+        "hybrid_candidates", "space_filling_candidates", "local_scale",
+        "ei_mc", "ei_gaussian", ".samples_by_cand",
+        "BASS_NMCMC", "BASS_NBURN", "BASS_THIN", "BASS_KEEP"
+      )
     )
   )
 }
