@@ -17,8 +17,9 @@ All commands are run from the **repository root** unless noted.
   | Parallelism | `future`, `furrr` |
   | Elastic Net case study | `glmnet`, `MASS` |
   | Tests | `testthat` |
+  | TPE baseline (**optional**) | `reticulate` (R) + `optuna` (Python) |
 
-Install them all in one go:
+Install the R packages in one go:
 
 ```r
 install.packages(c(
@@ -26,6 +27,27 @@ install.packages(c(
   "future", "furrr", "glmnet", "MASS", "testthat"
 ))
 ```
+
+**Optional — the TPE baseline.** The `--with_tpe` flag (see §4) adds a
+Tree-structured Parzen Estimator baseline via [Optuna](https://optuna.org/),
+called from R through `reticulate`. It is entirely optional: without it (or if
+`reticulate`/`optuna` are missing) every other method runs exactly as before. To
+enable it, install `reticulate` in R and `optuna` in a Python that reticulate can
+find:
+
+```bash
+Rscript -e 'install.packages("reticulate", repos="https://cloud.r-project.org")'
+python3 -m venv ~/.venvs/optuna && ~/.venvs/optuna/bin/pip install optuna
+```
+
+Then point reticulate at that Python. The most reliable way (it is inherited by
+the parallel workers) is to set it in `~/.Renviron`:
+
+```
+RETICULATE_PYTHON=/Users/<you>/.venvs/optuna/bin/python
+```
+
+Verify with `Rscript -e 'cat(reticulate::py_module_available("optuna"))'` → `TRUE`.
 
 Check your setup:
 
@@ -44,9 +66,10 @@ code_files/
     surrogates.R           #   BASS & GP, each as an Expected-Improvement closure
     acquisition.R          #   Expected Improvement (closed-form + Monte Carlo)
     candidates.R           #   candidate generation + duplicate handling
+    tpe.R                  #   optional TPE baseline (Optuna, via reticulate)
     config.R               #   default_config() + the --key=value parser
     experiment.R           #   parallel multi-seed harness + summaries + plot
-    objectives/            #   branin, rastrigin, synthetic, + the loader
+    objectives/            #   branin, rastrigin, synthetic, categorical, + loader
   run_benchmark.R          # entry point for the synthetic benchmarks
   tests/                   # testthat unit tests
   4_regression_test_case/
@@ -73,10 +96,15 @@ This runs all `testthat` tests under `code_files/tests/testthat/`:
 - **`test-bo_loop.R`** — the `run_bo()` loop on a convex problem (must improve
   monotonically), Random Search, and a guarded end-to-end check of the **real**
   BASS (EI and Thompson) and GP surrogates.
+- **`test-categorical.R`** — the categorical/mixed benchmarks (`func2C`, `func3C`,
+  `cat_ackley`), the unit-cube ↔ level decoding, the BASS factor frame, and a loop
+  run on a categorical objective.
+- **`test-tpe.R`** — the TPE baseline against `run_bo()`'s contract on a continuous
+  and a categorical objective (self-skips unless `reticulate` + `optuna` are present).
 
 Notes:
-- The BASS/GP end-to-end test self-skips if those packages aren't installed, so
-  the rest of the suite still runs.
+- The BASS/GP and TPE end-to-end tests self-skip if their dependencies aren't
+  installed, so the rest of the suite still runs.
 - A non-zero exit code means a failure (handy for CI).
 
 ---
@@ -107,14 +135,24 @@ Every key in `default_config()` (`code_files/R/config.R`) is settable as
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--objective` | `branin` | `branin`, `rastrigin`, or `synthetic` |
-| `--d` | `2` | input dimension (Branin must be 2) |
+| `--objective` | `branin` | `branin`, `rastrigin`, `synthetic`, `func2C`, `func3C`, `cat_ackley` |
+| `--d` | `2` | input dimension (Branin must be 2; `func2C`/`func3C` are fixed) |
 | `--budget` | `80` | BO iterations after the initial design |
 | `--n_cand` | `1000` | candidate points scored per iteration |
 | `--reps` | `10` | independent repetitions (seeds) |
 | `--seed_start` | `1001` | first seed (`reps` use `seed_start + 0..reps-1`) |
 | `--out_dir` | `results` | output folder |
 | `--acquisition` | `ei` | BASS acquisition: `ei` or `thompson` (see §6) |
+| `--with_tpe` | `false` | add the TPE (Optuna) baseline; needs `reticulate`+`optuna` (§1) |
+
+The categorical/mixed objectives (`func2C`, `func3C`, `cat_ackley`) and the
+`--with_tpe` baseline are most informative together — TPE handles categoricals
+natively, so it is the strongest comparison there:
+
+```bash
+Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true --out_dir=results_func2C
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+```
 
 ---
 
@@ -200,6 +238,13 @@ Nothing in the BO loop needs to change — `run_bo()` is objective-agnostic.
 - **`could not find function` / `predict` errors in workers.** Make sure the
   packages in §1 are installed for the same R that runs the scripts; the runners
   load the surrogate namespaces on each worker.
+- **TPE is silently missing from results.** `--with_tpe=true` skips the TPE
+  baseline (with a warning) when `reticulate`/`optuna` aren't reachable. Confirm
+  `Rscript -e 'cat(reticulate::py_module_available("optuna"))'` prints `TRUE`, and
+  set `RETICULATE_PYTHON` in `~/.Renviron` (not just the interactive session) so
+  the value is inherited — the run computes TPE in the main process, but the check
+  must succeed there. TPE is run sequentially (it is cheap), so it does not need
+  Optuna inside the parallel workers.
 - **Native pipe `|>` errors.** You're on R < 4.1 — upgrade R.
 - **Reproducibility.** Seeds are fixed (`seed_start + 0..reps-1`) and parallel
   RNG is handled by `furrr`, so repeated runs with the same flags match.
