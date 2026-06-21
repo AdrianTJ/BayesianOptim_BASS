@@ -28,6 +28,8 @@ The methods compared are the ones previously mentioned in this work along with t
 	\item \textbf{Random Search}: random sampling from predefined hyperparameter distributions. It is often more efficient than Grid Search in moderate to high dimensions, as shown in \cite{bergstra2012random}.
 	
 	\item \textbf{Gaussian Process-Based Bayesian Optimization (GP-BO)}: a standard BO baseline using Gaussian Processes for surrogate modeling and uncertainty-guided acquisition.
+
+	\item \textbf{Tree-structured Parzen Estimator (TPE)}: a strong external baseline and, for our purposes, an especially relevant one. TPE is the de-facto standard for hyper-parameter optimization with mixed and categorical search spaces, and, like BASS but unlike a plain Gaussian process, it handles categorical inputs natively (it models separate densities over good and bad trials and, for a categorical variable, simply estimates a distribution over its levels) \cite{bergstra2011algorithms, watanabe2023tree}. We use the reference implementation in the Optuna library \cite{akiba2019optuna}, driven from R so that it runs under exactly the same protocol as the other methods. Including it lets us ask not only whether BASS-BO beats a Gaussian process on categorical problems, where the Gaussian process is at a structural disadvantage, but how it compares to a method that is itself designed for them.
 \end{itemize}
 
 The dataset in particular we will be using is the Virtual Library of Simulation Experiments: Test Functions and Datasets \cite{simulationlib}. This suite is composed of standard functions such as the Branin-Hoo function, commonly used to test Bayesian Optimization problems.
@@ -126,7 +128,7 @@ where \(A=10\) is the standard choice. We used the 4 dimensional version of this
 
 The benchmarks above are all smooth and continuous, the regime in which Gaussian-process surrogates are at their strongest. The purpose of this section is to test the capability that motivates the use of BASS in the first place, and which a standard Gaussian process does not have natively: optimization over categorical inputs. Recall from the previous chapters that the GP kernel measures similarity through a numeric distance between inputs, so an unordered categorical variable has no natural representation in it, whereas BASS models a categorical predictor directly, through basis functions defined on subsets of its levels.
 
-To make the comparison concrete and fair, we treat the two surrogates exactly as their assumptions allow. BASS-BO is given the categorical inputs as genuine factors, so it uses its categorical basis. GP-BO is given the only thing a continuous-only surrogate can use, namely a continuous relaxation in which each categorical coordinate is a number in $[0,1]$ that is decoded to a level. This is not a strawman but precisely the workaround a practitioner is forced into when applying an off-the-shelf GP to a categorical problem, and it is what makes the contrast meaningful. Random Search, which samples levels uniformly, serves as the reference. We use three benchmarks, chosen to range from mixed continuous--categorical to purely categorical.
+To make the comparison concrete and fair, we treat the two surrogates exactly as their assumptions allow. BASS-BO is given the categorical inputs as genuine factors, so it uses its categorical basis. GP-BO is given the only thing a continuous-only surrogate can use, namely a continuous relaxation in which each categorical coordinate is a number in $[0,1]$ that is decoded to a level. This is not a strawman but precisely the workaround a practitioner is forced into when applying an off-the-shelf GP to a categorical problem, and it is what makes the contrast meaningful. Random Search, which samples levels uniformly, serves as the reference, and the TPE baseline serves as the harder test: it handles categorical inputs natively, so a strong showing against it speaks to BASS-BO's merits beyond simply not being a Gaussian process. We use three benchmarks, chosen to range from mixed continuous--categorical to purely categorical.
 
 \subsection{Func-2C and Func-3C (mixed)}
 
@@ -134,9 +136,9 @@ Func-2C and Func-3C are standard mixed-variable benchmarks introduced with the C
 \[ f(h_1,h_2,x_1,x_2) = f^{(h_1)}(x_1,x_2) + f^{(h_2)}(x_1,x_2), \]
 with $h_1$ selecting among $\{f_{\text{R}},f_{\text{C}},f_{\text{B}}\}$ and $h_2$ selecting Rosenbrock, Six-Hump Camel, or Beale for its remaining levels; Func-3C adds a third term whose component and weight depend on $h_3$. Both are minimized. The reason these benchmarks are informative is that the relationship between a categorical level and the resulting surface is not continuous in the level index, so a relaxation that treats the level as an ordered number is modelling a discontinuous target with a smooth prior.
 
-% TODO: insert Func-2C and Func-3C convergence plots (BASS-BO vs GP-BO vs Random)
-%   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --out_dir=results_func2C
-%   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --out_dir=results_func3C
+% TODO: insert Func-2C and Func-3C convergence plots (BASS-BO vs GP-BO vs TPE vs Random)
+%   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --with_tpe=true --out_dir=results_func2C
+%   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --with_tpe=true --out_dir=results_func3C
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Func-2C / Func-3C convergence plots pending --- run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=func2C} and \texttt{-{}-objective=func3C}.]}\end{minipage}}
@@ -146,8 +148,8 @@ with $h_1$ selecting among $\{f_{\text{R}},f_{\text{C}},f_{\text{B}}\}$ and $h_2
 
 To stress the categorical capability in isolation, we also use a purely categorical encoding of the Ackley function \cite{simulationlib}, following the way combinatorial Bayesian optimization benchmarks are commonly constructed from continuous test functions \cite{oh2019combo}. Each of the $d$ inputs is a categorical variable with $L$ levels, and level $k$ of input $j$ is mapped to a grid value through a \emph{fixed random permutation} $\pi_j$, that is, the decoded coordinate is $g[\pi_j(k)]$ where $g$ is an evenly spaced grid on Ackley's domain that includes $0$. The objective is then the Ackley value at the decoded point, minimized, with a known global minimum of $0$ attained at the level that each permutation maps to the grid value $0$. The permutation is the crucial ingredient: it destroys any monotone relationship between a level's index and its effect, so the continuous relaxation that GP-BO must use sees a jagged, meaningless surface, while BASS, splitting on subsets of levels, can still isolate the good ones. This is the cleanest illustration of the structural difference between the two surrogates.
 
-% TODO: insert Cat-Ackley convergence plot (BASS-BO vs GP-BO vs Random)
-%   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --out_dir=results_catackley
+% TODO: insert Cat-Ackley convergence plot (BASS-BO vs GP-BO vs TPE vs Random)
+%   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Cat-Ackley convergence plot pending --- run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=cat\_ackley -{}-d=6}.]}\end{minipage}}
