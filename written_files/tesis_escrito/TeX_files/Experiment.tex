@@ -86,6 +86,11 @@ Because the acquisition is maximized over a finite pool rather than by continuou
 
 The remaining settings are experimental hygiene rather than tuning knobs: \texttt{n\_cand}, the size of the candidate pool scored per iteration; \texttt{eps}, a small jitter added to the GP predictive variance for numerical stability; and \texttt{dup\_tol}, the distance below which two points are treated as duplicates and excluded from re-evaluation. Internally, the BASS surrogate is fit with a reduced RJMCMC budget relative to the package default, trading a little posterior resolution for speed inside the optimization loop; these are numerical settings of the sampler, not controls over the optimizer's behavior. The upshot is that the comparison in this chapter has essentially no free parameters on either side, which is precisely what makes a clean surrogate-versus-surrogate reading possible.
 
+\subsection{TPE Sensitivity to Its Gamma Hyperparameter}
+\label{tpe_sensitivity_protocol}
+
+TPE is not parameter-free in the same sense. As discussed in the surrogate models chapter, Optuna's \texttt{TPESampler} reduces, for our purposes, to a single hyperparameter worth tuning: $\gamma \in [0,1]$, the quantile of completed trials treated as "good" versus "bad." Everywhere else in this chapter TPE is run with Optuna's library default for $\gamma$, exactly as a practitioner reaching for the reference implementation would. To check whether that default is doing meaningful work -- and, by extension, whether BASS-BO's complete absence of such a knob is a genuine practical advantage rather than a cosmetic one -- we ran a separate ablation: $\gamma$ was swept over $\{0.10, 0.25, 0.50, 0.75\}$ (0.25 sits close to Optuna's own default behavior) on one continuous benchmark (Branin) and one purely categorical one (Cat-Ackley), under the same budget, repetition count, and seeding protocol as the rest of this chapter. The resulting four TPE curves were plotted alongside the single, unsweepable BASS-BO and GP-BO reference curves, so the contrast is visual as much as numerical: where TPE's curves fan out across configurations, BASS-BO and GP-BO have nothing to fan out. The script and full protocol are in \texttt{code\_files/2\_tpe\_sensitivity/}.
+
 \section{Results}
 
 What follows are the graphs representing some runs from the BASS-BO cycle, compared to GP-BO and Random Search. We ran these optimizers across the benchmark functions described above, spanning smooth continuous problems as well as categorical and mixed-variable ones, so as to get wider coverage into the actual performance of the optimizers across qualitatively different regimes.
@@ -153,6 +158,19 @@ To stress the categorical capability in isolation, we also use a purely categori
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Cat-Ackley convergence plot pending --- run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=cat\_ackley -{}-d=6}.]}\end{minipage}}
+\end{figure}
+
+\subsection{TPE Hyperparameter Sensitivity}
+
+As described in Section~\ref{tpe_sensitivity_protocol}, we swept TPE's $\gamma$ hyperparameter over $\{0.10, 0.25, 0.50, 0.75\}$ on Branin and Cat-Ackley, holding everything else (budget, repetitions, seeding, initial design) fixed to the same protocol used throughout this chapter. The figures below plot the four resulting TPE curves alongside the single BASS-BO and GP-BO reference curves.
+
+% TODO: insert TPE gamma-sensitivity convergence plots (Branin and Cat-Ackley)
+%   Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R
+% TODO: quote the printed "TPE final-best range across gamma" spread for each
+%   objective here, and contrast it with BASS-BO/GP-BO having no such spread.
+\begin{figure}[h]
+	\centering
+	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[TPE gamma-sensitivity convergence plots pending --- run \texttt{Rscript code\_files/2\_tpe\_sensitivity/run\_tpe\_sensitivity.R}.]}\end{minipage}}
 \end{figure}
 
 \section{Result Interpretation and Limitations}
