@@ -57,3 +57,9 @@ final_summary <- save_results(all_runs, objective, cfg)
 # --- Report -------------------------------------------------------------------
 print(final_summary)
 cat(sprintf("\nArtifacts saved in: %s\n", normalizePath(cfg$out_dir)))
+
+# --- Shut down parallel workers so the process can exit -----------------------
+# plan(multisession) leaves persistent background R sessions running; resetting
+# to sequential stops them, otherwise Rscript can hang at exit on the open
+# worker connections.
+plan(sequential)
