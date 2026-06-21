@@ -30,6 +30,12 @@ default_config <- function() {
     # baseline always uses closed-form EI.
     acquisition = "ei",
 
+    # ---- Optional baselines ----
+    # Add a Tree-structured Parzen Estimator (TPE) baseline via Optuna. Requires
+    # the `reticulate` R package and an importable `optuna` Python module; if
+    # either is missing the run silently proceeds without TPE (see R/tpe.R).
+    with_tpe = FALSE,
+
     # ---- Numerics (hygiene, not tuning) ----
     eps     = 1e-10,        # jitter added to the GP predictive variance
     dup_tol = 1e-10         # distance below which points count as duplicates
