@@ -16,6 +16,8 @@
 #   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --out_dir=results_func2C
 #   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --out_dir=results_func3C
 #   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --out_dir=results_catackley
+#   # Add the TPE (Optuna) baseline (needs reticulate + an importable optuna):
+#   Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -51,7 +53,20 @@ objective <- load_objective(cfg$objective, cfg$d)
 cat(sprintf("Running %s (d=%d) | budget=%d | reps=%d\n",
             cfg$objective, objective$d, cfg$budget, cfg$reps))
 
-all_runs      <- run_experiment(cfg)
+all_runs <- run_experiment(cfg)
+
+# Optional TPE (Optuna) baseline, run in this process (see R/tpe.R). Added after
+# the parallel R methods so a missing Python/Optuna setup never affects them.
+if (isTRUE(cfg$with_tpe)) {
+  if (tpe_available()) {
+    cat("Adding TPE (Optuna) baseline ...\n")
+    all_runs <- dplyr::bind_rows(all_runs, run_tpe_experiment(cfg))
+  } else {
+    warning("--with_tpe=TRUE but `reticulate`/`optuna` are unavailable; ",
+            "skipping the TPE baseline. See RUNNING.md for setup.")
+  }
+}
+
 final_summary <- save_results(all_runs, objective, cfg)
 
 # --- Report -------------------------------------------------------------------
