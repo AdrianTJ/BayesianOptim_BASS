@@ -272,7 +272,7 @@ The main reason why the covariance function is denoted by $k$ is that this name 
 
 \green{What this kernel function allows us to do is essentially borrow an inner product from the feature space $V$ and apply it to transformed elements of the input space $\mathcal{X}$. This allows us to compute inner products in a potentially high-dimensional or implicit feature space without requiring explicit knowledge of its structure. Tying the kernel back to Gaussian processes, we note that while the mean function 
 controls only the average value across realizations of $f$, the 
-covariance function — that is, the kernel — governs the underlying 
+covariance function (that is, the kernel) governs the underlying
 behavior and structure of those realizations. Different choices of kernel encode different prior assumptions about the process, such as smoothness, periodicity, or stationarity. The rational quadratic kernel is a noteworthy case: it can be interpreted as a scale mixture of RBF kernels with different length scales, and interpolates between smooth and rough sample path behavior depending on the parameter $\alpha$. Figure~\ref{fig:gp_kernels} illustrates how the choice of kernel affects 
 the character of sample paths drawn from a Gaussian process.}
 
@@ -429,7 +429,7 @@ These equations are for the entire training and test set though. For a test poin
 
 \green{Gaussian process regression on the other hand gives us a way to turn a set of noisy observations into a full distribution of functions. As we have seen, the real power of the GP framework is that it doesn't just give us a single solution, rather it gives us a mathematically rigorous way to quantify what we don't know through the predictive variance.}
 
-\green{However, having a good model is only half the battle. If we are dealing with a function that is expensive to evaluate, simply knowing its shape isn't enough---we need a plan. We need to know exactly where to look next to find the optimum as efficiently as possible. In the next chapter, we will take the posterior distributions we built here and use them as the engine for Bayesian optimization, moving from just modelling the function to making informed, sequential decisions about where we should evaluate it.}
+\green{However, having a good model is only half the battle. If we are dealing with a function that is expensive to evaluate, simply knowing its shape isn't enough; we need a plan. We need to know exactly where to look next to find the optimum as efficiently as possible. In the next chapter, we will take the posterior distributions we built here and use them as the engine for Bayesian optimization, moving from just modelling the function to making informed, sequential decisions about where we should evaluate it.}
 
 
 
