@@ -9,17 +9,16 @@ This repository contains the research and implementation for a Master's thesis i
 
 ## Abstract
 
-Bayesian Optimization is a powerful framework for optimizing expensive-to-evaluate black-box functions. While Gaussian Processes are the industry standard surrogate model, they often struggle with high-dimensional spaces and non-stationary surfaces. This project explores the use of BASS—a Bayesian extension of Multivariate Adaptive Regression Splines (MARS)—to model the objective function's response surface. 
+Bayesian Optimization is a powerful framework for optimizing expensive-to-evaluate black-box functions. While Gaussian Processes are the industry standard surrogate model, they often struggle with high-dimensional spaces and non-stationary surfaces. This project explores the use of BASS, a Bayesian extension of Multivariate Adaptive Regression Splines (MARS), to model the objective function's response surface. 
 
 BASS-BO leverages piecewise linear basis functions (hinge functions) to capture complex interactions and non-linearities without the cubic scaling issues typically associated with GPs. A further advantage, and the one this project emphasizes, is that BASS handles **categorical inputs natively** (as factors), where a standard GP kernel cannot. Our experimental results compare BASS-BO against GP-BO, Random Search, and an optional Tree-structured Parzen Estimator (TPE) baseline across synthetic benchmark functions—continuous, categorical, and mixed—and real-world regression hyperparameter tuning tasks.
 
 ## Key Features
 
 - **BASS Surrogate Modeling**: Implementation of BASS as the underlying engine for Sequential Model-Based Optimization (SMBO).
-- **Parameter-free acquisition**: Both surrogates use **Expected Improvement** — closed-form for the GP, and **Monte Carlo EI computed directly from BASS's posterior draws** for BASS (with an optional single-draw Thompson-sampling variant). There are no exploration weights, uncertainty-inflation factors, or annealing schedules to tune, so the surrogate is the only thing that differs between methods.
-- **Comparative Analysis**: Rigorous benchmarking against standard GP-BO, Random Search, and an optional **Tree-structured Parzen Estimator (TPE)** baseline (Optuna, via `reticulate`) — itself a categorical-capable optimizer, so it is the strongest comparison on categorical problems.
-- **Native categorical optimization**: BASS fits categorical inputs as factors (basis functions on subsets of levels), where a standard GP must resort to encodings. Includes categorical/mixed benchmarks (`func2C`, `func3C`, `cat_ackley`).
-- **Multi-Dimensional Support**: Evaluated on $2d$ (Branin-Hoo), $4d$ (Rastrigin), higher-dimensional regression test cases, and the categorical/mixed benchmarks above.
+- **Parameter-free acquisition**: Both surrogates use **Expected Improvement**: closed-form for the GP, and **Monte Carlo EI computed directly from BASS's posterior draws** for BASS (with an optional single-draw Thompson-sampling variant). There are no exploration weights, uncertainty-inflation factors, or annealing schedules to tune, so the surrogate is the only thing that differs between methods.
+- **Comparative Analysis**: Rigorous benchmarking against standard GP-BO and baseline search strategies.
+- **Multi-Dimensional Support**: Evaluated on $2d$ (Branin-Hoo), $4d$ (Rastrigin), and higher-dimensional regression test cases.
 - **Reproducible Framework**: Comprehensive scripts for parallel target evaluation and result aggregation.
 
 ## Mathematical Intuition
@@ -118,7 +117,7 @@ Rscript code_files/tests/run_tests.R
    `code_files/R/objectives/`.
 2. Register its name in `load_objective()` (`code_files/R/objectives.R`).
 
-No changes to the BO loop are needed — it is agnostic to the objective.
+No changes to the BO loop are needed; it is agnostic to the objective.
 
 ## Results
 
