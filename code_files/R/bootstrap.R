@@ -22,6 +22,7 @@ source_library <- function(lib_dir) {
     "candidates.R",
     "acquisition.R",
     "surrogates.R",
+    "tpe.R",
     "bo_loop.R",
     "experiment.R"
   )
