@@ -11,7 +11,7 @@ This repository contains the research and implementation for a Master's thesis i
 
 Bayesian Optimization is a powerful framework for optimizing expensive-to-evaluate black-box functions. While Gaussian Processes are the industry standard surrogate model, they often struggle with high-dimensional spaces and non-stationary surfaces. This project explores the use of BASS, a Bayesian extension of Multivariate Adaptive Regression Splines (MARS), to model the objective function's response surface. 
 
-BASS-BO leverages piecewise linear basis functions (hinge functions) to capture complex interactions and non-linearities without the cubic scaling issues typically associated with GPs. Our experimental results compare BASS-BO against GP-BO, Random Search, and Grid Search across various synthetic benchmark functions and real-world regression hyperparameter tuning tasks.
+BASS-BO leverages piecewise linear basis functions (hinge functions) to capture complex interactions and non-linearities without the cubic scaling issues typically associated with GPs. A further advantage, and the one this project emphasizes, is that BASS handles **categorical inputs natively** (as factors), where a standard GP kernel cannot. Our experimental results compare BASS-BO against GP-BO, Random Search, and an optional Tree-structured Parzen Estimator (TPE) baseline across synthetic benchmark functions—continuous, categorical, and mixed—and real-world regression hyperparameter tuning tasks.
 
 ## Key Features
 
@@ -41,9 +41,10 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 │   │   ├── surrogates.R     #   BASS and GP surrogates as Expected-Improvement closures
 │   │   ├── candidates.R     #   candidate generators + duplicate detection
 │   │   ├── acquisition.R    #   Expected Improvement (closed-form + Monte Carlo)
+│   │   ├── tpe.R            #   optional TPE baseline (Optuna, via reticulate)
 │   │   ├── config.R         #   default_config() + --key=value CLI parser
 │   │   ├── experiment.R     #   parallel multi-seed harness + summaries + plot
-│   │   └── objectives/      #   Branin, Rastrigin, and the synthetic surface
+│   │   └── objectives/      #   Branin, Rastrigin, synthetic, and categorical/mixed
 │   ├── run_benchmark.R      # Single entry point for the synthetic benchmarks
 │   ├── tests/               # testthat unit-test suite for the library
 │   ├── 1_base_loop/         # Exploratory R Markdown notebooks (pedagogical)
@@ -62,8 +63,8 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 
 The project primarily uses **R** for the optimization loops and **Python** for specific visualization components.
 
-- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr, readr, tibble), `future`, `furrr`, `testthat`
-- **Python Libraries**: `numpy`, `scipy`, `matplotlib`, `scikit-learn`
+- **R Packages**: `BASS`, `GPfit`, `lhs`, `tidyverse` (ggplot2, dplyr, readr, tibble), `future`, `furrr`, `testthat`; and optionally `reticulate` for the TPE baseline.
+- **Python Libraries**: `numpy`, `scipy`, `matplotlib`, `scikit-learn`; and optionally `optuna` (used by the `--with_tpe` baseline through `reticulate`).
 
 ### Running Experiments
 
@@ -84,6 +85,11 @@ Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results
 
 # Use the fast single-draw Thompson-sampling acquisition for BASS instead of EI
 Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
+
+# Categorical / mixed benchmarks, with the categorical-capable TPE baseline added
+# (needs reticulate + optuna; see RUNNING.md §1)
+Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true --out_dir=results_func2C
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
 ```
 
 The real-world Elastic Net case study uses the **same** optimisers via a small
