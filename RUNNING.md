@@ -62,7 +62,7 @@ Rscript -e 'cat(R.version.string, "\n"); for (p in c("BASS","GPfit","lhs","tidyv
 ```
 code_files/
   R/                       # the shared library (plain .R files, sourced)
-    bo_loop.R              #   run_bo() — the one generic BO loop + make_methods()
+    bo_loop.R              #   run_bo(), the one generic BO loop + make_methods()
     surrogates.R           #   BASS & GP, each as an Expected-Improvement closure
     acquisition.R          #   Expected Improvement (closed-form + Monte Carlo)
     candidates.R           #   candidate generation + duplicate handling
@@ -77,7 +77,7 @@ code_files/
     enet_objective.R       #   the CV-RMSE objective (alpha, lambda)
 ```
 
-The library has **no build step** — the runners `source()` it.
+The library has **no build step**; the runners `source()` it.
 
 ---
 
@@ -89,11 +89,11 @@ Rscript code_files/tests/run_tests.R
 
 This runs all `testthat` tests under `code_files/tests/testthat/`:
 
-- **`test-acquisition.R`** — Expected Improvement maths (closed-form & Monte Carlo).
-- **`test-candidates.R`** — candidate shapes/ranges and duplicate detection.
-- **`test-objectives.R`** — domain scaling, target vectorisation, Branin's known
+- **`test-acquisition.R`**: Expected Improvement maths (closed-form & Monte Carlo).
+- **`test-candidates.R`**: candidate shapes/ranges and duplicate detection.
+- **`test-objectives.R`**: domain scaling, target vectorisation, Branin's known
   minimum, and the objective loader.
-- **`test-bo_loop.R`** — the `run_bo()` loop on a convex problem (must improve
+- **`test-bo_loop.R`**: the `run_bo()` loop on a convex problem (must improve
   monotonically), Random Search, and a guarded end-to-end check of the **real**
   BASS (EI and Thompson) and GP surrogates.
 - **`test-categorical.R`** — the categorical/mixed benchmarks (`func2C`, `func3C`,
@@ -180,13 +180,13 @@ Extra flags (on top of the shared ones above):
 
 ## 6. Acquisition: `ei` vs `thompson`
 
-Both surrogates are scored with **Expected Improvement** — closed-form for the
+Both surrogates are scored with **Expected Improvement**: closed-form for the
 GP, and Monte Carlo (straight from the posterior draws) for BASS. This is
 parameter-free: there is no exploration weight to tune.
 
-- `--acquisition=ei` (default) — averages improvement over BASS's full posterior.
+- `--acquisition=ei` (default) averages improvement over BASS's full posterior.
   The principled, most robust choice.
-- `--acquisition=thompson` — draws a single posterior surface and heads to its
+- `--acquisition=thompson` draws a single posterior surface and heads to its
   minimum. Predicts one draw instead of ~200, so it is noticeably faster, at the
   cost of a bit more per-step variance.
 
@@ -210,7 +210,7 @@ The Elastic Net run additionally writes `final_summary_cv.csv`,
 `best_params_and_test_rmse_by_seed.csv`, and `test_rmse_summary.csv`
 (the held-out test performance of each method's chosen model).
 
-> Result folders are **git-ignored** and regenerated on demand — they are not
+> Result folders are **git-ignored** and regenerated on demand; they are not
 > committed.
 
 ---
@@ -222,7 +222,7 @@ The Elastic Net run additionally writes `final_summary_cv.csv`,
    `vectorize_target()`; objectives already on `[0,1]^d` are used directly.
 2. Register the name in `load_objective()` (`code_files/R/objectives.R`).
 
-Nothing in the BO loop needs to change — `run_bo()` is objective-agnostic.
+Nothing in the BO loop needs to change; `run_bo()` is objective-agnostic.
 
 ---
 
@@ -238,14 +238,7 @@ Nothing in the BO loop needs to change — `run_bo()` is objective-agnostic.
 - **`could not find function` / `predict` errors in workers.** Make sure the
   packages in §1 are installed for the same R that runs the scripts; the runners
   load the surrogate namespaces on each worker.
-- **TPE is silently missing from results.** `--with_tpe=true` skips the TPE
-  baseline (with a warning) when `reticulate`/`optuna` aren't reachable. Confirm
-  `Rscript -e 'cat(reticulate::py_module_available("optuna"))'` prints `TRUE`, and
-  set `RETICULATE_PYTHON` in `~/.Renviron` (not just the interactive session) so
-  the value is inherited — the run computes TPE in the main process, but the check
-  must succeed there. TPE is run sequentially (it is cheap), so it does not need
-  Optuna inside the parallel workers.
-- **Native pipe `|>` errors.** You're on R < 4.1 — upgrade R.
+- **Native pipe `|>` errors.** You're on R < 4.1; upgrade R.
 - **Reproducibility.** Seeds are fixed (`seed_start + 0..reps-1`) and parallel
   RNG is handled by `furrr`, so repeated runs with the same flags match.
 ```
