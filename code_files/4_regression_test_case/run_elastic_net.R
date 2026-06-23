@@ -45,7 +45,7 @@ enet_default_config <- function() {
   cfg$budget    <- 100
   cfg$n_cand    <- 1500
   cfg$reps      <- 50
-  cfg$out_dir   <- "results_enet_bo"
+  cfg$out_dir   <- file.path("results", "elastic_net")
   cfg$train_frac        <- 0.8
   cfg$nfolds            <- 5L
   cfg$lambda_log10_min  <- -5
