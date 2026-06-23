@@ -84,15 +84,15 @@ Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=2
 Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
 
 # The hand-built non-smooth surface (any dimension)
-Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+Rscript code_files/run_benchmark.R --objective=synthetic --d=3
 
 # Use the fast single-draw Thompson-sampling acquisition for BASS instead of EI
 Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
 
 # Categorical / mixed benchmarks, with the categorical-capable TPE baseline added
 # (needs reticulate + optuna; see RUNNING.md §1)
-Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true --out_dir=results_func2C
-Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true
 ```
 
 A separate ablation, `code_files/2_tpe_sensitivity/run_tpe_sensitivity.R`,

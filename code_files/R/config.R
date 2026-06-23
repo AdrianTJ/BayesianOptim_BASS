@@ -22,7 +22,7 @@ default_config <- function() {
     n_cand     = 1000,      # candidate points scored per iteration
     reps       = 10,        # independent repetitions (seeds)
     seed_start = 1001,      # first seed; reps use seed_start + 0..reps-1
-    out_dir    = "results", # where CSVs and the plot are written
+    out_dir    = "results", # results root; runners nest a per-objective subfolder
 
     # ---- Acquisition ----
     # BASS acquisition: "ei" (Monte Carlo Expected Improvement, the principled

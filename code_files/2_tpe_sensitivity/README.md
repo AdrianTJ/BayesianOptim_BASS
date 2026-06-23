@@ -32,8 +32,8 @@ if TPE is unavailable, since there is nothing else for it to do.
 
 ## Output
 
-Writes `results_tpe_sensitivity/branin/` and
-`results_tpe_sensitivity/cat_ackley/`, each with the usual
+Writes `results/tpe_sensitivity/branin/` and
+`results/tpe_sensitivity/cat_ackley/`, each with the usual
 `all_runs.csv`, `summary_curve.csv`, `final_summary.csv`, and
 `convergence_mean_ci.png` (via the shared `save_results()`), plus a
 printed "TPE final-best range across gamma" spread -- the number that
