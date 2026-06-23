@@ -48,6 +48,8 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 │   ├── run_benchmark.R      # Single entry point for the synthetic benchmarks
 │   ├── tests/               # testthat unit-test suite for the library
 │   ├── 1_base_loop/         # Exploratory R Markdown notebooks (pedagogical)
+│   ├── 2_tpe_sensitivity/   # Ablation: TPE's gamma sensitivity vs. parameter-free BASS-BO/GP-BO
+│   │   └── run_tpe_sensitivity.R #   driver (reuses the shared library)
 │   ├── 4_regression_test_case/ # Real-world case study: Elastic Net tuning
 │   │   ├── run_elastic_net.R   #   driver (reuses the shared library)
 │   │   └── enet_objective.R    #   CV-RMSE objective over (alpha, lambda)
@@ -81,15 +83,23 @@ Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=2
 Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
 
 # The hand-built non-smooth surface (any dimension)
-Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+Rscript code_files/run_benchmark.R --objective=synthetic --d=3
 
 # Use the fast single-draw Thompson-sampling acquisition for BASS instead of EI
 Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
 
 # Categorical / mixed benchmarks, with the categorical-capable TPE baseline added
 # (needs reticulate + optuna; see RUNNING.md §1)
-Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true --out_dir=results_func2C
-Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true
+```
+
+A separate ablation, `code_files/2_tpe_sensitivity/run_tpe_sensitivity.R`,
+sweeps TPE's `gamma` hyperparameter and compares the spread against the
+parameter-free BASS-BO/GP-BO baselines (see that directory's `README.md`):
+
+```bash
+Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R
 ```
 
 The real-world Elastic Net case study uses the **same** optimisers via a small
