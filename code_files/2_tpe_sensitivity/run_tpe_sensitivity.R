@@ -55,7 +55,7 @@ sensitivity_default_config <- function() {
   cfg$budget     <- 80
   cfg$reps       <- 25
   cfg$seed_start <- 1001L
-  cfg$out_dir    <- "results_tpe_sensitivity"
+  cfg$out_dir    <- file.path("results", "tpe_sensitivity")
   cfg
 }
 cfg_base <- parse_cli_args(commandArgs(trailingOnly = TRUE), sensitivity_default_config())
