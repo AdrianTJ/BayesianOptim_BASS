@@ -49,13 +49,16 @@ tpe_available <- function() {
 #' is suggested as one of its levels, then mapped back to the representative
 #' unit-cube coordinate that `objective$fn` decodes to that level.
 #'
-#' @param objective Objective list (`fn`, `d`, and optional `schema`).
-#' @param cfg       Config list (uses `budget`).
-#' @param X_init    Initial design (matrix in [0, 1]^d), shared with the others.
-#' @param y_init    Objective values at `X_init`.
-#' @param seed      Integer seed for the TPE sampler (reproducibility).
+#' @param objective    Objective list (`fn`, `d`, and optional `schema`).
+#' @param cfg          Config list (uses `budget`).
+#' @param X_init       Initial design (matrix in [0, 1]^d), shared with the others.
+#' @param y_init       Objective values at `X_init`.
+#' @param seed         Integer seed for the TPE sampler (reproducibility).
+#' @param sampler_opts Named list of extra arguments forwarded to
+#'   `optuna$samplers$TPESampler()` (e.g. `gamma`, `n_startup_trials`). Default
+#'   `list()` reproduces Optuna's own defaults, i.e. today's behaviour.
 #' @return A list with `best`: the best-so-far curve (length `budget + 1`).
-run_tpe <- function(objective, cfg, X_init, y_init, seed) {
+run_tpe <- function(objective, cfg, X_init, y_init, seed, sampler_opts = list()) {
   optuna <- reticulate::import("optuna", delay_load = FALSE)
   optuna$logging$set_verbosity(optuna$logging$WARNING)   # quiet the study logs
 
@@ -87,7 +90,8 @@ run_tpe <- function(objective, cfg, X_init, y_init, seed) {
     matrix(u, nrow = 1)
   }
 
-  sampler <- optuna$samplers$TPESampler(seed = as.integer(seed))
+  sampler <- do.call(optuna$samplers$TPESampler,
+                      c(list(seed = as.integer(seed)), sampler_opts))
   study   <- optuna$create_study(direction = "minimize", sampler = sampler)
 
   # Seed the study with the shared initial design as completed trials, so TPE
@@ -156,6 +160,47 @@ run_tpe_experiment <- function(cfg) {
       method = "TPE",
       best   = run_tpe(objective, cfg, X_init, y_init, seed)$best
     )
+  })
+  dplyr::bind_rows(curves)
+}
+
+#' Run TPE across all seeds for several sampler configurations.
+#'
+#' Companion to `run_tpe_experiment()` for a hyperparameter-sensitivity sweep:
+#' instead of one TPE curve per seed, this produces one curve per
+#' (seed, config) pair, with each config's `method` label distinguishing it in
+#' the resulting long tibble. Every config sees the SAME initial design per
+#' seed (same `set.seed(seed)` + maximin LHS), so the only thing that varies
+#' across curves for a fixed seed is the sampler configuration.
+#'
+#' @param cfg     Config list (uses `objective`, `d`, `budget`, `reps`,
+#'   `seed_start`), same as `run_tpe_experiment()`.
+#' @param configs Named list; each element is a list with a `sampler_opts`
+#'   entry (forwarded to `run_tpe()`). Names are used as the `method` label.
+#' @return Long tibble with columns seed, iter, method (one of `names(configs)`),
+#'   best.
+run_tpe_sweep_experiment <- function(cfg, configs) {
+  objective <- load_objective(cfg$objective, cfg$d)
+  d  <- objective$d
+  n0 <- max(2 * d + 1, 8)
+  seeds <- cfg$seed_start + 0:(cfg$reps - 1)
+
+  curves <- lapply(seeds, function(seed) {
+    set.seed(seed)
+    X_init <- lhs::maximinLHS(n0, d)
+    y_init <- objective$fn(X_init)
+
+    per_config <- lapply(names(configs), function(label) {
+      sampler_opts <- configs[[label]]$sampler_opts
+      tibble::tibble(
+        seed   = seed,
+        iter   = 0:cfg$budget,
+        method = label,
+        best   = run_tpe(objective, cfg, X_init, y_init, seed,
+                          sampler_opts = sampler_opts)$best
+      )
+    })
+    dplyr::bind_rows(per_config)
   })
   dplyr::bind_rows(curves)
 }

@@ -72,6 +72,8 @@ code_files/
     objectives/            #   branin, rastrigin, synthetic, categorical, + loader
   run_benchmark.R          # entry point for the synthetic benchmarks
   tests/                   # testthat unit tests
+  2_tpe_sensitivity/
+    run_tpe_sensitivity.R  # entry point for the TPE gamma-sensitivity ablation
   4_regression_test_case/
     run_elastic_net.R      # entry point for the Elastic Net case study
     enet_objective.R       #   the CV-RMSE objective (alpha, lambda)
@@ -101,6 +103,8 @@ This runs all `testthat` tests under `code_files/tests/testthat/`:
   run on a categorical objective.
 - **`test-tpe.R`** — the TPE baseline against `run_bo()`'s contract on a continuous
   and a categorical objective (self-skips unless `reticulate` + `optuna` are present).
+- **`test-tpe-sensitivity.R`** — `run_tpe()`'s `sampler_opts` argument and
+  `run_tpe_sweep_experiment()` (same self-skip behaviour).
 
 Notes:
 - The BASS/GP and TPE end-to-end tests self-skip if their dependencies aren't
@@ -121,8 +125,8 @@ Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=2
 # Rastrigin (4-D)
 Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
 
-# The hand-built non-smooth surface (any dimension), custom output folder
-Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+# The hand-built non-smooth surface (any dimension)
+Rscript code_files/run_benchmark.R --objective=synthetic --d=3
 
 # Quick smoke run while iterating
 Rscript code_files/run_benchmark.R --objective=branin --budget=15 --reps=3
@@ -141,8 +145,8 @@ Every key in `default_config()` (`code_files/R/config.R`) is settable as
 | `--n_cand` | `1000` | candidate points scored per iteration |
 | `--reps` | `10` | independent repetitions (seeds) |
 | `--seed_start` | `1001` | first seed (`reps` use `seed_start + 0..reps-1`) |
-| `--out_dir` | `results` | output folder |
-| `--acquisition` | `ei` | BASS acquisition: `ei` or `thompson` (see §6) |
+| `--out_dir` | `results` | results root; each run nests a per-objective subfolder under it |
+| `--acquisition` | `ei` | BASS acquisition: `ei` or `thompson` (see §7) |
 | `--with_tpe` | `false` | add the TPE (Optuna) baseline; needs `reticulate`+`optuna` (§1) |
 
 The categorical/mixed objectives (`func2C`, `func3C`, `cat_ackley`) and the
@@ -150,13 +154,40 @@ The categorical/mixed objectives (`func2C`, `func3C`, `cat_ackley`) and the
 natively, so it is the strongest comparison there:
 
 ```bash
-Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true --out_dir=results_func2C
-Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true
 ```
 
 ---
 
-## 5. Run the Elastic Net case study
+## 5. Run the TPE sensitivity ablation
+
+BASS-BO and GP-BO are parameter-free (no exploration weight, no candidate-
+generator knob to tune); TPE is not. This script tests the thesis's claim
+that TPE has essentially one hyperparameter worth tuning, `gamma`, by
+sweeping it across `{0.10, 0.25, 0.50, 0.75}` on one continuous benchmark
+(Branin) and one purely categorical one (Cat-Ackley), and plotting the
+spread next to the fixed BASS-BO/GP-BO/Random curves. It needs the same
+`reticulate`+`optuna` setup as `--with_tpe` above (§1), and aborts up front
+if that's unavailable.
+
+```bash
+# Default protocol: budget=80, reps=25, seed_start=1001 (matches §4)
+Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R
+
+# Faster, smaller sweep for a quick check
+Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R --budget=40 --reps=10
+```
+
+Writes `results/tpe_sensitivity/branin/` and
+`results/tpe_sensitivity/cat_ackley/` (CSVs + convergence plot each, via the
+same `save_results()` used by §4), plus a printed "TPE final-best range
+across gamma" line quantifying the spread. See
+`code_files/2_tpe_sensitivity/README.md` for details.
+
+---
+
+## 6. Run the Elastic Net case study
 
 Tunes an Elastic Net (`alpha`, `lambda`) on the Boston Housing data by minimising
 cross-validated RMSE, then evaluates the chosen model on a held-out test set.
@@ -178,7 +209,7 @@ Extra flags (on top of the shared ones above):
 
 ---
 
-## 6. Acquisition: `ei` vs `thompson`
+## 7. Acquisition: `ei` vs `thompson`
 
 Both surrogates are scored with **Expected Improvement**: closed-form for the
 GP, and Monte Carlo (straight from the posterior draws) for BASS. This is
@@ -195,9 +226,18 @@ BASS-BO and GP-BO is the surrogate model.
 
 ---
 
-## 7. Outputs
+## 8. Outputs
 
-Each synthetic run writes to `--out_dir` (default `results/`):
+Every runner writes under a single `results/` root, each in its own subfolder, so
+nothing overwrites anything else:
+
+| Runner | Output location |
+|---|---|
+| `run_benchmark.R` | `results/<objective>/` (e.g. `results/branin/`, `results/cat_ackley/`) |
+| `2_tpe_sensitivity/run_tpe_sensitivity.R` | `results/tpe_sensitivity/<objective>/` |
+| `4_regression_test_case/run_elastic_net.R` | `results/elastic_net/` |
+
+Each synthetic run writes:
 
 | File | Contents |
 |---|---|
@@ -215,7 +255,7 @@ The Elastic Net run additionally writes `final_summary_cv.csv`,
 
 ---
 
-## 8. Adding a new objective
+## 9. Adding a new objective
 
 1. Add the function (and, if it lives on a physical domain, its `*_bounds`) to
    `code_files/R/objectives/`. Benchmarks on a physical domain are wrapped with
@@ -226,7 +266,7 @@ Nothing in the BO loop needs to change; `run_bo()` is objective-agnostic.
 
 ---
 
-## 9. Performance & troubleshooting
+## 10. Performance & troubleshooting
 
 - **Parallelism.** Runs fan out across seeds using `future`/`furrr`, using
   `cores - 1` workers. Lower `--reps` (or the worker count via the `future` plan

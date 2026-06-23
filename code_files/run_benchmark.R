@@ -8,14 +8,18 @@
 # plot. Everything is configurable from the command line; see default_config()
 # in R/config.R for the full list of --key=value flags.
 #
+# Each run writes into a per-objective subfolder of the results root, e.g.
+# results/branin/, results/cat_ackley/, so running different objectives no longer
+# overwrites one another. `--out_dir` sets the root (default "results").
+#
 # Examples:
 #   Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=25
 #   Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=5
-#   Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+#   Rscript code_files/run_benchmark.R --objective=synthetic --d=3
 #   # Categorical / mixed benchmarks (d is fixed for func2C/func3C):
-#   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --out_dir=results_func2C
-#   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --out_dir=results_func3C
-#   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --out_dir=results_catackley
+#   Rscript code_files/run_benchmark.R --objective=func2C --budget=60
+#   Rscript code_files/run_benchmark.R --objective=func3C --budget=80
+#   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6
 #   # Add the TPE (Optuna) baseline (needs reticulate + an importable optuna):
 #   Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
 # =============================================================================
@@ -41,6 +45,10 @@ source_library(lib_dir)
 
 # --- Configuration ------------------------------------------------------------
 cfg <- parse_cli_args(commandArgs(trailingOnly = TRUE))
+
+# Keep the results root tidy: give every objective its own subfolder, so runs on
+# different objectives accumulate side by side instead of overwriting each other.
+cfg$out_dir <- file.path(cfg$out_dir, cfg$objective)
 
 # --- Parallel backend: one worker per core, leaving one free -----------------
 plan(multisession, workers = max(1L, parallel::detectCores() - 1L))
