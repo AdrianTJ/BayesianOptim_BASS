@@ -125,8 +125,8 @@ Rscript code_files/run_benchmark.R --objective=branin --d=2 --budget=80 --reps=2
 # Rastrigin (4-D)
 Rscript code_files/run_benchmark.R --objective=rastrigin --d=4 --reps=10
 
-# The hand-built non-smooth surface (any dimension), custom output folder
-Rscript code_files/run_benchmark.R --objective=synthetic --d=3 --out_dir=results_syn
+# The hand-built non-smooth surface (any dimension)
+Rscript code_files/run_benchmark.R --objective=synthetic --d=3
 
 # Quick smoke run while iterating
 Rscript code_files/run_benchmark.R --objective=branin --budget=15 --reps=3
@@ -145,7 +145,7 @@ Every key in `default_config()` (`code_files/R/config.R`) is settable as
 | `--n_cand` | `1000` | candidate points scored per iteration |
 | `--reps` | `10` | independent repetitions (seeds) |
 | `--seed_start` | `1001` | first seed (`reps` use `seed_start + 0..reps-1`) |
-| `--out_dir` | `results` | output folder |
+| `--out_dir` | `results` | results root; each run nests a per-objective subfolder under it |
 | `--acquisition` | `ei` | BASS acquisition: `ei` or `thompson` (see §7) |
 | `--with_tpe` | `false` | add the TPE (Optuna) baseline; needs `reticulate`+`optuna` (§1) |
 
@@ -154,8 +154,8 @@ The categorical/mixed objectives (`func2C`, `func3C`, `cat_ackley`) and the
 natively, so it is the strongest comparison there:
 
 ```bash
-Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true --out_dir=results_func2C
-Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true
 ```
 
 ---
@@ -179,8 +179,8 @@ Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R
 Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R --budget=40 --reps=10
 ```
 
-Writes `results_tpe_sensitivity/branin/` and
-`results_tpe_sensitivity/cat_ackley/` (CSVs + convergence plot each, via the
+Writes `results/tpe_sensitivity/branin/` and
+`results/tpe_sensitivity/cat_ackley/` (CSVs + convergence plot each, via the
 same `save_results()` used by §4), plus a printed "TPE final-best range
 across gamma" line quantifying the spread. See
 `code_files/2_tpe_sensitivity/README.md` for details.
@@ -228,7 +228,16 @@ BASS-BO and GP-BO is the surrogate model.
 
 ## 8. Outputs
 
-Each synthetic run writes to `--out_dir` (default `results/`):
+Every runner writes under a single `results/` root, each in its own subfolder, so
+nothing overwrites anything else:
+
+| Runner | Output location |
+|---|---|
+| `run_benchmark.R` | `results/<objective>/` (e.g. `results/branin/`, `results/cat_ackley/`) |
+| `2_tpe_sensitivity/run_tpe_sensitivity.R` | `results/tpe_sensitivity/<objective>/` |
+| `4_regression_test_case/run_elastic_net.R` | `results/elastic_net/` |
+
+Each synthetic run writes:
 
 | File | Contents |
 |---|---|
