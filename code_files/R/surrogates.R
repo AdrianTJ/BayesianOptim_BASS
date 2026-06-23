@@ -21,6 +21,48 @@ BASS_NBURN <- 2000L
 BASS_THIN  <- 10L
 BASS_KEEP  <- (BASS_NMCMC - BASS_NBURN) %/% BASS_THIN   # 200 stored draws
 
+#' Work around a BASS bug that crashes prediction on purely categorical models.
+#'
+#' For a categorical model the RJMCMC posterior routinely contains intercept-only
+#' draws (nbasis == 0) -- especially early in the BO loop, before BASS has fit any
+#' categorical basis. BASS's continuous basis-matrix builder guards that case
+#' (`if (nbasis > 0)`), but its categorical counterpart, makeBasisMatrixCat(),
+#' does not: it runs `for (m in 1:nbasis)`, and in R `1:0` is `c(1, 0)`, so it
+#' reads `n.int.cat[i, 1]` -- NA for a zero-basis model -- and dies with
+#' "missing value where TRUE/FALSE needed". Cat-Ackley triggers this reliably.
+#'
+#' We install a guarded copy of makeBasisMatrixCat into BASS's namespace. The only
+#' change is wrapping the loop in `if (nbasis > 0)`, exactly as the continuous
+#' builder does; zero-basis draws then correctly predict the intercept. The fix is
+#' idempotent, runs once per R session (so it also fires on each furrr worker, via
+#' the call in make_bass_acquire's closure), and becomes a no-op if a future BASS
+#' ships the guard itself.
+.ensure_bass_cat_predict_fix <- function() {
+  if (isTRUE(getOption("bass_cat_predict_fixed"))) return(invisible())
+
+  patched <- function(i, nbasis, vars, xx, n.int, sub) {
+    n <- nrow(xx)
+    tbasis.mat <- matrix(nrow = nbasis + 1, ncol = n)
+    tbasis.mat[1, ] <- 1
+    if (nbasis > 0) {
+      for (m in 1:nbasis) {
+        if (n.int[i, m] == 0) {
+          tbasis.mat[m + 1, ] <- 1
+        } else {
+          use <- 1:n.int[i, m]
+          tbasis.mat[m + 1, ] <- makeBasisCat(vars[i, m, use], sub[[i]][[m]], xx)
+        }
+      }
+    }
+    tbasis.mat
+  }
+  # Resolve BASS's unqualified internals (e.g. makeBasisCat) from its namespace.
+  environment(patched) <- asNamespace("BASS")
+  utils::assignInNamespace("makeBasisMatrixCat", patched, ns = "BASS")
+  options(bass_cat_predict_fixed = TRUE)
+  invisible()
+}
+
 #' Orient a predict.bass() matrix to rows = samples, columns = candidates.
 #'
 #' predict.bass can return either orientation; we know the candidate count, so
@@ -50,6 +92,10 @@ BASS_KEEP  <- (BASS_NMCMC - BASS_NBURN) %/% BASS_THIN   # 200 stored draws
 #' @return An `acquire(X_eval, y_eval, X_cand)` function (captures `cfg`, `schema`).
 make_bass_acquire <- function(cfg, schema = NULL) {
   function(X_eval, y_eval, X_cand) {
+    # Guard BASS's categorical predict path (no-op once applied; see above). Done
+    # here, inside the exported closure, so it also runs on each furrr worker.
+    if (!is.null(schema)) .ensure_bass_cat_predict_fix()
+
     X_eval <- as.matrix(X_eval)
     n_cand <- nrow(as.matrix(X_cand))
 
