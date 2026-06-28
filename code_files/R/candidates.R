@@ -13,6 +13,17 @@
 # There are no local_frac / local_sd knobs to set: the split is a fixed 50/50
 # and the width is derived, not tuned.
 #
+# Categorical coordinates need a different notion of "local". A Gaussian nudge of
+# the unit-cube coordinate is an *ordinal* move -- it can only reach the
+# incumbent's level and its index-neighbours -- which is meaningless for an
+# unordered factor (and actively wrong when the levels are permuted, as in
+# Cat-Ackley). So when an objective supplies a `schema`, the local half instead
+# makes Hamming-local moves on the categorical coordinates: it keeps most of them
+# at the incumbent's level and flips a small random subset to uniformly-random
+# *other* levels. Continuous coordinates still get the Gaussian cloud, so mixed
+# problems get a sensible joint local move. This generator is shared by BASS-BO
+# and GP-BO, so the surrogate remains the only thing that differs between them.
+#
 # Pure functions -- easy to unit-test.
 # =============================================================================
 
@@ -75,20 +86,58 @@ local_scale <- function(X_eval, best_idx) {
   min(max(dmin, 1e-2), 0.5)
 }
 
+#' Replace the categorical coordinates of a local cloud with Hamming-local moves.
+#'
+#' Each row keeps the incumbent's level on most categorical coordinates and flips
+#' a small random subset (1..min(3, #cat)) to uniformly-random *other* levels --
+#' the correct notion of "nearby" for an unordered factor. Chosen levels are
+#' written back as bin centres, `(level - 0.5) / L`, which decode exactly to that
+#' level (see decode_levels) and dedupe cleanly across iterations. Continuous
+#' coordinates in `X_local` are left untouched.
+#'
+#' @param X_local n x d local-cloud matrix (continuous coords already filled in).
+#' @param x_best  The incumbent point (length-d vector in [0,1]^d).
+#' @param schema  Input schema with `types` and `levels` (see objective_utils.R).
+#' @param cat_idx Integer indices of the categorical coordinates.
+#' @return        `X_local` with its categorical columns rewritten.
+local_categorical_moves <- function(X_local, x_best, schema, cat_idx) {
+  n_cat   <- length(cat_idx)
+  inc_lev <- vapply(cat_idx,
+                    function(j) as.integer(decode_levels(x_best[j], schema$levels[j])),
+                    integer(1))
+
+  for (r in seq_len(nrow(X_local))) {
+    k    <- sample.int(min(3L, n_cat), 1L)   # how many coords to flip (>= 1)
+    flip <- sample.int(n_cat, k)             # which categorical coords to flip
+    for (c in seq_len(n_cat)) {
+      j   <- cat_idx[c]
+      L   <- schema$levels[j]
+      lev <- inc_lev[c]
+      if (c %in% flip) lev <- sample(setdiff(seq_len(L), lev), 1L)
+      X_local[r, j] <- (lev - 0.5) / L       # bin centre -> decodes back to `lev`
+    }
+  }
+  X_local
+}
+
 #' Hybrid global + adaptive-local candidate set (parameter-free).
 #'
 #' @param X_eval m x d matrix of evaluated points.
 #' @param y_eval Length-m objective values (best = smallest).
 #' @param n_cand Total number of candidates to return.
+#' @param schema Optional input schema (see objective_utils.R). When it marks
+#'   categorical coordinates, the local half makes Hamming-local moves on them
+#'   instead of an (ill-defined) ordinal Gaussian nudge; NULL => all-continuous,
+#'   the original behaviour.
 #' @return       An n_cand x d matrix in [0,1]^d.
-hybrid_candidates <- function(X_eval, y_eval, n_cand) {
+hybrid_candidates <- function(X_eval, y_eval, n_cand, schema = NULL) {
   X_eval <- as.matrix(X_eval)
   d <- ncol(X_eval)
 
   n_local  <- floor(n_cand / 2)
   n_global <- n_cand - n_local
 
-  # Global half: even coverage of the whole cube.
+  # Global half: even coverage of the whole cube (uniform levels for categoricals).
   X_global <- space_filling_candidates(n_global, d)
 
   # Local half: a Gaussian cloud around the incumbent, width set by the data,
@@ -101,6 +150,15 @@ hybrid_candidates <- function(X_eval, y_eval, n_cand) {
     ncol = d
   )
   X_local <- pmin(pmax(X_local, 0), 1)
+
+  # On categorical coordinates the Gaussian nudge is the wrong move; replace it
+  # with Hamming-local flips around the incumbent's levels.
+  if (!is.null(schema) && n_local > 0) {
+    cat_idx <- which(schema$types == "cat")
+    if (length(cat_idx)) {
+      X_local <- local_categorical_moves(X_local, x_best, schema, cat_idx)
+    }
+  }
 
   rbind(X_global, X_local)
 }
