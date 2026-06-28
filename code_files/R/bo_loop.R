@@ -70,17 +70,21 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
 #' (Expected Improvement), so the surrogate is the only thing that differs --
 #' which is exactly the comparison the thesis is about.
 #'
-#' For categorical/mixed objectives the `schema` is forwarded only to BASS-BO, so
-#' BASS fits on genuine factors. GP-BO gets no schema on purpose: a plain GP has
-#' no categorical kernel, so it sees the raw [0,1] coordinate -- a continuous
-#' relaxation of the categories. That gap is the whole point of the comparison.
+#' For categorical/mixed objectives the `schema` is forwarded to BASS-BO's
+#' acquisition, so BASS fits on genuine factors. GP-BO's acquisition gets no
+#' schema on purpose: a plain GP has no categorical kernel, so it sees the raw
+#' [0,1] coordinate -- a continuous relaxation of the categories. That gap is the
+#' whole point of the comparison. The shared candidate generator, however, *does*
+#' get the schema for both methods, so both score a pool with sensible categorical
+#' moves (see candidates.R); keeping the generator common is what preserves the
+#' surrogate as the only difference between BASS-BO and GP-BO.
 #'
 #' @param cfg    Config list (see `default_config()`).
 #' @param schema Optional input schema from the objective (NULL = all continuous).
 #' @return Named list of methods: BASS-BO, GP-BO, Random.
 make_methods <- function(cfg, schema = NULL) {
   shared_candidates <- function(X_eval, y_eval)
-    hybrid_candidates(X_eval, y_eval, cfg$n_cand)
+    hybrid_candidates(X_eval, y_eval, cfg$n_cand, schema)
 
   list(
     "BASS-BO" = list(
