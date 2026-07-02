@@ -33,6 +33,32 @@
 # Pure functions -- easy to unit-test.
 # =============================================================================
 
+#' Canonical representation of points for duplicate detection.
+#'
+#' Two points whose categorical coordinates decode to the same levels are the
+#' SAME input to the objective, whatever their raw [0,1] encodings. Snapping
+#' each categorical coordinate to its bin centre `(level - 0.5) / L` makes such
+#' points exactly equal, so the ordinary Euclidean duplicate checks below work
+#' at the decoded-combination level: on a purely categorical problem a
+#' "duplicate" is a revisited combination, and on a mixed problem it is the
+#' same combination with (near-)identical continuous coordinates. Without this,
+#' the loop happily re-evaluates combinations it has already measured -- pure
+#' waste on a deterministic objective (instrumented runs showed ~2/3 of the
+#' budget lost to revisits on a small categorical benchmark).
+#'
+#' @param X      n x d matrix of points in [0,1]^d.
+#' @param schema Optional input schema (see objective_utils.R); NULL = identity.
+#' @return       n x d matrix with categorical columns snapped to bin centres.
+canonicalize <- function(X, schema = NULL) {
+  X <- as.matrix(X)
+  if (is.null(schema)) return(X)
+  for (j in which(schema$types == "cat")) {
+    L <- schema$levels[j]
+    X[, j] <- (decode_levels(X[, j], L) - 0.5) / L
+  }
+  X
+}
+
 #' Is point `x` already (almost) present in the rows of `X`?
 #'
 #' @param x   Numeric vector, the candidate point.
