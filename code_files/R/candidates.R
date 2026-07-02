@@ -18,11 +18,17 @@
 # incumbent's level and its index-neighbours -- which is meaningless for an
 # unordered factor (and actively wrong when the levels are permuted, as in
 # Cat-Ackley). So when an objective supplies a `schema`, the local half instead
-# makes Hamming-local moves on the categorical coordinates: it keeps most of them
-# at the incumbent's level and flips a small random subset to uniformly-random
-# *other* levels. Continuous coordinates still get the Gaussian cloud, so mixed
-# problems get a sensible joint local move. This generator is shared by BASS-BO
-# and GP-BO, so the surrogate remains the only thing that differs between them.
+# makes Hamming-local moves on the categorical coordinates: each coordinate keeps
+# the incumbent's level or flips to a uniformly-random *other* level with
+# probability 1/n_cat (a derived rate, not a knob). Crucially, on MIXED problems
+# a local row may keep the ENTIRE incumbent combination and only nudge the
+# continuous coordinates -- that pure continuous refinement at the best-known
+# combination is the main local-exploitation move BO has over Random Search, and
+# an always-flip rule forbids it (which measurably capped func2C/func3C; see
+# 3_categorical_diagnostics/). On purely categorical problems a zero-flip row
+# would just duplicate the incumbent, so there at least one flip is forced.
+# Continuous coordinates still get the Gaussian cloud. This generator is shared
+# by BASS-BO and GP-BO, so the surrogate remains the only thing that differs.
 #
 # Pure functions -- easy to unit-test.
 # =============================================================================
@@ -88,9 +94,13 @@ local_scale <- function(X_eval, best_idx) {
 
 #' Replace the categorical coordinates of a local cloud with Hamming-local moves.
 #'
-#' Each row keeps the incumbent's level on most categorical coordinates and flips
-#' a small random subset (1..min(3, #cat)) to uniformly-random *other* levels --
-#' the correct notion of "nearby" for an unordered factor. Chosen levels are
+#' Each row keeps the incumbent's level on most categorical coordinates: every
+#' coordinate flips to a uniformly-random *other* level independently with
+#' probability 1/#cat (so one flip in expectation) -- the correct notion of
+#' "nearby" for an unordered factor. On mixed schemas a row may flip NOTHING,
+#' keeping the incumbent's full combination so its continuous coordinates get a
+#' pure local refinement; on purely categorical schemas a zero-flip row would
+#' only duplicate the incumbent, so one flip is forced there. Chosen levels are
 #' written back as bin centres, `(level - 0.5) / L`, which decode exactly to that
 #' level (see decode_levels) and dedupe cleanly across iterations. Continuous
 #' coordinates in `X_local` are left untouched.
@@ -101,14 +111,17 @@ local_scale <- function(X_eval, best_idx) {
 #' @param cat_idx Integer indices of the categorical coordinates.
 #' @return        `X_local` with its categorical columns rewritten.
 local_categorical_moves <- function(X_local, x_best, schema, cat_idx) {
-  n_cat   <- length(cat_idx)
-  inc_lev <- vapply(cat_idx,
-                    function(j) as.integer(decode_levels(x_best[j], schema$levels[j])),
-                    integer(1))
+  n_cat    <- length(cat_idx)
+  pure_cat <- all(schema$types == "cat")
+  inc_lev  <- vapply(cat_idx,
+                     function(j) as.integer(decode_levels(x_best[j], schema$levels[j])),
+                     integer(1))
 
   for (r in seq_len(nrow(X_local))) {
-    k    <- sample.int(min(3L, n_cat), 1L)   # how many coords to flip (>= 1)
-    flip <- sample.int(n_cat, k)             # which categorical coords to flip
+    flip <- which(runif(n_cat) < 1 / n_cat)  # each coord flips w.p. 1/n_cat
+    if (pure_cat && length(flip) == 0L) {
+      flip <- sample.int(n_cat, 1L)          # zero flips = duplicate incumbent
+    }
     for (c in seq_len(n_cat)) {
       j   <- cat_idx[c]
       L   <- schema$levels[j]
