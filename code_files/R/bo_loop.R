@@ -31,6 +31,7 @@
 #'                    * `y`    : the objective value at each evaluated point.
 run_bo <- function(objective, method, cfg, X_init, y_init) {
   f      <- objective$fn
+  schema <- objective$schema   # NULL for purely continuous objectives
   X_eval <- as.matrix(X_init)
   y_eval <- as.numeric(y_init)
   d      <- ncol(X_eval)
@@ -39,18 +40,30 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
   best_so_far[1] <- min(y_eval)
 
   for (t in 1:cfg$budget) {
+    # Duplicates are judged on the canonical representation (categorical
+    # coordinates snapped to bin centres, see canonicalize): two encodings that
+    # decode to the same level combination are the same objective input, so
+    # re-evaluating one is a wasted iteration on a deterministic objective.
+    X_seen <- canonicalize(X_eval, schema)
+
     if (is.null(method$acquire)) {
       # ---- Random Search: a fresh, non-duplicate point ----
-      repeat {
+      # Attempts are capped: on a small categorical space that is nearly
+      # exhausted, an un-evaluated combination may not turn up, and accepting
+      # a duplicate then is better than spinning forever.
+      for (attempt in 1:100) {
         x_next <- matrix(runif(d), nrow = 1)
-        if (!is_duplicate(x_next, X_eval, cfg$dup_tol)) break
+        if (!is_duplicate(canonicalize(x_next, schema), X_seen, cfg$dup_tol)) break
       }
     } else {
       # ---- Model-based step: propose, score, take the best new candidate ----
       X_cand <- method$candidates(X_eval, y_eval)
       score  <- method$acquire(X_eval, y_eval, X_cand)
-      # Rule out candidates that duplicate an already-evaluated point.
-      score[min_sqdist(X_cand, X_eval) <= cfg$dup_tol^2] <- -Inf
+      # Rule out candidates that duplicate an already-evaluated point. (If the
+      # whole pool is masked -- conceivable only when a tiny categorical space
+      # is all but exhausted -- which.max still returns a point; a duplicate
+      # then costs one iteration, it does not break the loop.)
+      score[min_sqdist(canonicalize(X_cand, schema), X_seen) <= cfg$dup_tol^2] <- -Inf
       x_next <- X_cand[which.max(score), , drop = FALSE]
     }
 
