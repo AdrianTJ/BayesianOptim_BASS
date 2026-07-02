@@ -53,13 +53,41 @@ test_that("schema-aware local half makes Hamming-local categorical moves", {
   # Categorical coords sit on bin centres, so they decode back exactly.
   expect_true(all(abs(local_rows * L - (floor(local_rows * L) + 0.5)) < 1e-9))
 
-  # Every local move differs from the incumbent in 1..3 coordinates (Hamming-local).
+  # Purely categorical schema: every local move differs from the incumbent in at
+  # least one coordinate (a zero-flip row would just duplicate the incumbent),
+  # and stays Hamming-local (about one flip in expectation, never all coords).
   ham <- rowSums(sweep(levs, 2, inc, "!=") != 0)
-  expect_true(all(ham >= 1 & ham <= 3))
+  expect_true(all(ham >= 1))
+  expect_lt(mean(ham), 3)
 
   # Flips can reach non-adjacent levels (not just index neighbours): some coord
   # should land more than one level away from the incumbent at least once.
   expect_true(any(abs(sweep(levs, 2, inc, "-")) > 1))
+})
+
+test_that("mixed-schema local rows can KEEP the incumbent's full combination", {
+  set.seed(3)
+  # Two categorical + two continuous, like Func-2C.
+  schema <- list(types = c("cat", "cat", "cont", "cont"),
+                 levels = c(3L, 5L, NA, NA))
+  X_eval <- matrix(runif(12 * 4), ncol = 4)
+  y_eval <- runif(12)
+  n_cand <- 400
+  X <- hybrid_candidates(X_eval, y_eval, n_cand = n_cand, schema = schema)
+
+  inc <- decode_levels(X_eval[which.min(y_eval), 1:2], c(3L, 5L))
+  n_local <- floor(n_cand / 2)
+  local_rows <- X[(n_cand - n_local + 1):n_cand, , drop = FALSE]
+  levs <- cbind(decode_levels(local_rows[, 1], 3L), decode_levels(local_rows[, 2], 5L))
+  ham  <- rowSums(sweep(levs, 2, inc, "!=") != 0)
+
+  # A substantial fraction of local rows keep the incumbent's combination, so
+  # the continuous coordinates get refined at the best-known combination --
+  # the local-exploitation move that an always-flip rule forbids. With flip
+  # probability 1/2 per coordinate, ~25% of rows keep both levels.
+  expect_gt(mean(ham == 0), 0.10)
+  # ... and a substantial fraction still explore other combinations.
+  expect_gt(mean(ham >= 1), 0.50)
 })
 
 test_that("hybrid_candidates leaves continuous coords Gaussian under a mixed schema", {
