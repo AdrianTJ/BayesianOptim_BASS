@@ -64,7 +64,11 @@ run_bo <- function(objective, method, cfg, X_init, y_init) {
       # is all but exhausted -- which.max still returns a point; a duplicate
       # then costs one iteration, it does not break the loop.)
       score[min_sqdist(canonicalize(X_cand, schema), X_seen) <= cfg$dup_tol^2] <- -Inf
-      x_next <- X_cand[which.max(score), , drop = FALSE]
+      # Break score ties at random. Exact ties are common early on (a flat
+      # posterior makes EI constant across candidates); always taking the
+      # first index would silently bias picks toward the pool's first row.
+      top    <- which(score == max(score))
+      x_next <- X_cand[if (length(top) > 1L) sample(top, 1L) else top, , drop = FALSE]
     }
 
     # Evaluate the (expensive) objective and record progress.
