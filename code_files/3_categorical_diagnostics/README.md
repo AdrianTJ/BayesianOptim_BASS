@@ -6,14 +6,15 @@ three independently answerable parts, ordered from the outside in:
 
 1. **Oracle ceiling** (runs without BASS). The acquisition is replaced by the
    true objective, so the loop always picks the best point in the candidate
-   pool. This upper-bounds what *any* surrogate could achieve with the current
-   `hybrid_candidates()` generator, and compares it against a patched
+   pool. This upper-bounds what *any* surrogate could achieve with the
+   `hybrid_candidates()` generator, and compares it against a reference
    generator whose local rows may **keep** the incumbent's categorical
-   combination. The current generator always flips at least one categorical
-   coordinate (`local_categorical_moves()` draws `k` from `1..min(3, n_cat)`),
-   so no candidate ever refines the continuous coordinates while holding the
-   best-known combination fixed — on Func-2C/3C that is exactly the local
-   exploitation a model-based method needs to beat Random.
+   combination. Historically the library generator always flipped at least
+   one categorical coordinate, so no candidate ever refined the continuous
+   coordinates while holding the best-known combination fixed — on Func-2C/3C
+   exactly the local exploitation a model-based method needs to beat Random.
+   That is fixed (the library keeps combinations on mixed schemas now), so
+   this part remains as a regression check: the two arms should perform alike.
 
 2. **BASS fit quality at BO sample sizes.** Held-out Spearman correlation of
    the BASS posterior mean vs the truth, fit on n0 / n0+20 / n0+budget random
@@ -48,7 +49,31 @@ Prints a summary and writes `oracle_ceiling.csv`, `bass_fit_quality.csv`,
 
 | Observation | Conclusion |
 |---|---|
-| Oracle+current ≈ Random on func2C/3C, oracle+keep-combo clearly better | Candidate generator is the bottleneck: allow zero-flip local moves on mixed problems |
+| Oracle+current clearly worse than oracle+keep-combo on func2C/3C | Candidate-generator regression: local moves must be able to keep the incumbent's combination on mixed schemas |
 | Part-2 Spearman ≈ 0 at n ≈ 90 on cat_ackley (d=6, L=11) | Benchmark is uninformative at this budget; re-scale it rather than tuning methods |
 | Easy-mode cat_ackley: BASS-BO does not beat Random | Something is broken in the surrogate/acquisition wiring itself |
-| High revisit counts in part 3 | EI keeps re-picking already-evaluated combinations; deduplicate at the decoded-combination level |
+| High revisit counts in part 3 | Combination-level dedup regression: the loop is re-evaluating decoded combinations |
+
+## Findings from the first full run (2026-07, pre-fix library)
+
+These diagnostics were run once against the pre-fix library and drove the
+fixes now in the shared code:
+
+- **Part 1**: the keep-combo generator beat the always-flip one in **15/15
+  paired seeds** on func2C and func3C (reaching the func2C optimum −0.206
+  within ~10 evaluations, vs a −0.148 plateau); on purely categorical
+  Cat-Ackley both arms reached the optimum, clearing the pool. → fixed in
+  `local_categorical_moves()` (zero-flip moves allowed on mixed schemas).
+- **Part 2**: held-out Spearman at n ≈ 70: func2C ≈ 0.66, func3C ≈ 0.61,
+  cat_ackley d=6/L=11 ≈ 0.47 with near-intercept fits — the hard instance
+  cannot show a surrogate advantage at thesis budgets. → Cat-Ackley size is
+  now a protocol knob (`--cat_L`), benchmarked at easy/medium/hard.
+- **Part 3**: easy-mode Cat-Ackley: BASS-BO found the exact optimum **10/10
+  seeds** (Random 5/10) — the method wiring works — but **25–29 of 40 picks
+  revisited already-evaluated combinations**. → fixed by combination-level
+  dedup (`canonicalize()`). func2C: Random won 6/10 (2 ties) — consistent
+  with the Part-1 generator finding. cat_ackley d=6: BASS-BO won 9/10.
+
+**Post-fix expectations**: Part 1's two arms within noise of each other;
+Part 3 revisit counts ≈ 0 everywhere; func2C paired wins flipped in
+BASS-BO's favour; easy-mode still 10/10.

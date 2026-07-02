@@ -9,11 +9,12 @@
 #      objective (score = -f). The loop then always picks the best point in the
 #      candidate pool, so the result is an upper bound on what ANY surrogate
 #      could achieve with the current hybrid_candidates() generator. A second
-#      arm uses a patched generator whose local rows may KEEP the incumbent's
-#      categorical combination (the current one always flips >= 1 categorical
-#      coordinate, so the continuous coordinates can never be refined at the
-#      best known combination). If oracle+current barely beats Random, the
-#      candidate pool -- not the surrogate -- is the bottleneck.
+#      arm uses a reference generator whose local rows may KEEP the incumbent's
+#      categorical combination. Historically the library generator always
+#      flipped >= 1 categorical coordinate, and this A/B exposed it (reference
+#      won 15/15 paired seeds on func2C/func3C); the library now keeps combos
+#      on mixed schemas too, so the two arms should perform alike -- this part
+#      is kept as a regression check on the candidate pool's ceiling.
 #
 #   2) SURROGATE FIT QUALITY (needs BASS). Fit BASS on n random points of the
 #      objective and measure Spearman rank correlation between the posterior
@@ -73,10 +74,11 @@ shared_init <- function(objective, seed) {
   list(X = X_init, y = objective$fn(X_init), n0 = n0)
 }
 
-# --- Patched local move: may keep the incumbent's combination -----------------
+# --- Reference local move: may keep the incumbent's combination ---------------
 # Flip each categorical coordinate independently with prob 1/n_cat (so ~37% of
 # local rows keep the full incumbent combination and refine only the continuous
-# coordinates). The current generator always flips 1..3 coordinates.
+# coordinates). The library generator now behaves the same way on mixed
+# schemas; this independent copy pins the expected behaviour for the A/B.
 local_categorical_moves_keep <- function(X_local, x_best, schema, cat_idx) {
   n_cat   <- length(cat_idx)
   inc_lev <- vapply(cat_idx,
@@ -236,8 +238,11 @@ run_bo_logged <- function(objective, method, cfg, X_init, y_init) {
   for (t in 1:cfg$budget) {
     X_cand <- method$candidates(X_eval, y_eval)
     score  <- method$acquire(X_eval, y_eval, X_cand)
-    score[min_sqdist(X_cand, X_eval) <= cfg$dup_tol^2] <- -Inf
-    pick   <- which.max(score)
+    # Mirror run_bo(): combination-level dedup + random tie-breaking.
+    score[min_sqdist(canonicalize(X_cand, schema),
+                     canonicalize(X_eval, schema)) <= cfg$dup_tol^2] <- -Inf
+    top    <- which(score == max(score))
+    pick   <- if (length(top) > 1L) sample(top, 1L) else top
     x_next <- X_cand[pick, , drop = FALSE]
 
     origin[t]  <- if (pick <= n_global) "global" else "local"
