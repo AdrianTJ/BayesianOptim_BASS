@@ -109,10 +109,61 @@ summarise_final <- function(all_runs) {
     dplyr::arrange(mean_final)
 }
 
+#' Paired per-seed comparison of every method against a baseline.
+#'
+#' Every method runs from the SAME initial design on each seed, so the design
+#' is paired -- and paired comparisons are what the unpaired mean +/- SD in
+#' `summarise_final()` throws away. Final bests are skewed minima; a method can
+#' trail on the mean yet win most seeds (or vice versa), so per-seed win/tie/
+#' loss counts against the baseline plus a Wilcoxon signed-rank test give the
+#' honest headline. Medians are reported alongside for the same reason.
+#'
+#' @param all_runs Long tibble from `run_experiment()` (and friends).
+#' @param baseline Method name to compare against (default "Random").
+#' @return Tibble with one row per non-baseline method: wins/ties/losses vs the
+#'   baseline, median finals, and the paired Wilcoxon p-value. Empty if the
+#'   baseline is absent.
+summarise_paired <- function(all_runs, baseline = "Random") {
+  finals <- all_runs |>
+    dplyr::group_by(seed, method) |>
+    dplyr::filter(iter == max(iter)) |>
+    dplyr::ungroup() |>
+    dplyr::select(seed, method, best)
+
+  if (!baseline %in% finals$method) return(finals[0, ])
+
+  base <- finals |>
+    dplyr::filter(method == baseline) |>
+    dplyr::select(seed, base_best = best)
+
+  finals |>
+    dplyr::filter(method != baseline) |>
+    dplyr::inner_join(base, by = "seed") |>
+    dplyr::group_by(method) |>
+    dplyr::summarise(
+      baseline        = baseline,
+      n_seeds         = dplyr::n(),
+      wins            = sum(best < base_best),
+      ties            = sum(best == base_best),
+      losses          = sum(best > base_best),
+      median_final    = median(best),
+      median_baseline = median(base_best),
+      # exact = FALSE: final bests can tie across methods (zero differences),
+      # which the exact distribution cannot handle. NA if the test is
+      # degenerate (e.g. every seed tied).
+      p_wilcoxon = tryCatch(
+        stats::wilcox.test(best, base_best, paired = TRUE, exact = FALSE)$p.value,
+        error = function(e) NA_real_),
+      .groups = "drop"
+    ) |>
+    dplyr::arrange(dplyr::desc(wins))
+}
+
 #' Write all CSVs and the convergence plot for an experiment.
 #'
 #' Produces, in `cfg$out_dir`: all_runs.csv, summary_curve.csv,
-#' final_summary.csv and convergence_mean_ci.png.
+#' final_summary.csv, paired_vs_random.csv (when a Random baseline is present)
+#' and convergence_mean_ci.png.
 #'
 #' @param all_runs  Long tibble from `run_experiment()`.
 #' @param objective Objective list (used for plot labels).
@@ -123,10 +174,14 @@ save_results <- function(all_runs, objective, cfg) {
 
   summary_curve <- summarise_curve(all_runs)
   final_summary <- summarise_final(all_runs)
+  paired        <- summarise_paired(all_runs)
 
   readr::write_csv(all_runs,      file.path(cfg$out_dir, "all_runs.csv"))
   readr::write_csv(summary_curve, file.path(cfg$out_dir, "summary_curve.csv"))
   readr::write_csv(final_summary, file.path(cfg$out_dir, "final_summary.csv"))
+  if (nrow(paired)) {
+    readr::write_csv(paired, file.path(cfg$out_dir, "paired_vs_random.csv"))
+  }
 
   p <- ggplot2::ggplot(
     summary_curve,
