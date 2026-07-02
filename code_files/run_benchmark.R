@@ -86,6 +86,16 @@ final_summary <- save_results(all_runs, objective, cfg)
 
 # --- Report -------------------------------------------------------------------
 print(final_summary)
+
+# Paired per-seed comparison vs Random (shared initial designs make the design
+# paired; win counts + a signed-rank test are more informative than the means).
+paired <- summarise_paired(all_runs)
+if (nrow(paired)) {
+  cat("\nPaired per-seed comparison vs Random (wins = seeds with a strictly",
+      "better final best):\n")
+  print(paired)
+}
+
 cat(sprintf("\nArtifacts saved in: %s\n", normalizePath(cfg$out_dir)))
 
 # --- Shut down parallel workers so the process can exit -----------------------
