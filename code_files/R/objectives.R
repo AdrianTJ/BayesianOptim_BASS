@@ -19,15 +19,20 @@
 
 #' Load a named objective at a given dimension.
 #'
-#' @param name One of "branin", "rastrigin", "synthetic", "func2C", "func3C",
-#'             "cat_ackley".
-#' @param d    Input dimension. Branin is fixed at 2; Rastrigin and synthetic
-#'             accept any d >= 1. func2C/func3C have a fixed structure (d = 4 / 5)
-#'             and ignore `d` with a warning if it disagrees; cat_ackley uses `d`
-#'             as the number of categorical inputs.
-#' @return     A `list(name, d, fn, schema)` objective. `schema` is NULL for the
-#'             continuous benchmarks.
-load_objective <- function(name, d) {
+#' @param name  One of "branin", "rastrigin", "synthetic", "func2C", "func3C",
+#'              "cat_ackley".
+#' @param d     Input dimension. Branin is fixed at 2; Rastrigin and synthetic
+#'              accept any d >= 1. func2C/func3C have a fixed structure (d = 4 / 5)
+#'              and ignore `d` with a warning if it disagrees; cat_ackley uses `d`
+#'              as the number of categorical inputs.
+#' @param cat_L Levels per categorical input, cat_ackley only (odd; see
+#'              make_cat_ackley). NULL falls back to the classic 11, so the size
+#'              of the categorical space (L^d) is a protocol choice: d=3/L=5 is
+#'              solvable within a thesis budget, d=6/L=11 is the hard regime.
+#' @return      A `list(name, d, fn, schema)` objective. `schema` is NULL for the
+#'              continuous benchmarks.
+load_objective <- function(name, d, cat_L = NULL) {
+  if (is.null(cat_L)) cat_L <- 11L
   # Continuous benchmarks: a function plus a NULL schema.
   cont <- function(fn) list(name = name, d = d, fn = fn, schema = NULL)
 
@@ -62,7 +67,7 @@ load_objective <- function(name, d) {
            levels = c(3L, 5L, 4L, NA, NA)),
       nat_d = 5L),
     "cat_ackley" = {
-      ca <- make_cat_ackley(d)
+      ca <- make_cat_ackley(d, L = as.integer(cat_L))
       list(name = name, d = ca$d, fn = ca$fn, schema = ca$schema,
            opt_levels = ca$opt_levels)
     },
