@@ -99,6 +99,15 @@ make_bass_acquire <- function(cfg, schema = NULL) {
     X_eval <- as.matrix(X_eval)
     n_cand <- nrow(as.matrix(X_cand))
 
+    # .samples_by_cand() tells the two predict() orientations apart by the
+    # candidate count; a square draws-by-candidates matrix would be ambiguous.
+    if (n_cand == BASS_KEEP) {
+      stop(sprintf(paste0("n_cand (%d) equals the number of stored BASS ",
+                          "posterior draws; the predict() orientation check ",
+                          "cannot disambiguate a square matrix. Pick a ",
+                          "different --n_cand."), n_cand))
+    }
+
     # Standardise y for BASS's numerics; guard a zero spread.
     y_mean <- mean(y_eval)
     y_sd   <- sd(y_eval)
@@ -150,6 +159,11 @@ make_gp_acquire <- function(cfg) {
     fit <- tryCatch(GPfit::GP_fit(X_eval, y_eval), error = function(e) NULL)
 
     if (is.null(fit)) {
+      # Say so: with a flat predictive, EI is constant and this iteration's
+      # pick is effectively random. Frequent fallbacks mean the GP-BO curve is
+      # partly a random-search curve, which the analysis should know about.
+      message(sprintf("GP-BO: GP_fit failed on n=%d points; flat predictive fallback.",
+                      nrow(as.matrix(X_eval))))
       y_spread <- sd(y_eval)
       if (!is.finite(y_spread) || y_spread < 1e-12) y_spread <- 1e-6
       mu <- rep(mean(y_eval), n_cand)
