@@ -435,7 +435,10 @@ run_suite() {
   # Categorical / mixed benchmarks (TPE is the strongest comparison here).
   run_step "bench-func2C"     Rscript run_benchmark.R --objective=func2C            --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
   run_step "bench-func3C"     Rscript run_benchmark.R --objective=func3C            --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
-  run_step "bench-cat_ackley" Rscript run_benchmark.R --objective=cat_ackley --d=6 --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
+  # Cat-Ackley at three sizes: easy (5^3) / medium (7^4) / hard (11^6).
+  run_step "bench-cat_ackley-easy" Rscript run_benchmark.R --objective=cat_ackley --d=3 --cat_L=5  --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
+  run_step "bench-cat_ackley-med"  Rscript run_benchmark.R --objective=cat_ackley --d=4 --cat_L=7  --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
+  run_step "bench-cat_ackley-hard" Rscript run_benchmark.R --objective=cat_ackley --d=6 --cat_L=11 --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
   # TPE gamma-sensitivity ablation (Branin + Cat-Ackley).
   run_step "tpe-sensitivity"  Rscript 2_tpe_sensitivity/run_tpe_sensitivity.R --budget="$BUDGET" --reps="$REPS"
   # Elastic Net case study.

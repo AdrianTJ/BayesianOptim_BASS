@@ -18,6 +18,7 @@ default_config <- function() {
     # ---- Experiment ----
     objective  = "branin",  # which objective to optimise (see objectives/)
     d          = 2,         # input dimension
+    cat_L      = 11L,       # levels per categorical input (cat_ackley only; odd)
     budget     = 80,        # BO iterations after the initial design
     n_cand     = 1000,      # candidate points scored per iteration
     reps       = 10,        # independent repetitions (seeds)

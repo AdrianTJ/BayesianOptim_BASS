@@ -145,7 +145,7 @@ run_tpe <- function(objective, cfg, X_init, y_init, seed, sampler_opts = list())
 #' @param cfg Config list (uses `objective`, `d`, `budget`, `reps`, `seed_start`).
 #' @return Long tibble with columns seed, iter, method ("TPE"), best.
 run_tpe_experiment <- function(cfg) {
-  objective <- load_objective(cfg$objective, cfg$d)
+  objective <- load_objective(cfg$objective, cfg$d, cfg$cat_L)
   d  <- objective$d
   n0 <- max(2 * d + 1, 8)
   seeds <- cfg$seed_start + 0:(cfg$reps - 1)
@@ -180,7 +180,7 @@ run_tpe_experiment <- function(cfg) {
 #' @return Long tibble with columns seed, iter, method (one of `names(configs)`),
 #'   best.
 run_tpe_sweep_experiment <- function(cfg, configs) {
-  objective <- load_objective(cfg$objective, cfg$d)
+  objective <- load_objective(cfg$objective, cfg$d, cfg$cat_L)
   d  <- objective$d
   n0 <- max(2 * d + 1, 8)
   seeds <- cfg$seed_start + 0:(cfg$reps - 1)
