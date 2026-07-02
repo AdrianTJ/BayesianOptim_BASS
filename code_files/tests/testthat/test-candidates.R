@@ -10,6 +10,23 @@ test_that("min_sqdist returns the nearest squared distance per candidate", {
   expect_equal(d2[2], 0.5)    # equidistant from both corners: 0.25 + 0.25
 })
 
+test_that("canonicalize equates encodings that decode to the same combination", {
+  schema <- list(types = c("cat", "cont"), levels = c(4L, NA))
+  # Both rows decode the categorical coordinate to level 2 (u in [0.25, 0.5)).
+  X <- rbind(c(0.26, 0.7),
+             c(0.49, 0.7))
+  Xc <- canonicalize(X, schema)
+  expect_equal(Xc[1, ], Xc[2, ])              # same combination -> same row
+  expect_equal(Xc[, 1], rep((2 - 0.5) / 4, 2)) # snapped to the bin centre
+  expect_equal(Xc[, 2], X[, 2])                # continuous coords untouched
+
+  # Different levels stay distinct; NULL schema is the identity.
+  X2 <- rbind(c(0.1, 0.7), c(0.9, 0.7))
+  expect_false(isTRUE(all.equal(canonicalize(X2, schema)[1, 1],
+                                canonicalize(X2, schema)[2, 1])))
+  expect_equal(canonicalize(X, NULL), as.matrix(X))
+})
+
 test_that("is_duplicate flags near points and ignores far ones", {
   X <- matrix(c(0.1, 0.1,
                 0.9, 0.9), ncol = 2, byrow = TRUE)
