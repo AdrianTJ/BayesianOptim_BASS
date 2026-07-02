@@ -100,6 +100,13 @@ test_that("load_objective returns schema + fixed dimensions for the new benchmar
   oc <- load_objective("cat_ackley", 6)
   expect_equal(oc$d, 6)
   expect_true(all(oc$schema$types == "cat"))
+  expect_equal(oc$schema$levels, rep(11L, 6))   # classic default preserved
+
+  # cat_L controls the instance size (the easy/medium/hard protocol knob).
+  oe <- load_objective("cat_ackley", 3, cat_L = 5L)
+  expect_equal(oe$schema$levels, rep(5L, 3))
+  expect_equal(oe$fn(matrix((oe$opt_levels - 0.5) / 5, nrow = 1)), 0,
+               tolerance = 1e-9)
 
   # Continuous benchmarks still carry a NULL schema.
   expect_null(load_objective("branin", 2)$schema)

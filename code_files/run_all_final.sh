@@ -37,7 +37,14 @@ Rscript run_benchmark.R --objective=synthetic  --d=3 --budget="$BUDGET" --reps="
 # --- Categorical / mixed benchmarks (TPE is the strongest comparison here) ---
 Rscript run_benchmark.R --objective=func2C            --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
 Rscript run_benchmark.R --objective=func3C            --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
-Rscript run_benchmark.R --objective=cat_ackley --d=6 --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
+# Cat-Ackley at three sizes (L^d combinations). The easy instance (125) is
+# solvable within the budget and demonstrates the categorical capability
+# decisively; the medium (2401) and hard (1.77M) instances show how the edge
+# behaves as the space outgrows the budget. Results land in
+# results/cat_ackley_d{d}_L{L}/.
+Rscript run_benchmark.R --objective=cat_ackley --d=3 --cat_L=5  --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
+Rscript run_benchmark.R --objective=cat_ackley --d=4 --cat_L=7  --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
+Rscript run_benchmark.R --objective=cat_ackley --d=6 --cat_L=11 --budget="$BUDGET" --reps="$REPS" --with_tpe="$WITH_TPE"
 
 # --- TPE gamma-sensitivity ablation (branin + cat_ackley) --------------------
 Rscript 2_tpe_sensitivity/run_tpe_sensitivity.R --budget="$BUDGET" --reps="$REPS"
