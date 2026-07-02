@@ -2,8 +2,8 @@
 # =============================================================================
 # run_on_ec2.sh  --  One-shot, self-contained runner for a remote Linux box
 # =============================================================================
-# Provisions a fresh Linux EC2 instance, clones the repo (branch with the
-# categorical candidate-generation fix), and runs EVERYTHING we need in one go:
+# Provisions a fresh Linux EC2 instance, clones the repo (BRANCH defaults to the
+# consolidated fixes branch; override with BRANCH=...), and runs EVERYTHING in one go:
 #
 #   1. The full thesis benchmark suite (continuous + categorical + TPE
 #      sensitivity + Elastic Net), exactly the headline protocol.
@@ -46,7 +46,7 @@ set -uo pipefail
 
 # --- Configuration (all env-overridable) -------------------------------------
 REPO_URL="${REPO_URL:-https://github.com/AdrianTJ/BayesianOptim_BASS.git}"
-BRANCH="${BRANCH:-claude/categorical-candidates}"
+BRANCH="${BRANCH:-claude/bass-bo-benchmark-review-hnxikv}"
 LOCAL_REPO="${LOCAL_REPO:-}"          # if set, copy from here instead of cloning
 GITHUB_TOKEN="${GITHUB_TOKEN:-}"      # for private https clone
 WORKDIR="${WORKDIR:-$HOME/bass-run}"
