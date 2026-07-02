@@ -92,6 +92,9 @@ Rscript code_files/run_benchmark.R --objective=branin --acquisition=thompson
 # (needs reticulate + optuna; see RUNNING.md §1)
 Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
 Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true
+
+# Cat-Ackley at an easy size (5^3 = 125 combinations, solvable in-budget)
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=3 --cat_L=5
 ```
 
 A separate ablation, `code_files/2_tpe_sensitivity/run_tpe_sensitivity.R`,

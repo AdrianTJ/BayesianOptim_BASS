@@ -26,7 +26,7 @@
 #'             method/acquisition knobs).
 #' @return Long tibble with columns: seed, iter, method, best.
 run_one_seed <- function(seed, cfg) {
-  objective <- load_objective(cfg$objective, cfg$d)
+  objective <- load_objective(cfg$objective, cfg$d, cfg$cat_L)
   methods   <- make_methods(cfg, objective$schema)
 
   set.seed(seed)
