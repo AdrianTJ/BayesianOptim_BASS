@@ -251,6 +251,7 @@ Each synthetic run writes:
 | `all_runs.csv` | best-so-far for every method, seed, and iteration (long format) |
 | `summary_curve.csv` | per-iteration mean best ± 95% CI, by method |
 | `final_summary.csv` | each method's final best (mean ± sd), ranked |
+| `paired_vs_random.csv` | per-seed wins/ties/losses vs Random + paired Wilcoxon signed-rank |
 | `convergence_mean_ci.png` | mean convergence curves with CI ribbons |
 
 The Elastic Net run additionally writes `final_summary_cv.csv`,
@@ -258,7 +259,16 @@ The Elastic Net run additionally writes `final_summary_cv.csv`,
 (the held-out test performance of each method's chosen model).
 
 > Result folders are **git-ignored** and regenerated on demand; they are not
-> committed.
+> committed. The exception is the **final, thesis-facing run**: after
+> `run_all_final.sh` completes, publish it with
+>
+> ```bash
+> bash code_files/collect_thesis_artifacts.sh
+> ```
+>
+> which copies the full tree into the tracked `final_results/` directory and
+> refreshes the stable-named figures `written_files/tesis_escrito/Figures/conv_*.png`
+> that the thesis includes. Review the diff and commit both.
 
 ---
 
