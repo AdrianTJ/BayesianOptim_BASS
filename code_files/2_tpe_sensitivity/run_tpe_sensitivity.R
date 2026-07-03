@@ -79,7 +79,7 @@ make_configs <- function() {
 
 # --- One objective: reference curves (BASS-BO/GP-BO/Random) + the gamma sweep -
 run_one_objective <- function(cfg) {
-  objective <- load_objective(cfg$objective, cfg$d)
+  objective <- load_objective(cfg$objective, cfg$d, cfg$cat_L)
   cat(sprintf("\n== %s (d=%d) | budget=%d | reps=%d ==\n",
               cfg$objective, objective$d, cfg$budget, cfg$reps))
 
