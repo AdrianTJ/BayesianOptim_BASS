@@ -141,6 +141,7 @@ Every key in `default_config()` (`code_files/R/config.R`) is settable as
 |---|---|---|
 | `--objective` | `branin` | `branin`, `rastrigin`, `synthetic`, `func2C`, `func3C`, `cat_ackley` |
 | `--d` | `2` | input dimension (Branin must be 2; `func2C`/`func3C` are fixed) |
+| `--cat_L` | `11` | levels per categorical input, `cat_ackley` only (odd); sets instance size `L^d` |
 | `--budget` | `80` | BO iterations after the initial design |
 | `--n_cand` | `1000` | candidate points scored per iteration |
 | `--reps` | `10` | independent repetitions (seeds) |
@@ -156,6 +157,12 @@ natively, so it is the strongest comparison there:
 ```bash
 Rscript code_files/run_benchmark.R --objective=func2C --with_tpe=true
 Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true
+
+# Cat-Ackley instance size is a protocol choice: L^d combinations. The easy
+# instance is solvable within the default budget (capability demonstration);
+# the hard one shows the budget-limited regime.
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=3 --cat_L=5   # easy: 125
+Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --cat_L=11  # hard: 1.77M
 ```
 
 ---
@@ -233,7 +240,7 @@ nothing overwrites anything else:
 
 | Runner | Output location |
 |---|---|
-| `run_benchmark.R` | `results/<objective>/` (e.g. `results/branin/`, `results/cat_ackley/`) |
+| `run_benchmark.R` | `results/<objective>/` (e.g. `results/branin/`; Cat-Ackley includes its size: `results/cat_ackley_d6_L11/`) |
 | `2_tpe_sensitivity/run_tpe_sensitivity.R` | `results/tpe_sensitivity/<objective>/` |
 | `4_regression_test_case/run_elastic_net.R` | `results/elastic_net/` |
 

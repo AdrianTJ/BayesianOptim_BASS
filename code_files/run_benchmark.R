@@ -46,17 +46,24 @@ source_library(lib_dir)
 # --- Configuration ------------------------------------------------------------
 cfg <- parse_cli_args(commandArgs(trailingOnly = TRUE))
 
+# The objective and methods are rebuilt from `cfg` inside each parallel worker
+# (see run_one_seed), so we only build a copy here for the result labels/plots.
+objective <- load_objective(cfg$objective, cfg$d, cfg$cat_L)
+
 # Keep the results root tidy: give every objective its own subfolder, so runs on
 # different objectives accumulate side by side instead of overwriting each other.
-cfg$out_dir <- file.path(cfg$out_dir, cfg$objective)
+# cat_ackley's difficulty is set by (d, L), so those go into the folder name --
+# the easy and hard instances are different benchmarks and must not overwrite
+# one another.
+run_label <- if (cfg$objective == "cat_ackley") {
+  sprintf("cat_ackley_d%d_L%d", objective$d, cfg$cat_L)
+} else {
+  cfg$objective
+}
+cfg$out_dir <- file.path(cfg$out_dir, run_label)
 
 # --- Parallel backend: one worker per core, leaving one free -----------------
 plan(multisession, workers = max(1L, parallel::detectCores() - 1L))
-
-# --- Run the experiment -------------------------------------------------------
-# The objective and methods are rebuilt from `cfg` inside each parallel worker
-# (see run_one_seed), so we only build a copy here for the result labels/plots.
-objective <- load_objective(cfg$objective, cfg$d)
 
 cat(sprintf("Running %s (d=%d) | budget=%d | reps=%d\n",
             cfg$objective, objective$d, cfg$budget, cfg$reps))
@@ -79,6 +86,16 @@ final_summary <- save_results(all_runs, objective, cfg)
 
 # --- Report -------------------------------------------------------------------
 print(final_summary)
+
+# Paired per-seed comparison vs Random (shared initial designs make the design
+# paired; win counts + a signed-rank test are more informative than the means).
+paired <- summarise_paired(all_runs)
+if (nrow(paired)) {
+  cat("\nPaired per-seed comparison vs Random (wins = seeds with a strictly",
+      "better final best):\n")
+  print(paired)
+}
+
 cat(sprintf("\nArtifacts saved in: %s\n", normalizePath(cfg$out_dir)))
 
 # --- Shut down parallel workers so the process can exit -----------------------

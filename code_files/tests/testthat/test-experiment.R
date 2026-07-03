@@ -12,6 +12,35 @@
 # failure. A forked (multicore) worker would inherit the parent's globals and
 # silently mask it.
 
+test_that("summarise_paired counts per-seed wins against the baseline", {
+  skip_if_not_installed("dplyr")
+
+  # 4 seeds, 2 iterations; final bests are at iter == 2.
+  toy <- function(method, finals) {
+    dplyr::bind_rows(lapply(seq_along(finals), function(s) {
+      tibble::tibble(seed = s, iter = 0:2, method = method,
+                     best = c(1, 0.9, finals[s]))
+    }))
+  }
+  runs <- dplyr::bind_rows(
+    toy("BASS-BO", c(0.1, 0.2, 0.5, 0.3)),   # beats Random on seeds 1, 2, 4
+    toy("Random",  c(0.4, 0.4, 0.4, 0.4)),
+    toy("GP-BO",   c(0.4, 0.5, 0.6, 0.7))    # one tie, three losses
+  )
+
+  p <- summarise_paired(runs)
+  expect_setequal(p$method, c("BASS-BO", "GP-BO"))
+
+  bass <- p[p$method == "BASS-BO", ]
+  expect_equal(c(bass$wins, bass$ties, bass$losses), c(3, 0, 1))
+  gp <- p[p$method == "GP-BO", ]
+  expect_equal(c(gp$wins, gp$ties, gp$losses), c(0, 1, 3))
+
+  expect_true(all(is.finite(p$median_final)))
+  # Baseline absent -> empty result, not an error.
+  expect_equal(nrow(summarise_paired(runs[runs$method != "Random", ])), 0)
+})
+
 test_that("a rebuilt benchmark objective evaluates on a fresh parallel worker", {
   skip_if_not_installed("furrr")
   skip_if_not_installed("future")
