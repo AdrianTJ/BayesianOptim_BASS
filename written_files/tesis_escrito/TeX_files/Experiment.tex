@@ -122,8 +122,9 @@ with $ x_1 \in [-5,10], \qquad x_2 \in [0,15].$
 \]
 where \(A=10\) is the standard choice. We used the 4 dimensional version of this function.
 
-% TODO: replace with the Rastrigin convergence plot once produced
-%   (Rscript code_files/run_benchmark.R --objective=rastrigin --d=4).
+% PASS2: swap this fbox for \includegraphics{Figures/conv_rastrigin.png}.
+% Produced by: bash code_files/run_all_final.sh  (budget 80, reps 25, seeds
+% 1001-1025), then bash code_files/collect_thesis_artifacts.sh.
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Rastrigin convergence plot pending; run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=rastrigin -{}-d=4}.]}\end{minipage}}
@@ -141,9 +142,11 @@ Func-2C and Func-3C are standard mixed-variable benchmarks introduced with the C
 \[ f(h_1,h_2,x_1,x_2) = f^{(h_1)}(x_1,x_2) + f^{(h_2)}(x_1,x_2), \]
 with $h_1$ selecting among $\{f_{\text{R}},f_{\text{C}},f_{\text{B}}\}$ and $h_2$ selecting Rosenbrock, Six-Hump Camel, or Beale for its remaining levels; Func-3C adds a third term whose component and weight depend on $h_3$. Both are minimized. The reason these benchmarks are informative is that the relationship between a categorical level and the resulting surface is not continuous in the level index, so a relaxation that treats the level as an ordered number is modelling a discontinuous target with a smooth prior.
 
-% TODO: insert Func-2C and Func-3C convergence plots (BASS-BO vs GP-BO vs TPE vs Random)
-%   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --with_tpe=true --out_dir=results_func2C
-%   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --with_tpe=true --out_dir=results_func3C
+% PASS2: swap this fbox for \includegraphics of Figures/conv_func2C.png and
+% Figures/conv_func3C.png (BASS-BO vs GP-BO vs TPE vs Random), plus a paired-
+% stats table from final_results/func2C/paired_vs_random.csv (and func3C).
+% Produced by: bash code_files/run_all_final.sh, then
+% bash code_files/collect_thesis_artifacts.sh.
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Func-2C / Func-3C convergence plots pending; run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=func2C} and \texttt{-{}-objective=func3C}.]}\end{minipage}}
@@ -153,8 +156,12 @@ with $h_1$ selecting among $\{f_{\text{R}},f_{\text{C}},f_{\text{B}}\}$ and $h_2
 
 To stress the categorical capability in isolation, we also use a purely categorical encoding of the Ackley function \cite{simulationlib}, following the way combinatorial Bayesian optimization benchmarks are commonly constructed from continuous test functions \cite{oh2019combo}. Each of the $d$ inputs is a categorical variable with $L$ levels, and level $k$ of input $j$ is mapped to a grid value through a \emph{fixed random permutation} $\pi_j$, that is, the decoded coordinate is $g[\pi_j(k)]$ where $g$ is an evenly spaced grid on Ackley's domain that includes $0$. The objective is then the Ackley value at the decoded point, minimized, with a known global minimum of $0$ attained at the level that each permutation maps to the grid value $0$. The permutation is the crucial ingredient: it destroys any monotone relationship between a level's index and its effect, so the continuous relaxation that GP-BO must use sees a jagged, meaningless surface, while BASS, splitting on subsets of levels, can still isolate the good ones. This is the cleanest illustration of the structural difference between the two surrogates.
 
-% TODO: insert Cat-Ackley convergence plot (BASS-BO vs GP-BO vs TPE vs Random)
-%   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+% PASS2: swap this fbox for the three instance plots
+% Figures/conv_cat_ackley_easy.png (d=3, L=5), conv_cat_ackley_medium.png
+% (d=4, L=7), conv_cat_ackley_hard.png (d=6, L=11), plus paired-stats tables
+% from final_results/cat_ackley_d*_L*/paired_vs_random.csv.
+% Produced by: bash code_files/run_all_final.sh, then
+% bash code_files/collect_thesis_artifacts.sh.
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Cat-Ackley convergence plot pending; run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=cat\_ackley -{}-d=6}.]}\end{minipage}}
@@ -164,10 +171,13 @@ To stress the categorical capability in isolation, we also use a purely categori
 
 As described in Section~\ref{tpe_sensitivity_protocol}, we swept TPE's $\gamma$ hyperparameter over $\{0.10, 0.25, 0.50, 0.75\}$ on Branin and Cat-Ackley, holding everything else (budget, repetitions, seeding, initial design) fixed to the same protocol used throughout this chapter. The figures below plot the four resulting TPE curves alongside the single BASS-BO and GP-BO reference curves.
 
-% TODO: insert TPE gamma-sensitivity convergence plots (Branin and Cat-Ackley)
-%   Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R
-% TODO: quote the printed "TPE final-best range across gamma" spread for each
-%   objective here, and contrast it with BASS-BO/GP-BO having no such spread.
+% PASS2: swap this fbox for Figures/conv_tpe_gamma_branin.png and
+% Figures/conv_tpe_gamma_cat_ackley.png, and quote the "TPE final-best range
+% across gamma" spread for each objective (printed by the ablation runner and
+% recoverable from final_results/tpe_sensitivity/*/final_summary.csv),
+% contrasted with BASS-BO/GP-BO having no such spread.
+% Produced by: bash code_files/run_all_final.sh (runs the ablation), then
+% bash code_files/collect_thesis_artifacts.sh.
 \begin{figure}[h]
 	\centering
 	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[TPE gamma-sensitivity convergence plots pending --- run \texttt{Rscript code\_files/2\_tpe\_sensitivity/run\_tpe\_sensitivity.R}.]}\end{minipage}}
