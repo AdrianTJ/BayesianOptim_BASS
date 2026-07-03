@@ -101,7 +101,10 @@ In this way, a model $\mathcal{M}$ with $M$ terms will be updated as follows aft
 $$
 \hat f(X) = \hat \beta_0 + \sum_{m=1}^M \hat \beta_m h_m(X) + \hat \beta_{M+1} h_\ell(X) \cdot (X_j - t)_+ + \hat \beta_{M+2} h_\ell(X) \cdot (t-X_j)_+,
 $$
-where $h_\ell \in \mathcal{M}$ and $t = x_{ij}$ for any case. \textcolor{red}{Como transiciono de una idea a otra aqui?}
+where $h_\ell \in \mathcal{M}$ and $t = x_{ij}$ for any case.
+% AUTHOR NOTE (moved out of the rendered text; was a red inline note):
+% "Como transiciono de una idea a otra aqui?" -- the transition between these
+% two ideas still needs a connecting sentence from the author.
 
 One interesting consideration is that the added flexibility of these models does not end with it being piecewise linear, as one small alteration that can be made is to replace the truncated linear functions with truncated cubic basis functions or other functions of a higher order, which provides allows the resulting model to be fully differentiable within its domain. 
 
@@ -133,7 +136,10 @@ The key insight that this framework of construction is based on is that any MARS
 	\item the knot points associated with each interacting term $t_{ji}$, 
 	\item the sign indicators associated with each interacting term $s_{ji}$. 
 \end{itemize}
-and as such, a probability distribution over the possible MARS models can be constructed, enabling a more comprehensive understanding of the uncertainty inherent in the modelling process since the response is an entire probability distribution rather than a single model. This framework also provides the ability to do ANOVA and Sobol decompositions for sensitivity analysis. One important aspect of this framework for construction is that the number of parameters varies with the number of basis functions $k$, and as such, a traditional method such as Markov chain Monte Carlo cannot be used directly, as it assumes constant parameters. An extended version of MCMC is therefore used, called reversible jump MCMC (first introduced in \cite{green1995reversible}), that allows for a variable number of parameters. \textcolor{red}{Cual es el modelo? Tengo el paper pero no lo veo claro.}
+and as such, a probability distribution over the possible MARS models can be constructed, enabling a more comprehensive understanding of the uncertainty inherent in the modelling process since the response is an entire probability distribution rather than a single model. This framework also provides the ability to do ANOVA and Sobol decompositions for sensitivity analysis. One important aspect of this framework for construction is that the number of parameters varies with the number of basis functions $k$, and as such, a traditional method such as Markov chain Monte Carlo cannot be used directly, as it assumes constant parameters. An extended version of MCMC is therefore used, called reversible jump MCMC (first introduced in \cite{green1995reversible}), that allows for a variable number of parameters.
+% AUTHOR NOTE (moved out of the rendered text; was a red inline note):
+% "Cual es el modelo? Tengo el paper pero no lo veo claro." -- the explicit
+% BMARS model statement from the paper still needs to be written out here.
 
 \section{BASS Models}
 
