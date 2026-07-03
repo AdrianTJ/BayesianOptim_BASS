@@ -1,0 +1,299 @@
+% =============================================================================
+% main.tex -- article scaffold (templating copied from class_presentation/
+% ReporteFinal, i.e. the AIP REVTeX 4.1 distribution files in this directory).
+%
+% Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
+%
+% STATUS: SCAFFOLD. Section-level structure and argument are in place; every
+% block marked % TODO needs either (a) the full-protocol numbers from the
+% companion repository run, or (b) new experiments (see Section VI). Numbers
+% quoted in the text are PRELIMINARY (10-15 seeds, budgets 60-80) and are
+% flagged as such; replace with the 25-seed protocol results before submission.
+% =============================================================================
+\documentclass[%
+ aip,
+ amsmath,amssymb,
+%preprint,%
+ reprint,%
+]{revtex4-1}
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{etoolbox}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%% Apr 2021: AIP requests that the corresponding
+%% email to be moved after the affiliations
+\makeatletter
+\def\@email#1#2{%
+ \endgroup
+ \patchcmd{\titleblock@produce}
+  {\frontmatter@RRAPformat}
+  {\frontmatter@RRAPformat{\produce@RRAP{*#1\href{mailto:#2}{#2}}}\frontmatter@RRAPformat}
+  {}{}
+}%
+\makeatother
+
+\begin{document}
+
+\title[The Machinery Confound in Mixed-Space Bayesian Optimization]{The
+Machinery Confound: Acquisition-Optimization Machinery Can Dominate Surrogate
+Comparisons in Mixed and Categorical Bayesian Optimization}
+% TODO: settle the final title; alternatives:
+%  - "Audit Your Candidate Generator: A Confound in Mixed-Space BO Benchmarks"
+%  - "Oracle Ceilings: Separating Surrogate Quality from Search Machinery in
+%     Bayesian Optimization"
+
+\author{Adrian Tame Jacobo}
+\email[]{atj904@gmail.com}
+\affiliation{Instituto Tecnol\'ogico Aut\'onomo de M\'exico (ITAM)}
+% TODO: co-authors / advisor, final affiliation line.
+
+\date{\today}
+
+\begin{abstract}
+Comparisons of surrogate models for Bayesian optimization (BO) over mixed and
+categorical search spaces are usually read as statements about the surrogates.
+We show that they are frequently statements about the surrounding
+\emph{machinery} instead: the candidate-generation scheme that the acquisition
+function is optimized over, and the duplicate handling that decides which
+proposals are admissible. Using a controlled pipeline in which two structurally
+different surrogates (a Gaussian process over a continuous relaxation, and a
+Bayesian adaptive spline surface with native categorical support) share one
+acquisition rule and one candidate generator, we demonstrate two failure modes.
+First, a single degree of freedom in the local proposal distribution ---
+whether a candidate may retain the incumbent's categorical combination while
+refining its continuous coordinates --- places a hard ceiling on \emph{every}
+surrogate: in oracle experiments that replace the acquisition with the true
+objective, the restricted generator loses to the permissive one on every
+paired seed of two standard mixed benchmarks, and no surrogate, however good,
+can recover the gap. Second, duplicate handling that compares raw encodings
+rather than decoded categorical combinations silently re-spends a majority of
+the evaluation budget on already-known points. Both effects are invisible in
+standard convergence plots and are readily misattributed to the surrogate. We
+propose the \emph{oracle-ceiling audit} --- upper-bounding attainable
+performance under a perfect surrogate --- as a cheap, general diagnostic for
+BO pipelines, together with a checklist for machinery-controlled surrogate
+comparisons: shared schema-aware proposals, combination-level deduplication,
+paired seeds, and per-seed win statistics.
+% TODO: add one sentence of headline numbers from the full 25-seed protocol.
+\end{abstract}
+
+\maketitle
+
+% =============================================================================
+\section{Introduction}
+% =============================================================================
+
+% Argument: (1) BO quality is usually attributed to the surrogate; (2) in
+% mixed/categorical spaces the acquisition cannot be optimized in closed form,
+% so every method ships bespoke search machinery; (3) that machinery is rarely
+% shared, audited, or even fully described; (4) we show it can dominate
+% outcomes; (5) contributions.
+
+The sample efficiency of Bayesian optimization is conventionally credited to
+its surrogate model, and comparative studies of surrogates --- Gaussian
+processes, random forests, density-ratio methods, spline models --- are read
+as evidence about which model class best captures the objective
+\cite{Snoek_Larochelle_Adams_2012, bergstra2011algorithms}. Over continuous
+domains this attribution is at least plausible: the acquisition function can
+be optimized to near-optimality with standard multi-start gradient methods, so
+the surrogate is the main thing that differs between pipelines. Over mixed and
+categorical domains the situation is different. The acquisition must be
+optimized over a discrete or hybrid space, every method ships its own
+machinery for doing so --- candidate pools, local search, trust regions,
+bandit layers \cite{hutter2011sequential, ru2020cocabo, wan2021think} --- and
+that machinery is typically inseparable from the method being evaluated.
+
+% TODO: 1-2 paragraphs sharpening the claim with the two concrete failure
+% modes (generator ceiling, duplicate leakage) and preview of the oracle audit.
+
+This paper makes three contributions:
+\begin{enumerate}
+  \item \textbf{The oracle-ceiling audit.} Replacing the acquisition score
+  with the true objective turns the BO loop into an oracle-guided search whose
+  performance upper-bounds what \emph{any} surrogate could achieve with the
+  same machinery. Comparing this ceiling across machinery variants isolates
+  machinery effects at the cost of a few cheap runs, with no surrogate fits.
+  \item \textbf{Two demonstrated failure modes.} A restricted local proposal
+  distribution (all local candidates forced to change the incumbent's
+  categorical combination) caps the oracle itself well short of the optimum on
+  the CoCaBO mixed benchmarks; encoding-level duplicate detection lets a
+  majority of the budget be re-spent on known categorical combinations. Both
+  are invisible in convergence plots.
+  \item \textbf{A machinery-controlled comparison protocol.} Shared
+  schema-aware candidate generation, combination-level deduplication, paired
+  per-seed designs, and win/tie/loss reporting with signed-rank tests; we show
+  the same two surrogates change their apparent ranking on a mixed benchmark
+  when the machinery is repaired, under an identical acquisition rule.
+\end{enumerate}
+
+% =============================================================================
+\section{Related Work}
+% =============================================================================
+
+% Position: we do not propose new machinery; the machinery pieces are standard.
+% The contribution is the audit + the demonstration that machinery choices
+% confound surrogate attribution, which the literature largely leaves implicit.
+
+\paragraph{Mixed and categorical BO.} SMAC optimizes a random-forest
+surrogate's acquisition by local search over configuration neighborhoods
+(one-exchange categorical flips) interleaved with random candidates
+\cite{hutter2011sequential}. TPE models densities over good and bad trials and
+handles categoricals natively \cite{bergstra2011algorithms, watanabe2023tree,
+akiba2019optuna}. CoCaBO couples a multi-armed bandit over categorical
+combinations with a GP over the continuous subspace \cite{ru2020cocabo};
+Casmopolitan builds Hamming-distance trust regions around the incumbent
+\cite{wan2021think}; COMBO works over combinatorial graphs \cite{oh2019combo}.
+For GPs specifically, the baseline treatment of categorical inputs is a
+continuous relaxation, formalized (with a covariance transformation) by
+\citet{garrido2020dealing}. Spline-based surrogates with native factor support
+descend from MARS and Bayesian MARS \cite{friedman1991multivariate,
+denison1998bayesian}, with BASS as the modern implementation
+\cite{francom2020bass}.
+
+\paragraph{Benchmarking BO.} % TODO: expand. Empirical-foundations critiques
+% (e.g. \cite{eggensperger2013towards}) discuss benchmark and protocol
+% pitfalls, but the acquisition-optimization machinery is generally treated as
+% part of the method rather than as a confound to be controlled. Cite recent
+% mixed-space benchmark suites; verify none performs an oracle-style audit.
+
+% =============================================================================
+\section{Setup: One Loop, Two Surrogates, Shared Machinery}
+% =============================================================================
+
+% Summarize the pipeline from the companion repository:
+% - unit-cube encoding with schema (types, levels); decode_levels binning
+% - one generic loop: propose pool -> score with acquisition -> dedup mask ->
+%   argmax (random tie-breaking) -> evaluate
+% - Expected Improvement for both surrogates: closed-form for the GP
+%   \cite{jones1998efficient}, Monte Carlo over posterior draws for BASS
+% - candidate generator: global LHS half + local half (Gaussian moves on
+%   continuous coords, per-coordinate level flips w.p. 1/n_cat on categorical
+%   coords; keep-combo allowed on mixed schemas, >=1 flip forced on pure-cat)
+% - combination-level dedup via canonicalization to bin centres
+% - paired seeds: shared per-seed initial designs (maximin LHS)
+% TODO: write this section (2-3 columns), with one figure showing the loop and
+% one pseudocode box for the generator.
+
+% =============================================================================
+\section{The Oracle-Ceiling Audit}
+% =============================================================================
+
+% Definition: replace acquire(X, y, C) with -f(C). The loop then picks the
+% best admissible candidate in the pool each iteration; its best-so-far curve
+% is a performance ceiling for the machinery, independent of any surrogate.
+% Properties: cheap (no fits); deterministic given seeds; A/B-able across
+% machinery variants; paired by shared initial designs.
+%
+% PRELIMINARY EVIDENCE (to be re-run at the full protocol):
+%  - Func-2C (optimum -0.2062): oracle + restricted generator plateaued at
+%    -0.148 at budget 10 and -0.205 at budget 80; oracle + permissive
+%    generator reached -0.2063 within ~10 evaluations. Permissive beat
+%    restricted in 15/15 paired seeds (budget 80).
+%  - Func-3C (optimum -0.7216): -0.697 vs -0.722; 15/15 paired seeds.
+%  - Cat-Ackley (6 inputs, 11 levels): both generator variants reach the
+%    optimum under the oracle -- the pool is not the binding constraint there,
+%    which redirects attention to surrogate learnability (Sec. VI).
+% TODO: formalize the audit (one definition environment), report the table,
+% and add the budget-10 vs budget-80 ceiling curves as a two-panel figure.
+
+% =============================================================================
+\section{Failure Mode II: Duplicate Leakage at the Combination Level}
+% =============================================================================
+
+% Encoding-level dedup treats two encodings that decode to the same categorical
+% combination as distinct; on deterministic objectives every revisit is a
+% wasted evaluation. PRELIMINARY EVIDENCE: on Cat-Ackley with 125 combinations
+% (budget 40), 25-29 of 40 picks (~2/3 of the budget) re-evaluated known
+% combinations before canonicalized dedup; 0 of 40 after. The method still
+% "won" its benchmark either way -- which is precisely why the leak is
+% invisible in results tables.
+% TODO: write section; include the revisit-count table (pre/post), and the
+% mechanism paragraph (EI never vanishes at observed combos under a smoothing
+% surrogate, unlike an interpolating GP).
+
+% =============================================================================
+\section{Consequences for Surrogate Comparisons}
+% =============================================================================
+
+% The punchline: with restricted machinery, the spline surrogate lost to
+% random search on Func-2C in per-seed wins (2W/2T/6L, 10 seeds, budget 60,
+% PRELIMINARY); with repaired machinery it moved to parity (5W/5L), and on the
+% purely categorical benchmarks it went from mixed results to winning 10/10
+% paired seeds (easy instance: exact optimum on every seed vs 2/10 for random
+% search). Same surrogates, same acquisition, same budgets -- the apparent
+% ranking was a property of the machinery.
+% TODO: replace preliminary numbers with the 25-seed protocol run; add the
+% paired win/tie/loss + Wilcoxon table for both machinery variants; discuss
+% what remains surrogate-attributable (held-out rank quality of the surrogate
+% at BO sample sizes: Spearman ~0.66/0.61/0.47 on Func-2C/Func-3C/Cat-Ackley
+% hard, PRELIMINARY).
+
+% =============================================================================
+\section{A Protocol for Machinery-Controlled Comparisons}
+% =============================================================================
+
+% The checklist, each item with its rationale and cost:
+%  1. Share the candidate generator and make it schema-aware (cite precedents:
+%     SMAC local moves, Casmopolitan Hamming locality -- the pieces are
+%     standard; sharing them is the point).
+%  2. Deduplicate at the decoded-combination level.
+%  3. Run the oracle-ceiling audit for every machinery variant before
+%     attributing anything to a surrogate.
+%  4. Pair the seeds (shared initial designs) and report per-seed win/tie/loss
+%     with a signed-rank test, not only mean curves.
+%  5. Scale benchmark instances so at least one is solvable within budget
+%     (capability) and one is not (guidance quality), and report both.
+% TODO: write as a boxed protocol; consider a "machinery disclosure" table
+% template for papers to fill in.
+
+% =============================================================================
+\section{Experiments}
+% =============================================================================
+
+% Planned experimental matrix (beyond the thesis pipeline):
+%  - Surrogates: GP (relaxation), BASS, random forest (SMAC-style), TPE.
+%  - Machinery variants: {restricted, permissive} generator x {encoding-level,
+%    combination-level} dedup; oracle ceiling for each of the 4 cells.
+%  - Benchmarks: Func-2C/3C, Cat-Ackley at 3 sizes, plus one real mixed
+%    tuning task (elastic net or gradient-boosting with categorical choices).
+%  - Protocol: budget 80, 25+ paired seeds, win/tie/loss + Wilcoxon.
+% TODO: run via the companion repository (run_all_final.sh + the
+% 3_categorical_diagnostics oracle harness generalize directly); decide
+% whether the RF/TPE machinery cells need new implementation work.
+
+% =============================================================================
+\section{Discussion and Limitations}
+% =============================================================================
+
+% - The audit bounds machinery, not surrogate quality; it cannot rank
+%   surrogates, only exonerate or indict the pool they share.
+% - Pool-based acquisition optimization is one family; gradient-based and
+%   trust-region acquisition optimizers need adapted audits (oracle inside the
+%   trust region).
+% - Deterministic objectives make revisits pure waste; under noise, revisiting
+%   is legitimate replication and the dedup argument changes.
+% - Relation to reproducibility critiques of BO benchmarking.
+% TODO: write.
+
+\begin{acknowledgments}
+% TODO
+\end{acknowledgments}
+
+\section*{Data Availability}
+The complete pipeline, diagnostics, and result-publishing scripts are
+available at \texttt{github.com/AdrianTJ/BayesianOptim\_BASS}; the oracle
+audit and instrumented runs are under
+\texttt{code\_files/3\_categorical\_diagnostics/}.
+
+\bibliography{references}
+
+\end{document}
