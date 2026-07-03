@@ -38,17 +38,22 @@ over categorical and mixed search spaces. In the language of the next chapters,
 the point of this work is to relax the continuity-and-numeric-inputs restriction
 that the GP framework quietly imposes.
 
-To study this honestly, we build a reproducible experimental pipeline in R that
-compares BASS-based BO (BASS-BO) against GP-based BO (GP-BO) and Random Search on
-a common protocol, with both surrogates driven by the same parameter-free Expected
-Improvement acquisition and the same candidate generator, so that any measured
-difference is attributable to the surrogate alone. The findings are deliberately
-balanced. On smooth, low-dimensional continuous benchmarks, where the GP's
-assumptions are well matched, GP-BO is the stronger method and converges faster.
-The advantage of BASS-BO is structural rather than a matter of tuning: on
-categorical and mixed problems, where a standard GP cannot operate without
-workarounds, BASS-BO applies directly. We make this contrast concrete with a set
-of categorical and mixed-variable benchmarks designed precisely to exercise it.
+\green{To study this honestly, we build a reproducible experimental pipeline in R that
+compares BASS-based BO (BASS-BO) against GP-based BO (GP-BO), Random Search, and
+the Tree-structured Parzen Estimator (TPE) on a common protocol, with both
+surrogates driven by the same parameter-free Expected Improvement acquisition and
+the same candidate generator, so that any measured difference is attributable to
+the surrogate alone. The framing is deliberately balanced rather than
+advocacy-driven. On smooth, low-dimensional continuous benchmarks, where the GP's
+assumptions are well matched, GP-BO is expected to be the stronger method, and the
+experiments test whether that expectation holds. The advantage of BASS-BO is
+structural rather than a matter of tuning: on categorical and mixed problems,
+where a standard GP cannot operate without workarounds, BASS-BO applies directly
+--- whether that structural fit translates into measured performance is precisely
+what the categorical and mixed-variable benchmarks are designed to test.}
+% PASS2: once final_results/ is committed, this paragraph may state the actual
+% outcomes (continuous: GP-BO vs BASS-BO as measured; categorical: the
+% three-size Cat-Ackley reading and the Func-2C/3C paired outcome).
 
 The remainder of the thesis is organized as follows. We first develop the
 background needed to make these ideas precise: stochastic processes and Gaussian
