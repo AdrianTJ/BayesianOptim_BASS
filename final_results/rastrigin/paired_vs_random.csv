@@ -1,0 +1,3 @@
+method,baseline,n_seeds,wins,ties,losses,median_final,median_baseline,p_wilcoxon
+GP-BO,Random,25,21,0,4,12.946100606459005,30.277597940623995,6.82736914638689e-5
+BASS-BO,Random,25,16,2,7,25.10063697184355,30.277597940623995,0.018415366145557468
