@@ -1,5 +1,15 @@
 # Pass 2: finishing the thesis after the final benchmark run
 
+> **STATUS (2026-07-09): Pass 2 executed.** All 11 markers resolved; figures,
+> tables, and measured outcomes are in. Author decisions recorded: the
+> **Elastic Net case study stays out of the thesis** (author's call — data
+> remains in `final_results/elastic_net/` unused); the **synthetic non-smooth
+> benchmark was added** to Experiment.tex (it ran in the protocol and was
+> previously unreported). Note the Func-2C/3C outcome came in *worse* than the
+> "parity" scenario anticipated below: BASS-BO **lost** to Random under the
+> paired test (5W/18L p=0.043; 8W/14L p=0.048) and the thesis reports it as a
+> failure. Step 4 (author-only debt) remains open.
+
 Pass 1 (already done) made the thesis consistent with the implemented pipeline
 and removed every claim that ran ahead of the data. Pass 2 inserts the real
 numbers. This file is the complete worklist; hand it (plus the committed

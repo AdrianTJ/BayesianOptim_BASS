@@ -44,16 +44,19 @@ the Tree-structured Parzen Estimator (TPE) on a common protocol, with both
 surrogates driven by the same parameter-free Expected Improvement acquisition and
 the same candidate generator, so that any measured difference is attributable to
 the surrogate alone. The framing is deliberately balanced rather than
-advocacy-driven. On smooth, low-dimensional continuous benchmarks, where the GP's
-assumptions are well matched, GP-BO is expected to be the stronger method, and the
-experiments test whether that expectation holds. The advantage of BASS-BO is
-structural rather than a matter of tuning: on categorical and mixed problems,
-where a standard GP cannot operate without workarounds, BASS-BO applies directly
---- whether that structural fit translates into measured performance is precisely
-what the categorical and mixed-variable benchmarks are designed to test.}
-% PASS2: once final_results/ is committed, this paragraph may state the actual
-% outcomes (continuous: GP-BO vs BASS-BO as measured; categorical: the
-% three-size Cat-Ackley reading and the Func-2C/3C paired outcome).
+advocacy-driven, and the outcomes are reported whichever way they fall. On the
+smooth, low-dimensional continuous benchmarks, where the GP's assumptions are well
+matched, GP-BO is indeed the stronger method --- decisively so, winning every
+paired seed against BASS-BO on Branin --- while BASS-BO still clearly improves on
+Random Search. On purely categorical problems the structural capability is
+demonstrated: BASS-BO solves a solvable categorical benchmark on every seed and
+consistently outperforms both Random Search and TPE as the space grows past what
+the budget can cover, although a GP on a plain continuous relaxation, given the
+same categorical-aware search machinery, proves nearly as effective. On mixed
+continuous--categorical problems the result is negative: BASS-BO fails to beat
+Random Search there, a finding we report and analyze rather than obscure. The
+experimental chapter presents all of these results with paired per-seed
+statistics, and the conclusions draw the regime map they imply.}
 
 The remainder of the thesis is organized as follows. We first develop the
 background needed to make these ideas precise: stochastic processes and Gaussian
