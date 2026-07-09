@@ -77,3 +77,19 @@ fixes now in the shared code:
 **Post-fix expectations**: Part 1's two arms within noise of each other;
 Part 3 revisit counts ≈ 0 everywhere; func2C paired wins flipped in
 BASS-BO's favour; easy-mode still 10/10.
+
+## Outcome in the final benchmark run (2026-07, post-fix, 25 seeds, budget 80)
+
+The final run (`final_results/`) settled these expectations mixed:
+
+- **Easy-mode Cat-Ackley**: confirmed and strengthened — BASS-BO found the
+  exact optimum on **25/25 seeds** (median 4 iterations); GP-BO 25/25 as well.
+- **func2C paired wins did NOT flip**: BASS-BO lost to Random 5W/2T/18L
+  (p = 0.043), and lost func3C 8W/3T/14L (p = 0.048), while GP-BO and TPE
+  beat Random comfortably on the same seeds. With the machinery fixes in
+  place and verified (GP-BO succeeds through the identical loop), the mixed-
+  benchmark failure localizes to the BASS surrogate + MC-EI combination
+  itself, not the candidate generator or dedup. Why remains open; candidate
+  hypotheses (MC resolution of EI over the retained posterior draws; spline
+  basis vs these composite surfaces) are noted in the thesis's Result
+  Interpretation section but were not isolated by these diagnostics.
