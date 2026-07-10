@@ -13,7 +13,7 @@
 Pass 1 (already done) made the thesis consistent with the implemented pipeline
 and removed every claim that ran ahead of the data. Pass 2 inserts the real
 numbers. This file is the complete worklist; hand it (plus the committed
-`final_results/`) to whoever does the editing — human or Claude session.
+`final_results/`) to whoever does the editing.
 
 Every text edit made during these passes is wrapped in `\green{}` per the
 advisor-traceability convention; keep doing that in Pass 2.
