@@ -62,7 +62,9 @@
       "pdf_page": 19,
       "printed_page": 15,
       "text": "HOW TO STATE THIS AS A MINIMIZATION PROBLEM?",
-      "language": "en"
+      "language": "en",
+      "status": "fixed",
+      "resolution": "Answered in full: the marginal-likelihood minimization problem is now stated as eq (mll) with interpretation (GP.tex:313-343)."
     },
     {
       "id": "T002",
@@ -70,21 +72,27 @@
       "printed_page": 18,
       "text": "close this chapter off properly.",
       "language": "en",
-      "advisor_response": "Indeed"
+      "advisor_response": "Indeed",
+      "status": "fixed",
+      "resolution": "Chapter closed properly: Summary and Outlook (GP.tex:427-432). Martin's 'Indeed' honored."
     },
     {
       "id": "T003",
       "pdf_page": 27,
       "printed_page": 23,
       "text": "Acabo aqui o faltaria algo más?",
-      "language": "es"
+      "language": "es",
+      "status": "fixed",
+      "resolution": "Chapter 2 now ends with a synthesis paragraph and bridge (BO.tex:78-80)."
     },
     {
       "id": "T004",
       "pdf_page": 30,
       "printed_page": 26,
       "text": "expand on this, it is the main point of the thesis.",
-      "language": "en"
+      "language": "en",
+      "status": "fixed",
+      "resolution": "Expanded into the surrogate-flexibility argument, now the thesis pitch (SMBO.tex:13)."
     },
     {
       "id": "T005",
@@ -92,21 +100,27 @@
       "printed_page": 38,
       "text": "Como transiciono de una idea a otra aqui?",
       "language": "es",
-      "advisor_response": "explicando bien que son las interacciones, porque se necesitan y como se extiende A"
+      "advisor_response": "explicando bien que son las interacciones, porque se necesitan y como se extiende A",
+      "status": "open",
+      "resolution": "Preserved as a source comment (BASS.tex:105-107); the transition Martin prescribed is still unwritten — see C177."
     },
     {
       "id": "T006",
       "pdf_page": 44,
       "printed_page": 40,
       "text": "Cual es el modelo? Tengo el paper pero no lo veo claro.",
-      "language": "es"
+      "language": "es",
+      "status": "partial",
+      "resolution": "The BASS model definition was added (BASS.tex:154-162), but the explicit BMARS model/priors the question was about are still missing (comment at BASS.tex:140-142)."
     },
     {
       "id": "T007",
       "pdf_page": 51,
       "printed_page": 47,
       "text": "YOU ARE HERE",
-      "language": "en"
+      "language": "en",
+      "status": "obsolete",
+      "resolution": "'YOU ARE HERE' marker gone; Chapter 5 completed with final results."
     }
   ],
   "corrections": [
@@ -121,8 +135,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/Introduction.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Introduction.tex written (2e67eaf): what/why/structure/results-summary, matching the sketch point by point."
     },
     {
       "id": "C002",
@@ -135,8 +150,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "natbib + plainnat now produce author-year citations (7028820)."
     },
     {
       "id": "C003",
@@ -149,8 +165,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Chapter preamble added and the flagged paragraph now sits above §1.1 (GP.tex:5-7)."
     },
     {
       "id": "C004",
@@ -163,8 +180,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'§3.0' pointer dropped; now a plain cite of Zitkovic_2010 (GP.tex:11)."
     },
     {
       "id": "C005",
@@ -177,8 +195,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'on Ω' inserted, green (GP.tex:26)."
     },
     {
       "id": "C006",
@@ -191,8 +210,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Passage rewritten: realizations/trajectories now defined properly (GP.tex:33)."
     },
     {
       "id": "C007",
@@ -205,8 +225,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Rewritten with the time-series framing (GP.tex:33)."
     },
     {
       "id": "C008",
@@ -220,8 +241,9 @@
       "needs_review": "Handwriting partly scribbled over; reads 'Needed?' but the final glyph could be '!'.",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "needs_author",
+      "anchor_is_verbatim": true,
+      "resolution": "Billingsley footnote kept unchanged (GP.tex:26). Martin asked 'Needed?'; keep-or-drop is a call for you/Martin."
     },
     {
       "id": "C009",
@@ -234,8 +256,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'discrete time', green (GP.tex:42)."
     },
     {
       "id": "C010",
@@ -248,8 +271,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Punctuation settled deliberately: green colon after 'concept' (GP.tex:46)."
     },
     {
       "id": "C011",
@@ -262,8 +286,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'constructive approach' replaced by 'build up the general theory' (GP.tex:46)."
     },
     {
       "id": "C012",
@@ -277,8 +302,9 @@
       "needs_review": "Word above the circle is illegible; best guesses 'Make?' / 'Mark?'.",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Index corrected to s_k, green (GP.tex:54)."
     },
     {
       "id": "C013",
@@ -291,8 +317,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "X_n = s_n removed from the well-definedness condition (GP.tex:54)."
     },
     {
       "id": "C014",
@@ -305,8 +332,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Green parenthetical defines 'chain' at first use (GP.tex:57)."
     },
     {
       "id": "C015",
@@ -319,8 +347,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Comma added to first bullet (GP.tex:67)."
     },
     {
       "id": "C016",
@@ -334,7 +363,8 @@
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "No paragraph break added, and the join left 'proof. this theorem' with a lowercase t (GP.tex:78). See new_issues N1."
     },
     {
       "id": "C017",
@@ -347,8 +377,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Footnote defines homogeneity (GP.tex:83)."
     },
     {
       "id": "C018",
@@ -361,8 +392,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'one state to another' (GP.tex:85)."
     },
     {
       "id": "C019",
@@ -375,8 +407,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "The three conditions were kept but folded into a single inline definition sentence (GP.tex:137) — deliberate resolution of the 'Needed?' query."
     },
     {
       "id": "C020",
@@ -389,8 +422,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Passage rewritten; the flagged construction no longer exists (GP.tex:140)."
     },
     {
       "id": "C021",
@@ -403,8 +437,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Coin example rewritten: 'distribution of outcomes' replaces ambiguous 'result' (GP.tex:140)."
     },
     {
       "id": "C022",
@@ -417,8 +452,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Whole example rewritten for clarity (GP.tex:140)."
     },
     {
       "id": "C023",
@@ -431,8 +467,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'constantas' gone in the rewrite."
     },
     {
       "id": "C024",
@@ -445,8 +482,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Sentence rewritten: 'The result that makes this precise... is the Ergodic Theorem' (GP.tex:142)."
     },
     {
       "id": "C025",
@@ -459,8 +497,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Uniqueness now proved via ergodicity in the rewritten proof (GP.tex:176)."
     },
     {
       "id": "C026",
@@ -473,8 +512,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "π being a probability distribution now shown in the proof (GP.tex:172-174)."
     },
     {
       "id": "C027",
@@ -487,8 +527,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Proof rewritten along the Chapman-Kolmogorov route Martin sketched (GP.tex:156-178)."
     },
     {
       "id": "C028",
@@ -502,8 +543,9 @@
       "needs_review": "The two things being contrasted are written as bare dots; read the mark in context.",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "The inconsistent limit chain was discarded with the old proof."
     },
     {
       "id": "C029",
@@ -517,8 +559,9 @@
       "needs_review": "Subscripts in the handwritten sum are hard to read; 'p_ik p_ki' may be 'p_ik p_kj'.",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "New proof uses exactly the suggested C-K expansion (GP.tex:158-161)."
     },
     {
       "id": "C030",
@@ -531,8 +574,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "πᵀ=πᵀP now derived as the component-wise consequence (GP.tex:170)."
     },
     {
       "id": "C031",
@@ -545,8 +589,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "'Vectorized version' passage deleted with the old proof."
     },
     {
       "id": "C032",
@@ -559,8 +604,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "The i-indexed matrix display was deleted with the old proof."
     },
     {
       "id": "C033",
@@ -573,8 +619,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Metropolis--Hastings en-dash, green (GP.tex:180)."
     },
     {
       "id": "C034",
@@ -587,8 +634,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'stationary distributions we care about' (GP.tex:180)."
     },
     {
       "id": "C035",
@@ -601,8 +649,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "RJMCMC now named in full at that sentence (GP.tex:180)."
     },
     {
       "id": "C036",
@@ -616,8 +665,9 @@
       "needs_review": "The mark carries no text; the 'replace Wikipedia' reading is inferred from what is underlined.",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Wikipedia replaced by Øksendal Thm 2.1.5 (56274ad; GP.tex:192)."
     },
     {
       "id": "C037",
@@ -630,8 +680,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "GP section restructured with informal intro, but 'Gaussian processes' is still discussed around the KET before the formal definition arrives (GP.tex:220 vs 228)."
     },
     {
       "id": "C038",
@@ -644,8 +695,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Definition rewritten; X is now the declared index set, Θ inconsistency gone (GP.tex:228-237)."
     },
     {
       "id": "C039",
@@ -658,8 +710,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Kernel definition now declares X ⊆ R^d an input space, plus feature-map explanation (GP.tex:259-277)."
     },
     {
       "id": "C040",
@@ -672,8 +725,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'like the ones we have previously defined' removed; definition is self-contained."
     },
     {
       "id": "C041",
@@ -686,8 +740,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Original figure generated (gp_kernels.pdf, fb29a55); borrowed-figure text gone."
     },
     {
       "id": "C042",
@@ -700,8 +755,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'sparcity' removed from the property list (GP.tex:290)."
     },
     {
       "id": "C043",
@@ -714,8 +770,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Now 'definition \\ref{kernel}' (GP.tex:290)."
     },
     {
       "id": "C044",
@@ -728,8 +785,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "§1.4 opens with a purpose-stating paragraph and a full marginal-likelihood development (GP.tex:298, 313-343)."
     },
     {
       "id": "C045",
@@ -742,8 +800,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Supervised learning explained in the new §1.4 opener (GP.tex:298)."
     },
     {
       "id": "C046",
@@ -756,8 +815,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'computationally estimating the parameters' (GP.tex:300)."
     },
     {
       "id": "C047",
@@ -770,8 +830,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "needs_author",
+      "anchor_is_verbatim": false,
+      "resolution": "Preamble subsection kept in place after the new material; whether it should move earlier is still an ordering call (GP.tex:345)."
     },
     {
       "id": "C048",
@@ -784,8 +845,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "Vectors mostly bold now, but stragglers remain, e.g. K_*=k(X, X_*) with unbolded X_* (GP.tex:372)."
     },
     {
       "id": "C049",
@@ -798,8 +860,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'method of solving' (GP.tex:349)."
     },
     {
       "id": "C050",
@@ -813,7 +876,8 @@
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "The sentence Martin hit with '!??' survives verbatim: 'σ² and β are generated by a process of minimizing the error of the outputs generated' (GP.tex:351)."
     },
     {
       "id": "C051",
@@ -826,8 +890,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'classical regression techniques such as linear regression', green (GP.tex:353)."
     },
     {
       "id": "C052",
@@ -840,8 +905,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "D_test now indexed to n* (GP.tex:370)."
     },
     {
       "id": "C053",
@@ -855,7 +921,8 @@
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Still ℙ(f|X) = N(f|μ,k); the probability-vs-density question unaddressed (GP.tex:371). BO.tex adopted lowercase p; this block did not."
     },
     {
       "id": "C054",
@@ -868,8 +935,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "needs_author",
+      "anchor_is_verbatim": true,
+      "resolution": "Conditioning still written on X, not D; Martin's alternative not adopted (GP.tex:371)."
     },
     {
       "id": "C055",
@@ -883,7 +951,8 @@
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "D_train vs X notation switch remains between GP.tex:370 and :371."
     },
     {
       "id": "C056",
@@ -896,8 +965,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "μ, X, f bolded; some instances still inconsistent (see C048)."
     },
     {
       "id": "C057",
@@ -910,8 +980,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "X_* still used in the K_* shorthand (GP.tex:372) two lines before its definition (GP.tex:374)."
     },
     {
       "id": "C058",
@@ -924,8 +995,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Two new paragraphs explain exactly how predictions are computed (GP.tex:392-394)."
     },
     {
       "id": "C059",
@@ -938,8 +1010,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'covariance matrix', green (GP.tex:398)."
     },
     {
       "id": "C060",
@@ -952,8 +1025,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "Σ_y notation attempted but typed as \\sum y, which typesets as a summation operator (GP.tex:399). See new_issues N2."
     },
     {
       "id": "C061",
@@ -966,8 +1040,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Summary and Outlook section closes the chapter (GP.tex:427-432)."
     },
     {
       "id": "C062",
@@ -980,8 +1055,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'really' removed (BO.tex:3)."
     },
     {
       "id": "C063",
@@ -994,8 +1070,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'borrows heavily' (BO.tex:3)."
     },
     {
       "id": "C064",
@@ -1008,8 +1085,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'source of consistent terminology' (BO.tex:3)."
     },
     {
       "id": "C065",
@@ -1022,8 +1100,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Pre-print claim removed from the text (BO.tex:3). The bib entry still says 'to appear' — tracked as C213."
     },
     {
       "id": "C066",
@@ -1036,8 +1115,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Introduction extended to seven substantive paragraphs with the concrete learning-rate example (BO.tex:7-19)."
     },
     {
       "id": "C067",
@@ -1050,8 +1130,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Opening rewritten around the cost-constraint contrast (BO.tex:9)."
     },
     {
       "id": "C068",
@@ -1064,8 +1145,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Old passage (with 'fining'/'minina') deleted, superseded by the rewrite."
     },
     {
       "id": "C069",
@@ -1078,8 +1160,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Rewritten as the expensive-to-evaluate assumption paragraph (BO.tex:11)."
     },
     {
       "id": "C070",
@@ -1092,8 +1175,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Ambiguous 'This' construction gone in rewrite."
     },
     {
       "id": "C071",
@@ -1106,8 +1190,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Hyphen construction gone in rewrite."
     },
     {
       "id": "C072",
@@ -1120,8 +1205,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Passage gone in rewrite."
     },
     {
       "id": "C073",
@@ -1134,8 +1220,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Old sentence deleted; superseded by BO.tex:13."
     },
     {
       "id": "C074",
@@ -1148,8 +1235,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Old 'things' sentence deleted."
     },
     {
       "id": "C075",
@@ -1162,8 +1250,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Rewrite names the neural network explicitly (BO.tex:13)."
     },
     {
       "id": "C076",
@@ -1176,8 +1265,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Rewrite: 'in response to the gradient of the loss' (BO.tex:13)."
     },
     {
       "id": "C077",
@@ -1190,8 +1280,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Rewrite: 'If η is set too high' — referent explicit (BO.tex:13)."
     },
     {
       "id": "C078",
@@ -1204,8 +1295,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Grammar resolved in rewrite."
     },
     {
       "id": "C079",
@@ -1218,8 +1310,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Now 'training may become unstable and fail to converge' (BO.tex:13)."
     },
     {
       "id": "C080",
@@ -1232,8 +1325,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Sentence with 'o the data' deleted."
     },
     {
       "id": "C081",
@@ -1246,8 +1340,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Expert-judgement passage deleted; superseded by BO.tex:15."
     },
     {
       "id": "C082",
@@ -1260,8 +1355,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Stray 'a' deleted with the passage."
     },
     {
       "id": "C083",
@@ -1274,8 +1370,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Rewrite drops 'extrema' for plain 'optimum' language (BO.tex:15)."
     },
     {
       "id": "C084",
@@ -1288,8 +1385,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Loop described cleanly: update surrogate → optimize acquisition → evaluate → repeat (BO.tex:15)."
     },
     {
       "id": "C085",
@@ -1302,8 +1400,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "'suitable candidate' passage deleted."
     },
     {
       "id": "C086",
@@ -1317,7 +1416,8 @@
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'killer app' claim still uncited (BO.tex:21)."
     },
     {
       "id": "C087",
@@ -1331,7 +1431,8 @@
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'The interest in the field has lead to a great amount of interest' still verbatim, green-wrapped but unrewritten; 'lead'→'led' also outstanding (BO.tex:21)."
     },
     {
       "id": "C088",
@@ -1344,8 +1445,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "'approximate these functions' kept (BO.tex:23); antecedent clearer after the new intro but still loose."
     },
     {
       "id": "C089",
@@ -1358,8 +1460,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Formal black-box definition added (BO.tex:27). Note the rewrite says 'computationally infallible' — see new_issues N4."
     },
     {
       "id": "C090",
@@ -1372,8 +1475,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'evaluating', green (BO.tex:30)."
     },
     {
       "id": "C091",
@@ -1386,8 +1490,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Integer programming and FEM contrast added, green (BO.tex:30)."
     },
     {
       "id": "C092",
@@ -1400,8 +1505,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Redundant pair elaboration deleted (BO.tex:30)."
     },
     {
       "id": "C093",
@@ -1414,8 +1520,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "argmax now written = argmax y, using the observations (BO.tex:30)."
     },
     {
       "id": "C094",
@@ -1428,8 +1535,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Components now an explicit enumerate (BO.tex:34-38)."
     },
     {
       "id": "C095",
@@ -1442,8 +1550,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Step 1 rewritten: prior before data vs conditioning later, green (BO.tex:43)."
     },
     {
       "id": "C096",
@@ -1456,8 +1565,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Acquisition function glossed at first use, green (BO.tex:44)."
     },
     {
       "id": "C097",
@@ -1470,8 +1580,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "'Each of these three steps is treated in detail...' signpost added (BO.tex:47)."
     },
     {
       "id": "C098",
@@ -1485,8 +1596,9 @@
       "needs_review": "The 'w' in 'P(w|D)' is a guess at the handwritten symbol.",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Posterior written p(f|D) with explanation, green (BO.tex:49)."
     },
     {
       "id": "C099",
@@ -1499,8 +1611,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'Expected Improvement (EI)' capitalized (BO.tex:51)."
     },
     {
       "id": "C100",
@@ -1513,8 +1626,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'Thompson Sampling (TS)' (BO.tex:53)."
     },
     {
       "id": "C101",
@@ -1527,8 +1641,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'Upper Confidence Bound (UCB)' — acronym corrected (BO.tex:53)."
     },
     {
       "id": "C102",
@@ -1541,8 +1656,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "TS/UCB sentence moved to the end of the acquisition paragraph (BO.tex:53)."
     },
     {
       "id": "C103",
@@ -1555,8 +1671,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'some new point' (BO.tex:55)."
     },
     {
       "id": "C104",
@@ -1569,8 +1686,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Retitled 'Bayesian Formalization of the Update Step' with framing intro (BO.tex:57-59)."
     },
     {
       "id": "C105",
@@ -1584,7 +1702,8 @@
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'before observation of the unknown x' survives verbatim (BO.tex:61)."
     },
     {
       "id": "C106",
@@ -1597,8 +1716,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'posterior distribution' (BO.tex:63)."
     },
     {
       "id": "C107",
@@ -1611,8 +1731,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Bayes' theorem now in lowercase-p density notation, green (BO.tex:64)."
     },
     {
       "id": "C108",
@@ -1625,8 +1746,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Explicit × inserted (BO.tex:64)."
     },
     {
       "id": "C109",
@@ -1639,8 +1761,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Explicit × in the proportional form (BO.tex:67)."
     },
     {
       "id": "C110",
@@ -1653,8 +1776,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "p(f) adopted deliberately (green) as the function-prior notation (BO.tex:80)."
     },
     {
       "id": "C111",
@@ -1667,8 +1791,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Chapter split in two: SMBO framing chapter + dedicated 'Surrogate Models for SMBO' chapter (ac2b5/6db3421 line)."
     },
     {
       "id": "C112",
@@ -1681,8 +1806,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Restructure executed; SMBO expansion in SMBO.tex:13."
     },
     {
       "id": "C113",
@@ -1695,8 +1821,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "'sequential model based optimization (SMBO)' lowercased (SMBO.tex:3)."
     },
     {
       "id": "C114",
@@ -1710,7 +1837,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'these types of models' still unanchored (SMBO.tex:3)."
     },
     {
       "id": "C115",
@@ -1723,8 +1851,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "SMBO.tex:13 explains how the surrogate slot relates to the problem, but the pseudo-algorithm intro is unchanged."
     },
     {
       "id": "C116",
@@ -1738,7 +1867,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Still 'until a limit is reached'; 'stopping condition' not adopted (SMBO.tex:10)."
     },
     {
       "id": "C117",
@@ -1752,7 +1882,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'the true power of it is in the flexibility it provides' — them/they not applied (SMBO.tex:13)."
     },
     {
       "id": "C118",
@@ -1766,7 +1897,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "No worked step-by-step example added to the SMBO loop."
     },
     {
       "id": "C119",
@@ -1779,8 +1911,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "BASS expanded as 'Bayesian Adaptive Spline Surface' before first acronym use (SMBO.tex:13)."
     },
     {
       "id": "C120",
@@ -1793,8 +1926,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Contribution now stated in the front-matter Introduction and again in SMBO.tex:13/15."
     },
     {
       "id": "C121",
@@ -1808,7 +1942,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'we provide some texture' still there; 'a review' not adopted (Surrogate_Models.tex:7)."
     },
     {
       "id": "C122",
@@ -1822,7 +1957,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'these models explicitly assume' — 'they' not adopted (Surrogate_Models.tex:12)."
     },
     {
       "id": "C123",
@@ -1835,8 +1971,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "Original sentence unchanged, but the new kernel-distance passage that follows supplies the missing 'so what' (Surrogate_Models.tex:12)."
     },
     {
       "id": "C124",
@@ -1849,8 +1986,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "needs_author",
+      "anchor_is_verbatim": false,
+      "resolution": "Interpretability paragraph kept here unchanged; here-vs-Chapter-2 is an open placement call (Surrogate_Models.tex:14)."
     },
     {
       "id": "C125",
@@ -1863,8 +2001,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "needs_author",
+      "anchor_is_verbatim": false,
+      "resolution": "Interpolation paragraph kept here unchanged (Surrogate_Models.tex:16)."
     },
     {
       "id": "C126",
@@ -1877,8 +2016,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "needs_author",
+      "anchor_is_verbatim": false,
+      "resolution": "Ecosystem paragraph kept here unchanged (Surrogate_Models.tex:18)."
     },
     {
       "id": "C127",
@@ -1891,8 +2031,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "Strong surrogate-specific material added (categorical/kernel passage, refs), but the three general-praise paragraphs Martin flagged remain as-is."
     },
     {
       "id": "C128",
@@ -1905,8 +2046,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "References added for the categorical limitation (4 works + survey); interpretability/interpolation/small-data claims still uncited."
     },
     {
       "id": "C129",
@@ -1919,8 +2061,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "watanabe2023tree added and a BASS-relevant categorical paragraph appended; the too-rich/too-poor pitch of the core text is unchanged."
     },
     {
       "id": "C130",
@@ -1933,8 +2076,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "Hyperopt cited (bergstra2013hyperopt, Surrogate_Models.tex:24)."
     },
     {
       "id": "C131",
@@ -1947,8 +2091,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "Data-requirement point retained but not given the prominence Martin suggested; new ¶26 partially reframes."
     },
     {
       "id": "C132",
@@ -1962,7 +2107,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "BNN probabilistic-framework claim still uncited (Surrogate_Models.tex:30)."
     },
     {
       "id": "C133",
@@ -1976,7 +2122,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'model the objective function' phrasing unchanged (Surrogate_Models.tex:30)."
     },
     {
       "id": "C134",
@@ -1990,7 +2137,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'(input-output pairs)' still present (Surrogate_Models.tex:30)."
     },
     {
       "id": "C135",
@@ -2004,7 +2152,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "BNN section still lists no disadvantages (Surrogate_Models.tex:32)."
     },
     {
       "id": "C136",
@@ -2018,7 +2167,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "Still no discussion of BNNs specifically as surrogates (Surrogate_Models.tex:34)."
     },
     {
       "id": "C137",
@@ -2032,7 +2182,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Bootstrapping/OOB still uncited (Surrogate_Models.tex:40)."
     },
     {
       "id": "C138",
@@ -2046,7 +2197,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Black-box criticism still RF/GBM-specific; BNN/TPE parallel not drawn (Surrogate_Models.tex:40)."
     },
     {
       "id": "C139",
@@ -2060,7 +2212,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "RF/GBM-as-surrogates discussion still missing (Surrogate_Models.tex:42)."
     },
     {
       "id": "C140",
@@ -2074,7 +2227,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "Step-1 → step-2 scope shift still unexplained at §'Other Techniques' (Surrogate_Models.tex:44)."
     },
     {
       "id": "C141",
@@ -2088,7 +2242,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "'Other' still in the title; preceding sections still never mention hyperparameters (Surrogate_Models.tex:44)."
     },
     {
       "id": "C142",
@@ -2102,7 +2257,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Grid-search claim still uncited AND the sentence fragment Martin marked ('While grid search is exhaustive... space.') is still broken (Surrogate_Models.tex:48)."
     },
     {
       "id": "C143",
@@ -2116,7 +2272,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'one of the best methods out there' unchanged (Surrogate_Models.tex:48)."
     },
     {
       "id": "C144",
@@ -2129,8 +2286,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "partial",
+      "anchor_is_verbatim": true,
+      "resolution": "bergstra2012random cited at paragraph end; not at the claim itself (Surrogate_Models.tex:52)."
     },
     {
       "id": "C145",
@@ -2144,7 +2302,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'maximums or minimums' still there; maxima/minima not applied (Surrogate_Models.tex:52)."
     },
     {
       "id": "C146",
@@ -2158,7 +2317,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'interesting results' unchanged (Surrogate_Models.tex:52)."
     },
     {
       "id": "C147",
@@ -2172,7 +2332,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Grid Search subsection still has no reference; 'use also above' not applied (Surrogate_Models.tex:46-48)."
     },
     {
       "id": "C148",
@@ -2186,7 +2347,8 @@
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "GA closing phrase unchanged (Surrogate_Models.tex:56)."
     },
     {
       "id": "C149",
@@ -2199,8 +2361,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "The thesis thread is now clear from SMBO.tex:13 and the split, but the survey chapter's own Introduction section is empty (new_issues N6) and the titles-vs-content tension remains."
     },
     {
       "id": "C150",
@@ -2213,8 +2376,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "SMBO.tex:13 addresses the surrogate-vs-search relationship; an explicit hyperparameter-search vs surrogate-modeling comparison is still absent."
     },
     {
       "id": "C151",
@@ -2228,7 +2392,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'which MARS models are based on' unchanged (BASS.tex:5)."
     },
     {
       "id": "C152",
@@ -2242,7 +2407,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Figure 'theoretical basis for BASS' is still the missing.png placeholder (BASS.tex:8)."
     },
     {
       "id": "C153",
@@ -2256,7 +2422,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Classification/regression trees claim still uncited (BASS.tex:15)."
     },
     {
       "id": "C154",
@@ -2270,7 +2437,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Straight quotes on \"Classification and Regression Tree\" still not LaTeX quotes (BASS.tex:15)."
     },
     {
       "id": "C155",
@@ -2284,7 +2452,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "No examples added to the decision-tree section (BASS.tex:27)."
     },
     {
       "id": "C156",
@@ -2298,7 +2467,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Ensemble methods still uncited (BASS.tex:31)."
     },
     {
       "id": "C157",
@@ -2312,7 +2482,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "RF/Gradient Boosting/AdaBoost/Bagging still uncited (BASS.tex:33)."
     },
     {
       "id": "C158",
@@ -2326,7 +2497,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'piecewise constant approximations' still unexplained w.r.t. regression trees (BASS.tex:37)."
     },
     {
       "id": "C159",
@@ -2340,7 +2512,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Inline forms still malformed: $(x - t)+$ with unsubscripted plus (BASS.tex:43)."
     },
     {
       "id": "C160",
@@ -2354,7 +2527,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'piecewise linear ... slope change' query unaddressed (BASS.tex:51)."
     },
     {
       "id": "C161",
@@ -2368,7 +2542,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'Each pair divided at the value t' unchanged (BASS.tex:51)."
     },
     {
       "id": "C162",
@@ -2382,7 +2557,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Ungrammatical 'with slope changes a selection of observed values' unchanged (BASS.tex:51)."
     },
     {
       "id": "C163",
@@ -2396,7 +2572,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "X_j vs x_ij distinction still not drawn (BASS.tex:51)."
     },
     {
       "id": "C164",
@@ -2410,7 +2587,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Capitalization convention (RV vs matrix) still unstated (BASS.tex:53)."
     },
     {
       "id": "C165",
@@ -2425,7 +2603,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Region unchanged, including the stray Spanish 'y' in the display (BASS.tex:53). The illegible mark's target (definition of p) also still undefined."
     },
     {
       "id": "C166",
@@ -2439,7 +2618,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "h still used without definition in the reflected-pair displays (BASS.tex:56-61)."
     },
     {
       "id": "C167",
@@ -2453,7 +2633,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'figure' still lowercase at both references (BASS.tex:55, 68)."
     },
     {
       "id": "C168",
@@ -2467,7 +2648,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "M still undefined at first use in the additive model sum (BASS.tex:78)."
     },
     {
       "id": "C169",
@@ -2480,8 +2662,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "check",
+      "anchor_is_verbatim": false,
+      "resolution": "Figure 4.3 unchanged (3ref_pair.png); knot-label question needs a look at the figure itself."
     },
     {
       "id": "C170",
@@ -2494,8 +2677,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "check",
+      "anchor_is_verbatim": false,
+      "resolution": "Figure 4.4 unchanged (3hinge.png); x_{N,j} label question needs a look at the figure itself."
     },
     {
       "id": "C171",
@@ -2509,7 +2693,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'model construction process (denoted as M)' ambiguity unchanged (BASS.tex:82)."
     },
     {
       "id": "C172",
@@ -2522,8 +2707,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Martin's 'A' was a label for his own cross-reference (used by C177's answer), not a correction."
     },
     {
       "id": "C173",
@@ -2537,7 +2723,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'a better model for each λ size' unchanged (BASS.tex:90)."
     },
     {
       "id": "C174",
@@ -2551,7 +2738,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "The inline combination formula is still malformed: '(X_j - t)+' and '\\hat \\beta{M+2}' missing subscript (BASS.tex:100)."
     },
     {
       "id": "C175",
@@ -2565,7 +2753,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "The flagged display equation is unchanged and still needs the verification Martin asked for (BASS.tex:102)."
     },
     {
       "id": "C176",
@@ -2579,7 +2768,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'where h_ℓ ∈ M and t = x_ij for any case' unchanged (BASS.tex:104)."
     },
     {
       "id": "C177",
@@ -2594,7 +2784,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "Author question preserved as a source comment (BASS.tex:105-107); the transition sentence Martin prescribed (explain interactions, why needed, how A extends) is still unwritten."
     },
     {
       "id": "C178",
@@ -2608,7 +2799,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'provides allows' doubled verb still present (BASS.tex:109)."
     },
     {
       "id": "C179",
@@ -2622,7 +2814,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "No examples added to the MARS section (BASS.tex:111)."
     },
     {
       "id": "C180",
@@ -2636,7 +2829,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Flagged 'by design during the training phase' passage unchanged (BASS.tex:111)."
     },
     {
       "id": "C181",
@@ -2650,7 +2844,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "BMARS random-framing paragraph unchanged; 'explain better' unaddressed (BASS.tex:117)."
     },
     {
       "id": "C182",
@@ -2664,7 +2859,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Definition 10 unchanged; J_i query stands (BASS.tex:121)."
     },
     {
       "id": "C183",
@@ -2677,8 +2873,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "open",
+      "anchor_is_verbatim": true,
+      "resolution": "What a basis 'type' means in interpretation still unexplained (BASS.tex:129)."
     },
     {
       "id": "C184",
@@ -2692,7 +2889,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Two-predictor example unchanged (BASS.tex:129)."
     },
     {
       "id": "C185",
@@ -2706,7 +2904,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'*' placeholder notation unchanged (BASS.tex:129)."
     },
     {
       "id": "C186",
@@ -2720,7 +2919,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'as it assumes constant parameters' still present despite strike-through (BASS.tex:139)."
     },
     {
       "id": "C187",
@@ -2734,7 +2934,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'used to calculate a suitable posterior for the problem' — 'approximate the posterior' not applied (BASS.tex:148)."
     },
     {
       "id": "C188",
@@ -2748,7 +2949,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'The great advantage to RJMCMC' unchanged (BASS.tex:148)."
     },
     {
       "id": "C189",
@@ -2762,7 +2964,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'some efficiency improvements' still vague (BASS.tex:150)."
     },
     {
       "id": "C190",
@@ -2776,7 +2979,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'incredibly useful' still present despite strike-through (BASS.tex:150)."
     },
     {
       "id": "C191",
@@ -2790,7 +2994,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Flagged sentence unchanged — and now factually stale: the experiments are multi-dimensional, so 'we remain in the one dimensional case' is false (BASS.tex:150). See new_issues N7."
     },
     {
       "id": "C192",
@@ -2803,8 +3008,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "Model given with a lead-in citing Francom & Sansó, but no explicit 'this is the BASS model' signpost (BASS.tex:152-158)."
     },
     {
       "id": "C193",
@@ -2817,8 +3023,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Martin's 'B' was a cross-reference label, not a correction."
     },
     {
       "id": "C194",
@@ -2831,8 +3038,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
-      "anchor_is_verbatim": true
+      "status": "fixed",
+      "anchor_is_verbatim": true,
+      "resolution": "α now explained: 'α determines the degree of the polynomial splines' (BASS.tex:160)."
     },
     {
       "id": "C195",
@@ -2845,8 +3053,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "Section substantially expanded (categorical mechanism ¶162, posterior-uncertainty §4.5.3), but the priors/BMARS model spec are still absent (author comment at BASS.tex:140-142 concurs)."
     },
     {
       "id": "C196",
@@ -2859,8 +3068,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "partial",
+      "anchor_is_verbatim": false,
+      "resolution": "Where Bayes enters is now shown operationally (posterior over surfaces, BASS.tex:182), but the prior specification that would answer it in the model equations is still missing."
     },
     {
       "id": "C197",
@@ -2874,7 +3084,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Uniform-prior-over-domain claim unchanged; unbounded-domain objection unaddressed (BASS.tex:170)."
     },
     {
       "id": "C198",
@@ -2888,7 +3099,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'random search with the same objective' unchanged (BASS.tex:170)."
     },
     {
       "id": "C199",
@@ -2902,7 +3114,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "Experimental detail still embedded in the methods discussion (BASS.tex:170)."
     },
     {
       "id": "C200",
@@ -2916,7 +3129,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "LHS description unchanged; joint-distribution question unaddressed (BASS.tex:178)."
     },
     {
       "id": "C201",
@@ -2930,7 +3144,8 @@
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
       "status": "open",
-      "anchor_is_verbatim": true
+      "anchor_is_verbatim": true,
+      "resolution": "'distribution over what, in your case?' unaddressed (BASS.tex:178)."
     },
     {
       "id": "C202",
@@ -2944,8 +3159,9 @@
       "needs_review": "'where' is written above 'decide to take'; the intended replacement is not fully determined.",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Entire midpoint-uncertainty passage replaced by the posterior-draw EI/Thompson mechanism (BASS.tex:182-186)."
     },
     {
       "id": "C203",
@@ -2958,8 +3174,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "'at the end of the day' deleted with the rewritten section."
     },
     {
       "id": "C204",
@@ -2972,8 +3189,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": null,
-      "status": "check: anchor text not found in current source (may already be reworded)",
-      "anchor_is_verbatim": true
+      "status": "obsolete",
+      "anchor_is_verbatim": true,
+      "resolution": "Midpoint candidate scheme no longer exists; the endpoint question is moot under the new mechanism."
     },
     {
       "id": "C205",
@@ -2986,8 +3204,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/Experiment.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "needs_author",
+      "anchor_is_verbatim": false,
+      "resolution": "Chapter 5 is now complete with final results (923cba3, 31da552). Martin asked to talk before reading — that conversation is the outstanding action."
     },
     {
       "id": "C206",
@@ -3000,8 +3219,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Only bergstra2013hyperopt is cited; the duplicate key no longer renders. (Unused twin still sits in the .bib — see new_issues N11.)"
     },
     {
       "id": "C207",
@@ -3014,8 +3234,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Same pair as C206; resolved at citation level."
     },
     {
       "id": "C208",
@@ -3028,8 +3249,9 @@
       "confidence": "medium",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "OCLC replaced by ISBN (chung_markov_1960)."
     },
     {
       "id": "C209",
@@ -3042,8 +3264,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Daxberger entry no longer cited, so it does not render."
     },
     {
       "id": "C210",
@@ -3056,8 +3279,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Frazier tutorial no longer cited; entry also cleaned to plain arXiv form."
     },
     {
       "id": "C211",
@@ -3071,7 +3295,8 @@
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "Friedman 1991 still cited under BOTH keys — BASS.tex:41 cites Friedman_1991 and friedman1991multivariate as if they were two works, so the duplicate renders."
     },
     {
       "id": "C212",
@@ -3084,8 +3309,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Only francom2020bass cited."
     },
     {
       "id": "C213",
@@ -3099,7 +3325,8 @@
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "Garnett entry still carries note={to appear}; the book was published by CUP in 2023 — update the entry."
     },
     {
       "id": "C214",
@@ -3112,8 +3339,9 @@
       "confidence": "medium",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Ghahramani tutorial no longer cited (borrowed figure replaced by an original)."
     },
     {
       "id": "C215",
@@ -3127,7 +3355,8 @@
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "Garrido-Merchán paper cited under BOTH keys (garrido2020dealing + Garrido-Merchán_Hernández-Lobato_2020) — renders twice, same class of bug as C211."
     },
     {
       "id": "C216",
@@ -3140,8 +3369,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Only green1995reversible cited."
     },
     {
       "id": "C217",
@@ -3155,7 +3385,8 @@
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
       "status": "open",
-      "anchor_is_verbatim": false
+      "anchor_is_verbatim": false,
+      "resolution": "KCG12 (kaufmann2012bayesian) still lacks volume/series detail for the PMLR entry."
     },
     {
       "id": "C218",
@@ -3168,8 +3399,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Klein entry no longer cited; also cleaned."
     },
     {
       "id": "C219",
@@ -3182,8 +3414,9 @@
       "confidence": "medium",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Verified: Kaufmann-Korda-Munos 2012 was indeed ALT 2012, Springer LNCS — the venue Martin queried is correct as printed."
     },
     {
       "id": "C220",
@@ -3196,8 +3429,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "needs_author",
+      "anchor_is_verbatim": false,
+      "resolution": "Koehrsen blog is now a properly typed @misc with URL, but it remains the load-bearing citation for the SMBO pseudo-algorithm (SMBO.tex:3). Whether a blog should carry that weight is your call — a peer-reviewed alternative would be hutter2011sequential (already in the .bib)."
     },
     {
       "id": "C221",
@@ -3210,8 +3444,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Luong entry no longer cited."
     },
     {
       "id": "C222",
@@ -3224,8 +3459,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Publisher-name consistency pair dissolved: Ross is no longer cited, leaving one Wiley entry."
     },
     {
       "id": "C223",
@@ -3238,8 +3474,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "obsolete",
+      "anchor_is_verbatim": false,
+      "resolution": "Ross entry no longer cited."
     },
     {
       "id": "C224",
@@ -3252,8 +3489,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Single simulationlib entry cited (2024 retrieval); duplicate no longer renders."
     },
     {
       "id": "C225",
@@ -3266,8 +3504,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Wan20 format kept and used as the pattern for remaining arXiv entries."
     },
     {
       "id": "C226",
@@ -3280,8 +3519,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "Wikipedia entry removed from the bibliography entirely; Øksendal cited instead."
     },
     {
       "id": "C227",
@@ -3294,8 +3534,124 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
-      "anchor_is_verbatim": false
+      "status": "fixed",
+      "anchor_is_verbatim": false,
+      "resolution": "wangpoisson now a dated arXiv article (2022) — 'is it a book?' resolved."
+    }
+  ],
+  "triage": {
+    "date": "2026-07-15",
+    "against_commit": "ceadb16",
+    "method": "Every item checked against the current TeX sources and citation graph; git history 2026-03-04..HEAD used to identify rewrites and restructures.",
+    "status_vocabulary": {
+      "fixed": "Addressed in the current source (including deliberate resolutions that differ from the literal suggestion).",
+      "partial": "Attempted or half-applied; residue remains.",
+      "open": "Not addressed; the flagged text survives.",
+      "obsolete": "The flagged text no longer exists; the concern is moot (superseded by rewrite/deletion).",
+      "needs_author": "Requires a decision or conversation (yours or Martin's), not a mechanical edit.",
+      "check": "Could not be verified from source (e.g. content inside a figure image)."
+    },
+    "status_counts": {
+      "fixed": 103,
+      "needs_author": 8,
+      "open": 76,
+      "obsolete": 20,
+      "partial": 18,
+      "check": 2
+    },
+    "new_issues_note": "Defects found during triage that Martin never marked — mostly residue of the correction process itself."
+  },
+  "new_issues": [
+    {
+      "id": "N01",
+      "file": "TeX_files/GP.tex",
+      "line": 78,
+      "severity": "minor",
+      "issue": "Sentence starts lowercase: 'detailed proof. this theorem establishes' — residue of the unapplied paragraph break (C016)."
+    },
+    {
+      "id": "N02",
+      "file": "TeX_files/GP.tex",
+      "line": 399,
+      "severity": "moderate",
+      "issue": "cov(y) = \\sum \\boldsymbol{y} = ... — \\sum typesets as a summation operator; Martin's suggestion was Σ_y (\\Sigma_{\\boldsymbol{y}}). Renders as nonsense math (C060 attempt gone wrong)."
+    },
+    {
+      "id": "N03",
+      "file": "TeX_files/BO.tex",
+      "line": 71,
+      "severity": "moderate",
+      "issue": "Posterior-predictive equation and its explanatory sentence are duplicated verbatim (lines 71-73 and 75-76)."
+    },
+    {
+      "id": "N04",
+      "file": "TeX_files/BO.tex",
+      "line": 27,
+      "severity": "minor",
+      "issue": "'computationally infallible to observe' — should be 'infeasible'."
+    },
+    {
+      "id": "N05",
+      "file": "TeX_files/BO.tex",
+      "line": 80,
+      "severity": "moderate",
+      "issue": "'The following section develops the theory of Gaussian Processes in detail' — stale cross-reference: GP theory is the PREVIOUS chapter after the restructure."
+    },
+    {
+      "id": "N06",
+      "file": "TeX_files/Surrogate_Models.tex",
+      "line": 3,
+      "severity": "major",
+      "issue": "\\section{Introduction} is completely empty — placeholder section with no body."
+    },
+    {
+      "id": "N07",
+      "file": "TeX_files/BASS.tex",
+      "line": 150,
+      "severity": "moderate",
+      "issue": "'While we remain in the one dimensional case' is now false — the experimental pipeline is multi-dimensional. Stale claim beyond Martin's original bracket (C191)."
+    },
+    {
+      "id": "N08",
+      "file": "TeX_files/Surrogate_Models.tex",
+      "line": 22,
+      "severity": "minor",
+      "issue": "'created in 2013' — the TPE paper (bergstra2011algorithms) is 2011. Also 'Going into mode detail' typo at line 24."
+    },
+    {
+      "id": "N09",
+      "file": "main.tex",
+      "line": 27,
+      "severity": "minor",
+      "issue": "\\date{INSERT DATE HERE WHEN DONE} placeholder."
+    },
+    {
+      "id": "N10",
+      "file": "main.pdf",
+      "line": null,
+      "severity": "process",
+      "issue": "main.pdf is modified but uncommitted; needs a fresh compile and commit alongside sources per the author's convention."
+    },
+    {
+      "id": "N11",
+      "file": "TeX_files/Bibliography.bib",
+      "line": null,
+      "severity": "minor",
+      "issue": "Seven-plus uncited leftover duplicate keys (Bergstra_Yamins..., Denison_..., Francom_Sansó_2020, Green_1995, Surjanovic_Bingham, Frazier_2018, Klein_..., Daxberger_..., Luong_..., Ross_1996, ghahramani2011tutorial, Snoek_...). Harmless with natbib (no \\nocite{*}), but worth pruning."
+    },
+    {
+      "id": "N12",
+      "file": "TeX_files/BASS.tex",
+      "line": 18,
+      "severity": "major",
+      "issue": "Second missing.png placeholder: the 'A decision tree' figure (in addition to C152's diagram at line 8)."
+    },
+    {
+      "id": "N13",
+      "file": "TeX_files/GP.tex",
+      "line": 291,
+      "severity": "check",
+      "issue": "RBF kernel written as σ_f² exp(−ℓ(x−x')²/2): ℓ multiplies in the numerator, whereas the standard form divides by 2ℓ². Consistent with treating ℓ as an inverse length-scale, but worth confirming intent — Fig. gp_regression_ell interpretation depends on it."
     }
   ]
 }
