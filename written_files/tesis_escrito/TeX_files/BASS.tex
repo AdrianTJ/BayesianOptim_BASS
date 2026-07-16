@@ -2,7 +2,7 @@
 
 The main proposal in this work is the use of a BASS model as the surrogate model in the framework of Bayesian Optimization rather than a traditional Gaussian Process or any of the alternatives already discussed. To understand this method and why it is useful for this purpose, we develop first the theory that lead to the construction of this method, and then explain its behaviour in some detail. 
 
-As with most other algorithms used for regression tasks, BASS is built upon a rich history of work that was previously done in the field. It begins with CART and decision trees, which MARS models are based on, and in turn BMARS (Bayesian MARS) uses the same model form as MARS but builds the model using the traditional Bayesian approach of defining a prior and constructing from there. Finally, BASS is a specific case of the BMARS model. This is much more clear when viewed as a diagram, as shown in the following figure. 
+As with most other algorithms used for regression tasks, BASS is built upon a rich history of work that was previously done in the field. It begins with CART and decision trees, \green{on which MARS models are based}, and in turn BMARS (Bayesian MARS) uses the same model form as MARS but builds the model using the traditional Bayesian approach of defining a prior and constructing from there. Finally, BASS is a specific case of the BMARS model. This is much more clear when viewed as a diagram, as shown in the following figure. 
 
 \begin{figure}[h]
 	\includegraphics[width=4cm]{Figures/missing.png}
@@ -12,7 +12,7 @@ As with most other algorithms used for regression tasks, BASS is built upon a ri
 	\end{figure}
 \section{Decision Trees}
 
-Decision trees are a fundamental and versatile tool that comes in two main flavours: classification trees and regression trees. These two types of trees serve distinct purposes and are employed to make predictions in different contexts. The term "Classification and Regression Tree" (CART) analysis serves as an umbrella term that encompasses both classification and regression tree procedures. CART was first introduced by Breiman et al. in 1984 \cite{breiman2017classification}, and it represents a unified framework for decision tree modelling, allowing for flexibility in handling both classification and regression tasks within the same algorithm. While classification and regression trees share common principles, such as recursive binary splitting and impurity measures (e.g., Gini impurity for classification and mean squared error for regression), they also exhibit some differences in terms of the criteria used to determine the best feature and split point at each node. The final predictions for a new data point are obtained by traversing the tree from the root node to a leaf node and returning the average (for regression) of the target variable for the training samples in that leaf node.
+Decision trees are a fundamental and versatile tool that comes in two main flavours: classification trees and regression trees. These two types of trees serve distinct purposes and are employed to make predictions in different contexts. The term \green{\say{Classification and Regression Tree}} (CART) analysis serves as an umbrella term that encompasses both classification and regression tree procedures. CART was first introduced by Breiman et al. in 1984 \cite{breiman2017classification}, and it represents a unified framework for decision tree modelling, allowing for flexibility in handling both classification and regression tasks within the same algorithm. While classification and regression trees share common principles, such as recursive binary splitting and impurity measures (e.g., Gini impurity for classification and mean squared error for regression), they also exhibit some differences in terms of the criteria used to determine the best feature and split point at each node. The final predictions for a new data point are obtained by traversing the tree from the root node to a leaf node and returning the average (for regression) of the target variable for the training samples in that leaf node.
 
 \begin{figure}[h]
 	\includegraphics[width=4cm]{Figures/missing.png}
@@ -40,7 +40,7 @@ MARS is particularly valuable when the relationships between input features and 
 
 For the following section, we will adopt the terminology and follow the development presented in \cite{Friedman_1991} and \cite{friedman1991multivariate}.
 
-MARS is defined using functions that are piecewise linear in the form of $(x - t)+$ and $(t - x)+$. These functions take the maximum between 0 and the value within the function, as follows:
+MARS is defined using functions that are piecewise linear in the form of $\green{(x - t)_+}$ and $\green{(t - x)_+}$. These functions take the maximum between 0 and the value within the function, as follows:
 
 $$
 (x - t)_+ = \max\{ 0, x - t \}= \begin{cases} 
@@ -50,9 +50,9 @@ $$
 
 Each function is piecewise linear with a slope change at the value $t$, which makes them linear splines. Each pair divided at the value $t$ is referred to as a \say{reflected pair}. The idea of the method is to form reflected pairs for each input variable $X_j$ with slope changes a selection of observed values $x_{ij}$. Following this construction and considering a variable $X_j$, the collection of basis functions is:
 $$
-\mathcal{C} = \{ (X_j - t)_+, (t - X_j)_+ \}, \text{ with } t \in \{ x_{1,j}, x_{2,j}, \ldots x_{N,j} \}, \text{ y } \,\, j = 1,2, \ldots , p.
+\mathcal{C} = \{ (X_j - t)_+, (t - X_j)_+ \}, \text{ with } t \in \{ x_{1,j}, x_{2,j}, \ldots x_{N,j} \}, \text{ \green{and} } \,\, j = 1,2, \ldots , p.
 $$
-And each reflected pair appears as follows, and are shown in figure \ref{reflected_pairs}: 
+And each reflected pair appears as follows, and are shown in \green{Figure}~\ref{reflected_pairs}: 
 $$
 h_1(X) = h(X_j - x_{ij}) 
 $$
@@ -65,7 +65,7 @@ $$
 	\caption{The constructed reflected pairs.}
 	\label{reflected_pairs}
 \end{figure}
-So, for each $X_j$, the set of candidate reflected pairs that exist at each of the $x_{ij}$ points of that variable is shown in figure \ref{hinges}. 
+So, for each $X_j$, the set of candidate reflected pairs that exist at each of the $x_{ij}$ points of that variable is shown in \green{Figure}~\ref{hinges}. 
 \begin{figure}[h]
 	\includegraphics[width=10cm]{Figures/3hinge.png}
 	\centering
@@ -97,7 +97,7 @@ where the value $M(\lambda)$ is the number of effective parameters in the model,
 
 Now that we have described the base model, we can go back and consider the differences when incorporating interaction terms. Instead of just adding terms additively, products between the existing $h_\ell$ functions in the model and between each reflected pair of each $x_{ij}$ can be added. Note that this general case encompasses the previous one because if you want to add a reflected pair without interacting with the other variables, you simply multiply by $h_0 = 1$.
 
-In this way, a model $\mathcal{M}$ with $M$ terms will be updated as follows after finding the combination $\hat \beta_{M+1} h_\ell(X) \cdot (X_j - t)+ + \hat \beta{M+2} h_\ell(X) \cdot (t-X_j)_+$ that best minimizes the training error:
+In this way, a model $\mathcal{M}$ with $M$ terms will be updated as follows after finding the combination $\hat \beta_{M+1} h_\ell(X) \cdot \green{(X_j - t)_+} + \green{\hat \beta_{M+2}} h_\ell(X) \cdot (t-X_j)_+$ that best minimizes the training error:
 $$
 \hat f(X) = \hat \beta_0 + \sum_{m=1}^M \hat \beta_m h_m(X) + \hat \beta_{M+1} h_\ell(X) \cdot (X_j - t)_+ + \hat \beta_{M+2} h_\ell(X) \cdot (t-X_j)_+,
 $$
@@ -106,7 +106,7 @@ where $h_\ell \in \mathcal{M}$ and $t = x_{ij}$ for any case.
 % "Como transiciono de una idea a otra aqui?" -- the transition between these
 % two ideas still needs a connecting sentence from the author.
 
-One interesting consideration is that the added flexibility of these models does not end with it being piecewise linear, as one small alteration that can be made is to replace the truncated linear functions with truncated cubic basis functions or other functions of a higher order, which provides allows the resulting model to be fully differentiable within its domain. 
+One interesting consideration is that the added flexibility of these models does not end with it being piecewise linear, as one small alteration that can be made is to replace the truncated linear functions with truncated cubic basis functions or other functions of a higher order, which \green{allows} the resulting model to be fully differentiable within its domain. 
 
 In conclusion, our exploration of Multivariate Adaptive Regression Splines (MARS) is a powerful and versatile technique for modelling complex relationships within data. Unlike traditional linear regression, MARS \green{uses} piecewise linear functions, making it a valuable tool when dealing with non-linear relationships between input features and the target variable. The methodology behind MARS involves the creation of reflected pairs and the incremental addition of basis functions to the model, effectively adapting to the data's intricacies. The model construction process aims to minimize the training error by iteratively selecting the reflected pair that provides the most significant reduction in error. This leads to a model that can potentially overfit the data, but this is by design during the training phase. Subsequently, a pruning step is employed to refine the model, removing terms that do not contribute significantly to the model's predictive power.
 
@@ -136,7 +136,7 @@ The key insight that this framework of construction is based on is that any MARS
 	\item the knot points associated with each interacting term $t_{ji}$, 
 	\item the sign indicators associated with each interacting term $s_{ji}$. 
 \end{itemize}
-and as such, a probability distribution over the possible MARS models can be constructed, enabling a more comprehensive understanding of the uncertainty inherent in the modelling process since the response is an entire probability distribution rather than a single model. This framework also provides the ability to do ANOVA and Sobol decompositions for sensitivity analysis. One important aspect of this framework for construction is that the number of parameters varies with the number of basis functions $k$, and as such, a traditional method such as Markov chain Monte Carlo cannot be used directly, as it assumes constant parameters. An extended version of MCMC is therefore used, called reversible jump MCMC (first introduced in \cite{green1995reversible}), that allows for a variable number of parameters.
+and as such, a probability distribution over the possible MARS models can be constructed, enabling a more comprehensive understanding of the uncertainty inherent in the modelling process since the response is an entire probability distribution rather than a single model. This framework also provides the ability to do ANOVA and Sobol decompositions for sensitivity analysis. One important aspect of this framework for construction is that the number of parameters varies with the number of basis functions $k$, and as such, a traditional method such as Markov chain Monte Carlo cannot be used directly. An extended version of MCMC is therefore used, called reversible jump MCMC (first introduced in \cite{green1995reversible}), that allows for a variable number of parameters.
 % AUTHOR NOTE (moved out of the rendered text; was a red inline note):
 % "Cual es el modelo? Tengo el paper pero no lo veo claro." -- the explicit
 % BMARS model statement from the paper still needs to be written out here.
@@ -145,9 +145,9 @@ and as such, a probability distribution over the possible MARS models can be con
 
 Bayesian Adaptive Spline Surface (BASS) models are an extension of the family of non parametric regression models of which multivariate adaptive regression splines (MARS) was the first developed in 1991 and is the most basic \cite{friedman1991multivariate}. MARS is an extension of linear models, where interactions between variables and non linearities are modelled automatically. 
 
-The extension of this model of interest is the BMARS model. As the authors state in \cite{denison1998bayesian}, the aim of BMARS is to provide a Bayesian model that mimics the MARS procedure. This is done by considering the number of basis functions, along with their type, the coefficients and their form, random. Then, a suitable MCMC algorithm, in this case reversible jump monte carlo \cite{green1995reversible}, is used to calculate a suitable posterior for the problem. The great advantage to RJMCMC over other MCMC techniques is that the number of parameters can be variable, and as such, is a great basis for the type of analysis that is necessary for models in the MARS class. 
+The extension of this model of interest is the BMARS model. As the authors state in \cite{denison1998bayesian}, the aim of BMARS is to provide a Bayesian model that mimics the MARS procedure. This is done by considering the number of basis functions, along with their type, the coefficients and their form, random. Then, a suitable MCMC algorithm, in this case reversible jump monte carlo \cite{green1995reversible}, is used to \green{approximate the posterior}. The great advantage \green{of} RJMCMC over other MCMC techniques is that the number of parameters can be variable, and as such, is a great basis for the type of analysis that is necessary for models in the MARS class. 
 
-BASS models are an adaptation of BMARS models that include some efficiency improvements for posterior sampling alongside parallel tempering for better posterior exploration \cite{francom2020bass}. For our purposes though, the most significant improvement is that it allows the use of categorical variables alongside some continuous variables. This is incredibly useful in the context of hyper-parameter optimization, where there are generally some categorical variables such as polynomial degree, smoothing, etc. While we remain in the one dimensional case and this improvement is not necessarily useful, the multi dimensional case will benefit greatly from this improvement. 
+BASS models are an adaptation of BMARS models that include some efficiency improvements for posterior sampling alongside parallel tempering for better posterior exploration \cite{francom2020bass}. For our purposes though, the most significant improvement is that it allows the use of categorical variables alongside some continuous variables. This is useful in the context of hyper-parameter optimization, where there are generally some categorical variables such as polynomial degree, smoothing, etc. \green{This capability is exercised directly in this work: the categorical and mixed benchmarks of the experimental chapter are multi-dimensional, and it is what makes BASS applicable to them.} 
 
 A detailed rundown of the model, its priors, and its construction in general can be seen in \cite{francom2020bass}, but, we include the definition of the model presented in that work for completeness. 
 
