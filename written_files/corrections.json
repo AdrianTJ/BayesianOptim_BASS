@@ -362,9 +362,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": null,
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "No paragraph break added, and the join left 'proof. this theorem' with a lowercase t (GP.tex:78). See new_issues N1."
+      "resolution": "Paragraph break inserted and 'This' capitalized at the theorem-bridge sentence (7ba7a96)."
     },
     {
       "id": "C017",
@@ -1025,9 +1025,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/GP.tex",
       "anchor_found_in_current_source": "GP.tex",
-      "status": "partial",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Σ_y notation attempted but typed as \\sum y, which typesets as a summation operator (GP.tex:399). See new_issues N2."
+      "resolution": "Covariance now written Σ_y as Martin suggested; the \\sum typo is gone (7ba7a96)."
     },
     {
       "id": "C061",
@@ -1415,9 +1415,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'killer app' claim still uncited (BO.tex:21)."
+      "resolution": "'killer app' claim now cites Snoek, Larochelle & Adams 2012 (a9d7932). Attribution flagged for author validation in the plan."
     },
     {
       "id": "C087",
@@ -1430,9 +1430,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'The interest in the field has lead to a great amount of interest' still verbatim, green-wrapped but unrewritten; 'lead'→'led' also outstanding (BO.tex:21)."
+      "resolution": "Rewritten: 'This interest has led to a substantial body of research and publications...' (7ba7a96)."
     },
     {
       "id": "C088",
@@ -1445,9 +1445,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "partial",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'approximate these functions' kept (BO.tex:23); antecedent clearer after the new intro but still loose."
+      "resolution": "'these functions' → 'expensive black-box functions' (7ba7a96)."
     },
     {
       "id": "C089",
@@ -1701,9 +1701,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BO.tex",
       "anchor_found_in_current_source": "BO.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'before observation of the unknown x' survives verbatim (BO.tex:61)."
+      "resolution": "Corrected to 'at a given input x, held before the corresponding observation is made' (7ba7a96)."
     },
     {
       "id": "C106",
@@ -1836,9 +1836,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'these types of models' still unanchored (SMBO.tex:3)."
+      "resolution": "'these types of models' → 'SMBO methods' (7ba7a96)."
     },
     {
       "id": "C115",
@@ -1866,9 +1866,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Still 'until a limit is reached'; 'stopping condition' not adopted (SMBO.tex:10)."
+      "resolution": "'until a stopping condition is met' (7ba7a96)."
     },
     {
       "id": "C117",
@@ -1881,9 +1881,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "SMBO.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'the true power of it is in the flexibility it provides' — them/they not applied (SMBO.tex:13)."
+      "resolution": "'the true power of these algorithms ... they provide' (7ba7a96)."
     },
     {
       "id": "C118",
@@ -1941,9 +1941,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'we provide some texture' still there; 'a review' not adopted (Surrogate_Models.tex:7)."
+      "resolution": "'we provide a review of the common surrogate models' (7ba7a96)."
     },
     {
       "id": "C122",
@@ -1956,9 +1956,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'these models explicitly assume' — 'they' not adopted (Surrogate_Models.tex:12)."
+      "resolution": "'because they explicitly assume' (7ba7a96)."
     },
     {
       "id": "C123",
@@ -2048,7 +2048,7 @@
       "anchor_found_in_current_source": null,
       "status": "partial",
       "anchor_is_verbatim": true,
-      "resolution": "References added for the categorical limitation (4 works + survey); interpretability/interpolation/small-data claims still uncited."
+      "resolution": "Predictive-uncertainty and interpolation claims now cite Rasmussen & Williams (a9d7932). Softer interpretability/ecosystem claims deliberately left uncited."
     },
     {
       "id": "C129",
@@ -2136,9 +2136,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'(input-output pairs)' still present (Surrogate_Models.tex:30)."
+      "resolution": "'(input-output pairs)' deleted (7ba7a96)."
     },
     {
       "id": "C135",
@@ -2181,9 +2181,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Bootstrapping/OOB still uncited (Surrogate_Models.tex:40)."
+      "resolution": "Bootstrap/OOB uncertainty sentence cites SMAC (hutter2011sequential), the canonical RF-as-surrogate SMBO system (a9d7932)."
     },
     {
       "id": "C138",
@@ -2256,9 +2256,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Grid-search claim still uncited AND the sentence fragment Martin marked ('While grid search is exhaustive... space.') is still broken (Surrogate_Models.tex:48)."
+      "resolution": "Sentence fragment repaired AND bergstra2012random cited at the claim (7ba7a96 + a9d7932)."
     },
     {
       "id": "C143",
@@ -2271,9 +2271,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'one of the best methods out there' unchanged (Surrogate_Models.tex:48)."
+      "resolution": "'out there' → 'available' (7ba7a96)."
     },
     {
       "id": "C144",
@@ -2286,9 +2286,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "partial",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "bergstra2012random cited at paragraph end; not at the claim itself (Surrogate_Models.tex:52)."
+      "resolution": "Random-search effectiveness cited at the claim itself (a9d7932)."
     },
     {
       "id": "C145",
@@ -2301,9 +2301,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'maximums or minimums' still there; maxima/minima not applied (Surrogate_Models.tex:52)."
+      "resolution": "maxima/minima (7ba7a96)."
     },
     {
       "id": "C146",
@@ -2316,9 +2316,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'interesting results' unchanged (Surrogate_Models.tex:52)."
+      "resolution": "'interesting results' → 'improvements over the points already found' (7ba7a96)."
     },
     {
       "id": "C147",
@@ -2331,9 +2331,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/SMBO.tex",
       "anchor_found_in_current_source": "Surrogate_Models.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Grid Search subsection still has no reference; 'use also above' not applied (Surrogate_Models.tex:46-48)."
+      "resolution": "bergstra2012random now also cited in the Grid Search subsection, per 'use also above' (a9d7932)."
     },
     {
       "id": "C148",
@@ -2391,9 +2391,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'which MARS models are based on' unchanged (BASS.tex:5)."
+      "resolution": "'on which MARS models are based' (7ba7a96)."
     },
     {
       "id": "C152",
@@ -2436,9 +2436,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Straight quotes on \"Classification and Regression Tree\" still not LaTeX quotes (BASS.tex:15)."
+      "resolution": "CART term now in \\say{} quotes (7ba7a96)."
     },
     {
       "id": "C155",
@@ -2511,9 +2511,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Inline forms still malformed: $(x - t)+$ with unsubscripted plus (BASS.tex:43)."
+      "resolution": "Inline hinge forms subscripted: (x-t)_+ and (t-x)_+ (7ba7a96)."
     },
     {
       "id": "C160",
@@ -2602,9 +2602,9 @@
       "needs_review": "Handwriting not legible even at 440 DPI. Note the printed text also contains a stray Spanish 'y' that should be 'and'.",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "partial",
       "anchor_is_verbatim": true,
-      "resolution": "Region unchanged, including the stray Spanish 'y' in the display (BASS.tex:53). The illegible mark's target (definition of p) also still undefined."
+      "resolution": "Stray Spanish 'y' → 'and' in the display (7ba7a96). Remaining: p never introduced — worksheet item W2."
     },
     {
       "id": "C166",
@@ -2632,9 +2632,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'figure' still lowercase at both references (BASS.tex:55, 68)."
+      "resolution": "'Figure~\\ref{...}' at both flagged references (7ba7a96)."
     },
     {
       "id": "C168",
@@ -2737,9 +2737,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "The inline combination formula is still malformed: '(X_j - t)+' and '\\hat \\beta{M+2}' missing subscript (BASS.tex:100)."
+      "resolution": "Inline combination formula repaired: (X_j-t)_+ subscript and \\hat\\beta_{M+2} (7ba7a96)."
     },
     {
       "id": "C175",
@@ -2798,9 +2798,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'provides allows' doubled verb still present (BASS.tex:109)."
+      "resolution": "'provides allows' → 'allows' (7ba7a96)."
     },
     {
       "id": "C179",
@@ -2918,9 +2918,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'as it assumes constant parameters' still present despite strike-through (BASS.tex:139)."
+      "resolution": "Struck clause 'as it assumes constant parameters' deleted (7ba7a96)."
     },
     {
       "id": "C187",
@@ -2933,9 +2933,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'used to calculate a suitable posterior for the problem' — 'approximate the posterior' not applied (BASS.tex:148)."
+      "resolution": "'used to approximate the posterior' (7ba7a96)."
     },
     {
       "id": "C188",
@@ -2948,9 +2948,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'The great advantage to RJMCMC' unchanged (BASS.tex:148)."
+      "resolution": "'The great advantage of RJMCMC' (7ba7a96)."
     },
     {
       "id": "C189",
@@ -2978,9 +2978,9 @@
       "confidence": "high",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "'incredibly useful' still present despite strike-through (BASS.tex:150)."
+      "resolution": "'incredibly' deleted (7ba7a96)."
     },
     {
       "id": "C191",
@@ -2993,9 +2993,9 @@
       "confidence": "medium",
       "likely_source_file": "TeX_files/BASS.tex",
       "anchor_found_in_current_source": "BASS.tex",
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Flagged sentence unchanged — and now factually stale: the experiments are multi-dimensional, so 'we remain in the one dimensional case' is false (BASS.tex:150). See new_issues N7."
+      "resolution": "False one-dimensional claim replaced with the factual multi-dimensional statement (7ba7a96)."
     },
     {
       "id": "C192",
@@ -3294,9 +3294,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "Friedman 1991 still cited under BOTH keys — BASS.tex:41 cites Friedman_1991 and friedman1991multivariate as if they were two works, so the duplicate renders."
+      "resolution": "Friedman 1991 now cited once, under friedman1991multivariate; duplicate key pruned (a9d7932)."
     },
     {
       "id": "C212",
@@ -3324,9 +3324,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "Garnett entry still carries note={to appear}; the book was published by CUP in 2023 — update the entry."
+      "resolution": "'to appear' removed; the Garnett book is published (a9d7932)."
     },
     {
       "id": "C214",
@@ -3354,9 +3354,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "Garrido-Merchán paper cited under BOTH keys (garrido2020dealing + Garrido-Merchán_Hernández-Lobato_2020) — renders twice, same class of bug as C211."
+      "resolution": "Garrido-Merchán unified on garrido2020dealing (the clean Neurocomputing record); duplicate key pruned (a9d7932)."
     },
     {
       "id": "C216",
@@ -3384,9 +3384,9 @@
       "confidence": "high",
       "likely_source_file": "main.bbl / bibliography",
       "anchor_found_in_current_source": null,
-      "status": "open",
+      "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "KCG12 (kaufmann2012bayesian) still lacks volume/series detail for the PMLR entry."
+      "resolution": "PMLR volume 22 (AISTATS 2012) added to kaufmann2012bayesian (a9d7932)."
     },
     {
       "id": "C218",
@@ -3552,14 +3552,15 @@
       "check": "Could not be verified from source (e.g. content inside a figure image)."
     },
     "status_counts": {
-      "fixed": 103,
+      "fixed": 137,
       "needs_author": 8,
-      "open": 76,
       "obsolete": 20,
-      "partial": 18,
+      "partial": 16,
+      "open": 44,
       "check": 2
     },
-    "new_issues_note": "Defects found during triage that Martin never marked — mostly residue of the correction process itself."
+    "new_issues_note": "Defects found during triage that Martin never marked — mostly residue of the correction process itself.",
+    "last_updated": "2026-07-15 (post mechanical+citation passes; worksheet = docs/FINAL_CLEANUP_PLAN.md)"
   },
   "new_issues": [
     {
@@ -3567,91 +3568,104 @@
       "file": "TeX_files/GP.tex",
       "line": 78,
       "severity": "minor",
-      "issue": "Sentence starts lowercase: 'detailed proof. this theorem establishes' — residue of the unapplied paragraph break (C016)."
+      "issue": "Sentence starts lowercase: 'detailed proof. this theorem establishes' — residue of the unapplied paragraph break (C016).",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N02",
       "file": "TeX_files/GP.tex",
       "line": 399,
       "severity": "moderate",
-      "issue": "cov(y) = \\sum \\boldsymbol{y} = ... — \\sum typesets as a summation operator; Martin's suggestion was Σ_y (\\Sigma_{\\boldsymbol{y}}). Renders as nonsense math (C060 attempt gone wrong)."
+      "issue": "cov(y) = \\sum \\boldsymbol{y} = ... — \\sum typesets as a summation operator; Martin's suggestion was Σ_y (\\Sigma_{\\boldsymbol{y}}). Renders as nonsense math (C060 attempt gone wrong).",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N03",
       "file": "TeX_files/BO.tex",
       "line": 71,
       "severity": "moderate",
-      "issue": "Posterior-predictive equation and its explanatory sentence are duplicated verbatim (lines 71-73 and 75-76)."
+      "issue": "Posterior-predictive equation and its explanatory sentence are duplicated verbatim (lines 71-73 and 75-76).",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N04",
       "file": "TeX_files/BO.tex",
       "line": 27,
       "severity": "minor",
-      "issue": "'computationally infallible to observe' — should be 'infeasible'."
+      "issue": "'computationally infallible to observe' — should be 'infeasible'.",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N05",
       "file": "TeX_files/BO.tex",
       "line": 80,
       "severity": "moderate",
-      "issue": "'The following section develops the theory of Gaussian Processes in detail' — stale cross-reference: GP theory is the PREVIOUS chapter after the restructure."
+      "issue": "'The following section develops the theory of Gaussian Processes in detail' — stale cross-reference: GP theory is the PREVIOUS chapter after the restructure.",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N06",
       "file": "TeX_files/Surrogate_Models.tex",
       "line": 3,
       "severity": "major",
-      "issue": "\\section{Introduction} is completely empty — placeholder section with no body."
+      "issue": "\\section{Introduction} is completely empty — placeholder section with no body.",
+      "state": "open — worksheet item W5"
     },
     {
       "id": "N07",
       "file": "TeX_files/BASS.tex",
       "line": 150,
       "severity": "moderate",
-      "issue": "'While we remain in the one dimensional case' is now false — the experimental pipeline is multi-dimensional. Stale claim beyond Martin's original bracket (C191)."
+      "issue": "'While we remain in the one dimensional case' is now false — the experimental pipeline is multi-dimensional. Stale claim beyond Martin's original bracket (C191).",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N08",
       "file": "TeX_files/Surrogate_Models.tex",
       "line": 22,
       "severity": "minor",
-      "issue": "'created in 2013' — the TPE paper (bergstra2011algorithms) is 2011. Also 'Going into mode detail' typo at line 24."
+      "issue": "'created in 2013' — the TPE paper (bergstra2011algorithms) is 2011. Also 'Going into mode detail' typo at line 24.",
+      "state": "resolved in 7ba7a96"
     },
     {
       "id": "N09",
       "file": "main.tex",
       "line": 27,
       "severity": "minor",
-      "issue": "\\date{INSERT DATE HERE WHEN DONE} placeholder."
+      "issue": "\\date{INSERT DATE HERE WHEN DONE} placeholder.",
+      "state": "open — Part C (needs the date)"
     },
     {
       "id": "N10",
       "file": "main.pdf",
       "line": null,
       "severity": "process",
-      "issue": "main.pdf is modified but uncommitted; needs a fresh compile and commit alongside sources per the author's convention."
+      "issue": "main.pdf is modified but uncommitted; needs a fresh compile and commit alongside sources per the author's convention.",
+      "state": "pending — PDF rebuild commit at end of current pass"
     },
     {
       "id": "N11",
       "file": "TeX_files/Bibliography.bib",
       "line": null,
       "severity": "minor",
-      "issue": "Seven-plus uncited leftover duplicate keys (Bergstra_Yamins..., Denison_..., Francom_Sansó_2020, Green_1995, Surjanovic_Bingham, Frazier_2018, Klein_..., Daxberger_..., Luong_..., Ross_1996, ghahramani2011tutorial, Snoek_...). Harmless with natbib (no \\nocite{*}), but worth pruning."
+      "issue": "Seven-plus uncited leftover duplicate keys (Bergstra_Yamins..., Denison_..., Francom_Sansó_2020, Green_1995, Surjanovic_Bingham, Frazier_2018, Klein_..., Daxberger_..., Luong_..., Ross_1996, ghahramani2011tutorial, Snoek_...). Harmless with natbib (no \\nocite{*}), but worth pruning.",
+      "state": "resolved in a9d7932 (8 duplicate keys pruned; incl. the Bergstra_Bardenet pair found during the pass)"
     },
     {
       "id": "N12",
       "file": "TeX_files/BASS.tex",
       "line": 18,
       "severity": "major",
-      "issue": "Second missing.png placeholder: the 'A decision tree' figure (in addition to C152's diagram at line 8)."
+      "issue": "Second missing.png placeholder: the 'A decision tree' figure (in addition to C152's diagram at line 8).",
+      "state": "open — Part C figure brief"
     },
     {
       "id": "N13",
       "file": "TeX_files/GP.tex",
       "line": 291,
       "severity": "check",
-      "issue": "RBF kernel written as σ_f² exp(−ℓ(x−x')²/2): ℓ multiplies in the numerator, whereas the standard form divides by 2ℓ². Consistent with treating ℓ as an inverse length-scale, but worth confirming intent — Fig. gp_regression_ell interpretation depends on it."
+      "issue": "RBF kernel written as σ_f² exp(−ℓ(x−x')²/2): ℓ multiplies in the numerator, whereas the standard form divides by 2ℓ². Consistent with treating ℓ as an inverse length-scale, but worth confirming intent — Fig. gp_regression_ell interpretation depends on it.",
+      "state": "open — decision D8"
     }
   ]
 }
