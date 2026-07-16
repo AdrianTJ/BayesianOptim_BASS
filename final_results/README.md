@@ -18,7 +18,7 @@ Per objective you should find `all_runs.csv` (every best-so-far curve),
 (final-best leaderboard), `paired_vs_random.csv` (per-seed wins/ties/losses
 vs Random + paired Wilcoxon signed-rank), and `convergence_mean_ci.png`.
 
-To regenerate from scratch: run the benchmarks (locally via
-`run_all_final.sh` or remotely via `run_on_ec2.sh`), then re-run the
+To regenerate from scratch: run the benchmarks via
+`code_files/run_all_final.sh`, then re-run the
 collector and commit the diff. The commit history of this directory is the
 audit trail of every headline-results refresh.
