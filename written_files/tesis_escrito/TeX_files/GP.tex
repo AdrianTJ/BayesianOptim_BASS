@@ -75,7 +75,9 @@ We note that these two properties are the definition of a stochastic matrix, and
 	for all $n \in \mathbb{N}_0$ and all $s_0, s_1, \ldots , s_n \in \mathcal{S}$ such that $\mathbb{P}(X_{n-1} = s_{n-1}, \ldots , X_0 = s_0) > 0$. 
 \end{theorem}
 
-This theorem is of great importance in the area of study of Markov chains, and we refer the interested reader to \cite[\S 1.2]{chung_markov_1960} for a detailed proof. this theorem establishes a bridge between the theory of Markov processes in general and the properties of linear algebra and matrix theory. One such interesting property is the use of eigenvectors and eigenvalues of the transition matrix used to define a stationary distribution, which is what we are ultimately building towards this section. 
+This theorem is of great importance in the area of study of Markov chains, and we refer the interested reader to \cite[\S 1.2]{chung_markov_1960} for a detailed proof.
+
+\green{This} theorem establishes a bridge between the theory of Markov processes in general and the properties of linear algebra and matrix theory. One such interesting property is the use of eigenvectors and eigenvalues of the transition matrix used to define a stationary distribution, which is what we are ultimately building towards this section. 
 
 % Duda
 We have seen that the transition matrix $P$ governs the behaviour and the changes that happen from one state of the Markov chain to the next. 
@@ -396,7 +398,7 @@ which is the joint probability distribution $\boldsymbol{f}, \boldsymbol{f}_* | 
 \subsubsection{Gaussian Process Regression Over Noisy Observations}
 
 When there is inherent randomness or noise in the signals being calculated, the structure of the problem itself changes. If we can assume that the noisy signals we are receiving are of the form $y = f(\boldsymbol{x}) + \varepsilon$ with the noise or inherent randomness captured by $\varepsilon$ and these being independent, identically distributed observations of a normal or Gaussian distribution, the covariance \green{matrix} of the observations therefore becomes 
-\[ \text{cov}(\boldsymbol{y}) = \sum \boldsymbol{y} = K(\boldsymbol{X}, \boldsymbol{X}) + \sigma^2 I, \]
+\[ \text{cov}(\boldsymbol{y}) = \green{\Sigma_{\boldsymbol{y}}} = K(\boldsymbol{X}, \boldsymbol{X}) + \sigma^2 I, \]
 with $I$ the identity matrix. In practical terms this means that the inherent variance of every observation is present as an added term on the diagonal of the covariance matrix (this is because of the assumption that the noise is independent). This change causes the joint distribution originally defined in equation \ref{joint_dist} to
 \[ 
 \begin{bmatrix}
