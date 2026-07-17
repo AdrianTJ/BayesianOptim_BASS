@@ -118,6 +118,7 @@ pdflatex -interaction=nonstopmode main.tex && bibtex main && \
 grep -E "^!|Citation.*undefined|Reference.*undefined" main.log      # must be empty
 grep -rn "AUTHOR NOTE\|missing.png\|INSERT DATE" TeX_files/ main.tex # must be empty (it is)
 python3 -c "import json;d=json.load(open('../corrections.json'));print(sum(1 for c in d['corrections'] if c['status'] in('open','partial','check')),'items still open')"
-# current expectation: 12 (R1-R6 queue: 4 W1/W13 partials + 5 W19/W20 partials tracked
-# per-item, 2 open W16 items, 2 figure checks) - reaches 0 as verdicts land
+# current expectation: 18 = 14 partial (R1: 1, R2: 4, R3: 5, R4: 3, plus C165
+# subsumed into R2) + 2 open (R5/W16) + 2 check (R6 figure internals).
+# Reaches 0 as the R-verdicts land.
 ```
