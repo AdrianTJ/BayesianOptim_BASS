@@ -10,11 +10,18 @@
 \usepackage[square]{natbib}
 \let\cite\citep
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
 
-% To be removed later, since these won't be used in the final version. 
+% Traceability markup: edits made during the correction rounds are wrapped in
+% \green{} so the advisor can see exactly what changed. For the SUBMITTED build,
+% comment out the two colour definitions and uncomment the two plain ones below;
+% the wrappers stay in the source either way.
 \usepackage[dvipsnames]{xcolor}
 \newcommand{\green}[1]{\textcolor{ForestGreen}{#1}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
+%\renewcommand{\green}[1]{#1}   % <- submitted build
+%\renewcommand{\blue}[1]{#1}    % <- submitted build
 
 \begin{document}
 	
@@ -24,7 +31,7 @@
 
 \author{Adrian Tame Jacobo}
 \title{BASS as a Surrogate Model for Bayesian Optimization}
-\date{INSERT DATE HERE WHEN DONE}
+\date{} % defense date goes here before submission
 
 \frontmatter
 \maketitle
