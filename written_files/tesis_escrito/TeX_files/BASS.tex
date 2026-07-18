@@ -74,16 +74,16 @@ $$
 h_2(X) = h(x_{i,j} - X_j)
 $$
 \begin{figure}[h]
-	\includegraphics[width=10cm]{Figures/3ref_pair.png}
+	\includegraphics[width=11cm]{Figures/reflected_pair.png}
 	\centering
-	\caption{The constructed reflected pairs.}
+	\caption{\green{The constructed reflected pair: both hinge functions share the knot $t = x_{ij}$, marked on the axis; each is zero on the side where its partner is active.}}
 	\label{reflected_pairs}
 \end{figure}
 So, for each $X_j$, the set of candidate reflected pairs that exist at each of the $x_{ij}$ points of that variable is shown in \green{Figure}~\ref{hinges}. 
 \begin{figure}[h]
-	\includegraphics[width=10cm]{Figures/3hinge.png}
+	\includegraphics[width=12cm]{Figures/hinge_collection.png}
 	\centering
-	\caption{Collections of hinge functions.}
+	\caption{\green{The collection of candidate reflected pairs for one predictor $X_j$: one pair per observed value, each knot $x_{1,j}, x_{2,j}, \ldots, x_{N,j}$ marked at its vertex.}}
 	\label{hinges}
 \end{figure}
 
@@ -139,7 +139,14 @@ We take the definition of a basis type from the original paper and a small examp
 
 Note that the sum does not include the constant basis function term (for which $i$ would equal 0 in \eqref{eq3}), as this basis \green{$B_1$} is always the sole constant basis function in the model, so it cannot be chosen as a candidate basis. Frequently, some maximum order of interaction $I$ is assigned to the model, such that $J_i \leq I$ for $i = 1, \ldots, k$. In which case, the sum in \eqref{eq3} only runs from 1 up to $I$. We let $T_i \in \{1, 2, \ldots, N\}$ denote the type of basis function \green{$B_i$}; thus, $T_i$ effectively tells us which predictor variables we are splitting on, i.e., what the values of $x(1,i), \ldots, x(J_i,i)$ are.
 
-\green{To ground this, return to the two-predictor setting of the MARS example, $m = 2$ with predictors $x_1$ and $x_2$. A basis function can involve $x_1$ alone, $x_2$ alone, or both, so there are $2^2 - 1 = 3$ types. Writing $\ast$ as a placeholder for a knot location (whose value does not affect the type), the three shapes are $[\pm (x_1 - \ast)]$ (type 1), $[\pm (x_2 - \ast)]$ (type 2), and $[\pm (x_1 - \ast)][\pm (x_2 - \ast)]$ (type 3). The two example terms $0.5\,(x_1 - 0.3)_+$ and $1.2\,(0.7 - x_2)_+$ from the previous section are then of type 1 and type 2 respectively, and any basis splitting only on $x_2$, whatever its knot or sign, has type 2. The type records which predictors a basis touches and nothing else.}
+\green{To ground this, return to the two-predictor setting of the MARS example, $m = 2$ with predictors $x_1$ and $x_2$. A basis function can involve $x_1$ alone, $x_2$ alone, or both, so there are $2^2 - 1 = 3$ types. Writing $\ast$ as a placeholder for a knot location (whose value does not affect the type), the three shapes are $[\pm (x_1 - \ast)]$ (type 1), $[\pm (x_2 - \ast)]$ (type 2), and $[\pm (x_1 - \ast)][\pm (x_2 - \ast)]$ (type 3). The two example terms $0.5\,(x_1 - 0.3)_+$ and $1.2\,(0.7 - x_2)_+$ from the previous section are then of type 1 and type 2 respectively, and any basis splitting only on $x_2$, whatever its knot or sign, has type 2. The type records which predictors a basis touches and nothing else. Figure~\ref{fig:bmars_types} shows one representative of each type as a surface over the unit square: the type 1 basis varies only along $x_1$, the type 2 basis only along $x_2$, and the type 3 basis is nonzero exactly where both of its factors are active, which is what an interaction means geometrically.}
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{Figures/bmars_types.png}
+	\centering
+	\caption{\green{The three basis types of the two-predictor example. Left to right: a type 1 basis $(x_1 - 0.3)_+$, flat in $x_2$; a type 2 basis $(0.7 - x_2)_+$, flat in $x_1$; and a type 3 interaction $(x_1 - 0.3)_+ (0.7 - x_2)_+$, nonzero only where both factors are positive.}}
+	\label{fig:bmars_types}
+\end{figure}
 
 The key insight that this framework of construction is based on is that any MARS model can be uniquely defined by the following: 
 \begin{itemize}
