@@ -72,6 +72,8 @@ load_objective <- function(name, d, cat_L = NULL) {
            opt_levels = ca$opt_levels)
     },
 
+    "nlp_hpo" = make_nlp_hpo(),
+
     stop(sprintf(paste0("Unknown objective '%s'. Choose: branin, rastrigin, ",
                         "synthetic, func2C, func3C, cat_ackley."), name))
   )

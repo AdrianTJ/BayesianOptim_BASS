@@ -36,6 +36,7 @@ default_config <- function() {
     # the `reticulate` R package and an importable `optuna` Python module; if
     # either is missing the run silently proceeds without TPE (see R/tpe.R).
     with_tpe = FALSE,
+    workers  = NULL,       # parallel workers; NULL=auto, 1=sequential (needed for the cached NLP objective)
 
     # ---- Numerics (hygiene, not tuning) ----
     eps     = 1e-10,        # jitter added to the GP predictive variance

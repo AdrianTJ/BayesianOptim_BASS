@@ -63,7 +63,12 @@ run_label <- if (cfg$objective == "cat_ackley") {
 cfg$out_dir <- file.path(cfg$out_dir, run_label)
 
 # --- Parallel backend: one worker per core, leaving one free -----------------
-plan(multisession, workers = max(1L, parallel::detectCores() - 1L))
+n_workers <- if (!is.null(cfg$workers)) as.integer(cfg$workers) else max(1L, parallel::detectCores() - 1L)
+if (n_workers <= 1L) {
+  plan(sequential)
+} else {
+  plan(multisession, workers = n_workers)
+}
 
 cat(sprintf("Running %s (d=%d) | budget=%d | reps=%d\n",
             cfg$objective, objective$d, cfg$budget, cfg$reps))
