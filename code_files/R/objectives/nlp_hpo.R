@@ -37,10 +37,11 @@ NLP_HPO_LEVELS <- c(
 # Absolute paths so the objective works from any worker's cwd. Override the base
 # with NLP_HPO_HOME if the repo lives elsewhere.
 nlp_hpo_home <- function() {
-  Sys.getenv(
-    "NLP_HPO_HOME",
-    unset = "/Users/ryo/Documents/Projects/BayesianOptim_BASS/code_files/5_nlp_hpo"
-  )
+  env <- Sys.getenv("NLP_HPO_HOME", unset = "")
+  if (nzchar(env)) return(env)
+  # source_library() records the code_files/ root; fall back to the working
+  # directory only if the library was loaded some other way.
+  file.path(getOption("bass.code_root", "code_files"), "5_nlp_hpo")
 }
 
 # In-process memo: under plan(sequential) the whole experiment runs in one R
