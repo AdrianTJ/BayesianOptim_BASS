@@ -4,7 +4,7 @@
     "file": "written_files/corrections.pdf",
     "pages": 59,
     "annotated_pages": 45,
-    "reviewer": "Martin (thesis advisor)",
+    "reviewer": "thesis advisor",
     "markup_tool": "iOS Markup (iPadOS 26.3, Quartz PDFContext)",
     "pdf_created": "2026-03-04",
     "committed_to_repo": "2026-04-02 (f852511)",
@@ -74,7 +74,7 @@
       "language": "en",
       "advisor_response": "Indeed",
       "status": "fixed",
-      "resolution": "Chapter closed properly: Summary and Outlook (GP.tex:427-432). Martin's 'Indeed' honored."
+      "resolution": "Chapter closed properly: Summary and Outlook (GP.tex:427-432). The advisor's 'Indeed' honored."
     },
     {
       "id": "T003",
@@ -102,7 +102,7 @@
       "language": "es",
       "advisor_response": "explicando bien que son las interacciones, porque se necesitan y como se extiende A",
       "status": "fixed",
-      "resolution": "W17: the transition paragraph Martin prescribed is written (da3cb31)."
+      "resolution": "W17: the transition paragraph the advisor prescribed is written (da3cb31)."
     },
     {
       "id": "T006",
@@ -529,7 +529,7 @@
       "anchor_found_in_current_source": "GP.tex",
       "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Proof rewritten along the Chapman-Kolmogorov route Martin sketched (GP.tex:156-178)."
+      "resolution": "Proof rewritten along the Chapman-Kolmogorov route the advisor sketched (GP.tex:156-178)."
     },
     {
       "id": "C028",
@@ -1027,7 +1027,7 @@
       "anchor_found_in_current_source": "GP.tex",
       "status": "fixed",
       "anchor_is_verbatim": true,
-      "resolution": "Covariance now written Σ_y as Martin suggested; the \\sum typo is gone (7ba7a96)."
+      "resolution": "Covariance now written Σ_y as the advisor suggested; the \\sum typo is gone (7ba7a96)."
     },
     {
       "id": "C061",
@@ -2093,7 +2093,7 @@
       "anchor_found_in_current_source": null,
       "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "W10: data-hunger point now carries Martin's exact emphasis (bc2afae)."
+      "resolution": "W10: data-hunger point now carries the advisor's exact emphasis (bc2afae)."
     },
     {
       "id": "C132",
@@ -2709,7 +2709,7 @@
       "anchor_found_in_current_source": null,
       "status": "obsolete",
       "anchor_is_verbatim": false,
-      "resolution": "Martin's 'A' was a label for his own cross-reference (used by C177's answer), not a correction."
+      "resolution": "the advisor's 'A' was a label for his own cross-reference (used by C177's answer), not a correction."
     },
     {
       "id": "C173",
@@ -2785,7 +2785,7 @@
       "anchor_found_in_current_source": null,
       "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "W17: interactions transition paragraph written to Martin's prescription; author note removed (da3cb31)."
+      "resolution": "W17: interactions transition paragraph written to the advisor's prescription; author note removed (da3cb31)."
     },
     {
       "id": "C178",
@@ -3025,7 +3025,7 @@
       "anchor_found_in_current_source": null,
       "status": "obsolete",
       "anchor_is_verbatim": false,
-      "resolution": "Martin's 'B' was a cross-reference label, not a correction."
+      "resolution": "the advisor's 'B' was a cross-reference label, not a correction."
     },
     {
       "id": "C194",
@@ -3206,7 +3206,7 @@
       "anchor_found_in_current_source": null,
       "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "Author is handling the Martin conversation directly (D9); no further tracking here."
+      "resolution": "Author is handling the advisor conversation directly (D9); no further tracking here."
     },
     {
       "id": "C206",
@@ -3416,7 +3416,7 @@
       "anchor_found_in_current_source": null,
       "status": "fixed",
       "anchor_is_verbatim": false,
-      "resolution": "Verified: Kaufmann-Korda-Munos 2012 was indeed ALT 2012, Springer LNCS — the venue Martin queried is correct as printed."
+      "resolution": "Verified: Kaufmann-Korda-Munos 2012 was indeed ALT 2012, Springer LNCS — the venue the advisor queried is correct as printed."
     },
     {
       "id": "C220",
@@ -3548,14 +3548,14 @@
       "partial": "Attempted or half-applied; residue remains.",
       "open": "Not addressed; the flagged text survives.",
       "obsolete": "The flagged text no longer exists; the concern is moot (superseded by rewrite/deletion).",
-      "needs_author": "Requires a decision or conversation (yours or Martin's), not a mechanical edit.",
+      "needs_author": "Requires a decision or conversation (yours or the advisor's), not a mechanical edit.",
       "check": "Could not be verified from source (e.g. content inside a figure image)."
     },
     "status_counts": {
       "fixed": 207,
       "obsolete": 20
     },
-    "new_issues_note": "Defects found during triage that Martin never marked — mostly residue of the correction process itself.",
+    "new_issues_note": "Defects found during triage that the advisor never marked — mostly residue of the correction process itself.",
     "last_updated": "2026-07-17 close-out: all review-queue verdicts applied; zero open items"
   },
   "new_issues": [
@@ -3572,7 +3572,7 @@
       "file": "TeX_files/GP.tex",
       "line": 399,
       "severity": "moderate",
-      "issue": "cov(y) = \\sum \\boldsymbol{y} = ... — \\sum typesets as a summation operator; Martin's suggestion was Σ_y (\\Sigma_{\\boldsymbol{y}}). Renders as nonsense math (C060 attempt gone wrong).",
+      "issue": "cov(y) = \\sum \\boldsymbol{y} = ... — \\sum typesets as a summation operator; the advisor's suggestion was Σ_y (\\Sigma_{\\boldsymbol{y}}). Renders as nonsense math (C060 attempt gone wrong).",
       "state": "resolved in 7ba7a96"
     },
     {
@@ -3612,7 +3612,7 @@
       "file": "TeX_files/BASS.tex",
       "line": 150,
       "severity": "moderate",
-      "issue": "'While we remain in the one dimensional case' is now false — the experimental pipeline is multi-dimensional. Stale claim beyond Martin's original bracket (C191).",
+      "issue": "'While we remain in the one dimensional case' is now false — the experimental pipeline is multi-dimensional. Stale claim beyond the advisor's original bracket (C191).",
       "state": "resolved in 7ba7a96"
     },
     {
