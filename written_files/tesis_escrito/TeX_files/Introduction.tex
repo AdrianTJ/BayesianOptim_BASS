@@ -52,7 +52,11 @@ Random Search. On purely categorical problems the structural capability is
 demonstrated: BASS-BO solves a solvable categorical benchmark on every seed and
 consistently outperforms both Random Search and TPE as the space grows past what
 the budget can cover, although a GP on a plain continuous relaxation, given the
-same categorical-aware search machinery, proves nearly as effective. On mixed
+same categorical-aware search machinery, proves nearly as effective. A closing
+experiment on a real task, the tuning of a small neural text classifier over an
+entirely categorical eight-dimensional space, reproduces this picture: both
+surrogate methods beat Random Search significantly, and the two are
+statistically indistinguishable from each other. On mixed
 continuous--categorical problems the result is negative: BASS-BO fails to beat
 Random Search there, a finding we report and analyze rather than obscure. The
 experimental chapter presents all of these results with paired per-seed

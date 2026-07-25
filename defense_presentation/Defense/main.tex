@@ -212,6 +212,17 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{A real task: neural-net tuning}
+  \centering
+  \includegraphics[width=0.68\textwidth]{conv_nlp_hpo.png}
+  \begin{itemize}
+    \item Text classifier trained from scratch on AG News; \textbf{eight categorical hyperparameters}, 14{,}580 configurations, budget 60, 25 paired seeds.
+    \item BASS-BO beats Random Search on \textbf{17/25} seeds ($p=0.025$); GP-BO on 16/25 ($p=0.024$); TPE does not separate from Random at this budget.
+    \item The two surrogates are statistically indistinguishable (identical median error, $p=0.69$): the synthetic categorical finding, \textbf{reproduced on a real problem}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
   \frametitle{The regime map}
   \begin{itemize}
     \item \textbf{Smooth, low-dimensional, continuous:} GP-BO decisively; BASS-BO a clear-but-second improvement over Random Search.
