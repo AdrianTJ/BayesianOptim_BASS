@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11,<3.12"
-# dependencies = ["torch>=2.2", "numpy", "scikit-learn", "datasets>=2.0"]
+# dependencies = ["torch>=2.2", "numpy", "scikit-learn"]
 # ///
 """
 NLP HPO objective: train a small from-scratch text classifier and return

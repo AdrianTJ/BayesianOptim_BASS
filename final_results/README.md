@@ -18,6 +18,19 @@ Per objective you should find `all_runs.csv` (every best-so-far curve),
 (final-best leaderboard), `paired_vs_random.csv` (per-seed wins/ties/losses
 vs Random + paired Wilcoxon signed-rank), and `convergence_mean_ci.png`.
 
+**`nlp_hpo/` is the one exception to the shared protocol above.** It is the
+real-task benchmark (a small text classifier trained from scratch on AG News;
+see `code_files/5_nlp_hpo/`), run at budget 60 rather than 80 because each
+evaluation is a real training run, and executed sequentially
+(`--workers=1`) because the objective shares an on-disk result cache. The
+objective is deterministic in the configuration (fixed training seed), so the
+cache is exact. To reproduce it:
+
+```bash
+Rscript code_files/run_benchmark.R --objective=nlp_hpo --budget=60 --reps=25 \
+  --seed_start=1001 --with_tpe=true --workers=1 --out_dir=results
+```
+
 To regenerate from scratch: run the benchmarks via
 `code_files/run_all_final.sh`, then re-run the
 collector and commit the diff. The commit history of this directory is the
