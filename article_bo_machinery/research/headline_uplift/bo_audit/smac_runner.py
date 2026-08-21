@@ -41,18 +41,29 @@ def main():
     def target(config, seed=0):
         return audited({k: config[k] for k in config})
 
+    exhausted = False
     with tempfile.TemporaryDirectory() as td:
         scen = Scenario(cs, deterministic=True, n_trials=budget, seed=seed,
                         output_directory=td)
         fac = HyperparameterOptimizationFacade(scen, target, overwrite=True,
                                                logging_level=40)
-        fac.optimize()
+        try:
+            fac.optimize()
+        except Exception as e:  # ConfigurationSpaceExhaustedException et al.
+            # H1 Amendment 2: on small categorical spaces SMAC sometimes
+            # refuses to propose further configs rather than duplicate and
+            # raises mid-run; report the audit of the completed prefix plus
+            # the termination reason instead of losing the run.
+            if "Exhausted" not in type(e).__name__:
+                raise
+            exhausted = True
 
     import importlib.metadata as im
     out = audited.summary()
     out.update({"library": "smac", "version": im.version("smac"),
                 "non_defaults": "seed; deterministic=True; temp output dir; logging quiet",
-                "benchmark": bench, "seed": seed})
+                "benchmark": bench, "seed": seed,
+                "early_termination": "ConfigurationSpaceExhausted" if exhausted else None})
     print(json.dumps(out))
 
 

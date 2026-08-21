@@ -23,9 +23,17 @@ BENCHMARKS = ["cat_ackley_d3_L5", "cat_ackley_d5_L5", "cat_ackley_d6_L11",
 
 
 def pigeonhole(k, b=BUDGET):
+    """B - K(1-(1-1/K)^B), computed as b + k*expm1(b*log1p(-1/k)).
+
+    The naive form suffers catastrophic cancellation for huge K (at
+    K=5^25, 1-1/K rounds to 1.0 and the naive value is 80 instead of ~0,
+    contradicting DESIGN.md's registered baselines). Post-data bug fix
+    toward the pre-registered spec — disclosed in ANALYSIS/REVIEW.
+    """
+    import math
     if k is None:
         return 0.0
-    return b - k * (1 - (1 - 1 / k) ** b)
+    return max(0.0, b + k * math.expm1(b * math.log1p(-1.0 / k)))
 
 
 def main():
