@@ -60,3 +60,31 @@ accumulate items only the author can settle.
   environment, the E2 table (from exp02 ANALYSIS, canonical), gap-vs-pool
   figure decision deferred to full-pass; then S3 (Duplicate Leakage) from
   E2 H3/H4 + E3 H2. Same single-writer + review discipline.
+
+## Cycle 3 — 2026-08-22 (S2 + S3: oracle audit and duplicate leakage)
+- **Did:** S2 written: Definition environment (amsthm added to preamble),
+  properties/cost paragraph, the E2 generator-ceiling table (tab:oracle),
+  and the cautionary-note paragraph about the dropped figure. S3 written:
+  mechanism paragraph (encoding-space uncertainty), ceiling-vs-below-it
+  paragraph, and the dedup-cost table (tab:dedup, from E3). Review
+  REFUTED two load-bearing overclaims, both fixed: (1) Definition 1's
+  unqualified "upper-bounds any surrogate's trajectory" is not a theorem
+  because pools are history-dependent — replaced by an explicit remark
+  (exact per pool; empirical-only at trajectory level; "diagnostic
+  yardstick, not a proved envelope"); (2) "traced to small-pool
+  territory" softened to "consistent with", matching the sources'
+  hypothesis-only status. Minors fixed: K5 forward-pointer added (real
+  weak surrogates showed no generator effect — Sec. VI ref), TPE figure
+  marked configuration-conditional with mean/median labels, table header
+  clarified, Definition cross-referenced. All table numbers verified
+  digit-for-digit by the reviewer against E1/E2/E3 canonical analyses.
+- **Files:** ../../main.tex (S2, S3, preamble, labels)
+- **TODO count (main.tex):** 13 (ratchet down from 14)
+- **Tests:** check_article.py PASS; check_research.py PASS
+- **Next (writing loop):** S4 (Consequences for Surrogate Comparisons,
+  sec:conseq): the recast punchline per K3/K5 — machinery repair changes
+  what the comparison measures; BASS's mixed-space failure localizes to
+  the surrogate (GP/TPE win through the identical loop, thesis numbers
+  from numbers.md); the E3 generator-null for weak surrogates; the
+  E8-supported decay claim K10 WITH its mandatory disclosures (E7
+  footnote + sequential-design note). Then S5 (protocol checklist).

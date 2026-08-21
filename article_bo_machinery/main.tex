@@ -26,6 +26,8 @@
 \usepackage{etoolbox}
 \usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{amsthm}
+\newtheorem{definition}{Definition}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
@@ -251,44 +253,160 @@ variant, dedup level, pool size) is the only moving part.
 \label{sec:oracle}
 % =============================================================================
 
-% Definition: replace acquire(X, y, C) with -f(C). The loop then picks the
-% best admissible candidate in the pool each iteration; its best-so-far curve
-% is a performance ceiling for the machinery, independent of any surrogate.
-% Properties: cheap (no fits); deterministic given seeds; A/B-able across
-% machinery variants; paired by shared initial designs.
-%
-% FINAL-PROTOCOL EVIDENCE (E2, 25 paired seeds, budget 80; canonical in
-% research/article_loop/experiments/exp02_oracle_matrix/ANALYSIS.md):
-%  - Func-2C (exact optimum -0.206326 at combo (2,2)): permissive beat
-%    restricted 25/25 paired seeds at every pool size (Wilcoxon p=6.0e-8);
-%    permissive holds the optimum at n_cand 50/200/1000 while the
-%    restricted gap grows x14 as the pool shrinks (0.0012 -> 0.0171).
-%  - Func-3C (exact optimum -0.722140 at (2,2,1)): 25/25 at every pool
-%    size; gap 0.0111 -> 0.0861 (x8) from n_cand 1000 -> 50.
-%  - Cat-Ackley (d=6, L=11): both generator variants reach the optimum
-%    under the oracle 25/25 -- the pool is not binding on pure-cat spaces.
-%  - NOTE: an earlier draft figure ("plateau at budget 10") was refuted on
-%    re-verification (R + Python agree); use the pool-size table instead.
-% TODO: formalize the audit (one definition environment), report the E2
-% table, and add the gap-vs-pool-size figure.
+\begin{definition}[Oracle-ceiling audit]
+\label{def:oracle}
+Fix a pool-based BO pipeline: a candidate generator $G$, an admissibility
+rule $A$ (duplicate handling), a budget $B$, and an initial design. The
+\emph{oracle-ceiling audit} replaces the acquisition score of every
+candidate $x$ by the true objective, $\alpha(x) = -f(x)$, and runs the
+otherwise unchanged loop: at each iteration the best admissible candidate
+in the pool is evaluated. The resulting best-so-far curve is the
+\emph{machinery ceiling} of $(G, A, B)$.
+\end{definition}
+
+Two remarks fix the ceiling's exact epistemic status. Per realized pool,
+the oracle's pick is optimal by construction: no acquisition, however
+informed, can select a better admissible point from the same pool.
+Trajectory-wise, however, the guarantee is not a theorem, because the
+pools themselves are history-dependent --- the generator's local half is
+centred on the current incumbent, so an oracle run and a surrogate run
+diverge in pool content after their first differing pick, and on a
+multimodal objective a differently-centred local cloud could in
+principle expose points the oracle's own trajectory never generates. The
+ceiling should therefore be read as the performance of omniscient
+selection \emph{under the pipeline's own pool process}: a bound that is
+exact per iteration, and that empirically was never exceeded by any
+surrogate arm in any of the several thousand runs behind this paper. We
+use it as a diagnostic yardstick, not as a proved envelope.
+
+The audit (Definition~\ref{def:oracle}) has four properties that make it
+cheap enough to be a standard
+preliminary. It fits no surrogate --- its cost is candidate generation
+plus objective evaluations of the pool, which on synthetic or
+cheap-to-simulate objectives is negligible (the complete
+generator~$\times$~dedup~$\times$~pool-size matrix reported below, 700
+runs at budget 80, completes in about five minutes on one core). It is
+deterministic given seeds. It is A/B-able: running it once per machinery
+variant isolates the machinery axis with no model in the loop. And it
+pairs: all variants share per-seed initial designs, so differences are
+per-seed comparable.
+
+\paragraph{The generator ceiling, measured.}
+Table~\ref{tab:oracle} reports the audit on the two mixed CoCaBO
+benchmarks at three pool sizes. The permissive generator attains the
+exact optimum (computed per level-combination and verified analytically:
+$-0.206326$ for Func-2C at combination $(2,2)$, $-0.722140$ for Func-3C
+at $(2,2,1)$) at every pool size tested. The restricted generator loses
+on \emph{every one of 25 paired seeds in every cell} (Wilcoxon
+signed-rank $p = 6.0\times10^{-8}$, the $n{=}25$ floor), and its
+shortfall grows as the pool shrinks --- by a factor of about $14$ on
+Func-2C and about $8$ on Func-3C from $N{=}1000$ to $N{=}50$. The
+practical reading: with a large pool the global half eventually stumbles
+into the optimum basin and the restriction costs little in final value;
+with the small pools typical of expensive problems, forbidding continuous
+refinement at the incumbent's combination caps even a perfect surrogate
+well short of the optimum. Whether the cap binds a \emph{real} surrogate
+depends on how close it runs to the ceiling --- our surrogate-level
+experiments detected no generator effect for weak (sklearn-grade) GP and
+random-forest surrogates at this budget, a point Sec.~\ref{sec:conseq}
+treats in full. On the purely categorical benchmarks the two
+variants coincide by construction (Sec.~\ref{sec:setup}) and the oracle
+clears the pool on every seed even at $d{=}6$, $L{=}11$: there the pool
+is not the binding constraint, and failures must be attributed elsewhere.
+
+\begin{table}[t]
+\caption{\label{tab:oracle}Oracle-ceiling audit of the candidate
+generator: mean final best (25 paired seeds, budget 80). ``Gap'' is the
+paired mean of restricted minus permissive; the permissive generator wins
+25/25 seeds in every row ($p = 6.0\times10^{-8}$). Exact optima:
+$-0.206326$ (Func-2C), $-0.722140$ (Func-3C).}
+\begin{ruledtabular}
+\begin{tabular}{llrrr}
+benchmark & $N$ & permissive & restricted & gap \\
+\colrule
+Func-2C & 50   & -0.2063 & -0.1892 & 0.0171 \\
+Func-2C & 200  & -0.2063 & -0.2008 & 0.0055 \\
+Func-2C & 1000 & -0.2063 & -0.2051 & 0.0012 \\
+Func-3C & 50   & -0.7221 & -0.6361 & 0.0861 \\
+Func-3C & 200  & -0.7221 & -0.6645 & 0.0576 \\
+Func-3C & 1000 & -0.7221 & -0.7111 & 0.0111 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+A cautionary note from this paper's own history: an earlier draft quoted
+a dramatic early-budget plateau figure for the restricted arm from a
+preliminary run's records. The audit's re-run --- in both implementations
+independently --- could not reproduce that figure at the recorded
+configuration; its magnitude is consistent with an ad-hoc small-pool run,
+though the original run's configuration was never recovered. We dropped
+it. The episode is itself an argument for the audit: ceiling numbers are
+cheap enough to regenerate that none need be trusted from memory.
+% TODO: optional gap-vs-pool-size figure; decide at full-pass review.
 
 % =============================================================================
 \section{Failure Mode II: Duplicate Leakage at the Combination Level}
 % =============================================================================
 
-% Encoding-level dedup treats two encodings that decode to the same categorical
-% combination as distinct; on deterministic objectives every revisit is a
-% wasted evaluation. PRELIMINARY EVIDENCE: on Cat-Ackley with 125 combinations
-% (budget 40), 25-29 of 40 picks (~2/3 of the budget) re-evaluated known
-% combinations before canonicalized dedup; 0 of 40 after. The method still
-% "won" its benchmark either way -- which is precisely why the leak is
-% invisible in results tables.
-% TODO: write section; include the revisit-count table (pre/post), and the
-% mechanism paragraph (EI never vanishes at observed combos under a smoothing
-% surrogate, unlike an interpolating GP).
+\label{sec:dedup}
+
+\paragraph{Mechanism.}
+Duplicate handling that compares \emph{raw encodings} treats two points
+that decode to the same categorical combination as distinct. The
+surrogate's apparent uncertainty lives in encoding space: a fresh
+encoding of an already-evaluated combination is a new point in
+$[0,1]^d$, so its posterior variance --- and hence its Expected
+Improvement --- does not vanish there, even for a surrogate that
+interpolates its training points exactly. The acquisition therefore
+keeps nominating encodings of combinations the loop has already
+measured, and on a deterministic objective every such pick is a wasted
+evaluation. Deduplicating on the canonical representation
+(Sec.~\ref{sec:setup}) closes the leak by construction.
+
+\paragraph{At the ceiling and below it.}
+Under the oracle the leak is maximally silent: on Cat-Ackley with $125$
+combinations the oracle re-picks its already-found optimum for a median
+of $78$ of $80$ iterations under encoding-level dedup, while no
+benchmark's mean final value moves by even two paired standard errors in
+either generator variant --- the convergence plot literally cannot see
+it. For real surrogates the same leak is far from harmless
+(Table~\ref{tab:dedup}): a GP and a random forest each re-spend $52$--$55$
+of $80$ picks on known combinations and drop from solving the benchmark
+on every seed to missing it on $2$--$5$ of $25$, with mean finals
+degrading toward Random Search. The leak is also not an artifact of one
+implementation: Optuna's stock TPE --- its own sampler, no shared pool
+--- revisits a median of $53$ of $80$ combinations (mean $52.7$,
+Table~\ref{tab:dedup}) on the same benchmark and lands at Random-level
+performance. (This TPE arm starts from Optuna's own random startup
+rather than the shared design, so its performance figure is
+configuration-conditional; the revisit count is the robust part of the
+observation.) The thesis
+pipeline's pre-fix instrumented BASS runs lost $25$--$29$ of $40$ picks
+the same way. Roughly two thirds of the evaluation budget, across three
+unrelated method families, spent silently re-measuring known points ---
+while each method still ``ran'' and produced plausible-looking curves.
+
+\begin{table}[t]
+\caption{\label{tab:dedup}Duplicate leakage on Cat-Ackley ($d{=}3$,
+$L{=}5$; $125$ combinations, optimum $0$), permissive generator, 25
+paired seeds, budget 80. ``Solved'' is final best below $0.1$.}
+\begin{ruledtabular}
+\begin{tabular}{llrrr}
+method & dedup & mean final & solved & mean revisits/80 \\
+\colrule
+GP-EI & combination & 0.000 & 25/25 & 0.0 \\
+GP-EI & encoding    & 3.64  & 20/25 & 52.2 \\
+RF-EI & combination & 0.000 & 25/25 & 0.0 \\
+RF-EI & encoding    & 1.46  & 23/25 & 54.5 \\
+TPE (own machinery) & --- & 2.91 & 21/25 & 52.7 \\
+Random & combination & 4.36 & 19/25 & --- \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
 
 % =============================================================================
 \section{Consequences for Surrogate Comparisons}
+\label{sec:conseq}
 % =============================================================================
 
 % The punchline: with restricted machinery, the spline surrogate lost to
