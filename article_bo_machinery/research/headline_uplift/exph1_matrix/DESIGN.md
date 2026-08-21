@@ -95,3 +95,17 @@ we cite the issue, where it doesn't we report measurements only.
 - pest_control is our deterministic variant of COMBO's stochastic
   objective (local seeded RNG); disclosed in benchmarks.py and in any
   table using it.
+
+## Amendment 1 (post-smoke, pre-full-run; nothing beyond seed 3001 existed)
+
+The timing smoke exposed: (a) a path bug in cell_runner.py (machinery
+import; every non-pest main-env smoke run failed on import, so no data was
+produced by the buggy path — fixed); (b) pest_control (25 categorical
+dims) exceeds the 20-min cap for ax and skopt-gp and took 18.6 min for
+optuna-gp under 4-way oversubscription. Changes, all before the full run:
+per-run cap on pest_control raised to 45 min (other benchmarks stay at
+20); subprocess thread pools pinned (OMP/MKL/OPENBLAS=1) so 4 workers on
+4 cores don't oversubscribe; orchestrator-side wall-time fallback for smac
+rows. Valid seed-3001 rows already in results.jsonl (optuna-gp pest, smac
+all 6 benchmarks) are kept — they are protocol runs under the registered
+config. Metrics, hypotheses, seeds, budget: unchanged.

@@ -29,7 +29,13 @@ BENCHMARKS = ["cat_ackley_d3_L5", "cat_ackley_d5_L5", "cat_ackley_d6_L11",
 SEEDS = list(range(3001, 3026))
 BUDGET = 80
 CAP_S = 1200
+CAP_PEST_S = 2700   # amended before the full run: smoke showed GP-family
+                    # libraries need >20 min on the 25-dim pest space
 WORKERS = 4
+# 4 workers on 4 cores: pin library thread pools so runs don't oversubscribe
+import os
+ENV = {**os.environ, "OMP_NUM_THREADS": "1", "MKL_NUM_THREADS": "1",
+       "OPENBLAS_NUM_THREADS": "1"}
 
 lock = threading.Lock()
 
@@ -47,18 +53,22 @@ def done_keys():
 
 
 def one(job):
+    import time
     lib, bench, seed = job
+    cap = CAP_PEST_S if bench == "pest_control" else CAP_S
     if lib == "smac":
         cmd = [str(SMAC_VENV_PY), str(HERE.parent / "bo_audit" / "smac_runner.py"),
                bench, str(BUDGET), str(seed)]
     else:
         cmd = [sys.executable, str(HERE / "cell_runner.py"), lib, bench,
                str(BUDGET), str(seed)]
+    t0 = time.time()
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True, timeout=CAP_S)
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=cap,
+                           env=ENV)
     except subprocess.TimeoutExpired:
         with lock:
-            FAILURES.open("a").write(f"TIMEOUT>{CAP_S}s {lib} {bench} {seed}\n")
+            FAILURES.open("a").write(f"TIMEOUT>{cap}s {lib} {bench} {seed}\n")
         return f"TIMEOUT {lib} {bench} {seed}"
     if p.returncode != 0:
         with lock:
@@ -66,6 +76,7 @@ def one(job):
                 f"FAIL {lib} {bench} {seed} :: {p.stderr.strip()[-500:]}\n\n")
         return f"FAIL {lib} {bench} {seed}"
     row = json.loads(p.stdout.strip().splitlines()[-1])
+    row.setdefault("wall_s", round(time.time() - t0, 1))
     row.update({"library": lib, "benchmark": bench, "seed": seed})
     with lock:
         RESULTS.open("a").write(json.dumps(row) + "\n")
