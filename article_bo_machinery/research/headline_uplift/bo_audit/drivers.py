@@ -67,7 +67,8 @@ def run_hyperopt_tpe(audited, space, budget, seed):
          trials=Trials(), rstate=np.random.default_rng(seed),
          show_progressbar=False)
     import hyperopt
-    return {"library": "hyperopt-tpe", "version": hyperopt.__version__, "non_defaults": "seed only"}
+    return {"library": "hyperopt-tpe", "version": hyperopt.__version__,
+            "non_defaults": "seed; fresh Trials(); progressbar off (both cosmetic)"}
 
 
 def run_skopt_gp(audited, space, budget, seed):

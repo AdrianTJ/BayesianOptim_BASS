@@ -40,7 +40,9 @@ class AuditedObjective:
             elif kind == "int":
                 parts.append(f"{name}={int(round(float(v)))}")
             else:
-                parts.append(f"{name}={round(float(v), self.cont_decimals)}")
+                # + 0.0 normalizes -0.0 to 0.0 so numerically equal rounded
+                # values can never produce distinct keys (review H0 finding)
+                parts.append(f"{name}={round(float(v), self.cont_decimals) + 0.0}")
         return "|".join(parts)
 
     def __call__(self, config):

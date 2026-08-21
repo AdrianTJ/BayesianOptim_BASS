@@ -8,7 +8,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))                      # bo_audit
-sys.path.insert(0, str(HERE.parents[2] / "article_loop" / "experiments"))  # machinery
+sys.path.insert(0, str(HERE.parents[1] / "article_loop" / "experiments"))  # machinery
 from bo_audit.core import AuditedObjective
 from bo_audit.drivers import DRIVERS
 from machinery import make_cat_ackley
