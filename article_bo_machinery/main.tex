@@ -80,7 +80,7 @@ refining its continuous coordinates --- caps what perfect guidance can
 attain: in oracle experiments that replace the acquisition with the true
 objective, the restricted generator loses to the permissive one on every
 one of 25 paired seeds of two standard mixed benchmarks
-($p = 6\times10^{-8}$), with a shortfall that grows by factors of 8
+($p = 6.0\times10^{-8}$), with a shortfall that grows by factors of 8
 to 14 as the candidate pool shrinks to realistic sizes. Second,
 duplicate handling that compares raw encodings rather than decoded
 categorical combinations silently re-spends a majority of the evaluation
@@ -90,7 +90,9 @@ solve rate on a solvable categorical benchmark drops accordingly. Both
 effects are invisible in standard convergence plots and are readily
 misattributed to the surrogate; whether the generator cap binds a given
 surrogate depends on how close it runs to the machinery's ceiling, which
-the audit measures. We propose this \emph{oracle-ceiling audit} as a
+the audit measures --- none of the (deliberately ordinary) surrogates we
+tested ran close enough for the cap to be detectable, while the dedup
+leak taxed every one of them. We propose this \emph{oracle-ceiling audit} as a
 cheap, general diagnostic for BO pipelines --- minutes of compute, no
 surrogate fits --- together with a checklist for machinery-controlled
 surrogate comparisons: shared schema-aware proposals, combination-level
@@ -143,10 +145,12 @@ under perfect guidance. Auditing each machinery variant this way costs
 minutes and no surrogate fits, and it turns ``the method underperformed''
 into an attributable statement --- either the machinery's ceiling was the
 binding constraint, or the surrogate failed short of a ceiling that
-permitted more. Applying the audit and repairing both failure modes did
-not rescue the surrogate that motivated this work; it did something more
-useful, converting an unattributable mixed-space failure into a clean
-negative result about the model itself. The two defects contaminate
+permitted more. The spline surrogate whose puzzling failure motivated
+this work serves here as a case study: the general mechanisms are
+established on the oracle and on other surrogate families, and applying
+the audit and repairing both failure modes did not rescue it --- it did
+something more useful, converting an unattributable mixed-space failure
+into a clean negative result about the model itself. The two defects contaminate
 comparisons in different ways: the duplicate leak taxes every method
 family we tested by a comparable margin, while the generator restriction
 binds in proportion to how close a method runs to the machinery's
@@ -334,7 +338,7 @@ variant, dedup level, pool size) is the only moving part.
 % TODO: one loop-diagram figure (optional; decide at full-pass review).
 
 % =============================================================================
-\section{The Oracle-Ceiling Audit}
+\section{The Oracle-Ceiling Audit and Failure Mode I:\\ the Generator Ceiling}
 \label{sec:oracle}
 % =============================================================================
 
@@ -379,7 +383,9 @@ per-seed comparable.
 \paragraph{The generator ceiling, measured.}
 Table~\ref{tab:oracle} reports the audit on the two mixed CoCaBO
 benchmarks at three pool sizes. The permissive generator attains the
-exact optimum (computed per level-combination and verified analytically:
+optimum to within numerical precision (per-seed residual
+$\le 3\times10^{-5}$ even at $N{=}50$; the optima are computed per
+level-combination and verified analytically:
 $-0.206326$ for Func-2C at combination $(2,2)$, $-0.722140$ for Func-3C
 at $(2,2,1)$) at every pool size tested. The restricted generator loses
 on \emph{every one of 25 paired seeds in every cell} (Wilcoxon
@@ -394,10 +400,12 @@ well short of the optimum. Whether the cap binds a \emph{real} surrogate
 depends on how close it runs to the ceiling --- our surrogate-level
 experiments detected no generator effect for weak (sklearn-grade) GP and
 random-forest surrogates at this budget, a point Sec.~\ref{sec:conseq}
-treats in full. On the purely categorical benchmarks the two
-variants coincide by construction (Sec.~\ref{sec:setup}) and the oracle
-clears the pool on every seed even at $d{=}6$, $L{=}11$: there the pool
-is not the binding constraint, and failures must be attributed elsewhere.
+treats in full. On the purely categorical benchmarks (permuted-categorical Ackley,
+``Cat-Ackley'', used at three sizes throughout; Sec.~\ref{sec:experiments})
+the two variants coincide by construction (Sec.~\ref{sec:setup}) and the
+oracle clears the pool on every seed even at $d{=}6$, $L{=}11$: there the
+pool is not the binding constraint, and failures must be attributed
+elsewhere.
 
 \begin{table}[t]
 \caption{\label{tab:oracle}Oracle-ceiling audit of the candidate
@@ -430,7 +438,7 @@ cheap enough to regenerate that none need be trusted from memory.
 % TODO: optional gap-vs-pool-size figure; decide at full-pass review.
 
 % =============================================================================
-\section{Failure Mode II: Duplicate Leakage at the Combination Level}
+\section{Failure Mode II: Duplicate Leakage\\ at the Combination Level}
 % =============================================================================
 
 \label{sec:dedup}
@@ -448,8 +456,19 @@ measured, and on a deterministic objective every such pick is a wasted
 evaluation. Deduplicating on the canonical representation
 (Sec.~\ref{sec:setup}) closes the leak by construction.
 
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{figures/fig_dedup_audit}
+\caption{\label{fig:dedup}The leak the convergence plot cannot see.
+(a)~Mean best-so-far of the oracle on Cat-Ackley ($d{=}3$, $L{=}5$),
+combination-level versus encoding-level dedup, 25 paired seeds: the two
+curves are exactly superimposed. (b)~The audit's revisit counts for the
+same runs: encoding-level dedup re-spends a median 78 of 80 evaluations
+(one dot per seed; bars are medians).}
+\end{figure}
+
 \paragraph{At the ceiling and below it.}
-Under the oracle the leak is maximally silent: on Cat-Ackley with $125$
+Under the oracle the leak is maximally silent
+(Fig.~\ref{fig:dedup}): on Cat-Ackley with $125$
 combinations the oracle re-picks its already-found optimum for a median
 of $78$ of $80$ iterations under encoding-level dedup, while no
 benchmark's mean final value moves by even two paired standard errors in
@@ -467,14 +486,19 @@ rather than the shared design, so its performance figure is
 configuration-conditional; the revisit count is the robust part of the
 observation.) The thesis
 pipeline's pre-fix instrumented BASS runs lost $25$--$29$ of $40$ picks
-the same way. Roughly two thirds of the evaluation budget, across three
-unrelated method families, spent silently re-measuring known points ---
+the same way. Roughly two thirds of the evaluation budget --- across four methods
+spanning three unrelated machinery families (the shared pool loop under
+GP and RF, TPE's own sampler, and the thesis's BASS pipeline) --- spent
+silently re-measuring known points,
 while each method still ``ran'' and produced plausible-looking curves.
 
 \begin{table}[t]
 \caption{\label{tab:dedup}Duplicate leakage on Cat-Ackley ($d{=}3$,
 $L{=}5$; $125$ combinations, optimum $0$), permissive generator, 25
-paired seeds, budget 80. ``Solved'' is final best below $0.1$.}
+paired seeds, budget 80. ``Solved'' is final best below $0.1$. Random is
+shown under combination dedup only: its uniform continuous draws almost
+never collide at the raw-encoding level, so an encoding-dedup Random arm
+is operationally identical to no dedup and was not run.}
 \begin{ruledtabular}
 \begin{tabular}{llrrr}
 method & dedup & mean final & solved & mean revisits/80 \\
@@ -505,12 +529,16 @@ audited, BASS-BO still \emph{loses} to Random Search on both mixed
 benchmarks in per-seed wins, while GP-BO and TPE beat Random comfortably
 \emph{through the identical loop, acquisition rule, dedup, and initial
 designs}. That is precisely the point of the exercise. Before the
-repair, BASS-BO's mixed-space failure was unattributable --- the audit
-had shown the restricted generator capped every method
-(Sec.~\ref{sec:oracle}), and two thirds of the categorical budget was
-leaking to revisits (Sec.~\ref{sec:dedup}). After the repair, with the
-oracle exonerating the pool and the leak closed, the failure localizes
-cleanly to the surrogate--acquisition combination itself. A comparison
+repair, BASS-BO's mixed-space failure was unattributable, on two
+documented grounds: the pre-repair library's generator demonstrably
+forced a categorical flip on every local candidate (the configuration is
+recorded in the pipeline's version history, and the contemporaneous
+oracle A/B against that library lost every paired seed --- a result the
+final-protocol audit of Sec.~\ref{sec:oracle} re-establishes
+independently), and two thirds of the categorical budget was leaking to
+revisits (Sec.~\ref{sec:dedup}). After the repair, with the oracle
+bounding what the pool permits and the leak closed, the failure
+localizes cleanly to the surrogate--acquisition combination itself. A comparison
 that once measured machinery now measures models; the ranking did not
 flip, but its meaning did.
 
@@ -548,7 +576,7 @@ count.
 
 \paragraph{The generator axis, for real surrogates, at this budget.}
 Running sklearn-grade GP and random-forest surrogates through the same
-four machinery cells detects \emph{no} keep-versus-flip effect on either
+four machinery cells detects \emph{no} permissive-versus-restricted effect on either
 mixed benchmark (10--14 wins of 25, all $p \ge 0.09$): both run far
 below the oracle ceiling, where their own guidance quality --- not the
 pool --- is the binding constraint. A guidance-dial experiment makes
@@ -607,15 +635,21 @@ audit that verifies the control worked.
   \emph{Rationale:} encoding-level dedup silently re-spends the majority
   of a categorical budget and its cost is invisible in convergence
   curves (Sec.~\ref{sec:dedup}). \emph{Cost:} one canonicalization
-  function.
+  function; under other encodings (one-hot, embeddings) the same rule
+  applies --- canonicalize to whatever representation the objective
+  actually distinguishes before comparing.
   \item \textbf{Run the oracle-ceiling audit per machinery variant,
   before attributing anything to a surrogate.} \emph{Rationale:} it
   isolates the machinery axis with no model in the loop, and it locates
   each surrogate's regime --- a surrogate far below the ceiling is
   guidance-limited, and machinery effects measured on it will be
-  attenuated or absent (Sec.~\ref{sec:conseq}). \emph{Cost:} minutes on
-  cheap objectives; on expensive objectives, run it on a cheap
-  stand-in with the same input schema.
+  attenuated or absent (Sec.~\ref{sec:conseq}). The ceiling distance is
+  necessary but not sufficient for attribution: turning it into a
+  detectability threshold for a given surrogate class took a separate,
+  materially larger calibration in our case (the guidance dial,
+  Sec.~\ref{sec:conseq}). \emph{Cost:} minutes on cheap objectives for
+  the audit itself; on expensive objectives, run it on a cheap stand-in
+  with the same input schema.
   \item \textbf{Pair the seeds and report per-seed win/tie/loss with a
   signed-rank test, not only mean curves.} \emph{Rationale:} mean curves
   completely hid one of this paper's failure modes and understated the
@@ -654,11 +688,14 @@ generator, local half & Gaussian (data-derived scale) $\times$ \\
  & Hamming flips w.p. $1/n_{\mathrm{cat}}$ \\
 local keep-combination & allowed (permissive) / forced-flip \\
  & (restricted ablation) \\
-dedup representation & canonical (bin-centre) / raw \\
- & (leak ablation); tol $10^{-10}$ \\
+dedup representation & combination-level (canonical \\
+ & bin-centre) / encoding-level (raw, \\
+ & the leak ablation); tol $10^{-10}$ \\
 pool size $N$ & 1000 (50, 200 in ablations) \\
 initial design & maximin LHS, $n_0 = \max(2d{+}1, 8)$, \\
  & shared across methods per seed \\
+acquisition numerics & closed-form EI (GP/RF); MC-EI \\
+ & over 200 posterior draws (BASS) \\
 oracle ceiling & Table~\ref{tab:oracle} \\
 \end{tabular}
 \end{ruledtabular}
@@ -675,11 +712,20 @@ seeds with shared initial designs, per-seed win/tie/loss with Wilcoxon
 signed-rank tests. Benchmarks: the CoCaBO mixed functions Func-2C/3C
 \cite{ru2020cocabo} and permuted-categorical Ackley at three sizes
 ($d{=}3/L{=}5$ solvable in budget; $d{=}4/L{=}7$; $d{=}6/L{=}11$ with
-$1.77$ million combinations). The thesis pipeline additionally ran two
-real tuning tasks under the same shared machinery but at their own
-scales: Elastic Net (budget $100$, $50$ seeds) and hyperparameter tuning
-of a small neural text classifier (budget $60$, $25$ seeds --- each
-evaluation is a real training run).
+$1.77$ million combinations). The thesis pipeline additionally reports
+one real tuning task under the same shared machinery at its own scale:
+hyperparameter tuning of a small neural text classifier over a fully
+categorical eight-dimensional space (budget $60$, $25$ seeds --- each
+evaluation is a real training run). There, BASS-BO and GP-BO both beat
+Random Search in paired wins ($17/3/5$, $p = 0.025$, and $16/2/7$,
+$p = 0.024$, respectively) while TPE does not ($12/2/11$, $p = 0.96$) ---
+the categorical-capability pattern of the synthetic benchmarks carrying
+over. (An earlier elastic-net candidate was run but dropped by the
+thesis as uninformative --- its models converged almost immediately,
+leaving nothing for an optimizer to find; its artifacts remain in the
+companion repository.) All machinery \emph{ablations} in this paper,
+however, are synthetic-benchmark results; no ablation was run on a real
+task.
 
 The completed matrix comprises: (i) the oracle-ceiling audit over
 generator $\times$ dedup $\times$ pool size
@@ -724,7 +770,17 @@ corrupts the oracle with independent noise, which is one degradation
 model; a \emph{biased} surrogate --- one that is systematically wrong in
 a structured way, for example by over-smoothing --- degrades guidance
 differently, and its interaction with the generator restriction is
-untested.
+untested. The objection this invites should be answered head on: does
+the generator confound matter for real methods, or only for oracles? On
+the evidence here, no real surrogate we ran was measurably affected by
+the generator restriction --- the observational case for its practical
+relevance is inferential, resting on the dial calibration (sensitivity
+decays with guidance quality within a fixed search type) plus the
+observation that better-guided methods than ours exist. The dedup
+confound needs no such inference: it taxed every method we ran,
+directly. A comparison paper adopting our protocol gets the generator
+control nearly for free either way; the audit is what tells its authors
+whether that control was load-bearing for their methods.
 
 \paragraph{Scope of the machinery family.}
 Everything here concerns pool-based acquisition optimization: propose,
@@ -736,7 +792,14 @@ straightforward to state but were not evaluated here. Likewise, the
 dedup argument assumes a deterministic objective, where every revisit is
 pure waste; under observation noise, revisiting is legitimate
 replication, and duplicate handling becomes a design choice about
-replication policy rather than a leak.
+replication policy rather than a leak. A further scope limit is
+dimensional and empirical: every machinery ablation in this paper runs
+on low-dimensional synthetic benchmarks (two to six categorical
+coordinates, at most two continuous); the real-task evidence comes from
+the thesis pipeline only and was not subjected to the ablations.
+Higher-dimensional spaces, where candidate pools cover vanishing
+fractions of the domain, could plausibly make the generator restriction
+bind harder --- that is conjecture, stated as such.
 
 \paragraph{Open cells and verification limits.}
 The spline surrogate itself has not been run through the restricted and
@@ -747,11 +810,14 @@ works were verified at the abstract and companion-code level rather than
 full text (an environment constraint); the sweep and its per-source
 assessments are versioned in the companion repository so the check can
 be extended. Finally, one methodological debt is disclosed rather than
-hidden: two of this paper's experiment analyses (and several section
-drafts) were refuted in internal adversarial review for overclaiming
-beyond pre-registered criteria or beyond the recorded evidence, and were
-corrected before inclusion; the review records are versioned alongside
-the experiments.
+hidden: two of this paper's experiment analyses were refuted in internal
+adversarial review and corrected before inclusion --- the surrogate-matrix
+analysis, for reframing a failed generator hypothesis as a new supported
+finding beyond its pre-registered fallback, and the first guidance-dial
+analysis, for declaring a TPE configuration question closed when its
+pre-registered joint criterion had been missed by one seed --- alongside
+several section drafts corrected for similar overclaims. The review
+records are versioned with the experiments.
 
 \paragraph{Relation to reproducibility critiques.}
 Our findings are a mixed-space instance of a broader pattern documented
@@ -761,7 +827,13 @@ often live in uncontrolled parts of the pipeline. The machinery axes we
 isolate are unusually easy to control --- a shared generator is an
 implementation choice, combination-level dedup is one function, and the
 audit that verifies both costs minutes --- which is what makes a
-protocol, rather than a lament, possible.
+protocol (Sec.~\ref{sec:protocol}), rather than a lament, possible. Two statistical notes: we apply no multiple-comparison
+correction across the many cells reported --- the load-bearing results
+(25/25 sweeps at the Wilcoxon floor) survive any correction, and
+descriptive non-anchor $p$-values are labeled as such where they appear
+--- and ``statistically undetectable'' is used throughout in the plain
+sense of failing a pre-named test at $\alpha=0.05$, not as evidence of
+exact absence.
 
 \begin{acknowledgments}
 % TODO
@@ -771,7 +843,14 @@ protocol, rather than a lament, possible.
 The complete pipeline, diagnostics, and result-publishing scripts are
 available at \texttt{github.com/AdrianTJ/BayesianOptim\_BASS}; the oracle
 audit and instrumented runs are under
-\texttt{code\_files/3\_categorical\_diagnostics/}.
+\texttt{code\_files/3\_categorical\_diagnostics/}, and this article's
+experiments, pre-registered designs, raw results, and review records
+under \texttt{article\_bo\_machinery/research/}. Reproducibility: all
+runs use fixed seed ranges (1001--1025 for the main matrices, 1026--1050
+for the pre-registered retest) with shared per-seed initial designs;
+the Python experiments ran single-machine (4 cores) on NumPy/SciPy/
+scikit-learn/Optuna, the thesis pipeline in R; total compute for the
+article's matrices is under an hour of CPU time.
 
 \bibliography{references}
 
