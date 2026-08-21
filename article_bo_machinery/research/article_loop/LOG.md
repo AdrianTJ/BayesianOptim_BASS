@@ -88,3 +88,43 @@ resume instruction.
   (K5) and the surrogate-level revisit cost (E5 piggybacks: count revisits
   per surrogate under encoding dedup on d3L5). Independent review before
   ledger update.
+
+## Cycle 3 — 2026-08-22
+- **Phase:** experiment (E3 surrogate matrix) + analyze + review-forced
+  re-center
+- **Did:** E3 ran 750 runs (relaunched once after a container restart
+  killed the first run; pre-registration was already committed). Two
+  pre-registered hypotheses FAILED, two PASSED. H2 passed emphatically:
+  encoding-level dedup costs every real pool surrogate 52–55/80 revisits
+  and drops d3L5 solve-rate from 25/25 to 20–23/25, and stock optuna TPE's
+  own machinery wastes 53/80 — the dedup leak is cross-method (K2b
+  upgraded). H1 failed in all four cells: keep-vs-flip makes no
+  significant difference for sklearn GP/RF (p≥0.09). The adversarial
+  reviewer UPHELD every computation (zero numeric mismatches) but
+  **REFUTED the first-draft "regime" reframing** of the H1 null as
+  confounded HARKing; the analysis was rewritten to the pre-registered
+  fallback (audit ceiling overestimates machinery sensitivity for weak
+  surrogates), K10 demoted to hypothesis, and the de-confounding
+  experiment designed: a guidance dial (noisy oracle, score = −f + σ·ε,
+  same pool-argmax search type, σ swept ceiling→Random). H4 also failed
+  (TPE ≯ Random); review confirmed the cause candidate is real (thesis
+  tpe.R shares the LHS init via add_trial; ours didn't) — config-matched
+  re-run queued. Minor code fixes: numeric param-key sort in combo_of; GP
+  random_state disclosure.
+- **Files:** exp03_surrogate_matrix/{DESIGN,ANALYSIS,REVIEW}.md, run_e3.py,
+  results.csv, surrogates.py, CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E3 checks:
+  H2 PASS ×2, H3 2/4, H1 FAIL ×4 + H4 FAIL ×2 (pre-registered
+  falsifications, recorded as findings)
+- **User decisions (open):** unchanged.
+- **Next:** Cycle 4 = E7 (guidance dial, decides K10): DESIGN first —
+  noisy-oracle acquisition score = −f(Xc) + σ·ε with σ calibrated per
+  benchmark so mean final spans ceiling→~Random across σ levels (pilot σ
+  grid on a few seeds first, then pre-register the σ set); keep vs flip,
+  combination dedup, func2C + func3C, 25 paired seeds, budget 80,
+  n_cand 1000 and 50 (small pool = where E2 says the gap is largest —
+  strongest test). Pre-register: H-regime supported iff keep-vs-flip
+  paired win-rate/gap decays monotonically toward chance as σ grows;
+  refuted if it persists at σ where performance ≈ GP/Random level. Also
+  (cheap, same cycle if time permits): shared-init TPE re-run on
+  func2C/3C to close K-TPE. Independent review before ledger update.

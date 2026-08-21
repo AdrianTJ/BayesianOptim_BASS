@@ -77,7 +77,9 @@ def run_tpe(objective, budget, seed):
     # Revisits: post-startup trials whose categorical combination was already
     # evaluated (meaningful as budget waste on pure-cat objectives only).
     def combo_of(trial):
-        return tuple(v for _, v in sorted(trial.params.items())
+        # numeric key sort ("x10" after "x2"): safe for any dimensionality
+        return tuple(v for _, v in sorted(trial.params.items(),
+                                          key=lambda kv: int(kv[0][1:]))
                      if isinstance(v, (int, np.integer)))
 
     seen, revisits = set(), 0
