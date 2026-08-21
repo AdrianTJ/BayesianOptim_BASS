@@ -88,3 +88,28 @@ accumulate items only the author can settle.
   from numbers.md); the E3 generator-null for weak surrogates; the
   E8-supported decay claim K10 WITH its mandatory disclosures (E7
   footnote + sequential-design note). Then S5 (protocol checklist).
+
+## Cycle 4 — 2026-08-22 (S4: Consequences)
+- **Did:** S4 written: the recast punchline (repair changed what the
+  comparison measures, not who wins — tab:thesis with the final-protocol
+  W/T/L and Wilcoxon values; BASS's mixed failure localizes to the
+  surrogate with GP/TPE winning through the identical loop), the
+  categorical capability paragraph (exact optimum every seed; tie
+  structure vs win counts), the generator-axis-for-real-surrogates
+  paragraph with the K10 decay claim and its mandatory dual-disclosure
+  footnote (E7 composite + sequential design + non-monotone residual),
+  and the qualitative surrogate-attributability close. Review UPHELD —
+  all table values and roundings exact, K10 disclosures judged fully
+  satisfied, narrative consistent with the thesis Conclusions — with two
+  clarity minors fixed: the dedup-GP cross-implementation linkage now
+  named explicitly (Python GP-EI, not thesis GP-BO), and the companion
+  diagnostics pointer made concrete.
+- **Files:** ../../main.tex (S4)
+- **TODO count (main.tex):** 12 (ratchet down from 13)
+- **Tests:** check_article.py PASS; check_research.py PASS
+- **Next (writing loop):** S5 (A Protocol for Machinery-Controlled
+  Comparisons): the boxed checklist with rationale-and-cost per item,
+  the machinery-disclosure table template, MCBO differentiation per the
+  novelty check's must-cite notes. Then S6 (Experiments: report the
+  completed matrices; queue the BASS/E4 cells for the user machine with
+  exact commands, no silent scope cuts).

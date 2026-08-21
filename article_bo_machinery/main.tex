@@ -409,18 +409,94 @@ Random & combination & 4.36 & 19/25 & --- \\
 \label{sec:conseq}
 % =============================================================================
 
-% The punchline: with restricted machinery, the spline surrogate lost to
-% random search on Func-2C in per-seed wins (2W/2T/6L, 10 seeds, budget 60,
-% PRELIMINARY); with repaired machinery it moved to parity (5W/5L), and on the
-% purely categorical benchmarks it went from mixed results to winning 10/10
-% paired seeds (easy instance: exact optimum on every seed vs 2/10 for random
-% search). Same surrogates, same acquisition, same budgets -- the apparent
-% ranking was a property of the machinery.
-% TODO: replace preliminary numbers with the 25-seed protocol run; add the
-% paired win/tie/loss + Wilcoxon table for both machinery variants; discuss
-% what remains surrogate-attributable (held-out rank quality of the surrogate
-% at BO sample sizes: Spearman ~0.66/0.61/0.47 on Func-2C/Func-3C/Cat-Ackley
-% hard, PRELIMINARY).
+\paragraph{Repairing the machinery changes what a comparison means, not
+necessarily who wins.}
+An early, preliminary reading of our own pipeline suggested that fixing
+the candidate generator would flip the spline surrogate's standing
+against Random Search on the mixed benchmarks. The full 25-seed protocol
+run said otherwise, and we report it as the negative result it is
+(Table~\ref{tab:thesis}): with the machinery repaired, shared, and
+audited, BASS-BO still \emph{loses} to Random Search on both mixed
+benchmarks in per-seed wins, while GP-BO and TPE beat Random comfortably
+\emph{through the identical loop, acquisition rule, dedup, and initial
+designs}. That is precisely the point of the exercise. Before the
+repair, BASS-BO's mixed-space failure was unattributable --- the audit
+had shown the restricted generator capped every method
+(Sec.~\ref{sec:oracle}), and two thirds of the categorical budget was
+leaking to revisits (Sec.~\ref{sec:dedup}). After the repair, with the
+oracle exonerating the pool and the leak closed, the failure localizes
+cleanly to the surrogate--acquisition combination itself. A comparison
+that once measured machinery now measures models; the ranking did not
+flip, but its meaning did.
+
+\begin{table}[t]
+\caption{\label{tab:thesis}The thesis pipeline's final protocol run
+(repaired, shared machinery; 25 paired seeds, budget 80): per-seed
+wins/ties/losses against Random Search and paired Wilcoxon $p$.}
+\begin{ruledtabular}
+\begin{tabular}{llrr}
+benchmark & method & W/T/L & $p$ \\
+\colrule
+Func-2C & GP-BO   & 20/1/4  & $5.2\times10^{-4}$ \\
+Func-2C & TPE     & 18/1/6  & $0.0053$ \\
+Func-2C & BASS-BO & 5/2/18  & $0.043$ \\
+Func-3C & GP-BO   & 23/0/2  & $5.4\times10^{-5}$ \\
+Func-3C & TPE     & 19/1/5  & $0.00071$ \\
+Func-3C & BASS-BO & 8/3/14  & $0.048$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\paragraph{Where the surrogate does win, the machinery decides whether
+that is visible.}
+On the solvable purely categorical instance (Cat-Ackley, $d{=}3$,
+$L{=}5$), BASS-BO and GP-BO both reach the exact optimum on every seed
+(mean and standard deviation numerically zero) under the repaired
+machinery --- while under encoding-level dedup a GP of the same class
+(the Python-implementation GP-EI of Table~\ref{tab:dedup}, not the
+thesis's GP-BO) misses it on a fifth of the seeds. The same
+benchmark also illustrates why solvable-in-budget instances are needed
+at all: Random Search finds the optimum often enough that the paired
+comparison is mostly ties (8/17/0 for both surrogates,
+$p = 0.006$), so capability shows in the tie structure, not the win
+count.
+
+\paragraph{The generator axis, for real surrogates, at this budget.}
+Running sklearn-grade GP and random-forest surrogates through the same
+four machinery cells detects \emph{no} keep-versus-flip effect on either
+mixed benchmark (10--14 wins of 25, all $p \ge 0.09$): both run far
+below the oracle ceiling, where their own guidance quality --- not the
+pool --- is the binding constraint. A guidance-dial experiment makes
+this quantitative within a fixed search type: corrupting the oracle's
+score with noise $\sigma\varepsilon$, generator sensitivity decays from
+total (25/25 paired wins at $\sigma{=}0$) to statistically undetectable
+at the pre-named noise level where attained performance matches a
+surrogate of this grade (all four benchmark--pool cells,
+$p \ge 0.13$)\footnote{Two disclosures attach to this finding. An
+earlier run of the same dial on different seeds returned an inconclusive
+composite verdict: its win-rate clauses matched the pattern reported
+here in all four cells, but a gap-decay clause --- diagnosed post hoc as
+mis-specified at near-ceiling cells --- failed in two. The present
+result is a pre-registered, fresh-seed retest of the win-rate criterion
+only, with a no-further-retests stopping rule; criteria were fixed and
+committed before the run. The decay is also not monotone: one
+small-pool cell retains a nominally significant residual effect
+($18/25$, $p = 0.004$) at the largest noise level, so ``undetectable''
+means at the pre-named anchor, not at every noise level beyond it.}.
+The oracle audit is what makes this regime legible: the ceiling tells
+you what the machinery permits; the surrogate's distance from it tells
+you whether machinery choices can matter for that surrogate at all.
+
+\paragraph{What remains surrogate-attributable.}
+With the machinery axes controlled, the residual differences are the
+model's. The companion diagnostics
+(\texttt{3\_categorical\_diagnostics} in the companion repository)
+measured held-out rank quality of the spline surrogate at BO sample
+sizes: moderate on the mixed benchmarks,
+near-uninformative on the hardest categorical instance --- consistent
+with the final rankings above, and with the thesis's conclusion that the
+benchmark scale, not only the model, determines what a budget can
+reveal.
 
 % =============================================================================
 \section{A Protocol for Machinery-Controlled Comparisons}
