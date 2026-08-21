@@ -33,10 +33,20 @@ user decision to cut it.
 | H3-LEMA | The oracle-ceiling audit is a **theorem** for exogenous pool sequences: pathwise, at every budget, the oracle selector's best-so-far weakly dominates every selection policy's on the same pools (one-paragraph coupling proof). The adaptive case (history-dependent generators, ours included) is explicitly a conjecture (Prop B) with a stated stability assumption, an inlined counterexample showing the global-support component is necessary, and the empirical record 0/2250 matched E3-surrogate-vs-E2-oracle per-seed comparisons violating domination | supported (prover-skeptic review UPHELD all proofs; the Prop B evidence citation was corrected on review — first draft mis-attributed surrogate arms to the surrogate-free E2) | H3 `../headline_uplift/h3_theory/{THEORY,REVIEW}.md` | a proof or refutation of Prop B |
 | H3-PROPC | Guidance-dial decay law: for argmax-of(−f + σε) selection over a pool with unique minimum, P(select pool argmin) is proved monotone non-increasing in σ with limits 1 (σ→0) and 1/n (σ→∞) for Gaussian ε; iid Gumbel ε gives exactly softmax/Plackett–Luce with temperature σ (closed form, same monotonicity, reviewer-supplied logit proof). Empirically the 3-parameter decay curve fitted on E8 medians transfers to held-out E7 seeds on func3C (R² 0.66–0.88, 4/4 cells) but FAILS to transfer on func2C (range compression, one held-out R² = −1.28) — both halves in the claim; fitted half-loss s reported in raw f-units only | supported as stated (theory proved; fit transfer split by benchmark, disclosed; experiments used Gaussian noise — Gumbel is the stated analytic twin, never claimed as run) | H3 THEORY/ANALYSIS/REVIEW + fit_results.md; E7/E8 data | a benchmark family where the decay shape itself (not just the fit) is contradicted |
 
-## Narrative implication (current)
+## Narrative implication (current — post-headline-program re-center)
 
-The article's spine: K1+K2 (the confound is real and cheap to expose) →
-K3/K4 (removing it changes what comparisons mean, not who wins — the audit
-*exonerates* machinery and localizes failures) → K5/K6 (it generalizes and
-should be standard practice) → protocol. The scaffold's Section VI punchline
-(K3-old) is replaced by K3's stronger, honest version.
+The article's spine after the H-program rewrite: **H1 (the confound is
+live in the deployed ecosystem: 3/6 libraries ≥10% silent waste, worst
+53/80 while topping the solve table) → H2 (equalizing machinery changes
+who appears to win: Z=3/4) → K1/K2 controlled mechanisms (generator
+ceiling ×8–14; encoding-dedup 78/80) → K3/K4 (repair makes rankings
+attributable, BASS case study) → H3 theory (exogenous-pool theorem;
+adaptive conjecture; per-step decay law) → protocol (now incl.
+audit-from-the-objective + excess-over-pigeonhole).** The original
+spine (K1→K6) survives intact as the mechanism block; the H-claims
+supply the in-the-wild motivation and the changes-conclusions number.
+All H-claims entered via adversarial review; four first-draft analyses
+(E3, E7, H0, H2) were refuted and corrected on the record, and the
+paper discloses this. Rewrite completed in H5 cycles 5–8
+(`../headline_uplift/h5_rewrite/`); remaining work is author-side
+(`../headline_uplift/AUTHOR_TODO.md`).

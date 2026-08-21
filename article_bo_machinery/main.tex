@@ -68,7 +68,7 @@ search spaces are usually read as statements about surrogate models. We show
 that they are frequently statements about the surrounding \emph{machinery}
 instead --- the candidate generation the acquisition is optimized over, and
 the duplicate handling that decides which proposals are admissible --- and
-that the effect is live in the deployed ecosystem, not just in principle.
+that the effect is live in the deployed ecosystem.
 Auditing six widely used BO libraries and a random-sampling control at their
 documented defaults with a surrogate-free objective wrapper (1{,}050 runs
 across the seven arms; six benchmarks, 25 seeds, budget 80), we find that
@@ -78,15 +78,15 @@ explain, two exceed 25\%, and one exceeds 40\% --- a median of 53 of 80
 evaluations ground into revisits, touching only ${\sim}27$ unique
 configurations, by the library that simultaneously posts the matrix's
 \emph{best} categorical solve record: convergence curves are blind to the
-waste. One library instead terminates early rather than propose a duplicate.
+waste; one library instead halts early rather than propose a duplicate.
 When we equalize duplicate handling --- charging each library for unique
-evaluations only, which by construction leaves sampler trajectories
-bit-identical on deterministic objectives --- the apparent library ranking
+evaluations only (bit-identical trajectories on deterministic objectives,
+by construction) --- the apparent library ranking
 changes on three of four benchmarks; one sampler's apparent weakness on small
 categorical spaces (7 of 25 solves) is revealed as mostly machinery, not
 model (22 of 25 once duplicates are refunded).
-A controlled study of one research pipeline then isolates the mechanisms.
-Under an \emph{oracle-ceiling audit} that replaces every acquisition score
+A controlled study of one research pipeline isolates the mechanisms:
+under an \emph{oracle-ceiling audit} that replaces every acquisition score
 with the true objective, a single degree of freedom in local candidate
 generation caps what perfect guidance can attain (restricted loses to
 permissive on 25 of 25 paired seeds, $p = 6.0\times10^{-8}$, worsening by
@@ -436,7 +436,8 @@ equal-budgets re-comparison of Sec.~\ref{sec:equalized}.
 
 We audited six pip-installable BO libraries at their documented defaults
 --- Optuna's TPE and GP samplers, Hyperopt's TPE, scikit-optimize's GP,
-Ax, and SMAC~3 --- plus a uniform random-sampling control, on six
+Ax, and SMAC~3 --- plus a uniform random-sampling control
+\cite{bergstra2012random}, on six
 benchmarks: categorical Ackley at three sizes ($5^3{=}125$,
 $5^5{=}3{,}125$, and $11^6{\approx}1.8{\times}10^6$ combinations), the
 $5^{25}$ pest-control simulation (a deterministic variant of the standard
@@ -449,7 +450,7 @@ ran; all seven held, including the null check that the counter registers
 ${\approx}0$ exact revisits on mixed spaces (349 of 350 mixed-space runs
 show exactly zero).
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{\label{tab:wild}In-the-wild audit: median revisits per 80
 evaluations (median excess over the pigeonhole baseline in parentheses)
 on the four purely categorical benchmarks, and exact-solve counts where
@@ -471,7 +472,7 @@ Ax              & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 25/25 & 18/25 \\
 SMAC            & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 22/25 & 4/25 \\
 \end{tabular}
 \end{ruledtabular}
-\end{table}
+\end{table*}
 
 Table~\ref{tab:wild} shows the audit's central pattern: waste is
 \emph{machinery-determined}, splitting the ecosystem into libraries with
@@ -976,9 +977,9 @@ experiment carried a pre-registered design --- hypotheses and decision
 criteria written before the runs, and for the later experiments
 committed to version control before the results existed, which is
 independently verifiable from the repository history --- and every
-experiment was independently re-verified against its raw results; two
+experiment was independently re-verified against its raw results; three
 pre-registered hypotheses failed and are reported as such
-(Secs.~\ref{sec:dedup} and~\ref{sec:conseq}).
+(Secs.~\ref{sec:equalized}, \ref{sec:dedup}, and~\ref{sec:conseq}).
 
 One planned cell remains open: BASS itself through the restricted/leaky
 machinery ablations. BASS's R implementation was not runnable in the
@@ -1031,8 +1032,15 @@ replication, and duplicate handling becomes a design choice about
 replication policy rather than a leak. A further scope limit is
 dimensional and empirical: every machinery ablation in this paper runs
 on low-dimensional synthetic benchmarks (two to six categorical
-coordinates, at most two continuous); the real-task evidence comes from
-the thesis pipeline only and was not subjected to the ablations.
+coordinates, at most two continuous; the pest-control space is
+25-dimensional but appears only in the ecosystem audit); the real-task
+evidence comes from the thesis pipeline only and was not subjected to
+the ablations. Finally, the ecosystem audit (Sec.~\ref{sec:wild}) is a
+single, version-pinned snapshot of six libraries at documented defaults:
+library internals change across releases, and we do not claim the
+measured waste is stable over time or generalizes beyond the sampled
+libraries, configurations, and benchmarks --- the released wrapper
+exists precisely so the measurement can be repeated against any version.
 Higher-dimensional spaces, where candidate pools cover vanishing
 fractions of the domain, could plausibly make the generator restriction
 bind harder --- that is conjecture, stated as such.

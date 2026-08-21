@@ -279,3 +279,29 @@ resume instruction. Claim ledger: new H-claims live in
   push; (5) produce the loop close-out report for the author and STOP
   the loop (PLAN stop condition: H1–H3 done, H5 review-clean; H4/E4 and
   H1b remain author-side/optional follow-ups).
+
+## Cycle 8 — 2026-08-21 — LOOP CLOSE
+- **Phase:** H5 part 4 (full-pass) — complete. **Stop condition met:**
+  H0–H3 done and review-clean, H5 rewrite full-pass-clean; H4/E4 and
+  H1b are author-side/optional (AUTHOR_TODO.md).
+- **Did:** Full-pass adversarial review of the entire rewritten paper
+  (three lenses). Numeric verdict: zero fabricated/stale/double-counted
+  numbers across legacy + new sections; every headline number traced to
+  canonical sources; all previously-refuted phrasings absent. Fixes
+  applied: ecosystem-audit snapshot-scope added to Discussion (the one
+  MAJOR — the conclusion-equivalent section had been silent on the
+  headline result), "three pre-registered hypotheses failed" with
+  sec:equalized cited, abstract trimmed ~375→≈352 words, tab:wild →
+  table*, random-search citation added (checker now 0 unused-bib).
+  AUTHOR_TODO.md compiled (compile, anchor verification, title/venue,
+  E4/H1b/H4, branch reconciliation, bo-audit packaging). CLAIMS.md
+  narrative re-centered around the H-spine. Final checkers all PASS.
+- **Program totals:** 8 cycles; H0 gates + 1,050-run ecosystem audit +
+  275-run equal-budget control + theory appendix + full rewrite; 9 new
+  ledger claims (H-VAL, H1-WASTE/MASK/REFUSE/NULLMIX, H2-ZOFW/SAT/
+  REFUND, H3-LEMA/PROPC — 10 rows incl. H3 pair); 4 first-draft
+  analyses refuted in worker≠verifier review and corrected on the
+  record (H0, H2 among them — the process caught its own errors twice
+  at headline-number level: Z=2→3 and the pest pigeonhole sign).
+- **Next:** none — loop stopped. Restart with /loop and this file's
+  history if the author wants H1b/H4 or camera-ready cycles.

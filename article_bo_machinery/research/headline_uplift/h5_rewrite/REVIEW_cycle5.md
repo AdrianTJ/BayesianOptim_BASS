@@ -93,3 +93,38 @@ Dispositions:
    curve. → "proved monotone per-step selection law (the
    sequential-loop decay curve remains a fitted, not proved,
    description)".
+
+---
+
+# H5 Cycle 8 — FULL-PASS review record (entire main.tex, three lenses)
+
+**Verdict: CORRECTIONS-NEEDED (minor-to-moderate) → all applied.** The
+reviewer traced every quantitative claim in the whole paper (legacy and
+new sections) against h_numbers.md, numbers.md, CLAIMS.md, all five
+experiment ANALYSIS files, and THEORY.md: **zero fabricated, stale, or
+double-counted numbers found**; all forbidden refuted phrasings absent;
+all labels/refs/cites/environments balanced; no narrative seams between
+old and new spines.
+
+Dispositions:
+1. **[MAJOR]** Discussion never returned to the ecosystem audit (the
+   paper's headline) → snapshot-scope sentence added to "Scope of the
+   machinery family" (version-pinned, six libraries, no stability claim,
+   wrapper released so the measurement can be repeated), plus the
+   pest-control dimensional clarification.
+2. **[MINOR]** "two pre-registered hypotheses failed" undercounted
+   (H2's Hyperopt strict clause is a third) → "three", with
+   sec:equalized added to the citation.
+3. **[MINOR]** Abstract ~375 words → four trims applied (now ≈352).
+4. **[MINOR]** tab:wild 7 columns in one AIP column → converted to
+   table* (double-column span).
+5. **[NOTE]** bergstra2012random unused → now cited at the
+   random-sampling control (checker: 0 unused-bib).
+6. **[NOTE accepted, no change]** \argmin/\argmax macros and booktabs
+   loaded-but-unused (cosmetic; compile untested, so no macro churn);
+   class/.bst files not co-located (already AUTHOR_TODO item 1);
+   K2a-fig phrasing optional tightening declined (factually exact).
+
+Reviewer's overall assessment, quoted: "a coherent, submission-shaped
+draft" modulo the author tasks (title, co-authors, compile, anchor
+citations).
