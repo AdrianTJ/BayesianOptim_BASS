@@ -9,16 +9,26 @@ Everything the loop could not do in-container, in rough priority order.
    Table `tab:wild` and the appendix render; the two-panel dedup figure
    (`figures/fig_dedup_audit.pdf`) is pre-built.
 2. **Verify-and-cite the anchor papers** (full text, then add to
-   references.bib and the appendix/Related Work):
-   - Kim et al., arXiv:2506.11831 (inexact-acquisition regret) — the
-     regret-decomposition framing hook for Lemma A/Prop B.
-   - B3O, arXiv:2606.30228 (softmax-selection regret) — the hook for
-     Prop C(b)'s softmax law.
+   references.bib and the appendix/Related Work). Both are REAL and the
+   arXiv IDs are correct — an external ID lookup reported them missing
+   on 2026-08-21, but web search corroborates both with
+   title/author/venue (verify by TITLE if an ID checker balks; the
+   June-2026 ID legitimately trips some indexes):
+   - arXiv:2506.11831 — **"Bayesian Optimization with Inexact
+     Acquisition: Is Random Grid Search Sufficient?"**, Kim, PMLR v286
+     (UAI 2025). Regret bounds for GP-UCB/GP-TS under inexact
+     (grid/pool-based) acquisition maximization — the hook for
+     Lemma A / Prop B.
+   - arXiv:2606.30228 — **"B3O: Scalable Boltzmann Batch Bayesian
+     Optimization"**, Bloor et al., June 2026. Boltzmann/softmax
+     acquisition sampling with UCB-rate regret — the hook for Prop C(b).
    - Audit-genre positioning cites flagged as a TODO in Related Work:
      Recht et al. (ImageNet replication), the bayesmark/BBO-challenge
      report (Turner et al. is already cited), MCBO (already cited).
-   The loop's rule: none of these enter the text before full-text
-   verification (arXiv was egress-blocked in-container).
+   The loop's rule stands: none of these enter the text before
+   full-text verification (arXiv AND proceedings.mlr.press are
+   egress-blocked in-container; the corroborating search metadata is
+   recorded in h6_generalize/PLAN.md).
 3. **Title decision.** Placeholder stands ("The Machinery Confound…").
    Loop recommendation: keep the name, consider a subtitle carrying the
    audit ("…: Auditing What Bayesian-Optimization Budgets Actually Buy").
