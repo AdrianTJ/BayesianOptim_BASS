@@ -64,3 +64,41 @@ resume instruction. Claim ledger: new H-claims live in
   write ANALYSIS.md, adversarial worker≠verifier REVIEW.md, ledger update
   (H1 claims only via review), LOG, commit, push. YAHPO/H1b only after
   the core matrix is banked.
+
+## Cycle 2 — 2026-08-21
+- **Phase:** H1 run + analysis — complete. **The headline exists.**
+- **Did:** Full matrix ran in ~3.3 h wall (13.2 core-hours): 1050 runs,
+  42/42 cells at 25/25 (8 smac crashes recovered via Amendment 2
+  prefix-reporting; 25 failed attempts total, all superseded). All seven
+  pre-registered hypotheses PASS by the letter. Headline numbers:
+  **3/6 libraries re-spend ≥10% of budget** on already-evaluated
+  combinations beyond pigeonhole, 2/6 ≥25%, 1/6 ≥40% — the max being
+  optuna-gp's median 53/80 revisits (~27 unique configs) on Cat-Ackley-125
+  *while posting the matrix's best solve record* (H1-MASK). optuna-tpe
+  revisits 16/80 on the 5^25 pest space where random collides never
+  (H1-WASTE); smac raises rather than duplicates (H1-REFUSE); mixed-space
+  metric null holds 349/350 (H1-NULLMIX). Two disclosed post-data fixes:
+  analyze_h1.py pigeonhole float-cancellation repaired TOWARD the
+  registered baselines (verifier confirmed with 60-digit mpmath + git
+  history: neutral, not convenient; buggy baseline would have flipped P1
+  to FAIL), and smac_runner now reports crashed-run prefixes. Adversarial
+  review: **UPHELD-WITH-CORRECTIONS** — everything reproduced
+  digit-for-digit except one falsified prose absolute ("0 revisits
+  everywhere" vs the actual 349/350), corrected everywhere along with
+  F1/F4 wording and the failures.log footnote. Ledger: H1-WASTE, H1-MASK,
+  H1-REFUSE, H1-NULLMIX added; H-VAL caveat extended (mixed-space
+  injection gate queued for H1b).
+- **Next:** Cycle 3 = **H2** (machinery-controlled re-comparison → the
+  Z-of-W "changes conclusions" number). Fresh-context resume: read
+  exph1_matrix/{ANALYSIS,REVIEW}.md first. Steps: (1) pre-register H2
+  DESIGN.md — impose an external combination-level dedup wrapper (reject
+  duplicate proposals, re-ask; where a library exposes no re-ask, document
+  the fallback per library) and re-run the waste-heavy libraries
+  (optuna-tpe, optuna-gp, hyperopt-tpe) plus controls on the benchmarks
+  where waste was large (d3_L5, d5_L5, d6_L11, pest), 25 seeds; Z-of-W =
+  on how many benchmark tasks does the library ranking (by median best /
+  solve rate) change once dedup is equalized; (2) also pre-register the
+  scripted mixed-space injection gate promised in H1 REVIEW (H1b item);
+  (3) run smoke → full, analyze with pre-committed script, adversarial
+  review, ledger, LOG, commit, push. H1b YAHPO conditional-space cells
+  remain queued behind H2.

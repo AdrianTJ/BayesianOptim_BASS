@@ -124,8 +124,10 @@ def main():
 
     # dropped-run accounting (DESIGN: never silent)
     fl = HERE / "failures.log"
-    nf = len([l for l in fl.read_text().splitlines() if l.strip()]) if fl.exists() else 0
-    print(f"\n(failures.log entries: {nf}; cells with n<20 are flagged in the tables above)")
+    nf = (len([l for l in fl.read_text().splitlines()
+               if l.startswith(("FAIL", "TIMEOUT"))]) if fl.exists() else 0)
+    print(f"\n(distinct failed run attempts in failures.log: {nf}, all superseded "
+          f"by valid re-runs; cells with n<20 are flagged in the tables above)")
 
 
 if __name__ == "__main__":

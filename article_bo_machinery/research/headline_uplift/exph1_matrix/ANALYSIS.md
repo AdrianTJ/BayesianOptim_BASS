@@ -30,7 +30,10 @@ P1 optuna-tpe (excess >10 on d3, >0 on all pure-cat) — **PASS**;
 P2 hyperopt-tpe (>5 on d3) — **PASS**; P3 skopt-gp (|excess|≤5 d3, ≈0
 pest) — **PASS**; P4 smac (≤5 all pure-cat) — **PASS**; P5 ax (≤5 d3,
 exploratory) — **PASS**; P6 optuna-gp (>0 d3, exploratory) — **PASS**;
-P7 metric-null on mixed spaces — **PASS** (0 exact revisits everywhere).
+P7 metric-null on mixed spaces — **PASS** by its pre-registered
+operationalization, median ≤ 1 (≈0, not absolute zero: 349/350
+mixed-space runs show exactly 0; one skopt-gp func3C seed (3019) shows
+1 revisit, unique 79/80).
 The "wild is clean" null scenario named in PLAN.md did **not** materialize.
 
 ## Headline numbers (per the fixed claim shape)
@@ -56,8 +59,10 @@ documented defaults, 6 benchmarks × 25 seeds × budget 80 (1050 runs,
 **F1 — Waste is machinery-determined, not quality-determined.** The
 no-dedup group's excess: optuna-tpe +24.3 (d3), +28.0 (d5), +18.0 (d6),
 +16.0 (pest); hyperopt-tpe +12.3/+13.0/+6.0/+7.0; optuna-gp
-+32.3/+37.0/+1.0/0. The dedup group sits at ≈0 excess in every cell.
-Solve rates do NOT sort the same way — see F2.
++32.3/+37.0/+1.0/0. In the dedup group, ax and smac show 0 raw revisits in every cell
+(excess strongly negative — below even the unavoidable pigeonhole
+minimum), while skopt-gp's excess is ≈0 (its raw revisits track the
+pigeonhole baseline). Solve rates do NOT sort the same way — see F2.
 
 **F2 — Solving masks waste (the invisibility thesis, in the wild).**
 optuna-gp solves cat_ackley_d3 25/25 and d5 25/25 — best solve record of
@@ -78,13 +83,17 @@ GP/RF-family libraries: 0.
 **F4 — One library refuses rather than revisits.** smac: 0 revisits in
 all 150 runs, and on the smallest space (K=125) it raises
 `ConfigurationSpaceExhaustedException` mid-run (6–8 of 25 seeds, at
-59–75/80 evals) rather than propose a duplicate. A crash instead of
-silent waste is a *defensible design choice made visible only by
-auditing* — neither behavior is reported by convergence curves.
+59–75/80 evals): its runhistory-keyed config generator exhausts and
+raises rather than proposing a previously-seen configuration. A crash
+instead of silent waste is a *defensible design choice made visible
+only by auditing* — neither behavior is reported by convergence curves.
 
-**F5 — Mixed-space null confirms the metric.** On func2C/func3C every
-library shows 0 exact revisits (P7): the counter does not overfire where
-continuous coordinates make exact repeats measure-zero. (Combination-level
+**F5 — Mixed-space null confirms the metric.** On func2C/func3C, 349 of
+350 runs show 0 exact revisits and the one exception is a single revisit
+(skopt-gp, func3C, seed 3019): the counter does not overfire where
+continuous coordinates make exact repeats measure-zero — and that lone
+true positive incidentally shows the float-rounded key CAN fire on a
+mixed space (it is not dead code), evidence H0's G2 gate never supplied. (Combination-level
 waste on mixed spaces is a different quantity — H2's controlled-dedup
 re-comparison territory, per the original article's Failure Mode II.)
 
@@ -121,6 +130,10 @@ re-comparison territory, per the original article's Failure Mode II.)
 - pest_control is our determinized variant (disclosed in benchmarks.py);
   revisit-as-waste on the stochastic original would need a
   noise-averaging argument we deliberately avoid.
+- H0's G2 gate validated no-false-positives on a pure-continuous space
+  but never injected a known duplicate on a MIXED space; the single
+  skopt-gp func3C revisit (F5) supplies incidental true-positive
+  evidence there, but a scripted mixed-space G-gate is queued for H1b.
 - Wrapper fairness: defaults only; non-defaults recorded per run in
   results.jsonl (seed, cosmetic logging, smac deterministic=True, ax
   one-trial-per-ask; is_ordered=True is ax's own default for int choices).
@@ -226,4 +239,4 @@ the worker≠verifier review returns.
 - excess ≥ 25% of budget on ≥1 pure-cat benchmark: 2/6 (optuna-tpe, optuna-gp)
 - excess ≥ 40% of budget on ≥1 pure-cat benchmark: 1/6 (optuna-gp)
 
-(failures.log entries: 170; cells with n<20 are flagged in the tables above)
+(distinct failed run attempts in failures.log: 25, all superseded by valid re-runs; cells with n<20 are flagged in the tables above)

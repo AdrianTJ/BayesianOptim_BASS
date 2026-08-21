@@ -89,4 +89,4 @@
 - excess ≥ 25% of budget on ≥1 pure-cat benchmark: 2/6 (optuna-tpe, optuna-gp)
 - excess ≥ 40% of budget on ≥1 pure-cat benchmark: 1/6 (optuna-gp)
 
-(failures.log entries: 170; cells with n<20 are flagged in the tables above)
+(distinct failed run attempts in failures.log: 25, all superseded by valid re-runs; cells with n<20 are flagged in the tables above)
