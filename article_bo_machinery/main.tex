@@ -578,6 +578,11 @@ selection \emph{under the pipeline's own pool process}: a bound that is
 exact per iteration, and that empirically was never exceeded by any
 surrogate arm in any of the several thousand runs behind this paper. We
 use it as a diagnostic yardstick, not as a proved envelope.
+Appendix~\ref{app:theory} fixes the boundary precisely: for
+\emph{exogenous} pool sequences the domination is a theorem (Lemma~A),
+the adaptive case is stated as an explicit conjecture with a
+counterexample showing why an assumption is needed, and the guidance
+dial of Sec.~\ref{sec:conseq} gets a proved monotone decay law.
 
 The audit (Definition~\ref{def:oracle}) has four properties that make it
 cheap enough to be a standard
@@ -876,6 +881,15 @@ audit that verifies the control worked.
   unsolvable ones measure guidance quality; a single scale conflates
   the two (Sec.~\ref{sec:conseq}). \emph{Cost:} one extra instance per
   benchmark family.
+  \item \textbf{When the methods are deployed libraries, audit from the
+  objective and report excess-over-pigeonhole revisits.}
+  \emph{Rationale:} the wrapper needs no library internals, the
+  pigeonhole baseline separates algorithmic waste from unavoidable
+  collisions, and the resulting number changed the apparent ranking on
+  three of four benchmarks in our audit
+  (Secs.~\ref{sec:wild}--\ref{sec:equalized}). \emph{Cost:} one
+  objective wrapper (released) and, for the ranking check on
+  deterministic objectives, a memoization re-run.
 \end{enumerate}
 
 \paragraph{A machinery-disclosure convention.}
@@ -912,6 +926,8 @@ initial design & maximin LHS, $n_0 = \max(2d{+}1, 8)$, \\
 acquisition numerics & closed-form EI (GP/RF); MC-EI \\
  & over 200 posterior draws (BASS) \\
 oracle ceiling & Table~\ref{tab:oracle} \\
+revisit accounting & excess over pigeonhole \\
+ & (Table~\ref{tab:wild} for deployed libraries) \\
 \end{tabular}
 \end{ruledtabular}
 \end{table}
@@ -949,8 +965,11 @@ $\times$ machinery matrix with sklearn GP-EI and RF-EI through all four
 machinery cells, plus stock TPE and Random references (750 runs;
 Sec.~\ref{sec:conseq}); (iii) the guidance-dial experiment and its
 pre-registered fresh-seed retest ($2450$ runs; Sec.~\ref{sec:conseq});
-and (iv) the thesis pipeline's final protocol run with BASS-BO, GP-BO,
-TPE, and Random on all benchmarks (Table~\ref{tab:thesis}). Every
+(iv) the thesis pipeline's final protocol run with BASS-BO, GP-BO,
+TPE, and Random on all benchmarks (Table~\ref{tab:thesis}); and (v) the
+in-the-wild program: the audit-instrument validation gates, the
+seven-arm ecosystem matrix (1{,}050 runs; Sec.~\ref{sec:wild}), and the
+equal-budget control (275 runs; Sec.~\ref{sec:equalized}). Every
 experiment carried a pre-registered design --- hypotheses and decision
 criteria written before the runs, and for the later experiments
 committed to version control before the results existed, which is
@@ -1025,12 +1044,16 @@ works were verified at the abstract and companion-code level rather than
 full text (an environment constraint); the sweep and its per-source
 assessments are versioned in the companion repository so the check can
 be extended. Finally, one methodological debt is disclosed rather than
-hidden: two of this paper's experiment analyses were refuted in internal
+hidden: four of this paper's experiment analyses were refuted in internal
 adversarial review and corrected before inclusion --- the surrogate-matrix
 analysis, for reframing a failed generator hypothesis as a new supported
-finding beyond its pre-registered fallback, and the first guidance-dial
+finding beyond its pre-registered fallback; the first guidance-dial
 analysis, for declaring a TPE configuration question closed when its
-pre-registered joint criterion had been missed by one seed --- alongside
+pre-registered joint criterion had been missed by one seed; the first
+in-the-wild analysis, whose flagship observation contradicted its own
+results table; and the first equal-budgets analysis, whose committed
+ranking script omitted the registered tie-break and under-counted the
+ranking changes (2 of 4 rather than the correct 3 of 4) --- alongside
 several section drafts corrected for similar overclaims. The review
 records are versioned with the experiments.
 
@@ -1054,20 +1077,122 @@ exact absence.
 % TODO
 \end{acknowledgments}
 
+\appendix
+
+% =============================================================================
+\section{Theory: the audit's exact scope and the guidance-decay law}
+\label{app:theory}
+% =============================================================================
+
+\emph{Setting.} At step $t$ a generator produces a nonempty candidate
+pool $P_t$, a selector $\pi$ evaluates one point $x_t \in P_t$, and
+$B_T(\pi) = \min_{t \le T} f(x_t)$ is the best-so-far at budget $T$; the
+oracle selector $\pi^\ast$ picks $x_t \in \arg\min_{x \in P_t} f(x)$.
+Objectives are deterministic.
+
+\paragraph{Lemma A (oracle domination on exogenous pools).}
+\emph{If the pool sequence $(P_t)_{t\le T}$ is exogenous --- generated
+by any process, deterministic or random, that does not depend on the
+selector's choices --- then, coupling all selectors to the same realized
+pools, for every selection policy $\pi$ and every $t \le T$, pathwise,
+$B_t(\pi^\ast) \le B_t(\pi)$.}
+\emph{Proof.} On the coupled realization both policies see identical
+pools. For each $s \le t$, $\pi$ picks some $x_s \in P_s$, so
+$f(x_s) \ge \min_{x \in P_s} f(x) = f(x^\ast_s)$; taking minima over
+$s \le t$ preserves the inequality. $\blacksquare$
+
+Being pathwise and per-budget, the bound transfers to means, medians,
+and any monotone functional of the best-so-far curve. It is exactly what
+the audit implements when the generator stream is seeded independently
+of selections --- and it is silent about adaptive generators, which is
+the honest boundary of what the audit proves.
+
+\paragraph{Proposition B (adaptive pools; an explicit conjecture).}
+With a history-dependent generator (ours centres its local half on the
+incumbent), different selectors induce different pool sequences and the
+coupling breaks. We conjecture the domination survives for generators
+with (i) a history-independent global component of full support and
+(ii) a local component continuous in the incumbent:
+$\mathbb{E}[B_T(\pi^\ast)] \le \mathbb{E}[B_T(\pi)] + \varepsilon$, with
+$\varepsilon$ vanishing as the global share grows. This is stated as a
+conjecture, not proved. Assumption (i) is necessary: with a purely local
+generator (every pool a Gaussian jitter of the incumbent), the oracle
+locks into the first basin its incumbent reaches, while a policy that
+deliberately picks a locally suboptimal point toward a deeper distant
+basin drags all future pools there and eventually wins. Empirical
+record: matching the surrogate arms of our machinery matrix per-seed
+against the oracle arm on the same pools process (same seeds,
+objectives, and pool size; budgets 10/40/80) gives 0 of 2{,}250 matched
+comparisons in which a surrogate beat the oracle.
+
+\paragraph{Proposition C (guidance-decay law).}
+Fix a pool of $n$ values with a unique minimum,
+$f_1 < f_2 \le \dots \le f_n$, gaps $\Delta_j = f_j - f_1 > 0$; select
+$\arg\max_i \{-f_i + \sigma \varepsilon_i\}$ with iid noise
+$\varepsilon_i$ and dial $\sigma \ge 0$.
+\emph{(a) Gaussian.} With $\varepsilon_i \sim \mathcal N(0,1)$, the
+probability $p(\sigma)$ that the pool minimizer is selected satisfies
+$p(\sigma) = \mathbb{E}_{e}\bigl[\prod_{j\ge2}
+\Phi(e + \Delta_j/\sigma)\bigr]$ with $e \sim \mathcal N(0,1)$; it is
+continuous, tends to $1$ as $\sigma \to 0^{+}$ and to $1/n$ as
+$\sigma \to \infty$, and is monotone non-increasing in $\sigma$ (each
+factor is pointwise non-increasing in $\sigma$ since $\Delta_j > 0$ and
+$\Phi$ is increasing; limits by dominated convergence).
+\emph{(b) Gumbel twin.} With iid standard Gumbel noise the selection law
+is exactly softmax, $P(i) \propto e^{-f_i/\sigma}$ (Plackett--Luce
+top-1), with the same limits and monotonicity
+($\operatorname{logit} p(\sigma) = -\log \sum_{j\ge2}
+e^{-\Delta_j/\sigma}$, decreasing in $\sigma$). Our experiments used
+Gaussian noise; the Gumbel form is stated as the closed-form analytic
+twin.
+\emph{(c) Sequential reading.} In the loop, $\sigma$ interpolates
+between the oracle selector and, as $\sigma \to \infty$, uniform
+selection over the same generator's (post-dedup-mask) pools --- not free
+random search. We claim no theorem that the sequential loop's
+final best is monotone in $\sigma$; (a) constrains the per-step
+selection law only. One idealization: the unique-minimum premise is
+almost surely true of our continuous pool generators but not an enforced
+invariant.
+
+\paragraph{Fitted decay curves.}
+Per cell of the guidance-dial grid, we fit
+$m(\sigma) = m_0 + (m_\infty - m_0)/(1 + (s/\sigma)^{\gamma})$ to the
+retest medians ($m_0$ pinned at $\sigma{=}0$; $s$ is the dial value at
+which half the oracle's edge is lost, in raw $f$ units), then score the
+fitted curve on the \emph{original} experiment's medians (disjoint
+seeds, no refitting). On Func-3C the law transfers (held-out
+$R^2$ 0.66--0.88 across all four generator--pool cells, fitted
+$s \in [3.2, 22.3]$: larger pools and the permissive generator tolerate
+more guidance noise, consistent with the dial experiment's qualitative
+verdict). On Func-2C the fit is underdetermined and does not transfer
+(the benchmark sits near its optimum over most of the grid; one
+held-out $R^2$ is $-1.28$), so no Func-2C fitted parameter is used
+anywhere. Small non-monotone wiggles in empirical medians (5 of 8 cells
+have Spearman $\rho < 1$; smallest $+0.77$) are within seed noise and
+are disclosed rather than smoothed; (a) predicts monotone per-step
+selection probability, not monotone sequential medians.
+
+% =============================================================================
 \section*{Data Availability}
 The complete pipeline, diagnostics, and result-publishing scripts are
 available at \texttt{github.com/AdrianTJ/BayesianOptim\_BASS}; the oracle
 audit and instrumented runs are under
 \texttt{code\_files/3\_categorical\_diagnostics/}, and this article's
 experiments, pre-registered designs, raw results, and review records
-under \texttt{article\_bo\_machinery/research/}. Reproducibility: all
-runs use fixed seed ranges (1001--1025 for the main matrices, 1026--1050
-for the pre-registered retest) with shared per-seed initial designs;
-the Python experiments ran single-machine (4 cores) on NumPy/SciPy/
-scikit-learn/Optuna, the thesis pipeline in R; total compute for the
-article's matrices is about $75$ minutes of aggregate CPU time (measured
-per arm type; dominated by the random-forest fits), of which the oracle
-audit itself accounts for about five minutes.
+under \texttt{article\_bo\_machinery/research/}; the \texttt{bo-audit}
+wrapper, drivers, and the in-the-wild matrices live under
+\texttt{research/headline\_uplift/}. Reproducibility: all runs use fixed
+seed ranges (1001--1025 for the controlled matrices, 1026--1050 for the
+pre-registered retest, 3001--3025 for the ecosystem audit and its
+equal-budget control) with shared per-seed initial designs where the
+loop is ours; every ecosystem run records its library version
+(Optuna~4.9.0, Hyperopt~0.3.0, scikit-optimize~0.10.2, Ax~1.3.1,
+SMAC~2.4.0) and non-default settings in the raw results. Compute:
+the controlled matrices total about $75$ minutes of aggregate CPU time
+(dominated by random-forest fits; the oracle audit itself about five
+minutes); the in-the-wild audit adds ${\sim}13$ core-hours for its
+1{,}050 runs and the equal-budget control ${\sim}1.5$ core-hours for
+275, all single-machine on four cores.
 
 \bibliography{references}
 
