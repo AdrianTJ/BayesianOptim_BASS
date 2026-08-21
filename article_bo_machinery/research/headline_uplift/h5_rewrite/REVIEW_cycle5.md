@@ -65,3 +65,31 @@ Dispositions:
    "tied as shipped, separate with Hyperopt ahead."
 5. **[MINOR]** SMAC 22/25 now notes early-terminated runs are scored on
    their completed prefix.
+
+---
+
+# H5 Cycle 7 — section review record (Appendix A, Protocol item 6, Experiments (v), Data Availability, disclosure paragraph)
+
+**Verdict: UPHELD-WITH-CORRECTIONS.** All recomputable numbers verified
+exactly (0/2250; held-out R² 0.66–0.88; s∈[3.2,22.3]; −1.28; 5/8 ρ<1;
+1050/275 runs; versions; seed ranges incl. 3001–3025 verified by min/max
+over raw files; core-hours 13.21/1.45; \mathbb/\blacksquare compile via
+revtex amssymb class option).
+
+Dispositions:
+1. **[MAJOR]** "the first in-the-wild analysis" mislabeled H0's refuted
+   validation analysis with sec:wild's own title (H1's analysis was
+   UPHELD-WITH-CORRECTIONS, not refuted). → "the audit-instrument
+   validation analysis". Count "four refuted" verified correct
+   (E3, E7, H0, H2).
+2. **[MAJOR]** Appendix "on the same pools process" overstated E2-vs-E3
+   matching (different RNG stream formulas → independently drawn pools,
+   not Lemma-A coupling; also restored the specific oracle-arm
+   identity). → "permissive combination-dedup arm under the same
+   generator and dedup configuration … independently drawn pools, not
+   Lemma-A-style coupled realizations".
+3. **[MAJOR]** Oracle-section pointer "a proved monotone decay law"
+   risked conflating the per-step theorem with the unproved sequential
+   curve. → "proved monotone per-step selection law (the
+   sequential-loop decay curve remains a fitted, not proved,
+   description)".

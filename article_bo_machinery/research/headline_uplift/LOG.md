@@ -248,3 +248,34 @@ resume instruction. Claim ledger: new H-claims live in
   h3_theory/THEORY.md. Per-section adversarial review before commit.
   Then Cycle 8: full-pass (three lenses), abstract trim, author to-do
   compilation, loop close-out report to the author.
+
+## Cycle 7 — 2026-08-21
+- **Phase:** H5 rewrite, part 3 of 4 — complete.
+- **Did:** Appendix A (app:theory: Lemma A + proof, Prop B conjecture +
+  counterexample + 0/2250 record, Prop C a/b/c, fitted decay curves with
+  the func2C non-transfer and 5/8 ρ<1 disclosure); oracle-section
+  pointer to the appendix; Protocol checklist item 6
+  (audit-from-the-objective + excess-over-pigeonhole) and disclosure-
+  table "revisit accounting" row; Experiments completed-matrix item (v)
+  (in-the-wild program run counts); Data Availability rewritten (H-seed
+  ranges, library versions, ~13 + ~1.5 core-hours, 75-minute claim
+  scoped to the controlled matrices — closing Cycle 5's must-fix);
+  Discussion self-disclosure extended to the four refuted analyses.
+  Section review: UPHELD-WITH-CORRECTIONS — three MAJOR wording fixes
+  applied (refuted-analysis label was colliding with sec:wild's title;
+  "same pools process" overstated E2/E3 matching vs the actual
+  independent RNG streams; decay-law pointer now scoped to the per-step
+  theorem). All numbers verified digit-for-digit by the reviewer.
+- **Next:** Cycle 8 = H5 part 4, the close-out: (1) full-pass review of
+  the complete rewritten article (three lenses: correctness-vs-ledger,
+  narrative coherence old-vs-new spine, LaTeX/compile hygiene) with
+  particular attention to seams between rewritten and legacy sections
+  (Related Work ordering, sec:oracle/sec:dedup/sec:conseq transitions,
+  abstract trim toward ~330 words); (2) fix what it finds; (3) compile
+  the author to-do list (pdflatex compile, anchor full-text checks +
+  audit-genre citations, E4/BASS runs, title/venue/co-author decisions,
+  repo-history reconciliation note); (4) regenerate h_numbers +
+  checkers + ledger re-center (mark H5 claims/status), LOG, commit,
+  push; (5) produce the loop close-out report for the author and STOP
+  the loop (PLAN stop condition: H1–H3 done, H5 review-clean; H4/E4 and
+  H1b remain author-side/optional follow-ups).

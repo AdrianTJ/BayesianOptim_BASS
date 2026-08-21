@@ -582,7 +582,9 @@ Appendix~\ref{app:theory} fixes the boundary precisely: for
 \emph{exogenous} pool sequences the domination is a theorem (Lemma~A),
 the adaptive case is stated as an explicit conjecture with a
 counterexample showing why an assumption is needed, and the guidance
-dial of Sec.~\ref{sec:conseq} gets a proved monotone decay law.
+dial of Sec.~\ref{sec:conseq} gets a proved monotone \emph{per-step}
+selection law (the sequential-loop decay curve remains a fitted, not
+proved, description).
 
 The audit (Definition~\ref{def:oracle}) has four properties that make it
 cheap enough to be a standard
@@ -1049,9 +1051,9 @@ adversarial review and corrected before inclusion --- the surrogate-matrix
 analysis, for reframing a failed generator hypothesis as a new supported
 finding beyond its pre-registered fallback; the first guidance-dial
 analysis, for declaring a TPE configuration question closed when its
-pre-registered joint criterion had been missed by one seed; the first
-in-the-wild analysis, whose flagship observation contradicted its own
-results table; and the first equal-budgets analysis, whose committed
+pre-registered joint criterion had been missed by one seed; the
+audit-instrument validation analysis, whose flagship observation
+contradicted its own results table; and the first equal-budgets analysis, whose committed
 ranking script omitted the registered tie-break and under-counted the
 ranking changes (2 of 4 rather than the correct 3 of 4) --- alongside
 several section drafts corrected for similar overclaims. The review
@@ -1121,8 +1123,10 @@ locks into the first basin its incumbent reaches, while a policy that
 deliberately picks a locally suboptimal point toward a deeper distant
 basin drags all future pools there and eventually wins. Empirical
 record: matching the surrogate arms of our machinery matrix per-seed
-against the oracle arm on the same pools process (same seeds,
-objectives, and pool size; budgets 10/40/80) gives 0 of 2{,}250 matched
+against the oracle audit's permissive combination-dedup arm under the
+same generator and dedup configuration (same seeds, objectives, and
+pool size; independently drawn pools, not Lemma-A-style coupled
+realizations; budgets 10/40/80) gives 0 of 2{,}250 matched
 comparisons in which a surrogate beat the oracle.
 
 \paragraph{Proposition C (guidance-decay law).}
