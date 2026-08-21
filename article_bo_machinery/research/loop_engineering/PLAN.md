@@ -57,7 +57,7 @@ findings still logs (one line: "no change"), but does not commit.
 Ordered; the loop takes the topmost unchecked item. Add new questions to the
 bottom as they arise — the loop may append, never delete.
 
-- [ ] **Q1. Loop architectures.** Single-agent ReAct-style loops vs.
+- [x] **Q1. Loop architectures.** *(done — `notes/01_loop_architectures.md`)* Single-agent ReAct-style loops vs.
   orchestrator/worker fan-out; when deterministic control flow (scripted
   pipelines) beats model-driven control flow; stop conditions and
   loop-until-dry patterns. Sources: agent-engineering literature + our own
@@ -112,3 +112,8 @@ The loop ends when Q7's synthesis document exists and a full cycle produces
 no new backlog items — or when the user says stop. If the environment loses
 network access for search-driven questions, the loop falls back to
 internal-evidence questions (Q3, Q4 case studies) rather than idling.
+
+**Stall counter** (added Cycle 1, from Magentic-One's progress-ledger
+pattern — see `notes/01_loop_architectures.md`): a cycle that ends with no
+committed change is a stall. Two consecutive stalls stop the loop and report
+to the user, rather than burning further cycles.
