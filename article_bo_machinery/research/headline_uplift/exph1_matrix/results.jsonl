@@ -1,0 +1,1 @@
+{"evals": 80, "revisits": 0, "revisit_frac": 0.0, "best": 4.440892098500626e-16, "unique": 80, "library": "smac", "version": "2.4.0", "non_defaults": "seed; deterministic=True; temp output dir; logging quiet", "benchmark": "cat_ackley_d3_L5", "seed": 3001}

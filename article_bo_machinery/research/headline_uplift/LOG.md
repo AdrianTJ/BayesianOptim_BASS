@@ -30,3 +30,37 @@ resume instruction. Claim ledger: new H-claims live in
   seeds, headline metric = excess-over-pigeonhole (per H0 Observation 2),
   per-library hypotheses named before running; (4) run, analyze,
   worker≠verifier review, ledger, log, commit, push.
+
+## Cycle 1 — 2026-08-21
+- **Phase:** H1 setup + pre-registration — complete; timing smoke in flight.
+- **Did:** Tooling: SMAC 2.4.0 isolated in a pinned venv (requires
+  sklearn ≥1.6.1 yet imports a symbol our 1.9 removed; venv has 1.7.2) and
+  driven via subprocess with in-subprocess bo-audit counting
+  (`bo_audit/smac_runner.py`) — smoke-verified on categorical and mixed
+  benchmarks (0 revisits at 20 trials, consistent with its runhistory
+  mechanism). Ax driver written on the modern `ax.Client` API
+  (smoke: 9 s/15 trials, 0 revisits); optuna-gp smoke showed **1 revisit in
+  15 trials** (P6 motivation). Benchmarks: COMBO pest control vendored
+  into `bo_audit/benchmarks.py` (pure numpy, determinized with a local
+  seeded RNG — disclosed; original draws MC scenarios from the global RNG
+  per call), determinism + value-range validated; shared `bench_by_name`
+  adapter so main-env and smac-venv runs use identical benchmark code.
+  **Logged drops:** JAHS-Bench-201 (requires Python <3.11), HEBO (GPy
+  1.9.9 build failure in main env AND a py3.10 venv), YAHPO deferred to
+  exploratory H1b (conditional spaces need active-parameter key semantics;
+  rbv2_svm data downloaded, surrogate evaluates, SMAC×YAHPO impossible:
+  ConfigSpace ≥1.0 vs 0.6.1). Pre-registered `exph1_matrix/DESIGN.md`
+  (7 libraries × 6 benchmarks × 25 seeds, budget 80, seeds 3001–3025,
+  excess-over-pigeonhole metric, hypotheses P1–P7, 20-min per-run cap,
+  never-silent drop accounting) and committed it BEFORE any full run;
+  `analyze_h1.py` (fixed aggregation + by-the-letter P1–P7 evaluation)
+  also committed before data. Timing smoke (slow libs × 6 benchmarks,
+  budget 80) launched in background.
+- **Next:** Cycle 2 = H1 run + analysis. On smoke completion: check
+  failures.log and wall times against the 20-min cap (ax on pest_control
+  is the flagged risk), adjust nothing silently — any cap-driven cell drop
+  goes in DESIGN deviations; launch `run_h1.py full` in background
+  (resumable JSONL); when the matrix is complete run `analyze_h1.py`,
+  write ANALYSIS.md, adversarial worker≠verifier REVIEW.md, ledger update
+  (H1 claims only via review), LOG, commit, push. YAHPO/H1b only after
+  the core matrix is banked.
