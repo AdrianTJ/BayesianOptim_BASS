@@ -7,7 +7,7 @@ trail is tracked in git.
 
 | Folder | Question | Status |
 |---|---|---|
-| `novelty_check/` | Is the article's contribution actually new? Prior-work sweep over the oracle-ceiling audit, machinery-confound demonstrations, and machinery-controlled comparison protocols. | in progress |
+| `novelty_check/` | Is the article's contribution actually new? Prior-work sweep over the oracle-ceiling audit, machinery-confound demonstrations, and machinery-controlled comparison protocols. | done — see `novelty_check/REPORT.md`: novel as a combination; five near-misses verified and downgraded; must-cite list produced |
 
 Method note: searches, source-fetching, and claim assessment are fanned out
 to subagents; findings are then reviewed and synthesized by the supervising
