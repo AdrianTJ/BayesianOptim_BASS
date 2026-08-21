@@ -63,40 +63,41 @@ Comparisons in Mixed and Categorical Bayesian Optimization}
 \date{\today}
 
 \begin{abstract}
-Comparisons of surrogate models for Bayesian optimization (BO) over mixed and
-categorical search spaces are usually read as statements about the surrogates.
-We show that they are frequently statements about the surrounding
-\emph{machinery} instead: the candidate-generation scheme that the acquisition
-function is optimized over, and the duplicate handling that decides which
-proposals are admissible. Using a controlled pool-based pipeline shared by
-structurally different surrogates --- a Gaussian process over a continuous
-relaxation, a random forest, a Bayesian adaptive spline surface with native
-categorical support --- plus a tree-structured Parzen baseline with its own
-machinery, and an oracle mode that replaces every acquisition score with the
-true objective, we demonstrate two failure modes.
-First, a single degree of freedom in the local proposal distribution ---
-whether a candidate may retain the incumbent's categorical combination while
-refining its continuous coordinates --- caps what perfect guidance can
-attain: in oracle experiments that replace the acquisition with the true
-objective, the restricted generator loses to the permissive one on every
-one of 25 paired seeds of two standard mixed benchmarks
-($p = 6.0\times10^{-8}$), with a shortfall that grows by factors of 8
-to 14 as the candidate pool shrinks to realistic sizes. Second,
-duplicate handling that compares raw encodings rather than decoded
-categorical combinations silently re-spends a majority of the evaluation
-budget on already-known points --- a median of 78 of 80 oracle picks, and
-a mean of 52--55 of 80 for Gaussian-process and random-forest surrogates, whose
-solve rate on a solvable categorical benchmark drops accordingly. Both
-effects are invisible in standard convergence plots and are readily
-misattributed to the surrogate; whether the generator cap binds a given
-surrogate depends on how close it runs to the machinery's ceiling, which
-the audit measures --- none of the (deliberately ordinary) surrogates we
-tested ran close enough for the cap to be detectable, while the dedup
-leak taxed every one of them. We propose this \emph{oracle-ceiling audit} as a
-cheap, general diagnostic for BO pipelines --- minutes of compute, no
-surrogate fits --- together with a checklist for machinery-controlled
-surrogate comparisons: shared schema-aware proposals, combination-level
-deduplication, paired seeds, and per-seed win statistics.
+Comparisons of Bayesian-optimization (BO) methods over mixed and categorical
+search spaces are usually read as statements about surrogate models. We show
+that they are frequently statements about the surrounding \emph{machinery}
+instead --- the candidate generation the acquisition is optimized over, and
+the duplicate handling that decides which proposals are admissible --- and
+that the effect is live in the deployed ecosystem, not just in principle.
+Auditing six widely used BO libraries at their documented defaults with a
+surrogate-free objective wrapper (1{,}050 runs; six benchmarks, 25 seeds,
+budget 80), we find that three of the six silently re-spend at least 10\% of
+the evaluation budget on already-evaluated categorical combinations beyond
+what unavoidable collisions explain, two exceed 25\%, and one exceeds 40\% ---
+a median of 53 of 80 evaluations ground into revisits, touching only
+${\sim}27$ unique configurations, by the library that simultaneously posts
+the audit's \emph{best} solve record: convergence curves are blind to the
+waste. One library instead terminates early rather than propose a duplicate.
+When we equalize duplicate handling --- charging each library for unique
+evaluations only, which leaves sampler trajectories bit-identical on
+deterministic objectives --- the apparent library ranking changes on three of
+four benchmarks; one sampler's apparent weakness on small categorical spaces
+(7 of 25 solves) is revealed as mostly machinery, not model (22 of 25 once
+duplicates are refunded).
+A controlled study of one research pipeline then isolates the mechanisms.
+Under an \emph{oracle-ceiling audit} that replaces every acquisition score
+with the true objective, a single degree of freedom in local candidate
+generation caps what perfect guidance can attain (restricted loses to
+permissive on 25 of 25 paired seeds, $p = 6.0\times10^{-8}$, worsening by
+factors of 8 to 14 as the pool shrinks), and encoding-level duplicate
+detection re-spends a median of 78 of 80 oracle picks. We prove the audit is
+a genuine ceiling for exogenous candidate pools, state the adaptive case as
+an explicit conjecture, and derive a monotone decay law for selection quality
+under noisy guidance. We release \texttt{bo-audit}, the objective wrapper
+behind the ecosystem audit, together with a disclosure checklist for
+machinery-controlled comparisons: shared schema-aware proposals,
+combination-level deduplication, paired seeds, per-seed win statistics, and
+reported excess-over-collision revisit counts.
 \end{abstract}
 
 \maketitle
@@ -125,18 +126,45 @@ machinery for doing so --- candidate pools, local search, trust regions,
 bandit layers \cite{hutter2011sequential, ru2020cocabo, wan2021think} --- and
 that machinery is typically inseparable from the method being evaluated.
 
-This paper isolates that machinery and shows it can dominate what a
-comparison appears to say about surrogates, through two concrete failure
-modes. The first lives in candidate generation: a single degree of
-freedom in the local proposal distribution --- whether a candidate may
-keep the incumbent's categorical combination while refining its
-continuous coordinates --- determines whether \emph{any} acquisition,
-however well informed, can exploit on mixed spaces. The second lives in
-duplicate handling: comparing raw encodings rather than decoded
+How much does this matter outside carefully constructed examples? We measured
+it in the deployed ecosystem. Wrapping the objective function itself --- a
+vantage point every optimizer must pass through, requiring no access to
+library internals --- we audited six widely used BO libraries at their
+documented defaults on six categorical and mixed benchmarks (25 seeds each,
+budget 80; 1{,}050 runs). Three of the six re-spend at least 10\% of the
+evaluation budget on already-evaluated categorical combinations \emph{beyond}
+the collisions unavoidable at that budget; two exceed 25\%, one exceeds
+40\%. The extreme case evaluates a median of only ${\sim}27$ unique
+configurations out of 80 charged evaluations on a 125-combination space ---
+while posting the best solve record in the entire audit, so no convergence
+curve gives it away. On a $5^{25}$-combination space, where a uniform random
+sampler essentially never collides, one default sampler still re-spends a
+median of 16 evaluations in 80. At the other extreme, one library's runhistory
+machinery terminates the run early rather than propose a duplicate. These are
+not exotic corner cases; several of the behaviors are acknowledged in the
+libraries' own issue trackers, and the audit turns them into numbers.
+
+The waste is not an automatic verdict on quality --- that is precisely the
+confound. When we re-ran the wasteful libraries charging only \emph{unique}
+evaluations (a memoization control that leaves sampler trajectories
+bit-identical on deterministic objectives), the apparent ranking of the six
+libraries changed on three of four benchmarks: the sampler that looked
+weakest on small categorical spaces recovered from 7 of 25 solves to 22 of
+25. Benchmark tables implicitly charge proposals; expensive objectives charge
+unique evaluations; the two meters disagree about who wins.
+
+This paper isolates the mechanisms behind such effects in a controlled
+pipeline, through two concrete failure modes. The first lives in candidate
+generation: a single degree of freedom in the local proposal distribution ---
+whether a candidate may keep the incumbent's categorical combination while
+refining its continuous coordinates --- determines whether \emph{any}
+acquisition, however well informed, can exploit on mixed spaces. The second
+lives in duplicate handling: comparing raw encodings rather than decoded
 combinations lets a pipeline silently re-spend most of a categorical
 budget re-measuring points it has already evaluated, with no visible
 trace in a convergence curve. Both are ordinary-looking implementation
-choices; neither is reported in a typical experimental section.
+choices; neither is reported in a typical experimental section --- and both
+have live counterparts in the audited libraries.
 
 Our instrument for separating these effects from the surrogate is an
 \emph{oracle-ceiling audit}: run the unchanged loop with the acquisition
@@ -157,15 +185,31 @@ binds in proportion to how close a method runs to the machinery's
 ceiling --- which is precisely why attributing anything to a surrogate
 requires knowing where that ceiling is.
 
-This paper makes three contributions:
+This paper makes five contributions:
 \begin{enumerate}
-  \item \textbf{The oracle-ceiling audit.} Replacing the acquisition score
-  with the true objective turns the BO loop into an oracle-guided search:
-  per candidate pool, no surrogate-driven acquisition can select a better
-  admissible point, and empirically no surrogate arm exceeded the
-  resulting ceiling in any run behind this paper. Comparing ceilings
-  across machinery variants isolates machinery effects at the cost of a
-  few cheap runs, with no surrogate fits.
+  \item \textbf{An in-the-wild machinery audit of six deployed BO
+  libraries.} A surrogate-free objective wrapper (\texttt{bo-audit},
+  released) counts decoded-combination revisits uniformly across
+  libraries at their documented defaults. Headline: 3 of 6 libraries
+  waste ${\ge}10\%$ of budget beyond unavoidable collisions on at least
+  one benchmark (2 of 6 ${\ge}25\%$; 1 of 6 ${\ge}40\%$), the heaviest
+  waster simultaneously posts the audit's best solve record, and one
+  library terminates early rather than duplicate --- all invisible to
+  convergence curves.
+  \item \textbf{A budget-equalized re-comparison.} Charging unique
+  evaluations only (trajectory-preserving memoization on deterministic
+  objectives), the apparent library ranking changes on 3 of 4
+  benchmarks under a pre-registered ranking metric; the refund converts
+  into solves for one TPE implementation and not the other, so waste is
+  necessary but not sufficient for a ranking artifact.
+  \item \textbf{The oracle-ceiling audit, with its exact scope.}
+  Replacing the acquisition score with the true objective turns the BO
+  loop into oracle-guided search. We prove the resulting bound is a
+  theorem for exogenous candidate pools, exhibit a counterexample
+  generator showing why the adaptive case needs an assumption, state
+  that case as an explicit conjecture --- supported by 0 violations in
+  2{,}250 matched surrogate-versus-oracle comparisons --- and derive a
+  monotone decay law for selection quality under noisy guidance.
   \item \textbf{Two demonstrated failure modes.} A restricted local
   proposal distribution (all local candidates forced to change the
   incumbent's categorical combination) loses to its permissive
@@ -173,14 +217,16 @@ This paper makes three contributions:
   the oracle, with a shortfall that grows as the candidate pool shrinks;
   encoding-level duplicate detection lets a majority of the budget be
   re-spent on known categorical combinations across every method family
-  we tested. Both are invisible in convergence plots.
+  we tested --- the controlled twins of the behaviors measured in the
+  wild.
   \item \textbf{A machinery-controlled comparison protocol.} Shared
   schema-aware candidate generation, combination-level deduplication,
-  paired per-seed designs, and win/tie/loss reporting with signed-rank
-  tests. Repairing and sharing the machinery did not flip the motivating
-  surrogate's ranking --- it made the ranking \emph{attributable},
-  localizing a mixed-space failure to the surrogate itself while two
-  other methods won through the identical loop.
+  paired per-seed designs, win/tie/loss reporting with signed-rank
+  tests, and disclosed excess-over-collision revisit counts. Repairing
+  and sharing the machinery did not flip the motivating surrogate's
+  ranking --- it made the ranking \emph{attributable}, localizing a
+  mixed-space failure to the surrogate itself while two other methods
+  won through the identical loop.
 \end{enumerate}
 
 % =============================================================================
