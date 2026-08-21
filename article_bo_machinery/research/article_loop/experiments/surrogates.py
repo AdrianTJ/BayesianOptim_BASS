@@ -46,10 +46,19 @@ def rf_ei_acquire(X_eval, y_eval, X_cand, seed=0):
     return _ei(preds.mean(axis=0), preds.std(axis=0), y_eval.min())
 
 
-def run_tpe(objective, budget, seed):
-    """Stock optuna TPE with its own machinery; returns best curve aligned to
-    run_bo's convention (index 0 = best after its n0 startup trials) plus
-    decoded-combination revisit count over the post-startup trials."""
+def run_tpe(objective, budget, seed, init=None):
+    """Optuna TPE; returns best curve aligned to run_bo's convention (index 0
+    = best after the n0 initial trials) plus decoded-combination revisit
+    count over the post-init trials.
+
+    init=None: stock behavior — TPESampler's own random startup (E3 arm).
+    init=(X0, y0): the shared maximin-LHS design injected as completed
+    trials via study.add_trial, mirroring the thesis's tpe.R; the sampler
+    then needs no random startup of its own (n_startup_trials=0 would make
+    trial 1 TPE-guided over the injected points; tpe.R keeps optuna's
+    default startup, but with n0 completed trials present the default
+    threshold is already met or nearly met — we set n_startup_trials=0 to
+    make the config explicit and rely on the injected design only)."""
     import optuna
 
     optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -67,9 +76,28 @@ def run_tpe(objective, budget, seed):
                 u[j] = trial.suggest_float(f"x{j}", 0.0, 1.0)
         return float(fn(u[None, :])[0])
 
-    sampler = optuna.samplers.TPESampler(seed=seed, n_startup_trials=n0)
-    study = optuna.create_study(sampler=sampler, direction="minimize")
-    study.optimize(obj, n_trials=n0 + budget)
+    if init is None:
+        sampler = optuna.samplers.TPESampler(seed=seed, n_startup_trials=n0)
+        study = optuna.create_study(sampler=sampler, direction="minimize")
+        study.optimize(obj, n_trials=n0 + budget)
+    else:
+        X0, y0 = init
+        sampler = optuna.samplers.TPESampler(seed=seed, n_startup_trials=0)
+        study = optuna.create_study(sampler=sampler, direction="minimize")
+        for i in range(X0.shape[0]):
+            params, dists = {}, {}
+            for j in range(d):
+                if schema.types[j] == "cat":
+                    L = schema.levels[j]
+                    params[f"x{j}"] = int(decode_levels(X0[i, j], L))
+                    dists[f"x{j}"] = optuna.distributions.CategoricalDistribution(
+                        list(range(1, L + 1)))
+                else:
+                    params[f"x{j}"] = float(X0[i, j])
+                    dists[f"x{j}"] = optuna.distributions.FloatDistribution(0.0, 1.0)
+            study.add_trial(optuna.trial.create_trial(
+                params=params, distributions=dists, value=float(y0[i])))
+        study.optimize(obj, n_trials=budget)
 
     values = np.array([t.value for t in study.trials])
     best = np.minimum.accumulate(values)[n0 - 1:]          # length budget+1
