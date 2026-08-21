@@ -4,9 +4,9 @@
 
 The previous chapters established the theoretical basis for Bayesian Optimization (BO) with BASS models as surrogates. We discussed initialization challenges, domain discretization, and uncertainty estimation, with special attention to unexplored regions of the search space. The next step is empirical validation.
 
-This chapter presents the experimental framework used to evaluate BASS-based BO for hyperparameter optimization. The goal is to compare BASS against established alternatives and determine where it performs well, where it underperforms, and why. In particular, we study whether BASS can address practical concerns such as cold starts, sample efficiency, and reliable optimization in high-dimensional settings.
+This chapter presents the experimental framework used to evaluate BASS-based BO for hyperparameter optimization. The goal is to compare BASS against established alternatives and determine where it performs well, where it underperforms, and why. \green{In particular, we study whether BASS can address practical concerns such as cold starts and sample efficiency on low-to-moderate-dimensional problems (two to six input dimensions), the regime in which expensive black-box optimization is most commonly deployed.}
 
-The methods compared in this chapter are Random Search, Gaussian Process-based BO (GP-BO), and BASS-based BO (BASS-BO). Experiments are conducted across synthetic benchmark functions, including both smooth continuous problems and categorical/mixed-variable problems, to provide a broad evaluation. The analysis focuses on both optimization quality and computational efficiency.
+The methods compared in this chapter are Random Search, Gaussian Process-based BO (GP-BO), \green{BASS-based BO (BASS-BO), and, on the categorical and mixed benchmarks, the Tree-structured Parzen Estimator (TPE)}. Experiments are conducted across synthetic benchmark functions, including both smooth continuous problems and categorical/mixed-variable problems, to provide a broad evaluation. The analysis focuses on both optimization quality and computational efficiency.
 
 The chapter is organized as follows. First, we describe the experimental design, including methods, models, datasets, metrics, and statistical procedures. Next, we present and interpret the results. Finally, we summarize the main findings, identify limitations, and provide recommendations for future work.
 
@@ -16,7 +16,7 @@ The chapter is organized as follows. First, we describe the experimental design,
 
 The primary objective is to evaluate BASS-BO against established hyperparameter optimization methods on two dimensions: optimization effectiveness and optimization efficiency. 
 
-This evaluation criterion is consistent with the central motivation of BO and Sequential Model-Based Optimization, namely to reduce expensive objective function calls while maintaining strong optimization performance. The study includes classical benchmark functions (functions from \cite{simulationlib}) to test behavior under controlled and application-oriented conditions.
+This evaluation criterion is consistent with the central motivation of BO and Sequential Model-Based Optimization, namely to reduce expensive objective function calls while maintaining strong optimization performance. The study includes classical benchmark functions (functions from \cite{simulationlib}) to test behaviour under controlled and application-oriented conditions.
 
 \subsection{Hyperparameter Optimization Methods}
 
@@ -27,7 +27,7 @@ The methods compared are the ones previously mentioned in this work along with t
 	
 	\item \textbf{Random Search}: random sampling from predefined hyperparameter distributions. It is often more efficient than Grid Search in moderate to high dimensions, as shown in \cite{bergstra2012random}.
 	
-	\item \textbf{Gaussian Process-Based Bayesian Optimization (GP-BO)}: a standard BO baseline using Gaussian Processes for surrogate modeling and uncertainty-guided acquisition.
+	\item \textbf{Gaussian Process-Based Bayesian Optimization (GP-BO)}: a standard BO baseline using Gaussian Processes for surrogate modelling and uncertainty-guided acquisition.
 
 	\item \textbf{Tree-structured Parzen Estimator (TPE)}: a strong external baseline and, for our purposes, an especially relevant one. TPE is the de-facto standard for hyper-parameter optimization with mixed and categorical search spaces, and, like BASS but unlike a plain Gaussian process, it handles categorical inputs natively (it models separate densities over good and bad trials and, for a categorical variable, simply estimates a distribution over its levels) \cite{bergstra2011algorithms, watanabe2023tree}. We use the reference implementation in the Optuna library \cite{akiba2019optuna}, driven from R so that it runs under exactly the same protocol as the other methods. Including it lets us ask not only whether BASS-BO beats a Gaussian process on categorical problems, where the Gaussian process is at a structural disadvantage, but how it compares to a method that is itself designed for them.
 \end{itemize}
@@ -39,20 +39,21 @@ The dataset in particular we will be using is the Virtual Library of Simulation 
 Each run follows a common protocol to ensure fair comparison.
 
 \paragraph{1) Initialization}
-All methods start from the same initial design generated by random sampling. This reduces cold-start bias and ensures that early information is matched across methods.
+\green{All methods start from the same initial design of $n_0=\max(2d+1,8)$ points, with $d$ the number of dimensions of the specific function's domain, generated by maximin Latin Hypercube Sampling (see Initial Testing Conditions below).} This reduces cold-start bias and ensures that early information is matched across methods.
 
 \paragraph{2) Iterative optimization}
 \begin{itemize}
 	\item \textbf{BASS-BO}: fit BASS surrogate on observed trials, optimize acquisition function, evaluate selected candidate, update surrogate, repeat.
 	\item \textbf{GP-BO}: same loop with GP surrogate.
 	\item \textbf{Random Search}: sample and evaluate candidates independently each iteration.
+	\item \green{\textbf{TPE}: the same ask-and-tell loop through Optuna's sampler, seeded with the identical initial design injected as completed trials.}
 \end{itemize}
 
 \paragraph{3) Budget and stopping}
 A fixed evaluation budget is used per task to make efficiency comparisons meaningful. Every method is run for the same number of iterations after the shared initial design, and best-so-far performance is recorded at each step.
 
 \paragraph{4) Repetitions and randomization}
-Each configuration is repeated across multiple random seeds. Method order and data split assignments are randomized to reduce systematic effects.
+\green{Each configuration is repeated across multiple random seeds. Because every method starts from the same per-seed initial design, the design is paired: each seed yields a directly comparable final result for every method, which is what the paired statistics below exploit.}
 
 \subsection{Evaluation}
 
@@ -60,7 +61,7 @@ As for evaluation of the methods, the central trade-off at the heart of Bayesian
 
 \subsection{Statistical Analysis}
 
-To compare methods rigorously, we use confidence intervals to make sure we have a wide understanding of the behavior of the methods themselves, as well as effect sizes to quantify practical significance. 
+\green{Two complementary summaries are reported. First, convergence is shown as the mean best-so-far value per iteration with a 95\% confidence interval across seeds, which conveys both speed and variability. Second, because all methods share the same initial design on each seed, final performance is compared with paired statistics: for each method we report the number of seeds in which it strictly beats, ties, or loses to the Random Search baseline, together with a paired Wilcoxon signed-rank test on the final best values. The pairing matters because final best-so-far values are minima and therefore skewed; a method can trail on the mean while winning most seeds, and the per-seed comparison is robust to exactly that.}
 
 \subsection{Initial Testing Conditions}
 
@@ -69,12 +70,14 @@ The initial testing conditions used in this study are listed below. Full impleme
 \begin{itemize}
 	\item Branin-Hoo function ($2d$, bounded continuous domain)
 	\item Rastrigin ($4d$, bounded continuous domain)
+	\item \green{Synthetic non-smooth surface ($3d$, unit cube; deliberately violates smoothness assumptions; see its subsection below)}
 	\item Func-2C ($2$ categorical $+\,2$ continuous, mixed domain)
 	\item Func-3C ($3$ categorical $+\,2$ continuous, mixed domain)
-	\item Cat-Ackley (purely categorical domain, $d$ levels per input)
+	\item \green{Cat-Ackley (purely categorical domain: $d$ inputs with $L$ levels each, run at three sizes, easy $(d{=}3,\,L{=}5)$, medium $(d{=}4,\,L{=}7)$, and hard $(d{=}6,\,L{=}11)$; see the Cat-Ackley section below)}
+	\item \green{A real hyperparameter-optimization task: a small neural text classifier trained from scratch on AG News, with an eight-dimensional, entirely categorical search space (see the dedicated section below). This benchmark uses a budget of 60 evaluations rather than 80, because each evaluation is a full training run.}
 \end{itemize}
 
-All methods are compared under a fixed evaluation budget and identical initialization strategy. For each replicate, an initial design of size $n_0=\max(2d+1,8)$ is generated via maximin Latin Hypercube Sampling (LHS) where $d$ is the dimension of the particular problem, and each optimizer proceeds for a fixed number of iterations. Results are aggregated over multiple random seeds (in our testing, 25 of them), and convergence is summarized using the best-so-far objective value at each iteration. Particular care was taken for these function evaluations to ensure reproducibility, so the seed always starts at the default value of 1001 and proceeds through to seed 1025. The seeds are independent across replicates and are fanned out across parallel workers; the surrogate fits and random draws are made worker-local so that results are identical regardless of how the work is distributed.
+\green{All methods are compared under a fixed evaluation budget of 80 iterations after the initial design, with an identical initialization strategy.} For each replicate, an initial design of size $n_0=\max(2d+1,8)$ is generated via maximin Latin Hypercube Sampling (LHS) where $d$ is the dimension of the particular problem, and each optimizer proceeds for a fixed number of iterations. Results are aggregated over multiple random seeds (in our testing, 25 of them), and convergence is summarized using the best-so-far objective value at each iteration. Particular care was taken for these function evaluations to ensure reproducibility, so the seed always starts at the default value of 1001 and proceeds through to seed 1025. The seeds are independent across replicates and are fanned out across parallel workers; the surrogate fits and random draws are made worker-local so that results are identical regardless of how the work is distributed.
 
 \subsection{Acquisition and Candidate Generation}
 
@@ -82,14 +85,14 @@ A deliberate design choice in this implementation is that BASS-BO and GP-BO are 
 
 The acquisition criterion is Expected Improvement (EI), which is parameter-free: it has no exploration constant to set, since the exploration--exploitation balance follows automatically from the surrogate's own predictive uncertainty. For GP-BO this is the usual closed-form EI under the Gaussian predictive. For BASS-BO, as described in the previous chapter, EI is computed by Monte Carlo over the retained posterior draws of the spline surface, which needs no Gaussian assumption. As a lighter alternative the implementation also supports Thompson sampling for the BASS surrogate, selected through the single \texttt{acquisition} setting (\texttt{"ei"} or \texttt{"thompson"}); all results reported here use Expected Improvement.
 
-Because the acquisition is maximized over a finite pool rather than by continuous optimization, each iteration scores a fresh set of candidate points. The candidate generator is itself parameter-free and shared by both surrogates: half of the \texttt{n\_cand} candidates are drawn from a space-filling Latin Hypercube over the whole domain (global exploration), and half from a Gaussian cloud centered on the current best point, whose width is set to the incumbent's nearest-neighbour distance among the evaluated points. That width is read off the data rather than tuned, and it shrinks naturally as the design fills in around the optimum, so local refinement intensifies on its own as the search progresses.
+Because the acquisition is maximized over a finite pool rather than by continuous optimization, each iteration scores a fresh set of candidate points. \green{The candidate generator is itself parameter-free, schema-aware, and shared by both surrogates. Half of the \texttt{n\_cand} candidates are drawn from a space-filling Latin Hypercube over the whole domain (global exploration; categorical coordinates decode to uniformly distributed levels). The other half are local moves around the current best point, and "local" is defined per coordinate type. Continuous coordinates receive a Gaussian perturbation whose width is set to the incumbent's nearest-neighbour distance among the evaluated points, read off the data rather than tuned and shrinking naturally as the design fills in around the optimum. Categorical coordinates instead make Hamming-local moves: each coordinate independently keeps the incumbent's level or, with probability $1/n_{\text{cat}}$ (one expected flip per candidate, where $n_{\text{cat}}$ is the number of categorical inputs), switches to a uniformly random \emph{other} level. A Gaussian nudge would be meaningless for an unordered factor, whereas a level flip is the correct notion of "nearby." Two details of this scheme matter in practice. On mixed problems a local candidate may flip \emph{nothing}, keeping the incumbent's full categorical combination while refining only its continuous coordinates. This is exactly the local-exploitation move that lets a model-based method outrun random sampling once a good combination is found. On purely categorical problems, where a zero-flip candidate would merely duplicate the incumbent, at least one flip is always forced.}
 
-The remaining settings are experimental hygiene rather than tuning knobs: \texttt{n\_cand}, the size of the candidate pool scored per iteration; \texttt{eps}, a small jitter added to the GP predictive variance for numerical stability; and \texttt{dup\_tol}, the distance below which two points are treated as duplicates and excluded from re-evaluation. Internally, the BASS surrogate is fit with a reduced RJMCMC budget relative to the package default, trading a little posterior resolution for speed inside the optimization loop; these are numerical settings of the sampler, not controls over the optimizer's behavior. The upshot is that the comparison in this chapter has essentially no free parameters on either side, which is precisely what makes a clean surrogate-versus-surrogate reading possible.
+\green{The remaining settings are experimental hygiene rather than tuning knobs: \texttt{n\_cand}, the size of the candidate pool scored per iteration; \texttt{eps}, a small jitter added to the GP predictive variance for numerical stability; and \texttt{dup\_tol}, the distance below which two points are treated as duplicates and excluded from re-evaluation. Duplicate detection operates on a canonicalized representation in which every categorical coordinate is snapped to a fixed representative of its decoded level, so two encodings that decode to the same level combination are recognized as the same input: on a deterministic objective, re-evaluating a known combination is a wasted iteration, and the canonical check prevents it for every method, Random Search included. Ties in the acquisition score (common in early iterations, when a nearly flat posterior makes Expected Improvement almost constant across the pool) are broken uniformly at random rather than by candidate order.} Internally, the BASS surrogate is fit with a reduced RJMCMC budget relative to the package default, trading a little posterior resolution for speed inside the optimization loop; these are numerical settings of the sampler, not controls over the optimizer's behaviour. The upshot is that the comparison in this chapter has essentially no free parameters on either side, which is precisely what makes a clean surrogate-versus-surrogate reading possible.
 
 \subsection{TPE Sensitivity to Its Gamma Hyperparameter}
 \label{tpe_sensitivity_protocol}
 
-TPE is not parameter-free in the same sense. As discussed in the surrogate models chapter, Optuna's \texttt{TPESampler} reduces, for our purposes, to a single hyperparameter worth tuning: $\gamma \in [0,1]$, the quantile of completed trials treated as "good" versus "bad." Everywhere else in this chapter TPE is run with Optuna's library default for $\gamma$, exactly as a practitioner reaching for the reference implementation would. To check whether that default is doing meaningful work -- and, by extension, whether BASS-BO's complete absence of such a knob is a genuine practical advantage rather than a cosmetic one -- we ran a separate ablation: $\gamma$ was swept over $\{0.10, 0.25, 0.50, 0.75\}$ (0.25 sits close to Optuna's own default behavior) on one continuous benchmark (Branin) and one purely categorical one (Cat-Ackley), under the same budget, repetition count, and seeding protocol as the rest of this chapter. The resulting four TPE curves were plotted alongside the single, unsweepable BASS-BO and GP-BO reference curves, so the contrast is visual as much as numerical: where TPE's curves fan out across configurations, BASS-BO and GP-BO have nothing to fan out. The script and full protocol are in \texttt{code\_files/2\_tpe\_sensitivity/}.
+TPE is not parameter-free in the same sense. As discussed in the surrogate models chapter, Optuna's \texttt{TPESampler} reduces, for our purposes, to a single hyperparameter worth tuning: $\gamma \in [0,1]$, the quantile of completed trials treated as "good" versus "bad." Everywhere else in this chapter TPE is run with Optuna's library default for $\gamma$, exactly as a practitioner reaching for the reference implementation would. To check whether that default is doing meaningful work -- and, by extension, whether BASS-BO's complete absence of such a knob is a genuine practical advantage rather than a cosmetic one -- we ran a separate ablation: $\gamma$ was swept over $\{0.10, 0.25, 0.50, 0.75\}$ (0.25 sits close to Optuna's own default behaviour) on one continuous benchmark (Branin) and one purely categorical one (Cat-Ackley\green{, at its hard size $d{=}6$, $L{=}11$}), under the same budget, repetition count, and seeding protocol as the rest of this chapter. The resulting four TPE curves were plotted alongside the single, unsweepable BASS-BO and GP-BO reference curves, so the contrast is visual as much as numerical: where TPE's curves fan out across configurations, BASS-BO and GP-BO have nothing to fan out. The script and full protocol are in \texttt{code\_files/2\_tpe\_sensitivity/}.
 
 \section{Results}
 
@@ -108,32 +111,83 @@ Formally, defined as:
 with $ x_1 \in [-5,10], \qquad x_2 \in [0,15].$
 
 \begin{figure}[h]
-	\includegraphics[width=14cm]{Figures/branin.png}
 	\centering
+	\includegraphics[width=14cm]{Figures/branin.png}
+	\caption{\green{The Branin-Hoo surface on its physical domain. Its three global minima and smooth structure make it the classic sanity-check benchmark for continuous Bayesian optimization.}}
+	\label{fig:branin_surface}
+\end{figure}
+
+\green{Figure~\ref{fig:conv_branin} shows the convergence results. GP-BO behaves exactly as its favorable assumptions predict: it reaches the global minimum ($f^* \approx 0.3979$) within roughly fifteen iterations on essentially every seed (mean final value $0.398$, standard deviation $4\times10^{-4}$), and beats Random Search on all 25 paired seeds ($p = 1.3\times10^{-5}$). BASS-BO also clearly beats Random Search (23 wins, 2 losses across seeds, $p = 4.3\times10^{-5}$; mean final value $0.470$), but converges more slowly and finishes behind GP-BO on every one of the 25 paired seeds. On this smooth, low-dimensional problem the Gaussian process is simply the better-matched surrogate, which is the expected baseline result rather than a surprise; the summary statistics for all continuous benchmarks are collected in Table~\ref{tab:continuous_final}.}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_branin.png}
+	\caption{\green{Branin-Hoo: mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:conv_branin}
 \end{figure}
 
 \subsection{Rastrigin Function}
 
 \begin{equation}
-	f(\mathbf{x}) = A n + \sum_{i=1}^{n}\left[x_i^2 - A\cos\left(2\pi x_i\right)\right],
+	f(\boldsymbol{x}) = A n + \sum_{i=1}^{n}\left[x_i^2 - A\cos\left(2\pi x_i\right)\right],
 \end{equation}
 \[
-\mathbf{x}=(x_1,\dots,x_n), \qquad x_i \in [-5.12,\,5.12], \quad i=1,\dots,n,
+\boldsymbol{x}=(x_1,\dots,x_n), \qquad x_i \in [-5.12,\,5.12], \quad i=1,\dots,n,
 \]
 where \(A=10\) is the standard choice. We used the 4 dimensional version of this function.
 
-% TODO: replace with the Rastrigin convergence plot once produced
-%   (Rscript code_files/run_benchmark.R --objective=rastrigin --d=4).
+\green{Rastrigin is highly multimodal (a lattice of local minima superimposed on a quadratic bowl), and in four dimensions no method comes close to the global minimum within the 80-evaluation budget, so the comparison is about relative progress. As Figure~\ref{fig:conv_rastrigin} shows, GP-BO is again clearly the strongest method (mean final value $13.98$), beating Random Search on 21 of 25 seeds ($p = 6.8\times10^{-5}$) and BASS-BO on 21 of 25 paired seeds ($p = 0.0012$). BASS-BO does retain a real but more modest edge over Random Search (mean $23.43$ versus $28.80$; 16 wins, 2 ties, 7 losses, $p = 0.018$). The pattern of the Branin result repeats at a harder difficulty: both surrogate-guided methods clear the Random Search floor, and the Gaussian process converts its smoothness prior into a substantial advantage even though the surface is multimodal, because it is still continuous and stationary, which is exactly the structure a GP kernel encodes.}
+
 \begin{figure}[h]
 	\centering
-	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Rastrigin convergence plot pending; run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=rastrigin -{}-d=4}.]}\end{minipage}}
+	\includegraphics[width=14cm]{Figures/conv_rastrigin.png}
+	\caption{\green{Rastrigin ($d=4$): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:conv_rastrigin}
 \end{figure}
+
+\subsection{\green{Synthetic Non-Smooth Surface}}
+
+\green{The two benchmarks above are exactly the terrain a Gaussian process is built for, so we also include the hand-constructed synthetic surface used during the development of this pipeline, run here in three dimensions on the unit cube. It superimposes, on a global quadratic bowl, a decaying oscillation along the first axis, an oscillation in the second, a sharp Gaussian penalty bump and a Gaussian reward valley, and, most importantly, a jump discontinuity along the first axis. The jump is the deliberate provocation: a stationary GP kernel must smooth over it, while BASS's piecewise basis can in principle represent it. The full definition is in \texttt{code\_files/R/objectives/synthetic.R} in the project repository.}
+
+\green{The outcome (Figure~\ref{fig:conv_synthetic}) is a useful calibration of that intuition. Both surrogates clearly beat Random Search (BASS-BO: 20 wins, 5 losses, $p = 3.5\times10^{-4}$; GP-BO: 18 wins, 7 losses, $p = 0.0024$). Between the surrogates, however, the discontinuity buys BASS-BO parity rather than victory: GP-BO reaches its plateau within roughly twenty iterations while BASS-BO improves more gradually, and by the end of the budget their final values are statistically indistinguishable (mean $-0.767$ versus $-0.755$; paired Wilcoxon $p = 0.79$). This is the one continuous benchmark on which BASS-BO matches GP-BO, and it is also the one whose structure was designed to disadvantage the GP. An honest reading is that non-smoothness erodes the GP's edge without handing BASS one.}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_synthetic.png}
+	\caption{\green{Synthetic non-smooth surface ($d=3$): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:conv_synthetic}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\green{\small\begin{tabular}{llccc}
+		\hline
+		Benchmark & Method & Final best (mean $\pm$ sd) & W/T/L & $p$ \\
+		\hline
+		Branin ($2d$)    & GP-BO   & $0.398 \pm 0.0004$ & 25/0/0 & $1.3\times10^{-5}$ \\
+		                 & BASS-BO & $0.470 \pm 0.088$  & 23/0/2 & $4.3\times10^{-5}$ \\
+		                 & Random  & $1.088 \pm 0.815$  & --    & -- \\
+		\hline
+		Rastrigin ($4d$) & GP-BO   & $13.98 \pm 8.62$   & 21/0/4 & $6.8\times10^{-5}$ \\
+		                 & BASS-BO & $23.43 \pm 8.33$   & 16/2/7 & $0.018$ \\
+		                 & Random  & $28.80 \pm 6.61$   & --    & -- \\
+		\hline
+		Synthetic ($3d$) & BASS-BO & $-0.767 \pm 0.122$ & 20/0/5 & $3.5\times10^{-4}$ \\
+		                 & GP-BO   & $-0.755 \pm 0.146$ & 18/0/7 & $0.0024$ \\
+		                 & Random  & $-0.588 \pm 0.155$ & --    & -- \\
+		\hline
+	\end{tabular}}
+	\caption{\green{Continuous benchmarks: final best objective value after 80 evaluations (mean $\pm$ standard deviation across 25 seeds, 1001--1025), per-seed wins/ties/losses against the paired Random Search baseline, and the two-sided paired Wilcoxon signed-rank $p$-value. Methods are ordered by mean final value within each benchmark.}}
+	\label{tab:continuous_final}
+\end{table}
 
 \section{Categorical and Mixed-Variable Benchmarks}
 
 The benchmarks above are all smooth and continuous, the regime in which Gaussian-process surrogates are at their strongest. The purpose of this section is to test the capability that motivates the use of BASS in the first place, and which a standard Gaussian process does not have natively: optimization over categorical inputs. Recall from the previous chapters that the GP kernel measures similarity through a numeric distance between inputs, so an unordered categorical variable has no natural representation in it, whereas BASS models a categorical predictor directly, through basis functions defined on subsets of its levels.
 
-To make the comparison concrete and fair, we treat the two surrogates exactly as their assumptions allow. BASS-BO is given the categorical inputs as genuine factors, so it uses its categorical basis. GP-BO is given the only thing a continuous-only surrogate can use, namely a continuous relaxation in which each categorical coordinate is a number in $[0,1]$ that is decoded to a level. This is not a strawman but precisely the workaround a practitioner is forced into when applying an off-the-shelf GP to a categorical problem, and it is what makes the contrast meaningful. Random Search, which samples levels uniformly, serves as the reference, and the TPE baseline serves as the harder test: it handles categorical inputs natively, so a strong showing against it speaks to BASS-BO's merits beyond simply not being a Gaussian process. We use three benchmarks, chosen to range from mixed continuous--categorical to purely categorical.
+To make the comparison concrete and fair, we treat the two surrogates exactly as their assumptions allow. BASS-BO is given the categorical inputs as genuine factors, so it uses its categorical basis. GP-BO is given the only thing a continuous-only surrogate can use, namely a continuous relaxation in which each categorical coordinate is a number in $[0,1]$ that is decoded to a level. \green{This relaxation is the baseline treatment of categorical inputs in GP-based optimization, formalized by \cite{garrido2020dealing}, who additionally transform the covariance function itself; our GP-BO stops at the plain relaxation, which is precisely the workaround a practitioner is forced into when applying an off-the-shelf GP to a categorical problem.} Random Search, which samples levels uniformly, serves as the reference, and the TPE baseline serves as the harder test: it handles categorical inputs natively, so a strong showing against it speaks to BASS-BO's merits beyond simply not being a Gaussian process. We use three benchmarks, chosen to range from mixed continuous--categorical to purely categorical.
+
+\green{One clarification about what is, and is not, being claimed here. The categorical awareness in this pipeline lives in the shared \emph{search machinery} (the schema-aware candidate generator and the combination-level duplicate handling described earlier), not in the GP surrogate, which remains categorically blind by design. That machinery follows established practice rather than contributing anything new: proposing candidates through a mix of global random samples and local moves around the incumbent, including one-exchange flips of categorical values, is how SMAC optimizes its acquisition over configuration spaces \cite{hutter2011sequential}, and Hamming-neighbourhood locality around the incumbent is the organizing idea of trust-region methods for categorical domains such as Casmopolitan \cite{wan2021think}. What the shared machinery buys this thesis is methodological, and it strengthens the baseline rather than the proposed method: GP-BO here is \emph{stronger} than the naive relaxation a practitioner would assemble on their own, because it benefits from the same categorical-aware proposals and duplicate handling that BASS-BO does. Any advantage BASS-BO shows in what follows is therefore attributable to the surrogate itself, not to a handicapped opponent.}
 
 \subsection{Func-2C and Func-3C (mixed)}
 
@@ -141,39 +195,188 @@ Func-2C and Func-3C are standard mixed-variable benchmarks introduced with the C
 \[ f(h_1,h_2,x_1,x_2) = f^{(h_1)}(x_1,x_2) + f^{(h_2)}(x_1,x_2), \]
 with $h_1$ selecting among $\{f_{\text{R}},f_{\text{C}},f_{\text{B}}\}$ and $h_2$ selecting Rosenbrock, Six-Hump Camel, or Beale for its remaining levels; Func-3C adds a third term whose component and weight depend on $h_3$. Both are minimized. The reason these benchmarks are informative is that the relationship between a categorical level and the resulting surface is not continuous in the level index, so a relaxation that treats the level as an ordered number is modelling a discontinuous target with a smooth prior.
 
-% TODO: insert Func-2C and Func-3C convergence plots (BASS-BO vs GP-BO vs TPE vs Random)
-%   Rscript code_files/run_benchmark.R --objective=func2C --budget=60 --with_tpe=true --out_dir=results_func2C
-%   Rscript code_files/run_benchmark.R --objective=func3C --budget=80 --with_tpe=true --out_dir=results_func3C
+\green{The results (Figures~\ref{fig:conv_func2C} and~\ref{fig:conv_func3C}, Table~\ref{tab:mixed_final}) are the clearest negative finding of this thesis, and we report them as such. On both mixed benchmarks BASS-BO is not merely behind the other surrogate-guided methods: it fails to clear the Random Search floor. On Func-2C it beats Random Search on only 5 of 25 paired seeds while losing on 18 ($p = 0.043$); on Func-3C the count is 8 wins against 14 losses ($p = 0.048$). In both cases the paired test is significant at the 5\% level \emph{in Random Search's favor}. Meanwhile GP-BO, running on the supposedly disadvantageous continuous relaxation, is the best method on both problems (20/1/4 and 23/0/2 against Random Search), with TPE second; GP-BO beats BASS-BO on 23 and 25 of the 25 paired seeds respectively.}
+
+\green{Two aspects of the experimental design sharpen what this result means. First, because the search machinery (candidate generation, duplicate handling, initialization) is shared across methods, and because the oracle diagnostics described in the repository confirmed that this machinery permits reaching the optimum of these benchmarks, the failure is attributable to the BASS surrogate-acquisition combination itself, not to the surrounding loop. Second, held-out diagnostics of the BASS fit on these functions show moderate predictive correlation at these sample sizes, so the surrogate is not simply unable to model the surface. A plausible but unproven explanation is that the Monte Carlo Expected Improvement over a modest number of retained posterior draws is too coarse to resolve the fine continuous refinement these composite surfaces reward once a good categorical combination is found; we flag this as a hypothesis for future work rather than a conclusion. What can be stated from the data is the outcome: on mixed continuous--categorical spaces of this type, at this budget, BASS-BO as implemented here is not competitive.}
+
 \begin{figure}[h]
 	\centering
-	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Func-2C / Func-3C convergence plots pending; run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=func2C} and \texttt{-{}-objective=func3C}.]}\end{minipage}}
+	\includegraphics[width=14cm]{Figures/conv_func2C.png}
+	\caption{\green{Func-2C (2 categorical $+$ 2 continuous): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds. BASS-BO finishes above the Random Search baseline.}}
+	\label{fig:conv_func2C}
 \end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_func3C.png}
+	\caption{\green{Func-3C (3 categorical $+$ 2 continuous): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:conv_func3C}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\green{\small\begin{tabular}{llccc}
+		\hline
+		Benchmark & Method & Final best (mean $\pm$ sd) & W/T/L & $p$ \\
+		\hline
+		Func-2C & GP-BO   & $-0.122 \pm 0.077$ & 20/1/4  & $5.2\times10^{-4}$ \\
+		        & TPE     & $-0.097 \pm 0.107$ & 18/1/6  & $0.0053$ \\
+		        & Random  & $-0.028 \pm 0.065$ & --     & -- \\
+		        & BASS-BO & $\phantom{-}0.003 \pm 0.067$ & 5/2/18 & $0.043$ \\
+		\hline
+		Func-3C & GP-BO   & $-0.475 \pm 0.205$ & 23/0/2  & $5.4\times10^{-5}$ \\
+		        & TPE     & $-0.372 \pm 0.279$ & 19/1/5  & $7.1\times10^{-4}$ \\
+		        & Random  & $-0.067 \pm 0.173$ & --     & -- \\
+		        & BASS-BO & $\phantom{-}0.002 \pm 0.161$ & 8/3/14 & $0.048$ \\
+		\hline
+	\end{tabular}}
+	\caption{\green{Mixed benchmarks: final best objective value after 80 evaluations (mean $\pm$ standard deviation across 25 seeds, 1001--1025), per-seed wins/ties/losses against the paired Random Search baseline, and the two-sided paired Wilcoxon signed-rank $p$-value. Methods are ordered by mean final value; note that BASS-BO ranks below Random Search on both benchmarks, and its significant $p$-values correspond to \emph{losses}.}}
+	\label{tab:mixed_final}
+\end{table}
 
 \subsection{Cat-Ackley (purely categorical)}
 
 To stress the categorical capability in isolation, we also use a purely categorical encoding of the Ackley function \cite{simulationlib}, following the way combinatorial Bayesian optimization benchmarks are commonly constructed from continuous test functions \cite{oh2019combo}. Each of the $d$ inputs is a categorical variable with $L$ levels, and level $k$ of input $j$ is mapped to a grid value through a \emph{fixed random permutation} $\pi_j$, that is, the decoded coordinate is $g[\pi_j(k)]$ where $g$ is an evenly spaced grid on Ackley's domain that includes $0$. The objective is then the Ackley value at the decoded point, minimized, with a known global minimum of $0$ attained at the level that each permutation maps to the grid value $0$. The permutation is the crucial ingredient: it destroys any monotone relationship between a level's index and its effect, so the continuous relaxation that GP-BO must use sees a jagged, meaningless surface, while BASS, splitting on subsets of levels, can still isolate the good ones. This is the cleanest illustration of the structural difference between the two surrogates.
 
-% TODO: insert Cat-Ackley convergence plot (BASS-BO vs GP-BO vs TPE vs Random)
-%   Rscript code_files/run_benchmark.R --objective=cat_ackley --d=6 --with_tpe=true --out_dir=results_catackley
+\green{The size of the search space, $L^d$ combinations, is itself a protocol choice, and we run the benchmark at three sizes rather than one. The easy instance ($d{=}3$, $L{=}5$: 125 combinations) is small enough that the 80-evaluation budget can meaningfully cover it, so it tests whether a method can actually \emph{solve} a categorical problem when solving is feasible, a capability demonstration. The medium instance ($d{=}4$, $L{=}7$: 2{,}401 combinations) and the hard instance ($d{=}6$, $L{=}11$: roughly $1.77$ million combinations) progressively outgrow the budget; on the hard instance no method can be expected to reach the optimum in 80 evaluations, and the honest question becomes relative progress: how much better than uniform sampling a surrogate's guidance is when it can only ever see a vanishing fraction of the space. Reporting all three sizes separates what a method \emph{can do} from what any method \emph{could do} at this budget, and keeps single-instance results from overgeneralizing in either direction.}
+
+\green{Figures~\ref{fig:conv_cat_easy}--\ref{fig:conv_cat_hard} and Table~\ref{tab:cat_final} report the three instances, and here the picture reverses relative to the mixed benchmarks. On the easy instance the capability question is answered affirmatively and decisively: BASS-BO finds the exact global optimum on all 25 seeds, in a median of only 4 iterations after the initial design. It is not alone: GP-BO also solves all 25 seeds (median 6 iterations), TPE solves 20, and even Random Search stumbles onto the optimum in 17 of 25 seeds, which is why the paired win counts (8/17/0 for both BO methods) are dominated by ties: on a 125-combination space, an 80-evaluation budget with duplicate avoidance makes the problem genuinely solvable for everyone, and the meaningful difference is \emph{speed}, visible in Figure~\ref{fig:conv_cat_easy}.}
+
+\green{The medium instance ($2{,}401$ combinations, so the budget covers under 4\% of the space) is where the methods separate most cleanly, and it is BASS-BO's strongest result in this thesis. BASS-BO still solves the problem exactly on 19 of 25 seeds (median 36 iterations); GP-BO solves 15 (median 50), TPE 7, and Random Search 1. In paired terms BASS-BO beats Random Search 23/1/1 ($p = 4.0\times10^{-5}$) and never loses to TPE on any seed (14 wins, 11 ties). Its edge over GP-BO points the right way (10 wins, 11 ties, 4 losses across seeds) but does not reach significance ($p = 0.097$).}
+
+\green{On the hard instance ($\sim$1.77 million combinations) no method solves the problem, as intended, and the question is relative progress. Both BO methods make substantial headway (BASS-BO beats Random Search on 25 of 25 paired seeds, $p = 1.3\times10^{-5}$; GP-BO on 24), and both finish well ahead of TPE (BASS-BO beats TPE on 23 of 25 seeds with no losses). Between the two surrogates there is nothing to choose: mean final values of $12.14$ (BASS-BO) and $11.99$ (GP-BO), paired $p = 0.67$. The three sizes read together say that BASS-BO's categorical machinery works, solves what is solvable, degrades gracefully, and consistently outperforms both baselines that lack a regression surrogate. They also show that a GP on the continuous relaxation, given the same categorical-aware search machinery, is essentially its equal on two of the three instances. We return to this last observation in the interpretation section, because it says as much about the machinery as about the surrogates.}
+
 \begin{figure}[h]
 	\centering
-	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[Cat-Ackley convergence plot pending; run \texttt{Rscript code\_files/run\_benchmark.R -{}-objective=cat\_ackley -{}-d=6}.]}\end{minipage}}
+	\includegraphics[width=14cm]{Figures/conv_cat_ackley_easy.png}
+	\caption{\green{Cat-Ackley, easy instance ($d=3$, $L=5$: 125 combinations): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds. Both BASS-BO and GP-BO reach the exact optimum on every seed.}}
+	\label{fig:conv_cat_easy}
 \end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_cat_ackley_medium.png}
+	\caption{\green{Cat-Ackley, medium instance ($d=4$, $L=7$: $2{,}401$ combinations): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:conv_cat_medium}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_cat_ackley_hard.png}
+	\caption{\green{Cat-Ackley, hard instance ($d=6$, $L=11$: $\sim$1.77M combinations): mean best-so-far objective value per iteration across 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds. No method reaches the optimum; the comparison is relative progress.}}
+	\label{fig:conv_cat_hard}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\green{\small\begin{tabular}{llccc}
+		\hline
+		Instance & Method & Final best (mean $\pm$ sd) & W/T/L & $p$ \\
+		\hline
+		Easy ($d{=}3$, $L{=}5$)    & BASS-BO & $0.00 \pm 0.00$   & 8/17/0 & $0.0060$ \\
+		                           & GP-BO   & $0.00 \pm 0.00$   & 8/17/0 & $0.0060$ \\
+		                           & TPE     & $3.64 \pm 7.42$   & 8/12/5 & $0.43$ \\
+		                           & Random  & $5.82 \pm 8.66$   & --    & -- \\
+		\hline
+		Medium ($d{=}4$, $L{=}7$)  & BASS-BO & $3.21 \pm 5.83$   & 23/1/1 & $4.0\times10^{-5}$ \\
+		                           & GP-BO   & $5.75 \pm 7.23$   & 22/3/0 & $4.2\times10^{-5}$ \\
+		                           & TPE     & $10.74 \pm 6.98$  & 17/1/7 & $0.017$ \\
+		                           & Random  & $14.90 \pm 3.45$  & --    & -- \\
+		\hline
+		Hard ($d{=}6$, $L{=}11$)   & GP-BO   & $11.99 \pm 4.56$  & 24/0/1 & $1.5\times10^{-5}$ \\
+		                           & BASS-BO & $12.14 \pm 3.33$  & 25/0/0 & $1.3\times10^{-5}$ \\
+		                           & TPE     & $16.58 \pm 2.30$  & 22/0/3 & $9.6\times10^{-5}$ \\
+		                           & Random  & $18.65 \pm 1.04$  & --    & -- \\
+		\hline
+	\end{tabular}}
+	\caption{\green{Cat-Ackley at three sizes: final best objective value after 80 evaluations (mean $\pm$ standard deviation across 25 seeds, 1001--1025), per-seed wins/ties/losses against the paired Random Search baseline, and the two-sided paired Wilcoxon signed-rank $p$-value. On the easy instance a final value of $0.00$ means the exact global optimum (to machine precision) on every seed; the many ties against Random Search occur because Random Search itself solves that instance on 17 of 25 seeds.}}
+	\label{tab:cat_final}
+\end{table}
 
 \subsection{TPE Hyperparameter Sensitivity}
 
 As described in Section~\ref{tpe_sensitivity_protocol}, we swept TPE's $\gamma$ hyperparameter over $\{0.10, 0.25, 0.50, 0.75\}$ on Branin and Cat-Ackley, holding everything else (budget, repetitions, seeding, initial design) fixed to the same protocol used throughout this chapter. The figures below plot the four resulting TPE curves alongside the single BASS-BO and GP-BO reference curves.
 
-% TODO: insert TPE gamma-sensitivity convergence plots (Branin and Cat-Ackley)
-%   Rscript code_files/2_tpe_sensitivity/run_tpe_sensitivity.R
-% TODO: quote the printed "TPE final-best range across gamma" spread for each
-%   objective here, and contrast it with BASS-BO/GP-BO having no such spread.
+\green{The knob turns out to do a great deal of work (Figures~\ref{fig:tpe_gamma_branin} and~\ref{fig:tpe_gamma_cat}). On Branin, TPE's mean final value ranges from $0.494$ at $\gamma = 0.10$ to $4.55$ at $\gamma = 0.75$, a spread of $4.06$ and nearly an order of magnitude between the best and worst configurations, with the two aggressive settings ($\gamma \in \{0.50, 0.75\}$) finishing \emph{behind} Random Search. On the hard Cat-Ackley instance the spread is $4.12$ (best $15.67$ at $\gamma = 0.25$, worst $19.80$ at $\gamma = 0.75$), and again the two aggressive settings do no better than Random Search ($18.65$). Even the best-tuned TPE configuration remains well behind the single, knob-free BASS-BO ($12.14$) and GP-BO ($11.99$) curves. Two things follow. First, a practitioner using TPE inherits a hyperparameter whose poor settings cost more than the difference between entire methods, while BASS-BO and GP-BO under the parameter-free Expected Improvement acquisition simply have no analogous quantity to mis-set: the practical advantage this ablation was designed to probe is real. Second, the caveat cuts both ways: TPE at a well-chosen $\gamma$ is respectable on Branin ($0.494$, close to BASS-BO's $0.470$), so the argument is about the \emph{risk} and \emph{tuning burden} of the knob, not about TPE's ceiling.}
+
 \begin{figure}[h]
 	\centering
-	\fbox{\begin{minipage}[c][5cm][c]{14cm}\centering\textit{[TPE gamma-sensitivity convergence plots pending --- run \texttt{Rscript code\_files/2\_tpe\_sensitivity/run\_tpe\_sensitivity.R}.]}\end{minipage}}
+	\includegraphics[width=14cm]{Figures/conv_tpe_gamma_branin.png}
+	\caption{\green{TPE $\gamma$-sensitivity on Branin: mean best-so-far objective value per iteration for TPE at $\gamma \in \{0.10, 0.25, 0.50, 0.75\}$, alongside the single BASS-BO and GP-BO reference curves and Random Search. 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:tpe_gamma_branin}
 \end{figure}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_tpe_gamma_cat_ackley.png}
+	\caption{\green{TPE $\gamma$-sensitivity on the hard Cat-Ackley instance ($d=6$, $L=11$): mean best-so-far objective value per iteration for TPE at $\gamma \in \{0.10, 0.25, 0.50, 0.75\}$, alongside the single BASS-BO and GP-BO reference curves and Random Search. 25 seeds (1001--1025), budget 80 evaluations after a shared initial design; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:tpe_gamma_cat}
+\end{figure}
+
+\section{A Real Task: Neural Network Hyperparameter Optimization}
+
+\green{Every benchmark so far is synthetic. That is a deliberate design choice, since synthetic surfaces have known optima and cost nothing to evaluate, but it leaves open the question that motivated this work in the first place: does the categorical capability matter on an actual hyperparameter-optimization problem? This closing experiment answers it with a real task. The objective trains a small text classifier from scratch on the AG News corpus (12{,}000 training and 4{,}000 validation examples, four classes) for a fixed budget of three epochs, and returns the validation error, which is minimized. Training from scratch on a tight epoch budget is what makes the problem discriminating: whether the model learns anything at all within budget depends genuinely on the hyperparameters, and evaluated configurations span validation errors from $0.140$ to worse than $0.75$, with a median of $0.26$ across all configurations visited. The failure mode that led us to drop an earlier real-task candidate (an elastic-net study whose models converged almost immediately, leaving nothing for the optimizer to find) is absent here.}
+
+\green{The search space has eight hyperparameters, every one of them a discrete choice, giving $14{,}580$ configurations in total (Table~\ref{tab:nlp_space}). The design deliberately mixes the two kinds of discreteness that arise in real tuning problems. Four coordinates are genuinely unordered: the architecture, the optimizer, the activation, and the pooling scheme have no meaningful order among their levels. Four are discretized-ordered: the learning rate, embedding dimension, dropout, and batch size are continuous or integer quantities cut into levels whose order is real. The distinction matters for the comparison, because the pipeline hands every method the same unit-cube coordinates: the Gaussian process therefore sees each coordinate as its ordered bin position, a representation that is faithful for the four ordered coordinates and a fabricated ordering for the four unordered ones, while BASS receives the unordered coordinates as true factors. If the native categorical representation matters anywhere, this is the kind of space where it should.}
+
+\begin{table}[h]
+	\centering
+	\green{\small\begin{tabular}{llll}
+		\hline
+		Hyperparameter & Kind & Levels & \\
+		\hline
+		architecture & unordered & meanpool, CNN, BiLSTM & \\
+		optimizer & unordered & SGD, Adam, RMSprop, AdamW & \\
+		activation & unordered & ReLU, tanh, GELU & \\
+		pooling & unordered & mean, max, last & \\
+		learning rate & ordered & 0.001, 0.003, 0.01, 0.03, 0.1 & \\
+		embedding dimension & ordered & 32, 64, 128 & \\
+		dropout & ordered & 0.0, 0.3, 0.6 & \\
+		batch size & ordered & 32, 128, 512 & \\
+		\hline
+	\end{tabular}}
+	\caption{\green{The search space of the real task: eight hyperparameters, all discrete, $14{,}580$ configurations. The four unordered coordinates are where an ordered relaxation misrepresents the geometry; the four ordered ones are where it is faithful.}}
+	\label{tab:nlp_space}
+\end{table}
+
+\green{The protocol matches the rest of the chapter with two declared deviations. The same four methods run on the same shared initial design ($n_0 = 17$ points) over the same seeds 1001--1025, with the same parameter-free Expected Improvement and the same candidate machinery. The deviations: the budget is 60 evaluations rather than 80, because each evaluation is a genuine training run rather than a formula, and the experiment runs sequentially rather than across parallel workers, because evaluations are served through a shared on-disk cache. That cache is sound because the objective is deterministic by construction: the training seed is fixed inside the trainer, so the validation error is a fixed function of the configuration, exactly as Branin is a fixed function of its inputs. Determinism was verified directly by retraining cached configurations from scratch and reproducing their errors bit for bit. A guard maps non-finite training losses to the worst possible error; it fired on two of the $4{,}171$ configurations evaluated across all runs, both for the same physically sensible reason (the largest learning rate under SGD with momentum on the simplest architecture).}
+
+\green{Figure~\ref{fig:conv_nlp} and Table~\ref{tab:nlp_final} give the results, and they reproduce the purely categorical findings of the previous section on a real problem. Both surrogate-driven methods beat Random Search significantly under the paired test: BASS-BO on 17 of 25 seeds with 5 losses ($p = 0.025$), GP-BO on 16 with 7 ($p = 0.024$). TPE does not separate from Random Search at this budget (12 wins, 11 losses, $p = 0.96$), which is consistent with the data appetite discussed in the surrogate survey: sixty evaluations over $14{,}580$ configurations is a thin diet for per-coordinate density estimates. Between the two surrogates there is, once again, nothing to choose. Their median final errors are identical ($0.1492$), the paired comparison splits 13 wins to 11 with $p = 0.69$, and the difference in mean final error ($0.0007$) corresponds to about three of the $4{,}000$ validation examples, at a metric granularity of $1/4000 = 0.00025$ per example. Against TPE, BASS-BO wins 16 of 25 paired seeds with 8 losses ($p = 0.063$), directionally ahead but short of the 5\% threshold, while GP-BO's margin over TPE does clear it (15 wins to 9, $p = 0.020$).}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm]{Figures/conv_nlp_hpo.png}
+	\caption{\green{The real task: mean best-so-far validation error per iteration across 25 seeds, budget 60 evaluations after a shared initial design of 17 points; shaded bands are 95\% confidence intervals across seeds.}}
+	\label{fig:conv_nlp}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\green{\small\begin{tabular}{lccc}
+		\hline
+		Method & Final best (mean $\pm$ sd) & W/T/L vs Random & $p$ \\
+		\hline
+		GP-BO   & $0.1501 \pm 0.0061$ & 16/2/7  & $0.024$ \\
+		BASS-BO & $0.1509 \pm 0.0051$ & 17/3/5  & $0.025$ \\
+		TPE     & $0.1545 \pm 0.0073$ & 12/2/11 & $0.96$ \\
+		Random  & $0.1547 \pm 0.0064$ & --      & -- \\
+		\hline
+	\end{tabular}}
+	\caption{\green{Real-task final results across 25 paired seeds (Wilcoxon signed-rank vs Random Search). The best configuration found (validation error $0.1403$, accuracy $86.0\%$) was reached by both BASS-BO and GP-BO; neither baseline reached it.}}
+	\label{tab:nlp_final}
+\end{table}
+
+\green{The optimization landscape itself is worth a comment, because it says something about where the difficulty of real categorical tuning lives. The elite region of the space is structurally coherent: every configuration within half a point of the optimum uses mean pooling, an Adam-family optimizer, and a learning rate of $0.01$ or $0.03$, and eight of the nine use the simplest architecture. In other words, the decisive structure sits almost entirely in the genuinely unordered coordinates, with the discretized-ordered ones (embedding dimension, dropout, batch size) comparatively forgiving. This is precisely the kind of landscape the categorical argument is about, and on it the honest conclusion mirrors the synthetic categorical benchmarks: the capability is real, both surrogate methods exploit it, and the choice between BASS and a relaxation GP, under shared categorical-aware machinery, does not change the outcome.}
+
 \section{Result Interpretation and Limitations}
+
+\green{On the continuous benchmarks the pre-registered expectation held, and held clearly. Where the objective is smooth and stationary, GP-BO is the better optimizer by every measure: it beats BASS-BO on 25 of 25 paired seeds on Branin and 21 of 25 on Rastrigin, and it converges markedly faster. BASS-BO is a genuine improvement over Random Search on all three continuous problems, but it is a second-place method in the GP's home terrain, and nothing in these results argues for preferring it there. The one nuance comes from the non-smooth synthetic surface, whose jump discontinuity was constructed to violate the GP's assumptions: there the gap closes to statistical parity ($p = 0.79$), with GP-BO still faster early. Non-smoothness of this kind erodes the GP's advantage; on this evidence it does not create a BASS advantage.}
+
+\green{On the purely categorical benchmarks the capability that motivated this thesis is demonstrated, with an important qualification. Read together, the three Cat-Ackley sizes show BASS-BO solving what is solvable (25 of 25 seeds on the easy instance, in a median of 4 iterations), holding its edge as the space outgrows the budget (its strongest separation on the medium instance, where it solves 19 of 25 seeds against GP-BO's 15, TPE's 7, and Random Search's 1), and degrading gracefully on the hard instance, where it beats Random Search on every one of the 25 paired seeds and TPE on 23 of them while never losing to either. Against the baselines that lack a regression surrogate, the categorical story is unambiguous. The qualification concerns GP-BO: given the same categorical-aware search machinery, the GP on a plain continuous relaxation matches BASS-BO on the easy and hard instances and trails without statistical significance on the medium one ($p = 0.097$). The structural argument (that a GP kernel cannot represent unordered levels) did not translate into the performance gap it suggests. We read this as evidence for the machinery-confound point developed in the conclusions: much of what looks like ``categorical capability'' in a Bayesian optimizer lives in the candidate generation and duplicate handling, and once those are shared and categorical-aware, the choice of surrogate matters less than the literature's method-to-method comparisons imply. The real-task benchmark repeats this pattern point for point: significant wins for both surrogates over Random Search, statistical parity between the surrogates themselves.}
+
+\green{On the mixed benchmarks the result is negative and we state it without hedging: BASS-BO failed. It lost to Random Search under the paired test on both Func-2C (5 wins, 18 losses, $p = 0.043$) and Func-3C (8 wins, 14 losses, $p = 0.048$), while GP-BO and TPE both beat Random Search comfortably on the same seeds. The shared-machinery design is what makes this diagnosis informative rather than merely embarrassing: the search loop demonstrably permits solving these problems (GP-BO does so with the identical loop), so the failure localizes to the BASS surrogate-acquisition combination on mixed spaces at this budget. Whether the cause is the Monte Carlo resolution of the Expected Improvement over BASS's posterior draws, or a mismatch between the spline basis and these composite surfaces, is a question these experiments were not designed to answer; the honest summary is that BASS-BO, as implemented here, should not currently be recommended for mixed continuous--categorical problems, and that the failure mode was invisible on every purely categorical benchmark.}
+
+\green{Four scope limits bound all of these conclusions. First, the benchmark suite is dominated by synthetic, low-dimensional surfaces (two to six input dimensions); the one real hyperparameter-tuning task, the eight-dimensional neural text classifier above, samples a single dataset and a single architecture family, and behaviour on noisy, higher-dimensional, or structured real objectives beyond it is untested here. Second, every synthetic result is at a single evaluation budget of 80 iterations (60 on the real task, where each evaluation is a full training run); rankings can and do change with budget (BASS-BO's late catch-up on the synthetic surface is a case in point), and no claim is made about other budgets. Third, all objectives are deterministic, so the duplicate-avoidance logic and the paired statistics both exploit an exactness that noisy objectives would not provide. Fourth, the comparison covers one acquisition function (Expected Improvement) and one TPE implementation at its library default $\gamma$ outside the dedicated ablation; different acquisition choices could shift the surrogate comparison in either direction. These limits are the natural agenda for the future-work chapter, and none of them soften the two headline findings: the categorical capability is real, and the mixed-variable failure is real.}
 
 
 

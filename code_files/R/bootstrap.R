@@ -32,10 +32,17 @@ source_library <- function(lib_dir) {
   # name -> objective loader.
   obj_dir <- file.path(lib_dir, "objectives")
   source(file.path(obj_dir, "objective_utils.R"))
-  for (f in c("branin.R", "rastrigin.R", "synthetic.R", "categorical.R")) {
+  for (f in c("branin.R", "rastrigin.R", "synthetic.R", "categorical.R",
+               "nlp_hpo.R")) {
     source(file.path(obj_dir, f))
   }
   source(file.path(lib_dir, "objectives.R"))
+
+  # Record where code_files/ lives so objectives that shell out to helper
+  # programs (the NLP HPO trainer) can find them without a hardcoded path.
+  # lib_dir is <repo>/code_files/R, so its parent is the code root.
+  options(bass.code_root = normalizePath(file.path(lib_dir, ".."),
+                                         mustWork = FALSE))
 
   invisible(NULL)
 }

@@ -38,17 +38,29 @@ over categorical and mixed search spaces. In the language of the next chapters,
 the point of this work is to relax the continuity-and-numeric-inputs restriction
 that the GP framework quietly imposes.
 
-To study this honestly, we build a reproducible experimental pipeline in R that
-compares BASS-based BO (BASS-BO) against GP-based BO (GP-BO) and Random Search on
-a common protocol, with both surrogates driven by the same parameter-free Expected
-Improvement acquisition and the same candidate generator, so that any measured
-difference is attributable to the surrogate alone. The findings are deliberately
-balanced. On smooth, low-dimensional continuous benchmarks, where the GP's
-assumptions are well matched, GP-BO is the stronger method and converges faster.
-The advantage of BASS-BO is structural rather than a matter of tuning: on
-categorical and mixed problems, where a standard GP cannot operate without
-workarounds, BASS-BO applies directly. We make this contrast concrete with a set
-of categorical and mixed-variable benchmarks designed precisely to exercise it.
+\green{To study this honestly, we build a reproducible experimental pipeline in R that
+compares BASS-based BO (BASS-BO) against GP-based BO (GP-BO), Random Search, and
+the Tree-structured Parzen Estimator (TPE) on a common protocol, with both
+surrogates driven by the same parameter-free Expected Improvement acquisition and
+the same candidate generator, so that any measured difference is attributable to
+the surrogate alone. The framing is deliberately balanced rather than
+advocacy-driven, and the outcomes are reported whichever way they fall. On the
+smooth, low-dimensional continuous benchmarks, where the GP's assumptions are well
+matched, GP-BO is indeed the stronger method, decisively so (it wins every
+paired seed against BASS-BO on Branin), while BASS-BO still clearly improves on
+Random Search. On purely categorical problems the structural capability is
+demonstrated: BASS-BO solves a solvable categorical benchmark on every seed and
+consistently outperforms both Random Search and TPE as the space grows past what
+the budget can cover, although a GP on a plain continuous relaxation, given the
+same categorical-aware search machinery, proves nearly as effective. A closing
+experiment on a real task, the tuning of a small neural text classifier over an
+entirely categorical eight-dimensional space, reproduces this picture: both
+surrogate methods beat Random Search significantly, and the two are
+statistically indistinguishable from each other. On mixed
+continuous--categorical problems the result is negative: BASS-BO fails to beat
+Random Search there, a finding we report and analyze rather than obscure. The
+experimental chapter presents all of these results with paired per-seed
+statistics, and the conclusions draw the regime map they imply.}
 
 The remainder of the thesis is organized as follows. We first develop the
 background needed to make these ideas precise: stochastic processes and Gaussian
