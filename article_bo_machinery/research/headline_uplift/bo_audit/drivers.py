@@ -94,6 +94,53 @@ def run_skopt_gp(audited, space, budget, seed):
     return {"library": "skopt-gp", "version": skopt.__version__, "non_defaults": "seed only"}
 
 
+def run_ax(audited, space, budget, seed):
+    """Ax (Meta) via the modern ax.Client API, documented defaults."""
+    from ax import Client, ChoiceParameterConfig, RangeParameterConfig
+
+    params = []
+    for spec in space:
+        name, kind = spec[0], spec[1]
+        if kind == "cat":
+            params.append(ChoiceParameterConfig(
+                name=name, values=list(spec[2]),
+                parameter_type="int" if all(isinstance(v, int) for v in spec[2]) else "str"))
+        elif kind == "int":
+            params.append(RangeParameterConfig(
+                name=name, bounds=(spec[2], spec[3]), parameter_type="int"))
+        else:
+            params.append(RangeParameterConfig(
+                name=name, bounds=(spec[2], spec[3]), parameter_type="float"))
+
+    client = Client(random_seed=seed)
+    client.configure_experiment(parameters=params, name=f"audit_{seed}")
+    client.configure_optimization(objective="-obj")  # minimize
+    for _ in range(budget):
+        for idx, cfg in client.get_next_trials(max_trials=1).items():
+            client.complete_trial(trial_index=idx, raw_data={"obj": audited(cfg)})
+    import ax
+    return {"library": "ax", "version": ax.__version__,
+            "non_defaults": "random_seed; one trial per ask"}
+
+
+SMAC_VENV_PY = None  # set by run scripts (isolated venv: smac needs sklearn<1.8)
+
+
+def run_smac_subprocess(benchmark_name, budget, seed, venv_py):
+    """SMAC 2.4 runs in its own venv (sklearn-version conflict with the main
+    env, see H1 DESIGN deviations). The subprocess does its own bo-audit
+    counting via smac_runner.py and returns the summary dict."""
+    import json
+    import subprocess
+    from pathlib import Path
+    runner = Path(__file__).resolve().parent / "smac_runner.py"
+    out = subprocess.run([venv_py, str(runner), benchmark_name, str(budget), str(seed)],
+                         capture_output=True, text=True, timeout=1800)
+    if out.returncode != 0:
+        raise RuntimeError(f"smac runner failed: {out.stderr[-2000:]}")
+    return json.loads(out.stdout.strip().splitlines()[-1])
+
+
 def run_random(audited, space, budget, seed):
     """Uniform random baseline through the identical audited objective."""
     import numpy as np
@@ -117,5 +164,7 @@ DRIVERS = {
     "optuna-gp": run_optuna_gp,
     "hyperopt-tpe": run_hyperopt_tpe,
     "skopt-gp": run_skopt_gp,
+    "ax": run_ax,
     "random": run_random,
 }
+# smac is driven via run_smac_subprocess (isolated venv), not DRIVERS.
