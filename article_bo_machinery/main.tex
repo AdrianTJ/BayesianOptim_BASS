@@ -114,27 +114,60 @@ machinery for doing so --- candidate pools, local search, trust regions,
 bandit layers \cite{hutter2011sequential, ru2020cocabo, wan2021think} --- and
 that machinery is typically inseparable from the method being evaluated.
 
-% TODO: 1-2 paragraphs sharpening the claim with the two concrete failure
-% modes (generator ceiling, duplicate leakage) and preview of the oracle audit.
+This paper isolates that machinery and shows it can dominate what a
+comparison appears to say about surrogates, through two concrete failure
+modes. The first lives in candidate generation: a single degree of
+freedom in the local proposal distribution --- whether a candidate may
+keep the incumbent's categorical combination while refining its
+continuous coordinates --- determines whether \emph{any} acquisition,
+however well informed, can exploit on mixed spaces. The second lives in
+duplicate handling: comparing raw encodings rather than decoded
+combinations lets a pipeline silently re-spend most of a categorical
+budget re-measuring points it has already evaluated, with no visible
+trace in a convergence curve. Both are ordinary-looking implementation
+choices; neither is reported in a typical experimental section.
+
+Our instrument for separating these effects from the surrogate is an
+\emph{oracle-ceiling audit}: run the unchanged loop with the acquisition
+score replaced by the true objective, so that the machinery is exercised
+under perfect guidance. Auditing each machinery variant this way costs
+minutes and no surrogate fits, and it turns ``the method underperformed''
+into an attributable statement --- either the machinery's ceiling was the
+binding constraint, or the surrogate failed short of a ceiling that
+permitted more. Applying the audit and repairing both failure modes did
+not rescue the surrogate that motivated this work; it did something more
+useful, converting an unattributable mixed-space failure into a clean
+negative result about the model itself. The two defects contaminate
+comparisons in different ways: the duplicate leak taxes every method
+family we tested by a comparable margin, while the generator restriction
+binds in proportion to how close a method runs to the machinery's
+ceiling --- which is precisely why attributing anything to a surrogate
+requires knowing where that ceiling is.
 
 This paper makes three contributions:
 \begin{enumerate}
   \item \textbf{The oracle-ceiling audit.} Replacing the acquisition score
-  with the true objective turns the BO loop into an oracle-guided search whose
-  performance upper-bounds what \emph{any} surrogate could achieve with the
-  same machinery. Comparing this ceiling across machinery variants isolates
-  machinery effects at the cost of a few cheap runs, with no surrogate fits.
-  \item \textbf{Two demonstrated failure modes.} A restricted local proposal
-  distribution (all local candidates forced to change the incumbent's
-  categorical combination) caps the oracle itself well short of the optimum on
-  the CoCaBO mixed benchmarks; encoding-level duplicate detection lets a
-  majority of the budget be re-spent on known categorical combinations. Both
-  are invisible in convergence plots.
+  with the true objective turns the BO loop into an oracle-guided search:
+  per candidate pool, no surrogate-driven acquisition can select a better
+  admissible point, and empirically no surrogate arm exceeded the
+  resulting ceiling in any run behind this paper. Comparing ceilings
+  across machinery variants isolates machinery effects at the cost of a
+  few cheap runs, with no surrogate fits.
+  \item \textbf{Two demonstrated failure modes.} A restricted local
+  proposal distribution (all local candidates forced to change the
+  incumbent's categorical combination) loses to its permissive
+  counterpart on every paired seed of the CoCaBO mixed benchmarks under
+  the oracle, with a shortfall that grows as the candidate pool shrinks;
+  encoding-level duplicate detection lets a majority of the budget be
+  re-spent on known categorical combinations across every method family
+  we tested. Both are invisible in convergence plots.
   \item \textbf{A machinery-controlled comparison protocol.} Shared
-  schema-aware candidate generation, combination-level deduplication, paired
-  per-seed designs, and win/tie/loss reporting with signed-rank tests; we show
-  the same two surrogates change their apparent ranking on a mixed benchmark
-  when the machinery is repaired, under an identical acquisition rule.
+  schema-aware candidate generation, combination-level deduplication,
+  paired per-seed designs, and win/tie/loss reporting with signed-rank
+  tests. Repairing and sharing the machinery did not flip the motivating
+  surrogate's ranking --- it made the ranking \emph{attributable},
+  localizing a mixed-space failure to the surrogate itself while two
+  other methods won through the identical loop.
 \end{enumerate}
 
 % =============================================================================
@@ -161,11 +194,54 @@ descend from MARS and Bayesian MARS \cite{friedman1991multivariate,
 denison1998bayesian}, with BASS as the modern implementation
 \cite{francom2020bass}.
 
-\paragraph{Benchmarking BO.} % TODO: expand. Empirical-foundations critiques
-% (e.g. \cite{eggensperger2013towards}) discuss benchmark and protocol
-% pitfalls, but the acquisition-optimization machinery is generally treated as
-% part of the method rather than as a confound to be controlled. Cite recent
-% mixed-space benchmark suites; verify none performs an oracle-style audit.
+\paragraph{Acquisition optimization as a first-class concern.}
+That the \emph{inner} optimization matters is established for continuous
+domains: \citet{wilson2018maximizing} showed acquisition maximization to
+be a critical, understudied component of BO pipelines. In mixed and
+discrete spaces, \citet{daulton2022pr} diagnosed the standard
+relax-then-round candidate generation as a biased, degenerate
+approximation that degrades performance largely independently of the
+acquisition function on top, and replaced it with probabilistic
+reparameterization; the duplicate-evaluation pathology of rounding was
+articulated earlier by \citet{garrido2020dealing} and by
+\citet{luong2019discrete}, each fixing it \emph{within} one method (a
+transformed kernel; manipulated exploration and length-scale). Our
+Sec.~\ref{sec:dedup} treats the same pathology as a protocol-level
+property of the comparison rather than a defect of any one model, and
+measures its cost across unrelated method families. Closest in spirit to
+our attribution concern, \citet{tripp2024diagnosing} showed that fixing
+pipeline pitfalls --- including inadequate acquisition maximization ---
+makes a basic GP the strongest method on a molecule-design benchmark,
+implying prior rankings there reflected pipelines rather than models;
+their diagnosis is indirect (a stronger inner optimizer improves
+results), where our audit substitutes the true objective to bound the
+machinery directly. A ground-truth substitution appears as an internal
+ablation in \citet{evogo2025} (a ``real evaluation'' variant estimating
+their generative optimizer's ceiling at the training-loss level); we
+generalize the idea into a reusable, machinery-isolating diagnostic for
+pool-based mixed-space BO.
+
+\paragraph{Benchmarking BO.}
+Empirical-foundations critiques have long documented benchmark and
+protocol pitfalls \cite{eggensperger2013towards, turner2021bayesian}.
+For mixed and combinatorial spaces specifically, the MCBO framework of
+\citet{dreczkowski2023mcbo} makes the closest prior argument to ours:
+papers proposing a single primitive rarely benchmark against baselines
+that hold the remaining primitives fixed, and MCBO supplies shared,
+mix-and-match implementations (with Friedman and post-hoc Wilcoxon
+testing across combinations). We differ in mechanism and in instrument:
+MCBO controls primitives generically, whereas we isolate and measure two
+specific acquisition-optimization failure modes (generator restriction
+and dedup leakage), quantify them with an oracle-style audit that MCBO
+does not perform, and derive per-seed paired statistics gated by that
+audit. To our knowledge --- based on a systematic sweep recorded in the
+companion repository --- no prior work substitutes the true objective
+into the loop as a general machinery audit for mixed-space BO, nor
+proposes a machinery-controlled protocol with an oracle gate: method
+papers continue to ship bespoke machinery inseparable from the model
+(e.g., the trust-region pipeline of \citet{papenmeier2023bounce}), and
+benchmark suites standardize tasks and interfaces, but neither audits a
+ceiling.
 
 % =============================================================================
 \section{Setup: One Loop, Shared Machinery}

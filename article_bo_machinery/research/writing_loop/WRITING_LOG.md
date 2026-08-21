@@ -143,3 +143,37 @@ accumulate items only the author can settle.
   resolve the intro's TODO paragraphs and the related-work TODO. Then
   S8 (Discussion/Limitations; abstract headline numbers; title
   recommendation for the user; acknowledgments/data availability).
+
+## Cycle 6 — 2026-08-22 (S7: introduction + related work + bibliography)
+- **Did:** Intro's TODO resolved with two new paragraphs (the two failure
+  modes previewed; the audit as the attribution instrument; the honest
+  no-rescue framing) and the contribution list corrected — item 1 aligned
+  with the corrected per-pool/empirical Definition, item 3's contradicted
+  ranking-flip claim replaced by the attributability framing (K3).
+  Related Work completed: a new acquisition-optimization paragraph
+  (Wilson; Daulton PR; Garrido-Merchán and Luong as single-method fixes;
+  Tripp as the closest indirect-diagnosis precedent; EvoGO's
+  training-loss ablation) and the finished benchmarking paragraph with
+  MCBO differentiated per the novelty check, plus the hedged novelty
+  sentence. Eight bib entries added, all field-verified by a web-sweep
+  subagent (no invented authors; EvoGO's year corrected to 2025 and the
+  key renamed to match). Review REFUTED two blockers, both fixed: the
+  intro's "equally contaminated" overreach (now split: dedup taxes every
+  family comparably; the generator binds near the ceiling) and a
+  mischaracterization of Bounce as a benchmarking paper (now cited as
+  bespoke-machinery method). Reviewer independently re-verified four
+  entries' author lists. Noted for S8: K8's full-text caveat (MCBO/
+  Tripp/Daulton verified at abstract/repo level, egress-blocked PDFs)
+  belongs in Limitations.
+- **Files:** ../../main.tex (intro, related work), ../../references.bib
+- **TODO count (main.tex):** 8 (ratchet down from 10)
+- **Tests:** check_article.py PASS (22 cite keys); check_research.py PASS
+- **Next (writing loop):** S8, the closing cycle: Discussion and
+  Limitations (audit bounds machinery not surrogates; pool-based scope;
+  noise-model limitation from E7/E8; deterministic-objective scope of the
+  dedup argument; K8's full-text-verification caveat; reproducibility
+  note), abstract headline-numbers TODO (add one sentence: 25/25 p=6e-8,
+  median 78/80, from canonical sources), acknowledgments/data-availability
+  TODOs, and the title decision — prepare a recommendation and queue for
+  the user, do not decide unattended. Then the Phase-2 adversarial
+  full-pass review per WRITING_PLAN.
