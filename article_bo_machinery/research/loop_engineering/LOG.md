@@ -30,3 +30,14 @@ the template in `PLAN.md`. Cycle 0 is the setup itself.
   internal evidence: the novelty-check script's one-barrier design and its
   journal timings; pair with one external sweep on DAG orchestration
   semantics.
+
+## Cycle 2 — 2026-08-21
+- **Question:** — (paused by user direction)
+- **Did:** Loop paused before taking Q2: the user redirected effort to
+  applying the Q1 findings — a writing loop for the article
+  (`../writing_loop/WRITING_PLAN.md`). Backlog Q2–Q7 retained; resume here
+  after the article draft is done. The writing loop doubles as the applied
+  test of Q1's conclusions; deviations feed a future Q1 addendum.
+- **Files:** ../README.md (status), this entry
+- **Tests:** check_research.py PASS
+- **Next:** On resume, take Q2 as previously scoped.
