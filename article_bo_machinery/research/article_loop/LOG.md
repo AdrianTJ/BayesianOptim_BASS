@@ -52,3 +52,39 @@ resume instruction.
   n_cand ∈ {50, 200, 1000} on func2C/func3C to test K2a's magnitude
   dependence. Reuse validated machinery.py; independent review before
   ledger update.
+
+## Cycle 2 — 2026-08-21
+- **Phase:** experiment (E2 oracle matrix) + analyze + re-center; plus the
+  R-side resolution of K2a-fig
+- **Did:** E2 ran 700 runs in 5m04s: all five pre-registered hypotheses
+  PASS. Headlines: keep beats flip 25/25 in every cell (Wilcoxon floor
+  p=6.0e-8); the ceiling gap grows ×8–14 as the pool shrinks 1000→50 while
+  keep stays at the optimum (K2a upgraded — severity is pool-size
+  dependent, worst where pools are realistic); encoding-level dedup wastes
+  a median 78/80 picks on the solvable categorical benchmark with no
+  visible movement in any final value (K2b mechanism at protocol scale).
+  Installed R in-container (CRAN egress-blocked; lhs via apt; BASS/GPfit
+  unavailable → E4 BASS cells stay queued for the user's machine) and ran
+  the historical generator through the actual R library: R gives
+  −0.1971@10 at n_cand=1000 — K2a-fig **refuted as recorded** (−0.148 sits
+  in small-pool territory); R and Python agree to ~2 decimals everywhere,
+  cross-language-validating the harness. Independent review UPHELD E2 with
+  five minor findings, all incorporated (REVIEW.md). Ledger: K2a upgraded,
+  K2b protocol-scale, K2a-fig refuted-as-recorded, K6 strengthened.
+- **Files:** exp02_oracle_matrix/{DESIGN,ANALYSIS,REVIEW}.md, run_e2.py,
+  results.csv, r_check/{k2afig_check.R,r_results.csv}, machinery.py
+  (dedup= + revisits), CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E2 H1–H5
+  all PASS
+- **User decisions (open):** unchanged (title/co-authors/venue; branch
+  history).
+- **Next:** Cycle 3 = E3 (surrogate × machinery matrix): DESIGN first —
+  surrogates {GP-relaxation (sklearn GPR + closed-form EI), RF (sklearn,
+  SMAC-style EI over trees' variance), TPE (optuna)} through the SAME
+  run_bo loop and generator/dedup cells, vs Random, paired 25 seeds,
+  budget 80, benchmarks func2C/func3C/cat_ackley d3L5; fold a benchmark
+  index into the RNG seed formula (E2 review finding 1). Measures whether
+  machinery choices move rankings for surrogate families beyond BASS/GP
+  (K5) and the surrogate-level revisit cost (E5 piggybacks: count revisits
+  per surrogate under encoding dedup on d3L5). Independent review before
+  ledger update.

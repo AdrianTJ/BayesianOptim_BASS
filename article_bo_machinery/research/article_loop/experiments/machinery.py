@@ -124,10 +124,17 @@ def shared_init(objective, seed):
     return X, objective["fn"](X)
 
 
-def run_bo(objective, method, cfg, X_init, y_init, rng):
+def run_bo(objective, method, cfg, X_init, y_init, rng, dedup="combination"):
     """Generic loop (bo_loop.R): propose -> score -> dedup mask -> argmax
     (random tie-break) -> evaluate. method = dict(candidates=..., acquire=...)
-    with None acquire meaning Random Search."""
+    with None acquire meaning Random Search.
+
+    dedup: 'combination' (mask on canonicalized points — current library) or
+    'encoding' (mask on raw encodings — the historical pre-fix leak).
+    `revisits` counts picks whose canonicalized representation duplicated an
+    already-evaluated point (waste on a deterministic objective), regardless
+    of the dedup mode in force.
+    """
     f, schema = objective["fn"], objective.get("schema")
     X_eval = np.atleast_2d(np.asarray(X_init, dtype=float))
     y_eval = np.asarray(y_init, dtype=float).ravel()
@@ -135,28 +142,33 @@ def run_bo(objective, method, cfg, X_init, y_init, rng):
 
     best = np.empty(cfg.budget + 1)
     best[0] = y_eval.min()
+    revisits = 0
 
     for t in range(1, cfg.budget + 1):
-        X_seen = canonicalize(X_eval, schema)
+        X_canon = canonicalize(X_eval, schema)
+        X_seen = X_canon if dedup == "combination" else X_eval
+        rep = canonicalize if dedup == "combination" else (lambda X, s: np.atleast_2d(X))
         if method["acquire"] is None:
             for _ in range(100):
                 x_next = rng.random((1, d))
-                if min_sqdist(canonicalize(x_next, schema), X_seen)[0] > cfg.dup_tol ** 2:
+                if min_sqdist(rep(x_next, schema), X_seen)[0] > cfg.dup_tol ** 2:
                     break
         else:
             X_cand = method["candidates"](X_eval, y_eval, rng)
             score = np.asarray(method["acquire"](X_eval, y_eval, X_cand), dtype=float)
-            dup = min_sqdist(canonicalize(X_cand, schema), X_seen) <= cfg.dup_tol ** 2
+            dup = min_sqdist(rep(X_cand, schema), X_seen) <= cfg.dup_tol ** 2
             score[dup] = -np.inf
             top = np.nonzero(score == score.max())[0]
             x_next = X_cand[top[rng.integers(top.size)] if top.size > 1 else top[0]][None, :]
 
+        if min_sqdist(canonicalize(x_next, schema), X_canon)[0] <= cfg.dup_tol ** 2:
+            revisits += 1
         y_next = f(x_next)
         X_eval = np.vstack([X_eval, x_next])
         y_eval = np.append(y_eval, y_next)
         best[t] = y_eval.min()
 
-    return {"best": best, "X": X_eval, "y": y_eval}
+    return {"best": best, "X": X_eval, "y": y_eval, "revisits": revisits}
 
 
 def oracle_method(objective, cfg, variant):
