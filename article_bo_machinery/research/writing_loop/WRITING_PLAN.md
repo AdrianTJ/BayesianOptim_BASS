@@ -2,9 +2,9 @@
 
 **Goal:** Take `article_bo_machinery/main.tex` from scaffold (section outlines
 + `% TODO` blocks + preliminary numbers) to a submission-ready draft whose
-every empirical claim traces to `final_results/`, applying the loop/graph
-engineering principles established in
-`../loop_engineering/notes/01_loop_architectures.md`.
+every empirical claim traces to `final_results/`, applying the working principles
+adopted for this project's loops: single-writer prose, read-only fan-out,
+worker/verifier split, deterministic checks, durable logs.
 
 **State:** This file is the plan; `WRITING_LOG.md` is the append-only cycle
 record whose latest "Next:" line is the resume instruction for a
@@ -15,7 +15,7 @@ itself stays LaTeX (the deliverable format), with its status tracked here.
 
 ## How the researched principles shape this loop
 
-| Principle (from Q1 research) | Design decision here |
+| Principle | Design decision here |
 |---|---|
 | Fan-out fails on write-heavy shared state; prose needs one owner | **Single writer:** exactly one agent/session edits `main.tex` per cycle. Subagents never touch the TeX. |
 | Fan-out pays for read-heavy decomposable work | Subagents (Sonnet 5) do only reads: numbers extraction, source verification, claim–data consistency sweeps, adversarial section reviews. |
@@ -114,8 +114,7 @@ TeX changes, so it is never mistaken for verified-compiling.
 
 ## Relationship to the loop-engineering track
 
-The `../loop_engineering/` research backlog (Q2–Q7) is **paused, not
-abandoned**, while this writing loop runs — it retains its backlog and can
-resume after the article draft is done. This loop is itself the applied test
-of that track's Q1 findings; deviations worth recording go into a future Q1
-addendum note.
+(A meta-research track on loop engineering that once lived alongside this
+plan was removed as out of scope for the article; its practices are
+embodied in this plan and in the logs. It remains recoverable from git
+history if ever wanted.)

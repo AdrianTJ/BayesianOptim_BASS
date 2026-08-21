@@ -7,8 +7,7 @@ article; prose writing is deferred until the claims have converged. The
 writing plan's design (single-writer TeX, worker/verifier split, checks,
 S1–S8 section order) is retained as the **terminal phase**, unchanged.
 
-All loop-engineering principles from
-`../loop_engineering/notes/01_loop_architectures.md` still bind: fresh
+The project's loop principles still bind: fresh
 context per cycle resuming from `LOG.md`, read-only fan-out with disjoint
 briefs, worker ≠ verifier, deterministic checks, stall counter (2 no-commit
 cycles → stop), no silent scope cuts. All outputs markdown (+ CSVs for raw
@@ -81,7 +80,7 @@ an explicit user decision to cut it.
 
 ## Testing leg (every cycle)
 
-- `../loop_engineering/tools/check_research.py` (research-folder integrity).
+- `../tools/check_research.py` (research-folder integrity).
 - Every experiment folder must contain DESIGN.md before results and
   ANALYSIS.md before its numbers enter the ledger (checked by
   `tools/check_experiments.py`, to be written in E1's cycle).

@@ -17,7 +17,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]  # article_bo_machinery/research/
+ROOT = Path(__file__).resolve().parents[1]  # article_bo_machinery/research/
 failures = []
 
 
@@ -42,24 +42,15 @@ for p in ROOT.rglob("*.md"):
         if t and not (p.parent / t).exists():
             fail(f"broken link in {p.relative_to(ROOT)}: {target}")
 
-# 3. Notes carry the required section
-notes = ROOT / "loop_engineering" / "notes"
-if notes.is_dir():
-    for p in sorted(notes.glob("*.md")):
-        if "What this changes for us" not in p.read_text():
-            fail(f"note missing 'What this changes for us' section: {p.name}")
-
-# 4. LOG.md entry shape
-log = ROOT / "loop_engineering" / "LOG.md"
-if log.exists():
-    entries = re.findall(r"^## .*$", log.read_text(), flags=re.M)
-    bad = [e for e in entries if not re.match(r"^## Cycle \d+ — \d{4}-\d{2}-\d{2}$", e)]
+# 3. Loop-log entry shape (any surviving *LOG*.md loop record)
+for log in list(ROOT.glob("*/LOG.md")) + list(ROOT.glob("*/WRITING_LOG.md")):
+    entries = re.findall(r"^## Cycle.*$", log.read_text(), flags=re.M)
+    bad = [e for e in entries
+           if not re.match(r"^## Cycle \d+[^—]*— \d{4}-\d{2}-\d{2}.*$", e)]
     for e in bad:
-        fail(f"malformed LOG.md heading: {e!r}")
-else:
-    fail("loop_engineering/LOG.md is missing")
+        fail(f"malformed heading in {log.relative_to(ROOT)}: {e!r}")
 
-# 5. JS syntax
+# 4. JS syntax
 node = shutil.which("node")
 if node:
     for p in ROOT.rglob("*.js"):
