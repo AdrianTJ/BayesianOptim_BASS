@@ -177,3 +177,37 @@ accumulate items only the author can settle.
   TODOs, and the title decision — prepare a recommendation and queue for
   the user, do not decide unattended. Then the Phase-2 adversarial
   full-pass review per WRITING_PLAN.
+
+## Cycle 7 — 2026-08-22 (S8: discussion, abstract, header — draft complete)
+- **Did:** Discussion and Limitations written (audit scope and its
+  non-theorem status; pool-based machinery family; noise-vs-bias
+  degradation limit; deterministic-objective scope of the dedup argument;
+  open BASS cell; the K8 novelty caveat named plainly; a self-disclosure
+  that internal adversarial review refuted and corrected two experiment
+  analyses and several section drafts). Abstract revised: stale
+  "two surrogates" opening replaced with the actual method roster + the
+  oracle mode (review blocker — it contradicted the RF data cited two
+  sentences later); "no surrogate can recover the gap" replaced with the
+  corrected ceiling framing; headline numbers added ("factors of 8 to
+  14" per review, not "order of magnitude"; mean/median labels).
+  Header STATUS updated from SCAFFOLD to FULL DRAFT with the honest
+  compile-untested note. Review: REFUTED on the abstract opening +
+  three minors; all fixed.
+- **Files:** ../../main.tex (abstract, discussion, header)
+- **TODO count (main.tex):** 6 — all remaining are author decisions
+  (title, co-authors, acknowledgments) or full-pass figure decisions.
+- **Tests:** check_article.py PASS (22 keys); check_research.py PASS
+- **User decisions (open):** TITLE — recommendation prepared: keep the
+  current title ("The Machinery Confound: ...") — it names the
+  phenomenon, and the alternatives undersell either the audit or the
+  protocol; second choice: "Oracle Ceilings: Separating Surrogate
+  Quality from Search Machinery in Bayesian Optimization" if a
+  method-forward title is preferred. Also open: co-authors/advisor
+  line, acknowledgments text, venue. Compile-and-read on the user's
+  machine (pdflatex+bibtex; no TeX here).
+- **Next (writing loop):** Phase 2 — adversarial full-pass review per
+  WRITING_PLAN: fan out disjoint lenses (numbers-vs-canonical, citations
+  -vs-novelty-assessments, thesis-consistency, hostile-referee argument
+  holes) over the COMPLETE draft; findings to review_findings.md; fix;
+  loop until one clean pass; then final report to the user with the
+  submission checklist.

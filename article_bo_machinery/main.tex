@@ -4,11 +4,13 @@
 %
 % Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
 %
-% STATUS: SCAFFOLD. Section-level structure and argument are in place; every
-% block marked % TODO needs either (a) the full-protocol numbers from the
-% companion repository run, or (b) new experiments (see Section VI). Numbers
-% quoted in the text are PRELIMINARY (10-15 seeds, budgets 60-80) and are
-% flagged as such; replace with the 25-seed protocol results before submission.
+% STATUS: FULL DRAFT. All sections written; every quoted number comes from
+% the final 25-seed protocol run (thesis pipeline) or from the article's own
+% pre-registered, independently reviewed experiments (see
+% research/article_loop/). Remaining open items are marked TODO: the title
+% decision, co-authors/acknowledgments (author decisions), and two optional
+% figures (full-pass review decision). Compile is untested in the authoring
+% environment (no TeX toolchain); run the build line above before submission.
 % =============================================================================
 \documentclass[%
  aip,
@@ -66,26 +68,33 @@ categorical search spaces are usually read as statements about the surrogates.
 We show that they are frequently statements about the surrounding
 \emph{machinery} instead: the candidate-generation scheme that the acquisition
 function is optimized over, and the duplicate handling that decides which
-proposals are admissible. Using a controlled pipeline in which two structurally
-different surrogates (a Gaussian process over a continuous relaxation, and a
-Bayesian adaptive spline surface with native categorical support) share one
-acquisition rule and one candidate generator, we demonstrate two failure modes.
+proposals are admissible. Using a controlled pool-based pipeline shared by
+structurally different surrogates --- a Gaussian process over a continuous
+relaxation, a random forest, a Bayesian adaptive spline surface with native
+categorical support --- plus a tree-structured Parzen baseline with its own
+machinery, and an oracle mode that replaces every acquisition score with the
+true objective, we demonstrate two failure modes.
 First, a single degree of freedom in the local proposal distribution ---
 whether a candidate may retain the incumbent's categorical combination while
-refining its continuous coordinates --- places a hard ceiling on \emph{every}
-surrogate: in oracle experiments that replace the acquisition with the true
+refining its continuous coordinates --- caps what perfect guidance can
+attain: in oracle experiments that replace the acquisition with the true
 objective, the restricted generator loses to the permissive one on every
-paired seed of two standard mixed benchmarks, and no surrogate, however good,
-can recover the gap. Second, duplicate handling that compares raw encodings
-rather than decoded categorical combinations silently re-spends a majority of
-the evaluation budget on already-known points. Both effects are invisible in
-standard convergence plots and are readily misattributed to the surrogate. We
-propose the \emph{oracle-ceiling audit} --- upper-bounding attainable
-performance under a perfect surrogate --- as a cheap, general diagnostic for
-BO pipelines, together with a checklist for machinery-controlled surrogate
-comparisons: shared schema-aware proposals, combination-level deduplication,
-paired seeds, and per-seed win statistics.
-% TODO: add one sentence of headline numbers from the full 25-seed protocol.
+one of 25 paired seeds of two standard mixed benchmarks
+($p = 6\times10^{-8}$), with a shortfall that grows by factors of 8
+to 14 as the candidate pool shrinks to realistic sizes. Second,
+duplicate handling that compares raw encodings rather than decoded
+categorical combinations silently re-spends a majority of the evaluation
+budget on already-known points --- a median of 78 of 80 oracle picks, and
+a mean of 52--55 of 80 for Gaussian-process and random-forest surrogates, whose
+solve rate on a solvable categorical benchmark drops accordingly. Both
+effects are invisible in standard convergence plots and are readily
+misattributed to the surrogate; whether the generator cap binds a given
+surrogate depends on how close it runs to the machinery's ceiling, which
+the audit measures. We propose this \emph{oracle-ceiling audit} as a
+cheap, general diagnostic for BO pipelines --- minutes of compute, no
+surrogate fits --- together with a checklist for machinery-controlled
+surrogate comparisons: shared schema-aware proposals, combination-level
+deduplication, paired seeds, and per-seed win statistics.
 \end{abstract}
 
 \maketitle
@@ -703,15 +712,56 @@ extrapolating the Python results to BASS.
 \section{Discussion and Limitations}
 % =============================================================================
 
-% - The audit bounds machinery, not surrogate quality; it cannot rank
-%   surrogates, only exonerate or indict the pool they share.
-% - Pool-based acquisition optimization is one family; gradient-based and
-%   trust-region acquisition optimizers need adapted audits (oracle inside the
-%   trust region).
-% - Deterministic objectives make revisits pure waste; under noise, revisiting
-%   is legitimate replication and the dedup argument changes.
-% - Relation to reproducibility critiques of BO benchmarking.
-% TODO: write.
+\paragraph{What the audit can and cannot say.}
+The oracle-ceiling audit bounds machinery, not model quality: it can
+exonerate or indict the pool that all methods share, and it can locate a
+surrogate's regime relative to the ceiling, but it cannot rank
+surrogates. Its trajectory-level guarantee is empirical, not proved
+(Sec.~\ref{sec:oracle}): the pools are history-dependent, and a
+differently-guided run explores differently-centred pools. Our
+guidance-degradation evidence has a further scope limit: the dial
+corrupts the oracle with independent noise, which is one degradation
+model; a \emph{biased} surrogate --- one that is systematically wrong in
+a structured way, for example by over-smoothing --- degrades guidance
+differently, and its interaction with the generator restriction is
+untested.
+
+\paragraph{Scope of the machinery family.}
+Everything here concerns pool-based acquisition optimization: propose,
+score, mask, pick. Gradient-based acquisition maximization over
+continuous relaxations and trust-region schemes need adapted audits ---
+the natural analogues (an oracle inside the trust region; the true
+objective as the function being maximized by the inner optimizer) are
+straightforward to state but were not evaluated here. Likewise, the
+dedup argument assumes a deterministic objective, where every revisit is
+pure waste; under observation noise, revisiting is legitimate
+replication, and duplicate handling becomes a design choice about
+replication policy rather than a leak.
+
+\paragraph{Open cells and verification limits.}
+The spline surrogate itself has not been run through the restricted and
+leaky machinery ablations (Sec.~\ref{sec:experiments}); we deliberately
+do not extrapolate the Python-surrogate results to it. Our novelty
+statement rests on a recorded 39-source sweep in which the three closest
+works were verified at the abstract and companion-code level rather than
+full text (an environment constraint); the sweep and its per-source
+assessments are versioned in the companion repository so the check can
+be extended. Finally, one methodological debt is disclosed rather than
+hidden: two of this paper's experiment analyses (and several section
+drafts) were refuted in internal adversarial review for overclaiming
+beyond pre-registered criteria or beyond the recorded evidence, and were
+corrected before inclusion; the review records are versioned alongside
+the experiments.
+
+\paragraph{Relation to reproducibility critiques.}
+Our findings are a mixed-space instance of a broader pattern documented
+by benchmarking critiques \cite{eggensperger2013towards,
+turner2021bayesian, dreczkowski2023mcbo}: apparent method differences
+often live in uncontrolled parts of the pipeline. The machinery axes we
+isolate are unusually easy to control --- a shared generator is an
+implementation choice, combination-level dedup is one function, and the
+audit that verifies both costs minutes --- which is what makes a
+protocol, rather than a lament, possible.
 
 \begin{acknowledgments}
 % TODO
