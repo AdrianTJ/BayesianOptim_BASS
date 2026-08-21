@@ -185,3 +185,36 @@ resume instruction. Claim ledger: new H-claims live in
   check_article.py); (3) full-pass review, checkers, ledger re-center,
   LOG, commit, push. Author to-dos to compile at H5 end: pdflatex
   compile, anchor full-text checks, E4/BASS runs, venue call.
+
+## Cycle 5 — 2026-08-21
+- **Phase:** H5 rewrite, part 1 of 4 — complete.
+- **Did:** Pre-registered `h5_rewrite/REWRITE_PLAN.md` (old→new section
+  map, the three fixed headline numbers, number-hygiene rule, framing
+  rules, 4-cycle scoping). Built the canonical H-numbers pipeline
+  (`headline_uplift/tools/extract_h_numbers.py` → `h_numbers.md`,
+  recomputed from raw JSONL — the only permitted source for article
+  H-claims), and added the review-refuted phrasings ("Z = 2 of", "0
+  exact revisits everywhere") to check_article's forbidden list. Rewrote
+  the **abstract** and **Introduction** to the audited-ecosystem spine
+  (five contributions). Section review: UPHELD-WITH-CORRECTIONS — three
+  MAJORs fixed (solve-record claim scoped to the categorical matrix,
+  skopt-gp out-solves optuna-gp on mixed benchmarks; issue-tracker
+  acknowledgment narrowed to the two TPEs; 1,050-run arithmetic now
+  names the random control as the 7th arm) + bit-identical-by-
+  construction wording. Reviewer's stale-contradiction list for Cycle 7
+  recorded in REVIEW_cycle5.md (Data Availability 75-minute compute
+  claim is the must-fix). check_article PASS (TODOs 6/6).
+- **Next:** Cycle 6 = H5 part 2: (1) Related Work — one lean paragraph
+  on auditing deployed optimizers citing only in-container-verifiable
+  primary sources (library issue trackers already fetched); academic
+  audit-genre citations queued as author-verify TODOs, never added
+  unverified; (2) Setup — new subsection on the bo-audit wrapper (key
+  semantics, excess-over-pigeonhole, gate summary G1–G5); (3) new
+  section "The In-the-Wild Audit" (H1: matrix table from h_numbers.md,
+  hypotheses P1–P7, findings with review-corrected wording); (4) new
+  section "Budget-Equalized Re-Comparison" (H2: memoization control,
+  Z=3/4 with the d3 tie-break story, saturation, heterogeneous refund
+  incl. the Q2 FAIL). Per-section adversarial review against
+  h_numbers.md + CLAIMS.md before commit, as this cycle. Then Cycle 7
+  (mechanism condensation, Protocol/Experiments/Discussion/Appendix A/
+  Data Availability incl. compute fix) and Cycle 8 (full-pass).

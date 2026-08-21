@@ -69,21 +69,22 @@ that they are frequently statements about the surrounding \emph{machinery}
 instead --- the candidate generation the acquisition is optimized over, and
 the duplicate handling that decides which proposals are admissible --- and
 that the effect is live in the deployed ecosystem, not just in principle.
-Auditing six widely used BO libraries at their documented defaults with a
-surrogate-free objective wrapper (1{,}050 runs; six benchmarks, 25 seeds,
-budget 80), we find that three of the six silently re-spend at least 10\% of
-the evaluation budget on already-evaluated categorical combinations beyond
-what unavoidable collisions explain, two exceed 25\%, and one exceeds 40\% ---
-a median of 53 of 80 evaluations ground into revisits, touching only
-${\sim}27$ unique configurations, by the library that simultaneously posts
-the audit's \emph{best} solve record: convergence curves are blind to the
+Auditing six widely used BO libraries and a random-sampling control at their
+documented defaults with a surrogate-free objective wrapper (1{,}050 runs
+across the seven arms; six benchmarks, 25 seeds, budget 80), we find that
+three of the six silently re-spend at least 10\% of the evaluation budget on
+already-evaluated categorical combinations beyond what unavoidable collisions
+explain, two exceed 25\%, and one exceeds 40\% --- a median of 53 of 80
+evaluations ground into revisits, touching only ${\sim}27$ unique
+configurations, by the library that simultaneously posts the matrix's
+\emph{best} categorical solve record: convergence curves are blind to the
 waste. One library instead terminates early rather than propose a duplicate.
 When we equalize duplicate handling --- charging each library for unique
-evaluations only, which leaves sampler trajectories bit-identical on
-deterministic objectives --- the apparent library ranking changes on three of
-four benchmarks; one sampler's apparent weakness on small categorical spaces
-(7 of 25 solves) is revealed as mostly machinery, not model (22 of 25 once
-duplicates are refunded).
+evaluations only, which by construction leaves sampler trajectories
+bit-identical on deterministic objectives --- the apparent library ranking
+changes on three of four benchmarks; one sampler's apparent weakness on small
+categorical spaces (7 of 25 solves) is revealed as mostly machinery, not
+model (22 of 25 once duplicates are refunded).
 A controlled study of one research pipeline then isolates the mechanisms.
 Under an \emph{oracle-ceiling audit} that replaces every acquisition score
 with the true objective, a single degree of freedom in local candidate
@@ -129,20 +130,23 @@ that machinery is typically inseparable from the method being evaluated.
 How much does this matter outside carefully constructed examples? We measured
 it in the deployed ecosystem. Wrapping the objective function itself --- a
 vantage point every optimizer must pass through, requiring no access to
-library internals --- we audited six widely used BO libraries at their
-documented defaults on six categorical and mixed benchmarks (25 seeds each,
-budget 80; 1{,}050 runs). Three of the six re-spend at least 10\% of the
+library internals --- we audited six widely used BO libraries, plus a
+random-sampling control, at their documented defaults on six categorical and
+mixed benchmarks (25 seeds each, budget 80; 1{,}050 runs across the seven
+arms). Three of the six re-spend at least 10\% of the
 evaluation budget on already-evaluated categorical combinations \emph{beyond}
 the collisions unavoidable at that budget; two exceed 25\%, one exceeds
 40\%. The extreme case evaluates a median of only ${\sim}27$ unique
 configurations out of 80 charged evaluations on a 125-combination space ---
-while posting the best solve record in the entire audit, so no convergence
+while posting the matrix's best categorical solve record, so no convergence
 curve gives it away. On a $5^{25}$-combination space, where a uniform random
 sampler essentially never collides, one default sampler still re-spends a
 median of 16 evaluations in 80. At the other extreme, one library's runhistory
 machinery terminates the run early rather than propose a duplicate. These are
-not exotic corner cases; several of the behaviors are acknowledged in the
-libraries' own issue trackers, and the audit turns them into numbers.
+not exotic corner cases: the duplicate-suggestion behavior of both audited
+TPE implementations is acknowledged in their libraries' own issue trackers,
+and the audit turns it --- and the behaviors with no paper trail at all ---
+into numbers.
 
 The waste is not an automatic verdict on quality --- that is precisely the
 confound. When we re-ran the wasteful libraries charging only \emph{unique}
@@ -193,7 +197,7 @@ This paper makes five contributions:
   libraries at their documented defaults. Headline: 3 of 6 libraries
   waste ${\ge}10\%$ of budget beyond unavoidable collisions on at least
   one benchmark (2 of 6 ${\ge}25\%$; 1 of 6 ${\ge}40\%$), the heaviest
-  waster simultaneously posts the audit's best solve record, and one
+  waster simultaneously posts the matrix's best categorical solve record, and one
   library terminates early rather than duplicate --- all invisible to
   convergence curves.
   \item \textbf{A budget-equalized re-comparison.} Charging unique
