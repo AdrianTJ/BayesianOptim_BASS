@@ -166,25 +166,89 @@ denison1998bayesian}, with BASS as the modern implementation
 % mixed-space benchmark suites; verify none performs an oracle-style audit.
 
 % =============================================================================
-\section{Setup: One Loop, Two Surrogates, Shared Machinery}
+\section{Setup: One Loop, Shared Machinery}
+\label{sec:setup}
 % =============================================================================
 
-% Summarize the pipeline from the companion repository:
-% - unit-cube encoding with schema (types, levels); decode_levels binning
-% - one generic loop: propose pool -> score with acquisition -> dedup mask ->
-%   argmax (random tie-breaking) -> evaluate
-% - Expected Improvement for both surrogates: closed-form for the GP
-%   \cite{jones1998efficient}, Monte Carlo over posterior draws for BASS
-% - candidate generator: global LHS half + local half (Gaussian moves on
-%   continuous coords, per-coordinate level flips w.p. 1/n_cat on categorical
-%   coords; keep-combo allowed on mixed schemas, >=1 flip forced on pure-cat)
-% - combination-level dedup via canonicalization to bin centres
-% - paired seeds: shared per-seed initial designs (maximin LHS)
-% TODO: write this section (2-3 columns), with one figure showing the loop and
-% one pseudocode box for the generator.
+\paragraph{Encoding and schema.}
+Every input is carried through the loop as a point in the unit cube
+$[0,1]^d$. A \emph{schema} declares, per coordinate, whether it is
+continuous or categorical with $L_j$ levels. A categorical coordinate
+$u \in [0,1]$ decodes to level $k = \min(\lfloor u L_j \rfloor + 1, L_j)$:
+the unit interval is split into $L_j$ equal bins, and every point in bin
+$k$ is the \emph{same} input to the objective. This encoding leaves
+candidate generation, deduplication, and any continuous-relaxation
+surrogate untouched, while surrogates with native factor support receive
+the decoded levels. The \emph{canonical representation} of a point snaps
+each categorical coordinate to its bin centre $(k - \tfrac12)/L_j$, so
+that two encodings decoding to the same level combination become exactly
+equal --- the representation on which combination-level duplicate
+detection operates.
+
+\paragraph{The loop.}
+One generic loop drives every method. At each of $B$ iterations it (i)
+proposes a pool of $N$ candidates, (ii) scores the pool with the method's
+acquisition, (iii) masks candidates whose canonical representation
+duplicates an already-evaluated point (tolerance $10^{-10}$), (iv) picks
+the arg-max with uniform random tie-breaking, and (v) evaluates the
+objective and records it. Random Search replaces (i)--(iv) with uniform
+draws rejected against the same duplicate mask. Both surrogate families
+use Expected Improvement \cite{jones1998efficient} --- closed-form on the
+posterior mean and variance where these are available (GP, random
+forest), by Monte Carlo over posterior draws for BASS --- so no method
+carries an acquisition-side exploration weight to tune (numerical
+settings such as the Monte Carlo draw count remain, fixed across all
+comparisons). Runs are paired: all methods
+and all machinery variants on a given seed share one space-filling
+(maximin Latin hypercube) initial design of $n_0 = \max(2d{+}1, 8)$
+points.
+
+\paragraph{The candidate generator and its one degree of freedom.}
+The shared generator is a parameter-free hybrid. Half the pool is a fresh
+random Latin hypercube over the cube (global exploration; uniform over
+level combinations). The other half is local: continuous coordinates are
+drawn from a Gaussian cloud centred on the incumbent whose width is the
+incumbent's nearest-neighbour distance (clipped to $[10^{-2}, 0.5]$), and
+each categorical coordinate independently either keeps the incumbent's
+level or flips to a uniformly random other level with probability
+$1/n_{\mathrm{cat}}$ --- one flip in expectation, the Hamming-local
+notion of ``nearby'' for unordered factors. The degree of freedom this
+paper studies is whether a local row may flip \emph{zero} coordinates. In
+the \emph{permissive} variant a zero-flip row keeps the incumbent's full
+categorical combination and refines only its continuous coordinates ---
+on mixed spaces, exactly the exploitation move a model-based method has
+over random search. The \emph{restricted} variant forces at least one
+flip per local row, so no candidate ever refines the continuous
+coordinates at the best-known combination. (On purely categorical
+schemas a zero-flip row merely duplicates the incumbent, so one flip is
+always forced there and the variants coincide.) Both variants are
+standard-looking machinery; nothing in a convergence plot advertises
+which one a pipeline uses.
+
+\paragraph{Two implementations, cross-checked where they overlap.}
+The pipeline exists twice: the original R library (the thesis pipeline,
+with BASS \cite{francom2020bass} and a GP over the continuous
+relaxation), which ships the permissive generator, and an independent
+Python reimplementation used for the machinery experiments in this paper
+(oracle arms, sklearn GP and random forest, Optuna TPE
+\cite{akiba2019optuna}), which adds the restricted variant as an
+ablation. The Python harness was validated in two stages: first against
+pre-registered statistical checks reproducing the R pipeline's recorded
+oracle findings; then by a direct R-versus-Python side-by-side on
+Func-2C at matched budgets and pool sizes, under different RNG streams
+and Latin-hypercube engines, where the permissive generator agrees with
+R to five decimals on the attained optimum and a reconstructed
+historical restricted generator agrees to about two decimals. The
+restricted variant reported in this paper's experiments, and the
+remaining benchmarks, ran in Python only. All machinery comparisons hold
+the loop, acquisition rule, budget ($B = 80$, $N = 1000$ unless stated),
+and per-seed initial designs fixed, so that a machinery axis (generator
+variant, dedup level, pool size) is the only moving part.
+% TODO: one loop-diagram figure (optional; decide at full-pass review).
 
 % =============================================================================
 \section{The Oracle-Ceiling Audit}
+\label{sec:oracle}
 % =============================================================================
 
 % Definition: replace acquire(X, y, C) with -f(C). The loop then picks the
@@ -193,17 +257,20 @@ denison1998bayesian}, with BASS as the modern implementation
 % Properties: cheap (no fits); deterministic given seeds; A/B-able across
 % machinery variants; paired by shared initial designs.
 %
-% PRELIMINARY EVIDENCE (to be re-run at the full protocol):
-%  - Func-2C (optimum -0.2062): oracle + restricted generator plateaued at
-%    -0.148 at budget 10 and -0.205 at budget 80; oracle + permissive
-%    generator reached -0.2063 within ~10 evaluations. Permissive beat
-%    restricted in 15/15 paired seeds (budget 80).
-%  - Func-3C (optimum -0.7216): -0.697 vs -0.722; 15/15 paired seeds.
-%  - Cat-Ackley (6 inputs, 11 levels): both generator variants reach the
-%    optimum under the oracle -- the pool is not the binding constraint there,
-%    which redirects attention to surrogate learnability (Sec. VI).
-% TODO: formalize the audit (one definition environment), report the table,
-% and add the budget-10 vs budget-80 ceiling curves as a two-panel figure.
+% FINAL-PROTOCOL EVIDENCE (E2, 25 paired seeds, budget 80; canonical in
+% research/article_loop/experiments/exp02_oracle_matrix/ANALYSIS.md):
+%  - Func-2C (exact optimum -0.206326 at combo (2,2)): permissive beat
+%    restricted 25/25 paired seeds at every pool size (Wilcoxon p=6.0e-8);
+%    permissive holds the optimum at n_cand 50/200/1000 while the
+%    restricted gap grows x14 as the pool shrinks (0.0012 -> 0.0171).
+%  - Func-3C (exact optimum -0.722140 at (2,2,1)): 25/25 at every pool
+%    size; gap 0.0111 -> 0.0861 (x8) from n_cand 1000 -> 50.
+%  - Cat-Ackley (d=6, L=11): both generator variants reach the optimum
+%    under the oracle 25/25 -- the pool is not binding on pure-cat spaces.
+%  - NOTE: an earlier draft figure ("plateau at budget 10") was refuted on
+%    re-verification (R + Python agree); use the pool-size table instead.
+% TODO: formalize the audit (one definition environment), report the E2
+% table, and add the gap-vs-pool-size figure.
 
 % =============================================================================
 \section{Failure Mode II: Duplicate Leakage at the Combination Level}

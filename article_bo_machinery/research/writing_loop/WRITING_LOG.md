@@ -33,3 +33,30 @@ accumulate items only the author can settle.
 - **Next (writing loop):** remains gated on the experiment program
   finishing (article-loop LOG is authoritative). When writing begins:
   write `tools/check_article.py` first, then S1 per WRITING_PLAN.
+
+## Cycle 2 — 2026-08-22 (S1: Setup section)
+- **Did:** `tools/check_article.py` written (citation integrity, TODO
+  ratchet with persisted high-water mark, ref/label and environment
+  balance, forbidden-number list seeded with the refuted −0.148) — its
+  first run immediately caught the refuted figure still in the scaffold's
+  Section IV comments, which were replaced with the E2 final-protocol
+  evidence. S1 written (single-writer): four paragraphs — encoding/schema,
+  the loop, the generator and its one degree of freedom,
+  implementations — replacing the comment outline; section retitled "One
+  Loop, Shared Machinery". Independent review REFUTED the first draft's
+  cross-validation paragraph as overscoped (the R↔Python side-by-side
+  covers only func2C permissive + a reconstructed historical flip, not
+  the paper's restricted variant or other benchmarks); rewritten with
+  accurate scope ("Two implementations, cross-checked where they
+  overlap"), and the EI parameter-freeness claim narrowed to "no
+  acquisition-side exploration weight". All other technical statements
+  verified against the R and Python code line-by-line by the reviewer.
+- **Files:** ../../main.tex (S1 + Section IV comment block),
+  tools/check_article.py, tools/article_state.json
+- **TODO count (main.tex):** 14 (S1's section TODO resolved; one optional
+  figure TODO added; net 0 — ratchet holds)
+- **Tests:** check_article.py PASS; check_research.py PASS
+- **Next (writing loop):** S2 (The Oracle-Ceiling Audit): definition
+  environment, the E2 table (from exp02 ANALYSIS, canonical), gap-vs-pool
+  figure decision deferred to full-pass; then S3 (Duplicate Leakage) from
+  E2 H3/H4 + E3 H2. Same single-writer + review discipline.
