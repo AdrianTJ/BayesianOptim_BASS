@@ -19,3 +19,17 @@ accumulate items only the author can settle.
   `numbers.md` from `final_results/` + the diagnostics README, and write
   `tools/check_article.py`; run both; commit. No TeX edits until numbers.md
   exists.
+
+## Cycle 1 — 2026-08-22 (Phase 0, executed inside article-loop Cycle 5)
+- **Did:** `tools/extract_numbers.py` written; `numbers.md` generated
+  deterministically from `final_results/` (all nine benchmarks + elastic
+  net; leaderboards, paired W/T/L + Wilcoxon tables) plus the fixed
+  reference values from the article loop (exact optima; the refuted
+  −0.148 figure listed as forbidden). `check_article.py` still to be
+  written when TeX editing begins.
+- **Files:** tools/extract_numbers.py, numbers.md
+- **TODO count (main.tex):** 14 (unchanged — no TeX edits yet, by design)
+- **Tests:** check_research.py PASS
+- **Next (writing loop):** remains gated on the experiment program
+  finishing (article-loop LOG is authoritative). When writing begins:
+  write `tools/check_article.py` first, then S1 per WRITING_PLAN.

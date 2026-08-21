@@ -163,3 +163,40 @@ resume instruction.
   `numbers.md` (Phase 0 of the writing plan), since the in-container
   experiment program is nearing its limit (E4/BASS needs the user's
   machine; E6/real-task is the remaining optional experiment).
+
+## Cycle 5 — 2026-08-22
+- **Phase:** experiment (E8, the one-shot K10 final test) + analyze +
+  re-center; plus writing-plan Phase 0 in parallel
+- **Did:** E8 ran on fresh seeds 1026–1050 with W-only criteria committed
+  before the run. Verdict by the letter: **H-REGIME SUPPORTED** — all four
+  cells at W(0)=25/25 (p=6e-8) and non-significant at the pre-named
+  anchors (min p=0.13); refute criterion cleanly unmet. Review UPHELD,
+  with git-forensic confirmation the criteria predate the data and zero
+  numeric mismatches across all 24 cells; three wording minors adopted
+  (non-monotone-decay phrasing — func3C n=50 shows a residual W=18 p=.004
+  at σ=100; sequential-design disclosure in Threats; "untested" tag on
+  the mechanism speculation). K10 enters the ledger as supported with
+  mandatory E7-footnote and sequential-design disclosures. Phase 0 of the
+  writing plan also done: `writing_loop/tools/extract_numbers.py` +
+  canonical `numbers.md` generated from final_results/.
+- **Files:** exp05_k10_final/{DESIGN,ANALYSIS,REVIEW}.md, run_e8.py,
+  results.csv, writing_loop/{tools/extract_numbers.py,numbers.md,
+  WRITING_LOG.md}, CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E8
+  pre-registered verdict SUPPORTED
+- **Re-center decision (logged, user may override):** the in-container
+  experiment program is complete. E4 (BASS cells) requires R packages
+  unavailable here — queued for the user's machine with exact commands
+  (run_all_final.sh + diagnostics harness). E6 (extra real mixed task) is
+  SKIPPED, not silently: the thesis's final run already includes two real
+  tasks under the shared machinery (nlp_hpo, elastic_net, in numbers.md),
+  and marginal in-container budget is better spent writing. K-TPE stays
+  open as a non-article claim.
+- **User decisions (open):** title/co-authors/venue; branch history; E6
+  skip approval.
+- **Next:** Writing phase begins (WRITING_PLAN.md governs; single-writer
+  on main.tex, worker≠verifier per section). First: write
+  `writing_loop/tools/check_article.py` (citation integrity, TODO
+  ratchet from baseline 14, numbers traceability vs numbers.md +
+  experiment ANALYSIS files); then S1 (Setup section) from code_files/R/
+  as it exists, with review before its TODO resolves.
