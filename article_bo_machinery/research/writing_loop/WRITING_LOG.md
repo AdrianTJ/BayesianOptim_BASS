@@ -211,3 +211,34 @@ accumulate items only the author can settle.
   holes) over the COMPLETE draft; findings to review_findings.md; fix;
   loop until one clean pass; then final report to the user with the
   submission checklist.
+
+## Cycle 8 — 2026-08-22 (Phase 2: adversarial full-pass — CLEAN PASS)
+- **Did:** Three parallel review lenses over the complete draft (A:
+  consistency/numbers — zero factual conflicts, 12 minors; B: thesis
+  consistency — 1 blocker; C: hostile referee — 7 majors, verdict "major
+  revision"). All findings fixed in a single-writer pass: the thesis's
+  ONE real task correctly stated with its W/T/L results (B1); the
+  practical-relevance objection answered head-on with the honest
+  inferential status of the generator confound (C1-C3); external
+  validity and multiple-comparison notes added (C4/C6/C18); BASS
+  reframed as motivating case study with the pre-repair forced-flip
+  configuration evidenced from version history (C7/C8); protocol item 3
+  qualified (C9); Failure Mode I/II section symmetry (C12); the paper's
+  first figure generated from a fresh 25-seed curve capture — both
+  dedup arms' convergence curves bit-identical while the audit shows
+  median 78/80 revisits — with a CVD-validated palette (C13); named
+  refutation disclosures (C16); plus all lens-A minors. Round-2
+  verification caught that one round-1 fix (B2) had silently failed to
+  apply (unverified str.replace) and that the new "under an hour of CPU
+  time" claim was false by direct timing (~74 min) — both corrected
+  with verified edits and the measured figure; process lesson recorded.
+  Round-3 targeted verification: clean after a one-word scoping fix.
+- **Files:** ../../main.tex, ../../figures/fig_dedup_audit.pdf,
+  fullpass/review_findings.md
+- **TODO count (main.tex):** 6 — all author decisions (title,
+  co-authors, acknowledgments) or optional figures.
+- **Tests:** check_article.py PASS; check_research.py PASS;
+  check_experiments.py PASS
+- **STOP CONDITION REACHED (WRITING_PLAN):** Phase-2 review clean. The
+  draft is complete. Remaining items are user decisions; final report
+  delivered in-session. The writing loop ends here.

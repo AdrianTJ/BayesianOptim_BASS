@@ -200,3 +200,20 @@ resume instruction.
   ratchet from baseline 14, numbers traceability vs numbers.md +
   experiment ANALYSIS files); then S1 (Setup section) from code_files/R/
   as it exists, with review before its TODO resolves.
+
+## Cycle 6+ — 2026-08-22 (writing phase, cycles 2–8 of WRITING_LOG)
+- **Phase:** writing (see WRITING_LOG.md for per-cycle detail) → **loop
+  stop condition reached**
+- **Did:** Sections S1–S8 drafted single-writer with per-section
+  adversarial review (five section reviews returned REFUTED verdicts on
+  first drafts — all corrected before commit), references extended with
+  field-verified entries, and the Phase-2 three-lens full pass run to a
+  clean verdict over three rounds, adding the paper's first figure. The
+  article is a complete, internally consistent, evidence-traceable full
+  draft; every number traces to numbers.md or a pre-registered
+  experiment analysis, and every mandatory disclosure is in place.
+- **Tests:** all checks PASS.
+- **Loop state: STOPPED at its normal end.** Reopen triggers: the user's
+  decisions (title/co-authors/acknowledgments/venue), a compile fix
+  pass after pdflatex on the user's machine, the E4 BASS cells when run
+  on the user's machine, or the paused loop_engineering backlog (Q2–Q7).

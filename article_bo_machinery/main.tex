@@ -605,9 +605,13 @@ With the machinery axes controlled, the residual differences are the
 model's. The companion diagnostics
 (\texttt{3\_categorical\_diagnostics} in the companion repository)
 measured held-out rank quality of the spline surrogate at BO sample
-sizes: moderate on the mixed benchmarks,
-near-uninformative on the hardest categorical instance --- consistent
-with the final rankings above, and with the thesis's conclusion that the
+sizes, in a diagnostic run that predates the machinery repair: moderate
+on the mixed benchmarks, and on the hardest categorical instance a
+correlation whose near-intercept fits carry little usable signal at
+thesis budgets. (Fit quality is measured on random designs, independent
+of the machinery axes later repaired, so the measurement plausibly
+carries over; it was not re-taken post-repair.) This is consistent with
+the final rankings above, and with the thesis's conclusion that the
 benchmark scale, not only the model, determines what a budget can
 reveal.
 
@@ -850,7 +854,9 @@ runs use fixed seed ranges (1001--1025 for the main matrices, 1026--1050
 for the pre-registered retest) with shared per-seed initial designs;
 the Python experiments ran single-machine (4 cores) on NumPy/SciPy/
 scikit-learn/Optuna, the thesis pipeline in R; total compute for the
-article's matrices is under an hour of CPU time.
+article's matrices is about $75$ minutes of aggregate CPU time (measured
+per arm type; dominated by the random-forest fits), of which the oracle
+audit itself accounts for about five minutes.
 
 \bibliography{references}
 
