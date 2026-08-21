@@ -502,34 +502,126 @@ reveal.
 \section{A Protocol for Machinery-Controlled Comparisons}
 % =============================================================================
 
-% The checklist, each item with its rationale and cost:
-%  1. Share the candidate generator and make it schema-aware (cite precedents:
-%     SMAC local moves, Casmopolitan Hamming locality -- the pieces are
-%     standard; sharing them is the point).
-%  2. Deduplicate at the decoded-combination level.
-%  3. Run the oracle-ceiling audit for every machinery variant before
-%     attributing anything to a surrogate.
-%  4. Pair the seeds (shared initial designs) and report per-seed win/tie/loss
-%     with a signed-rank test, not only mean curves.
-%  5. Scale benchmark instances so at least one is solvable within budget
-%     (capability) and one is not (guidance quality), and report both.
-% TODO: write as a boxed protocol; consider a "machinery disclosure" table
-% template for papers to fill in.
+\label{sec:protocol}
+
+None of the individual ingredients below is new; each has precedents in
+the methods literature (SMAC's one-exchange local moves
+\cite{hutter2011sequential}, Casmopolitan's Hamming-local trust regions
+\cite{wan2021think}, shared modular primitives in benchmarking
+frameworks). The protocol's content is their \emph{composition as a
+control}, imposed identically on every method being compared, plus the
+audit that verifies the control worked.
+
+\begin{enumerate}
+  \item \textbf{Share one schema-aware candidate generator.}
+  \emph{Rationale:} the generator sets a ceiling on every method
+  (Sec.~\ref{sec:oracle}); if it differs between methods, the comparison
+  confounds machinery with model. \emph{Cost:} an implementation pass;
+  the moves themselves are standard.
+  \item \textbf{Deduplicate at the decoded-combination level.}
+  \emph{Rationale:} encoding-level dedup silently re-spends the majority
+  of a categorical budget and its cost is invisible in convergence
+  curves (Sec.~\ref{sec:dedup}). \emph{Cost:} one canonicalization
+  function.
+  \item \textbf{Run the oracle-ceiling audit per machinery variant,
+  before attributing anything to a surrogate.} \emph{Rationale:} it
+  isolates the machinery axis with no model in the loop, and it locates
+  each surrogate's regime --- a surrogate far below the ceiling is
+  guidance-limited, and machinery effects measured on it will be
+  attenuated or absent (Sec.~\ref{sec:conseq}). \emph{Cost:} minutes on
+  cheap objectives; on expensive objectives, run it on a cheap
+  stand-in with the same input schema.
+  \item \textbf{Pair the seeds and report per-seed win/tie/loss with a
+  signed-rank test, not only mean curves.} \emph{Rationale:} mean curves
+  completely hid one of this paper's failure modes and understated the
+  other; per-seed statistics on shared initial designs surface both at
+  $n{=}25$. \emph{Cost:} bookkeeping.
+  \item \textbf{Scale benchmark instances so at least one is solvable
+  within budget and one is not, and report both.} \emph{Rationale:}
+  solvable instances measure capability (and surface tie structure);
+  unsolvable ones measure guidance quality; a single scale conflates
+  the two (Sec.~\ref{sec:conseq}). \emph{Cost:} one extra instance per
+  benchmark family.
+\end{enumerate}
+
+\paragraph{A machinery-disclosure convention.}
+Papers comparing surrogates over mixed or categorical spaces could state,
+in one table: the candidate-generation scheme (global/local split, local
+move distribution, whether local moves can retain the incumbent's
+combination), the duplicate-handling representation (raw encoding vs
+decoded combination) and tolerance, the pool size per iteration, the
+initial-design type and whether it is shared across methods and seeds,
+and the machinery ceiling attained by the oracle audit under that
+configuration. Every entry is a one-line fact the authors already know;
+collectively they are the difference between a surrogate comparison and
+a machinery comparison. Table~\ref{tab:disclosure} instantiates the
+template for this paper's own pipeline.
+
+\begin{table}[t]
+\caption{\label{tab:disclosure}The machinery-disclosure template,
+filled in for this paper's pipeline.}
+\begin{ruledtabular}
+\begin{tabular}{ll}
+item & this paper \\
+\colrule
+generator, global half & fresh random LHS, $N/2$ \\
+generator, local half & Gaussian (data-derived scale) $\times$ \\
+ & Hamming flips w.p. $1/n_{\mathrm{cat}}$ \\
+local keep-combination & allowed (permissive) / forced-flip \\
+ & (restricted ablation) \\
+dedup representation & canonical (bin-centre) / raw \\
+ & (leak ablation); tol $10^{-10}$ \\
+pool size $N$ & 1000 (50, 200 in ablations) \\
+initial design & maximin LHS, $n_0 = \max(2d{+}1, 8)$, \\
+ & shared across methods per seed \\
+oracle ceiling & Table~\ref{tab:oracle} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
 
 % =============================================================================
 \section{Experiments}
 % =============================================================================
 
-% Planned experimental matrix (beyond the thesis pipeline):
-%  - Surrogates: GP (relaxation), BASS, random forest (SMAC-style), TPE.
-%  - Machinery variants: {restricted, permissive} generator x {encoding-level,
-%    combination-level} dedup; oracle ceiling for each of the 4 cells.
-%  - Benchmarks: Func-2C/3C, Cat-Ackley at 3 sizes, plus one real mixed
-%    tuning task (elastic net or gradient-boosting with categorical choices).
-%  - Protocol: budget 80, 25+ paired seeds, win/tie/loss + Wilcoxon.
-% TODO: run via the companion repository (run_all_final.sh + the
-% 3_categorical_diagnostics oracle harness generalize directly); decide
-% whether the RF/TPE machinery cells need new implementation work.
+\label{sec:experiments}
+
+The synthetic benchmarks follow one protocol: budget $80$, $25$ paired
+seeds with shared initial designs, per-seed win/tie/loss with Wilcoxon
+signed-rank tests. Benchmarks: the CoCaBO mixed functions Func-2C/3C
+\cite{ru2020cocabo} and permuted-categorical Ackley at three sizes
+($d{=}3/L{=}5$ solvable in budget; $d{=}4/L{=}7$; $d{=}6/L{=}11$ with
+$1.77$ million combinations). The thesis pipeline additionally ran two
+real tuning tasks under the same shared machinery but at their own
+scales: Elastic Net (budget $100$, $50$ seeds) and hyperparameter tuning
+of a small neural text classifier (budget $60$, $25$ seeds --- each
+evaluation is a real training run).
+
+The completed matrix comprises: (i) the oracle-ceiling audit over
+generator $\times$ dedup $\times$ pool size
+(Sec.~\ref{sec:oracle}--\ref{sec:dedup}; 700 runs); (ii) the surrogate
+$\times$ machinery matrix with sklearn GP-EI and RF-EI through all four
+machinery cells, plus stock TPE and Random references (750 runs;
+Sec.~\ref{sec:conseq}); (iii) the guidance-dial experiment and its
+pre-registered fresh-seed retest ($2450$ runs; Sec.~\ref{sec:conseq});
+and (iv) the thesis pipeline's final protocol run with BASS-BO, GP-BO,
+TPE, and Random on all benchmarks (Table~\ref{tab:thesis}). Every
+experiment carried a pre-registered design --- hypotheses and decision
+criteria written before the runs, and for the later experiments
+committed to version control before the results existed, which is
+independently verifiable from the repository history --- and every
+experiment was independently re-verified against its raw results; two
+pre-registered hypotheses failed and are reported as such
+(Secs.~\ref{sec:dedup} and~\ref{sec:conseq}).
+
+One planned cell remains open: BASS itself through the restricted/leaky
+machinery ablations. BASS's R implementation was not runnable in the
+environment where the Python matrix was executed; the companion
+repository ships the exact commands
+(\texttt{run\_all\_final.sh} and the diagnostics harness under
+\texttt{3\_categorical\_diagnostics}), and the pre-fix instrumented
+BASS runs already measure the dedup leak for BASS at smaller scale
+($25$--$29$ of $40$ picks). We state this as an open cell rather than
+extrapolating the Python results to BASS.
 
 % =============================================================================
 \section{Discussion and Limitations}

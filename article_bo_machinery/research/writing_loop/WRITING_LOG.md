@@ -113,3 +113,33 @@ accumulate items only the author can settle.
   novelty check's must-cite notes. Then S6 (Experiments: report the
   completed matrices; queue the BASS/E4 cells for the user machine with
   exact commands, no silent scope cuts).
+
+## Cycle 5 — 2026-08-22 (S5 + S6: protocol and experiments)
+- **Did:** S5 written: five-item checklist with rationale-and-cost per
+  item, the machinery-disclosure convention, and tab:disclosure filled in
+  for this pipeline. S6 written: protocol summary, the completed
+  experimental matrix with run counts (700/750/2450 + thesis run),
+  pre-registration statement, and the open-BASS-cell paragraph (honest,
+  no extrapolation). Review REFUTED one blocker, fixed: the opening
+  sentence had extended the budget-80/25-seed protocol over the two real
+  tasks, which ran at their own scales (Elastic Net 100/50; nlp_hpo
+  60/25 — the repo README flags both) — restructured to state the scales
+  explicitly. Minors fixed: H4's failure now cross-referenced to Sec V
+  as well as VI; the pre-registration claim qualified (git-verifiable
+  for the later experiments; the first two entered the record with their
+  results); checklist item 4's "hid both" softened to hid-one/
+  understated-other. Everything else upheld: run counts, disclosure
+  table rows, citations, 11^6 figure, checklist rationales consistent
+  with the corrected Definition framing.
+- **Files:** ../../main.tex (S5, S6)
+- **TODO count (main.tex):** 10 (ratchet down from 12)
+- **Tests:** check_article.py PASS; check_research.py PASS
+- **Next (writing loop):** S7 (Introduction sharpen + Related Work
+  complete): fold in the novelty check's must-cite list and
+  differentiation notes (../novelty_check/REPORT.md) — MCBO prominently,
+  Tripp & Hernández-Lobato, Daulton PR, Luong, Wilson, EvoGO,
+  benchmarking-rigor cluster; extend references.bib (subagent drafts
+  BibTeX from the verified sources, check_article gates the keys);
+  resolve the intro's TODO paragraphs and the related-work TODO. Then
+  S8 (Discussion/Limitations; abstract headline numbers; title
+  recommendation for the user; acknowledgments/data availability).
