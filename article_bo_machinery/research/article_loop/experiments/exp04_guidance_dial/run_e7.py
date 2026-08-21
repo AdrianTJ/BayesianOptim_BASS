@@ -102,12 +102,16 @@ if __name__ == "__main__":
 
     print("\n== shared-init TPE vs E3 Random (same seeds/inits) ==")
     e3 = list(csv.DictReader(open(Path(__file__).parent.parent / "exp03_surrogate_matrix" / "results.csv")))
+    tpe_wins = {}
     for bname, _ in BENCH:
         rnd = {float(r["seed"]): float(r["best_b80"]) for r in e3
                if r["objective"] == bname and r["surrogate"] == "random"}
         t = {r["seed"]: r["best_b80"] for r in rows
              if r["objective"] == bname and r["arm"] == "tpe_shared"}
-        wins = sum(t[s] < rnd[s] for s in t)
+        tpe_wins[bname] = sum(t[s] < rnd[s] for s in t)
         tm = np.mean(list(t.values())); rm = np.mean(list(rnd.values()))
-        print(f"{bname}: TPE_shared wins {wins}/25 vs Random | means {tm:.4f} vs {rm:.4f}"
-              f" -> {'closes K-TPE' if wins >= 17 else 'discrepancy deepens'}")
+        print(f"{bname}: TPE_shared wins {tpe_wins[bname]}/25 vs Random | means {tm:.4f} vs {rm:.4f}")
+    # DESIGN.md's criterion is JOINT: >=17/25 on BOTH benchmarks (review fix)
+    closed = all(w >= 17 for w in tpe_wins.values())
+    print("K-TPE pre-registered joint criterion:",
+          "MET -> closes" if closed else "NOT MET -> stays open (fallback branch)")

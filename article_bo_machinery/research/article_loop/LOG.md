@@ -128,3 +128,38 @@ resume instruction.
   refuted if it persists at σ where performance ≈ GP/Random level. Also
   (cheap, same cycle if time permits): shared-init TPE re-run on
   func2C/3C to close K-TPE. Independent review before ledger update.
+
+## Cycle 4 — 2026-08-22
+- **Phase:** experiment (E7 guidance dial + shared-init TPE) + analyze +
+  review-forced corrections
+- **Did:** Calibration pilot disclosed, σ set and GP-level anchors frozen
+  in DESIGN before the confirmatory 1250-run job. Dial result: W-clauses
+  H-regime-consistent in all four cells (25/25 at σ=0 → chance at the
+  pre-named anchors, within the identical pool-argmax search type), but
+  the G-clause failed in 2/4 cells → composite verdict INCONCLUSIVE,
+  reported as such; G-clause diagnosed (post-hoc, labeled) as
+  mis-specified at near-ceiling cells. Shared-init TPE moved func2C to
+  20/25 and func3C to 16/25 — the pre-registered joint criterion missed
+  by one seed, so K-TPE stays open (narrowed). The adversarial review
+  REFUTED the first draft for declaring K-TPE "closed" despite the missed
+  joint criterion (the same overclaim class E3's review blocked) and for
+  a G-count factual error (said 3/4, actually 2/4); both corrected, plus
+  two config deviations disclosed (n_startup_trials=0 vs tpe.R's default
+  10; benchmark-shared noise streams). Process rule adopted (REVIEW.md):
+  composite criteria are evaluated by their letter first, and every
+  ledger status change must quote the criterion it satisfies.
+- **Files:** exp04_guidance_dial/{DESIGN,ANALYSIS,REVIEW}.md, run_e7.py,
+  results.csv, surrogates.py (run_tpe init=), CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E7
+  composite INCONCLUSIVE (pre-registered), K-TPE joint criterion NOT MET
+  (recorded)
+- **User decisions (open):** unchanged.
+- **Next:** Cycle 5 = the one-shot K10 re-test (authorized in CLAIMS):
+  same dial, FRESH seeds 1026–1050, W-only pre-registered criteria
+  (support: W(0)≥20 & p<0.05 AND W(σ*)≤17 & p≥0.05 in all four cells;
+  refute: W(σ*)≥20 & p<0.05 at n_cand=50 on both benchmarks; else
+  inconclusive-final). Whatever it returns is final for the article — no
+  further K10 experiments. If time remains in the cycle: begin
+  `numbers.md` (Phase 0 of the writing plan), since the in-container
+  experiment program is nearing its limit (E4/BASS needs the user's
+  machine; E6/real-task is the remaining optional experiment).
