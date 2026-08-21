@@ -102,3 +102,44 @@ resume instruction. Claim ledger: new H-claims live in
   (3) run smoke → full, analyze with pre-committed script, adversarial
   review, ledger, LOG, commit, push. H1b YAHPO conditional-space cells
   remain queued behind H2.
+
+## Cycle 3 — 2026-08-21
+- **Phase:** H2 machinery-controlled re-comparison — complete.
+- **Did:** Pre-registered the memoization control (bit-identical
+  trajectories on deterministic objectives; budget = 80 unique evals,
+  400-ask horizon), G5 mixed-space injection gate PASSED (closing H1
+  REVIEW's promised gap), smoke caught a third instance of the
+  parents[2] path-bug class, full 275-run matrix completed with zero
+  failures. Adversarial review **REFUTED the first draft**: the
+  pre-committed analyze_h2.py omitted DESIGN's own solve-count tie-break,
+  under-counting the headline (Z=2) and inflating d5's flip list.
+  Amendment 2 fixed the metric toward its registered definition:
+  **Z = 3 of 4 benchmarks change ranking** once budgets are equalized —
+  optuna-tpe's apparent small-space weakness is mostly machinery (d3
+  21→25/25 solves; d5 16.18/7-solves → exact optimum/22-solves), TPE
+  order inverts on d6. Also: GPSampler generator saturation (30 unique in
+  400 asks on K=125 — duplicates are its steady state), heterogeneous
+  refund (hyperopt's strict clause FAILED: freeing its waste doesn't help
+  it — on record), skopt-gp carried-row disclosure added (review
+  MAJOR-3). Ledger: H2-ZOFW, H2-SAT, H2-REFUND added; H1-NULLMIX updated
+  with G5 pass. The paper's three headline numbers now exist: X/N =
+  3/6 libraries ≥10% waste; the audit tool detects it invisibly to
+  curves; Z/W = 3/4 rankings change when machinery is equalized.
+- **Next:** Cycle 4 = **H3** (theory appendix). Fresh-context resume:
+  read PLAN.md phase H3 + article_loop CLAIMS.md K10/E7-E8 rows. Steps:
+  (1) attempt full-text fetch of the two anchor papers (Kim et al.
+  arXiv:2506.11831; B3O arXiv:2606.30228) via WebFetch — arxiv egress was
+  blocked for raw downloads earlier; if still blocked, write the
+  self-contained math and mark anchors snippet-verified-only, deferred to
+  author (hard gate per PLAN: no appendix citation without full-text
+  check — the *framing* can proceed, the citations wait); (2) Lemma A:
+  oracle ceiling as a theorem for exogenous pool sequences (one-paragraph
+  proof, states the adaptive case as Proposition B conjecture with E2/E3
+  empirical support); (3) Proposition C: Gumbel/softmax top-1 selection
+  probability, closed form, monotone in noise scale — fit to E7/E8
+  guidance-dial data (K10 row); deterministic check: the fitted curve
+  must reproduce E8's non-monotone residual observation or the fit's
+  limits are disclosed; (4) worker≠verifier review of ALL math (a
+  Sonnet 5 prover-skeptic pass), ledger, LOG, commit, push. H1b (YAHPO
+  conditional spaces) and H4 (BASS cells, author machine) remain queued;
+  H5 rewrite starts only after H3 lands.

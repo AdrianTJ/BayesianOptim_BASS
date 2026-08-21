@@ -39,14 +39,24 @@ def solves(cells, lib, bench):
     return None if thr is None or not rs else sum(r["best"] <= thr for r in rs)
 
 
-def ranking_pairs(vals):
-    """Set of strictly-ordered pairs (a beats b) under TIE tolerance."""
+def ranking_pairs(vals, solve_counts=None):
+    """Strictly-ordered pairs (a beats b) per DESIGN's registered metric:
+    median best (TIE tolerance), tie-break by solve count where a solve
+    threshold exists. Amendment 2: the first committed version omitted the
+    tie-break clause that DESIGN itself registers — found by adversarial
+    review (it hid the d3_L5 solve-count ranking change); fixed post-data
+    TOWARD the registered definition, disclosed in ANALYSIS/REVIEW."""
     pairs = set()
     for a in vals:
         for b in vals:
-            if a != b and vals[a] is not None and vals[b] is not None \
-                    and vals[a] < vals[b] - TIE:
+            if a == b or vals[a] is None or vals[b] is None:
+                continue
+            if vals[a] < vals[b] - TIE:
                 pairs.add((a, b))
+            elif abs(vals[a] - vals[b]) <= TIE and solve_counts is not None:
+                sa, sb = solve_counts.get(a), solve_counts.get(b)
+                if sa is not None and sb is not None and sa > sb:
+                    pairs.add((a, b))
     return pairs
 
 
@@ -63,7 +73,11 @@ def main():
     for bench in BENCHMARKS:
         vals1 = {lib: med_best(h1, lib, bench) for lib in AUDITED}
         vals2 = {lib: med_best(h2_or_h1(lib, bench), lib, bench) for lib in AUDITED}
-        p1, p2 = ranking_pairs(vals1), ranking_pairs(vals2)
+        sc1 = {lib: solves(h1, lib, bench) for lib in AUDITED} \
+            if bench in SOLVE else None
+        sc2 = {lib: solves(h2_or_h1(lib, bench), lib, bench) for lib in AUDITED} \
+            if bench in SOLVE else None
+        p1, p2 = ranking_pairs(vals1, sc1), ranking_pairs(vals2, sc2)
         flips = p1.symmetric_difference(p2)
         changed = bool(flips)
         z += changed

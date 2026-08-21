@@ -1,7 +1,7 @@
 # H2 aggregate
 
 
-## cat_ackley_d3_L5 — ranking unchanged
+## cat_ackley_d3_L5 — ranking CHANGED
 
 | library | H1 as-shipped med best (solve) | H2 equalized med best (solve) | n H2 | uniq/prop (H2 med) |
 |---|---|---|---|---|
@@ -11,6 +11,8 @@
 | skopt-gp | 4.441e-16 (25) | 4.441e-16 (25) | 0 | carried |
 | ax | 4.441e-16 (25) | 4.441e-16 (25) | 0 | carried |
 | smac | 4.441e-16 (22) | 4.441e-16 (22) | 0 | carried |
+
+Order flips: [('ax', 'optuna-tpe'), ('optuna-gp', 'optuna-tpe'), ('optuna-tpe', 'hyperopt-tpe'), ('optuna-tpe', 'smac'), ('skopt-gp', 'optuna-tpe'), ('smac', 'hyperopt-tpe'), ('smac', 'optuna-tpe')]
 
 ## cat_ackley_d5_L5 — ranking CHANGED
 
@@ -23,7 +25,7 @@
 | ax | 4.441e-16 (18) | 4.441e-16 (18) | 0 | carried |
 | smac | 16.18 (4) | 16.18 (4) | 0 | carried |
 
-Order flips: [('ax', 'optuna-tpe'), ('optuna-gp', 'optuna-tpe'), ('optuna-tpe', 'hyperopt-tpe'), ('optuna-tpe', 'smac'), ('skopt-gp', 'optuna-tpe')]
+Order flips: [('ax', 'optuna-tpe'), ('optuna-tpe', 'ax')]
 
 ## cat_ackley_d6_L11 — ranking CHANGED
 
@@ -51,7 +53,7 @@ Order flips: [('hyperopt-tpe', 'optuna-tpe')]
 
 ## Z-of-W
 
-**Z = 2 of W = 4** benchmarks change ranking once budgets are equalized (pairwise strict-order flips, tie tol 1e-09).
+**Z = 3 of W = 4** benchmarks change ranking once budgets are equalized (pairwise strict-order flips, tie tol 1e-09).
 
 - **Q1** (Z ≥ 1): PASS
 
