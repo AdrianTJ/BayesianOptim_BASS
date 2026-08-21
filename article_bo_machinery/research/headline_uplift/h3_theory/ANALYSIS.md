@@ -8,9 +8,11 @@ ran. Fit set E8 medians; held-out E7 medians, no refitting.
 - **func3C (all 4 cells): the decay law works.** In-sample R² 0.89–1.00,
   held-out R² 0.66–0.88 on disjoint seeds with no refitting, empirical
   medians perfectly monotone-worsening in σ in 3 of 4 cells (ρ=+1.0;
-  the fourth ρ=+0.94). Fitted half-loss dial s: 3.2–22.3 — larger pools
-  and the keep generator tolerate more guidance noise before losing half
-  the oracle's edge, consistent with K10's direction.
+  the fourth ρ=+0.94). Fitted half-loss dial s: 3.2–22.3 **in raw f-units** (σ is additive
+  noise SD on the acquisition score; no normalized "objective scale"
+  is defined, so s is reported in raw units only — review finding) —
+  larger pools and the keep generator tolerate more guidance noise
+  before losing half the oracle's edge, consistent with K10's direction.
 - **func2C (all 4 cells): the fit is underdetermined and does NOT
   replicate cleanly.** The benchmark sits near its optimum across most of
   the σ grid (median spread ~0.2 total), so three parameters chase tiny
@@ -32,7 +34,7 @@ ran. Fit set E8 medians; held-out E7 medians, no refitting.
    **theorem in the exogenous-pool case**, with the exact boundary
    (adaptive generators) stated as Proposition B, an explicit conjecture
    with its empirical record (0 violations across E2/E3 matched cells)
-   and a named counterexample direction.
+   and an explicit counterexample construction (purely-local generator).
 2. **Proposition C** gives the guidance dial a law: monotone selection
    decay with pinned limits (oracle → uniform-over-pool), Gaussian case
    proved, Gumbel/softmax closed-form twin stated.

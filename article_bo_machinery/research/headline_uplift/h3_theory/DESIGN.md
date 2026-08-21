@@ -31,7 +31,7 @@ made.
 - **Proposition C (guidance-dial decay law):**
   (a) single-draw: for selection by argmax of −f(x_i) + σ·ε_i with iid
   standard-Gaussian ε over a fixed finite pool, P(the pool argmin is
-  selected) is continuous, equals 1 at σ→0⁺ (distinct values), tends to
+  selected) is continuous, equals 1 at σ→0⁺ (unique pool minimum), tends to
   1/n as σ→∞, and is **monotone non-increasing in σ** (proof via the
   representation E_e[Π_j Φ(e + Δ_j/σ)]).
   (b) Gumbel twin: with iid Gumbel(σ) noise the law is exactly softmax

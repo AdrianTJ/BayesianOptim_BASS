@@ -143,3 +143,45 @@ resume instruction. Claim ledger: new H-claims live in
   Sonnet 5 prover-skeptic pass), ledger, LOG, commit, push. H1b (YAHPO
   conditional spaces) and H4 (BASS cells, author machine) remain queued;
   H5 rewrite starts only after H3 lands.
+
+## Cycle 4 — 2026-08-21
+- **Phase:** H3 theory appendix — complete.
+- **Did:** Anchor gate resolved honestly: arXiv still egress-blocked →
+  appendix fully self-contained, Kim/B3O anchors queued as author
+  verify-before-citing tasks, zero dependent claims. THEORY.md: Lemma A
+  (oracle domination on exogenous pools — now a THEOREM with a coupling
+  proof, and the exact boundary where it stops being one), Prop B
+  (adaptive case as an explicit conjecture + counterexample showing the
+  global-support assumption is necessary), Prop C (Gaussian selection
+  decay proved monotone with pinned limits; Gumbel/softmax closed-form
+  twin). Pre-registered fit protocol ran: the decay curve fitted on E8
+  transfers to held-out E7 on func3C (R² 0.66–0.88, 4/4 cells) and
+  FAILS to transfer on func2C (range compression; one held-out R² =
+  −1.28) — reported as a split, func2C parameters used nowhere.
+  Prover-skeptic review: **UPHELD-WITH-CORRECTIONS** — all proofs valid
+  (reviewer supplied the Gumbel logit proof and independently re-fit the
+  degenerate γ≈18 cell), one MAJOR citational error caught and fixed
+  (Prop B's evidence had mis-attributed surrogate arms to surrogate-free
+  E2; corrected to the reviewer-verified 0/2250 matched E3-vs-E2
+  record), five minors applied (unique-minimum premise, post-dedup-mask
+  pools, a.s.-idealization disclosure, raw-f-units for s, inlined
+  counterexample). Ledger: H3-LEMA, H3-PROPC added.
+- **Next:** Cycle 5 = **H5** (rewrite the paper around the new spine) —
+  H4's BASS cells are author-machine work (queued in the author to-do
+  list) and H1b (YAHPO conditional spaces) stays optional behind the
+  rewrite. Fresh-context resume: read article_loop/CLAIMS.md H-rows,
+  exph1_matrix/ANALYSIS.md, exph2_control/ANALYSIS.md,
+  h3_theory/THEORY.md, and the current main.tex + writing_loop conventions
+  (research/writing_loop/WRITING_PLAN.md, numbers.md pipeline,
+  tools/check_article.py). Steps: (1) pre-register a REWRITE_PLAN.md
+  (section map old→new: in-the-wild audit becomes the motivation +
+  experiments core; the controlled BASS study becomes the mechanism
+  section; abstract/title re-cut to the audited-ecosystem claim shape
+  with the three headline numbers 3/6-waste, invisible-in-curves,
+  Z=3/4; theory appendix from H3; every number sourced from the
+  extract_numbers pipeline extended to H1/H2/H3 outputs); (2) rewrite
+  section-by-section with per-section adversarial review (writing-loop
+  discipline: single writer, verifying Edit tool, TODO ratchet in
+  check_article.py); (3) full-pass review, checkers, ledger re-center,
+  LOG, commit, push. Author to-dos to compile at H5 end: pdflatex
+  compile, anchor full-text checks, E4/BASS runs, venue call.

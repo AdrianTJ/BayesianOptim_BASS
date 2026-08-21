@@ -79,8 +79,6 @@ def main():
         print(f"| {obj}/{gen}/n{nc} | {p['m0']:.4f} | {p['m_inf']:.4f} | "
               f"{p['s']:.2f} | {p['gamma']:.2f} | {p['r2_fit']:.3f} | {r2h:.3f} | {rho:+.3f} |")
 
-    mono = [r["cell"] for r in rows if r["rho"] < 1 - 1e-9 and r["rho"] > -1 + 1e-9
-            and not np.isclose(abs(r["rho"]), 1.0, atol=1e-9)]
     # a cell is perfectly monotone (worsening) iff rho == +1 (higher sigma -> higher=worse median)
     non_mono = [r["cell"] for r in rows if not np.isclose(r["rho"], 1.0, atol=1e-9)]
     print(f"\nCells with NOT perfectly monotone-worsening medians (ρ<1): "

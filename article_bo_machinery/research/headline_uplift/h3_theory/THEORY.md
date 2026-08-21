@@ -58,16 +58,27 @@ the global component's share grows.
 
 **Status.** Not proved here; stated so the paper cannot silently upgrade
 the audit into a theorem it isn't. Empirical record consistent with
-ε ≈ 0 at our scales: in every matched cell of E2 (oracle vs GP/TPE/BASS
-arms, 25 seeds × 6 cells) and E3 (oracle vs sklearn-GP/RF, all budgets),
-no surrogate's median best-so-far beat the oracle's at any recorded
-budget. A counterexample generator (heavy incumbent-dependence, no
-global half) is easy to construct and is described in the review file —
-which is why the assumption names the global component.
+ε ≈ 0 at our scales (corrected and re-verified at review): matching
+E3's GP-EI/RF-EI/TPE/Random surrogate arms per-seed against E2's
+oracle + keep + combination-dedup arm (same seeds and objectives,
+n_cand = 1000, budgets 10/40/80) gives **0 of 2250 matched comparisons**
+in which a surrogate beat the oracle. (E2 itself is surrogate-free by
+design — its arms are generator/dedup variants under the oracle
+acquisition; the first draft mis-cited it and was corrected on review.)
+A counterexample generator showing why assumption (i) is needed: make
+the generator purely local — every pool is n Gaussian jitters of the
+current incumbent, no global half. The oracle then locks into the first
+basin its incumbent reaches (each pool concentrates ever closer to the
+local minimum, a fixed point), while a policy that deliberately picks a
+locally-suboptimal pool point toward a deeper distant basin drags all
+future pools there and, for large enough budget, achieves a strictly
+better expected best-so-far. Unconditional domination fails exactly
+because the global-support component is absent.
 
 ## Proposition C (guidance-dial decay law)
 
-Fix a pool of n distinct values f_1 < f_2 ≤ … ≤ f_n and gaps
+Fix a pool of n values with a unique minimum, f_1 < f_2 ≤ … ≤ f_n
+(ties among non-minimal values are allowed and harmless), and gaps
 Δ_j = f_j − f_1 > 0 (j ≥ 2). The dial selects
 argmax_i { −f_i + σ ε_i } with iid noise ε_i and dial σ ≥ 0.
 
@@ -102,7 +113,10 @@ readers will recognize — not because it was run.
 **(c) Sequential reading and the correct far-end baseline.** In the
 loop, σ interpolates between the oracle selector (σ = 0) and, as σ→∞,
 *uniform selection over the same generator's pools* — not free random
-search over the space. Per-step selection quality degrades monotonically
+search over the space. ("Pools" here means the post-dedup-mask
+candidate set: run_bo masks candidates duplicating already-evaluated
+combinations before selection, identically at every σ, so the masked
+set is what any selector — noisy or not — chooses from.) Per-step selection quality degrades monotonically
 by (a); we do **not** claim a theorem that the *final* best-at-budget of
 the adaptive sequential loop is monotone in σ (pools are adaptive;
 Proposition B's caveat applies, and between-generator statistics such as
@@ -112,6 +126,13 @@ with (a) supplying the shape constraints (two pinned limits, monotone
 interior), not a derived formula.
 
 ## Fitted decay law (protocol per DESIGN.md; numbers in ANALYSIS.md)
+
+One idealization to note: Prop C(a)'s unique-minimum/distinct-gaps
+premise is almost-surely true of the real pools (continuous LHS +
+Gaussian halves) but is not an enforced invariant — exact ties are
+possible in principle at the [0,1] clip boundary; the proposition
+holds for its stated setting, and the loop satisfies that setting
+almost surely, not exactly.
 
 m(σ) = m₀ + (m∞ − m₀)/(1 + (s/σ)^γ): m₀ pinned at the σ=0 median (the
 oracle end), m∞ the fitted plateau (the uniform-over-pool end), s the
