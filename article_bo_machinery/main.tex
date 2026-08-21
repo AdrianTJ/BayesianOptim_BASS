@@ -306,6 +306,25 @@ papers continue to ship bespoke machinery inseparable from the model
 benchmark suites standardize tasks and interfaces, but neither audits a
 ceiling.
 
+\paragraph{Auditing deployed optimizers.}
+A separate tradition audits optimizers as shipped rather than as
+described: the black-box optimization challenge of
+\citet{turner2021bayesian} evaluated dozens of independently submitted
+optimizers under one harness and changed community defaults. Our
+ecosystem audit (Sec.~\ref{sec:wild}) belongs to that tradition but
+measures a quantity such harnesses do not record: decoded-combination
+revisits, counted from inside the objective. The behavior it detects is
+partially self-documented --- duplicate suggestions are acknowledged in
+the issue trackers of both audited TPE implementations
+(\texttt{hyperopt\#608}, which reports 48 identical trials out of 500;
+\texttt{optuna\#5440} and \texttt{\#2021}) --- but has not, to our
+knowledge, been measured uniformly across libraries, related to the
+unavoidable collision baseline, or connected to ranking artifacts.
+Positioning against further published audit studies is deferred to a
+camera-ready pass with full-text verification.
+% TODO(author): verify + cite audit-genre anchors (Recht et al. ImageNet
+% replication; bayesmark; MCBO already cited) after full-text check.
+
 % =============================================================================
 \section{Setup: One Loop, Shared Machinery}
 \label{sec:setup}
@@ -386,6 +405,137 @@ the loop, acquisition rule, budget ($B = 80$, $N = 1000$ unless stated),
 and per-seed initial designs fixed, so that a machinery axis (generator
 variant, dedup level, pool size) is the only moving part.
 % TODO: one loop-diagram figure (optional; decide at full-pass review).
+
+\paragraph{The \texttt{bo-audit} wrapper (for libraries we did not build).}
+The controlled pipeline above requires owning the loop. To audit
+\emph{deployed} libraries (Secs.~\ref{sec:wild}--\ref{sec:equalized}) we
+instead wrap the objective function: every optimizer must call it, so a
+wrapper that decodes each configuration to its categorical combination
+(continuous coordinates rounded to six decimals, far below any
+optimizer's meaningful resolution) and counts arrivals at already-seen
+keys measures duplicate spending uniformly, with no access to library
+internals and no per-library adapters beyond the driver that launches
+each tool at its documented defaults. Because collisions are sometimes
+unavoidable --- sampling uniformly over $K$ combinations for $B$ steps
+collides $B - K\bigl(1-(1-1/K)^{B}\bigr)$ times in expectation --- we
+report \emph{excess} revisits over this pigeonhole baseline, so that a
+random-sampling control sits at zero by construction. The counter was
+validated before any library was read: exact agreement with hand-computed
+and analytic ground truth (scripted-repeat, continuous no-false-positive,
+pigeonhole, and mixed-space duplicate-injection gates), and detection of
+the tracker-acknowledged TPE behavior at the expected order of magnitude.
+
+% =============================================================================
+\section{The In-the-Wild Audit: Six Deployed Libraries}
+\label{sec:wild}
+% =============================================================================
+
+We audited six pip-installable BO libraries at their documented defaults
+--- Optuna's TPE and GP samplers, Hyperopt's TPE, scikit-optimize's GP,
+Ax, and SMAC~3 --- plus a uniform random-sampling control, on six
+benchmarks: categorical Ackley at three sizes ($5^3{=}125$,
+$5^5{=}3{,}125$, and $11^6{\approx}1.8{\times}10^6$ combinations), the
+$5^{25}$ pest-control simulation (a deterministic variant of the standard
+combinatorial benchmark, disclosed in the repository), and the two mixed
+CoCaBO functions; 25 seeds per cell, budget 80, for 1{,}050 runs. Every
+run's configuration, library version, and non-default settings are
+recorded alongside the raw results. Per-library hypotheses were
+pre-registered from each library's documented mechanism before the matrix
+ran; all seven held, including the null check that the counter registers
+${\approx}0$ exact revisits on mixed spaces (349 of 350 mixed-space runs
+show exactly zero).
+
+\begin{table}[t]
+\caption{\label{tab:wild}In-the-wild audit: median revisits per 80
+evaluations (median excess over the pigeonhole baseline in parentheses)
+on the four purely categorical benchmarks, and exact-solve counts where
+the optimum is attainable in budget. The random control's excess is
+${\approx}0$ everywhere by construction. Full per-cell tables, means,
+and library versions: companion repository.}
+\begin{ruledtabular}
+\begin{tabular}{lcccccc}
+ & \multicolumn{4}{c}{median revisits/80 (excess)} &
+ \multicolumn{2}{c}{solved} \\
+ & $5^3$ & $5^5$ & $11^6$ & $5^{25}$ & $5^3$ & $5^5$ \\
+\hline
+Random          & 22 (+1)  & 1 (0)   & 0 (0)  & 0 (0)  & 14/25 & 3/25 \\
+Optuna TPE      & 45 (+24) & 29 (+28) & 18 (+18) & 16 (+16) & 21/25 & 7/25 \\
+Hyperopt TPE    & 33 (+12) & 14 (+13) & 6 (+6) & 7 (+7) & 21/25 & 3/25 \\
+Optuna GP       & 53 (+32) & 38 (+37) & 1 (+1) & 0 (0)  & 25/25 & 25/25 \\
+skopt GP        & 20 ($-$1) & 1 (0)  & 0 (0)  & 0 (0)  & 25/25 & 25/25 \\
+Ax              & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 25/25 & 18/25 \\
+SMAC            & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 22/25 & 4/25 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Table~\ref{tab:wild} shows the audit's central pattern: waste is
+\emph{machinery-determined}, splitting the ecosystem into libraries with
+combination-aware proposal handling (Ax and SMAC at zero raw revisits in
+every one of their 300 runs; scikit-optimize's built-in duplicate
+detection tracking the pigeonhole baseline) and libraries without (both
+TPE implementations and Optuna's GP sampler). Three findings deserve
+emphasis. First, \emph{solving masks waste}: Optuna's GP sampler posts
+the matrix's best categorical solve record while spending a median of 53
+of its 80 evaluations on revisits --- roughly 27 unique configurations
+per run on the 125-combination space --- and no convergence curve
+distinguishes it from a duplicate-free solver. Second, on the $5^{25}$
+space the pigeonhole baseline is ${\sim}10^{-14}$, so \emph{any} revisit
+is algorithmic: TPE's per-dimension categorical sampling still re-spends
+a median of 16 (Optuna) and 7 (Hyperopt) evaluations of 80. Third, SMAC
+shows the opposite failure surface: zero revisits everywhere, at the cost
+of terminating six of 25 runs early (at 59--75 of 80 evaluations) on the
+smallest space, when its runhistory-keyed generator exhausts rather than
+propose a duplicate --- a defensible design choice that, like the waste
+it avoids, is invisible in convergence curves and surfaced only by the
+audit.
+
+% =============================================================================
+\section{Equal Budgets: Does the Waste Change Conclusions?}
+\label{sec:equalized}
+% =============================================================================
+
+Waste alone does not settle whether machinery distorts
+\emph{comparisons}: that requires re-running the comparison with
+duplicate handling equalized. Because every benchmark above is
+deterministic, a memoization control does this exactly --- duplicate
+proposals receive the cached value at zero budget cost, so each
+sampler's trajectory is, by construction, bit-identical to its
+as-shipped run at the same seed while the meter charges \emph{unique}
+evaluations only (80 unique, horizon 400 proposals). We re-ran the three
+wasteful libraries under this control on the four categorical benchmarks
+(275 runs, same seeds); the duplicate-free libraries' as-shipped rows
+carry over unchanged (verified duplicate-free row-by-row, with one
+disclosed exception documented in the repository).
+
+Under the pre-registered ranking metric (median final best, solve-count
+tie-break), \textbf{the apparent library ranking changes on three of the
+four benchmarks}. The largest movement is Optuna TPE on the
+$5^5$ space: as shipped it looks like a weak categorical optimizer
+(median best $16.18$, 7 of 25 solves, below Ax); with its
+${\sim}29$ wasted evaluations refunded it reaches the exact optimum on
+22 of 25 seeds, reversing the order against Ax and closing most of the
+gap to the GP tier (22/25 versus 25/25, though not all of it). On
+$5^3$ its solve count rises from 21 to 25 of 25, lifting it past
+Hyperopt and SMAC; on $11^6$ the two TPE implementations trade places.
+Equal-proposal budgets --- what benchmark tables implicitly charge ---
+and equal-unique-evaluation budgets --- what an expensive objective
+actually costs --- disagree about who wins.
+
+Two honest complications. The refund converts heterogeneously: Hyperopt's
+pre-registered strict-improvement prediction on the $5^5$ space
+\emph{failed} (median and solve count unchanged at 3 of 25) --- freeing
+its wasted budget does not help, because its sampler does not find better
+combinations with the extra evaluations; waste is necessary but not
+sufficient for a ranking artifact. And the memoized runs expose a second
+mechanism: on the 125-combination space, Optuna's GP sampler exhausted
+the entire 400-proposal horizon while producing a median of only 30
+unique configurations --- five times the proposals bought three more
+unique points than its as-shipped 27 --- so its duplicates are not
+occasional collisions but the proposal generator's steady state, which
+no budget increase can fix. The controlled study that follows isolates
+both mechanisms --- generator restriction and duplicate leakage --- in a
+pipeline where every part can be held fixed.
 
 % =============================================================================
 \section{The Oracle-Ceiling Audit and Failure Mode I:\\ the Generator Ceiling}
