@@ -218,3 +218,33 @@ resume instruction. Claim ledger: new H-claims live in
   h_numbers.md + CLAIMS.md before commit, as this cycle. Then Cycle 7
   (mechanism condensation, Protocol/Experiments/Discussion/Appendix A/
   Data Availability incl. compute fix) and Cycle 8 (full-pass).
+
+## Cycle 6 — 2026-08-21
+- **Phase:** H5 rewrite, part 2 of 4 — complete.
+- **Did:** Added the Related Work "Auditing deployed optimizers"
+  paragraph (Turner et al. positioning; TPE issue-tracker record;
+  author-verify TODO for audit-genre anchors — TODO ratchet raised 6→7
+  deliberately), the Setup paragraph on the bo-audit wrapper (pigeonhole
+  formula, gate summary), and the two new sections: sec:wild (H1 matrix
+  with tab:wild, machinery-determined split, solving-masks-waste, 5^25
+  algorithmic revisits, SMAC refuses/terminates) and sec:equalized (H2
+  memoization control, Z=3/4 movements, heterogeneous refund incl.
+  Hyperopt's failed strict clause, GPSampler saturation). Section
+  review: UPHELD-WITH-CORRECTIONS — three MAJORs fixed (G5 gate timing
+  backdated in my prose; "zero by construction" vs the table's own +1;
+  the 275-run carryover conflation now split into its two distinct
+  caveats) + two minors ("trade places" tie phrasing; SMAC prefix
+  scoring note). tab:wild verified cell-by-cell by the reviewer.
+- **Next:** Cycle 7 = H5 part 3: (1) condense the mechanism block
+  (oracle-audit + FM-II + Consequences sections gain brief pointers to
+  Lemma A / sec:wild counterparts, no content loss); (2) Protocol
+  section: add excess-over-pigeonhole disclosure row + deployed-library
+  checklist item; (3) Experiments section: fold in H-run counts (H1
+  1050, H2 275, H0 gates); (4) **Data Availability: fix the stale
+  "about 75 minutes" compute claim** (H1 ≈13.2 core-hours + H2; quote
+  from h_numbers/wall_s sums), add bo-audit tool + library versions;
+  (5) Appendix A: Lemma A, Prop B (conjecture + counterexample), Prop C
+  (a/b/c), decay-fit table with func2C non-transfer, from
+  h3_theory/THEORY.md. Per-section adversarial review before commit.
+  Then Cycle 8: full-pass (three lenses), abstract trim, author to-do
+  compilation, loop close-out report to the author.

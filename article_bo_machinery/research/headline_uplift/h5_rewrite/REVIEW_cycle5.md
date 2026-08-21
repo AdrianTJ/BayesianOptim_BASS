@@ -39,3 +39,29 @@ absent; LaTeX brace/math balance checked).
 - Related Work + Setup backfill — Cycle 6 as planned; no existing text
   contradicts the new front matter (grep-checked, no stale "three
   contributions" references anywhere).
+
+---
+
+# H5 Cycle 6 — section review record (Related Work para, Setup wrapper para, sec:wild, sec:equalized)
+
+**Verdict: UPHELD-WITH-CORRECTIONS** (every tab:wild cell verified
+digit-for-digit against h_numbers.md, incl. rounding rule; H2 numbers,
+issue citations, 349/350, 300-run zero-revisit claim all clean).
+
+Dispositions:
+1. **[MAJOR]** "validated before any library was read: … mixed-space
+   duplicate-injection gates" was chronologically false (G5 ran before
+   H2, after H1). → Sentence split: G1–G4 pre-library, G5 explicitly
+   dated before sec:equalized.
+2. **[MAJOR]** "random control sits at zero by construction" contradicted
+   the table's own Random +1 cell. → "zero in expectation", with the +1
+   cited as the finite-sample illustration.
+3. **[MAJOR]** "re-ran the three wasteful libraries on the four
+   benchmarks (275 runs)" implied 300 and conflated two carryover
+   caveats. → Rewritten: TPEs on four, optuna-gp on three with the pest
+   no-op carryover explained; skopt-gp ~60-unique d3 exception disclosed
+   inline with its outcome-neutrality.
+4. **[MINOR]** "trade places" on 11^6 overstated a tie resolving. →
+   "tied as shipped, separate with Hyperopt ahead."
+5. **[MINOR]** SMAC 22/25 now notes early-terminated runs are scored on
+   their completed prefix.

@@ -419,11 +419,15 @@ each tool at its documented defaults. Because collisions are sometimes
 unavoidable --- sampling uniformly over $K$ combinations for $B$ steps
 collides $B - K\bigl(1-(1-1/K)^{B}\bigr)$ times in expectation --- we
 report \emph{excess} revisits over this pigeonhole baseline, so that a
-random-sampling control sits at zero by construction. The counter was
-validated before any library was read: exact agreement with hand-computed
-and analytic ground truth (scripted-repeat, continuous no-false-positive,
-pigeonhole, and mixed-space duplicate-injection gates), and detection of
-the tracker-acknowledged TPE behavior at the expected order of magnitude.
+random-sampling control sits at zero in expectation (finite-sample
+medians can deviate slightly; Table~\ref{tab:wild}'s Random row shows
+$+1$ on the smallest space). The counter was validated before any
+library was read --- exact agreement with hand-computed and analytic
+ground truth on scripted-repeat, continuous no-false-positive, and
+pigeonhole gates, plus detection of the tracker-acknowledged TPE
+behavior at the expected order of magnitude --- and a scripted
+mixed-space duplicate-injection gate was added and passed before the
+equal-budgets re-comparison of Sec.~\ref{sec:equalized}.
 
 % =============================================================================
 \section{The In-the-Wild Audit: Six Deployed Libraries}
@@ -484,7 +488,8 @@ space the pigeonhole baseline is ${\sim}10^{-14}$, so \emph{any} revisit
 is algorithmic: TPE's per-dimension categorical sampling still re-spends
 a median of 16 (Optuna) and 7 (Hyperopt) evaluations of 80. Third, SMAC
 shows the opposite failure surface: zero revisits everywhere, at the cost
-of terminating six of 25 runs early (at 59--75 of 80 evaluations) on the
+of terminating six of 25 runs early (at 59--75 of 80 evaluations, those
+runs scored on their completed prefix) on the
 smallest space, when its runhistory-keyed generator exhausts rather than
 propose a duplicate --- a defensible design choice that, like the waste
 it avoids, is invisible in convergence curves and surfaced only by the
@@ -502,11 +507,16 @@ deterministic, a memoization control does this exactly --- duplicate
 proposals receive the cached value at zero budget cost, so each
 sampler's trajectory is, by construction, bit-identical to its
 as-shipped run at the same seed while the meter charges \emph{unique}
-evaluations only (80 unique, horizon 400 proposals). We re-ran the three
-wasteful libraries under this control on the four categorical benchmarks
-(275 runs, same seeds); the duplicate-free libraries' as-shipped rows
-carry over unchanged (verified duplicate-free row-by-row, with one
-disclosed exception documented in the repository).
+evaluations only (80 unique, horizon 400 proposals). We re-ran the two
+TPE implementations on all four categorical benchmarks and Optuna's GP
+sampler on three (its pest-control row had zero as-shipped revisits, so
+memoization is a no-op there and the row carries over) --- 275 runs,
+same seeds. The duplicate-free libraries' as-shipped rows likewise carry
+over, verified duplicate-free row-by-row for Ax and SMAC, with one
+disclosed exception: scikit-optimize's carried $5^3$ row reflects
+${\sim}60$ median unique evaluations rather than 80 (its as-shipped
+revisits there track the pigeonhole baseline), which cannot change that
+cell's outcome since it already solves 25 of 25.
 
 Under the pre-registered ranking metric (median final best, solve-count
 tie-break), \textbf{the apparent library ranking changes on three of the
@@ -517,7 +527,8 @@ ${\sim}29$ wasted evaluations refunded it reaches the exact optimum on
 22 of 25 seeds, reversing the order against Ax and closing most of the
 gap to the GP tier (22/25 versus 25/25, though not all of it). On
 $5^3$ its solve count rises from 21 to 25 of 25, lifting it past
-Hyperopt and SMAC; on $11^6$ the two TPE implementations trade places.
+Hyperopt and SMAC; on $11^6$ the two TPE implementations, tied as
+shipped, separate with Hyperopt ahead.
 Equal-proposal budgets --- what benchmark tables implicitly charge ---
 and equal-unique-evaluation budgets --- what an expensive objective
 actually costs --- disagree about who wins.
