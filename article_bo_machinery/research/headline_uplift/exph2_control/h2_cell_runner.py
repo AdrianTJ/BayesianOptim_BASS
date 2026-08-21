@@ -7,7 +7,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))                                     # bo_audit
-sys.path.insert(0, str(HERE.parents[2] / "article_loop" / "experiments"))  # machinery
+sys.path.insert(0, str(HERE.parents[1] / "article_loop" / "experiments"))  # machinery
 sys.path.insert(0, str(HERE))                                            # memo_drivers
 
 
