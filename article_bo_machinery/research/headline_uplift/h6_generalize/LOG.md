@@ -50,3 +50,32 @@ times on 2026-08-21/22 alone; commit+push after every meaningful step.
   optuna36-venv runner (mirror smac_runner pattern); (4) commit DESIGN
   before any timing smoke; run the timing smoke; fix caps if needed;
   (5) LOG, commit, push, re-arm. G2 (fast-arm waves) follows.
+
+## Cycle G1 — 2026-08-22
+- **Phase:** pre-registration — complete; timing smoke in flight.
+- **Did:** YAHPO adapter (`bo_audit/yahpo_adapter.py`): rbv2_rpart
+  instances 41138/40981 (verified 0 conditionals — clean flat mixed
+  spaces) and iaml_ranger 1489 (1 conditional; active-parameter keys via
+  a new optional `canonicalize` hook in core.py — inactive
+  num.random.splits merges keys under splitrule≠extratrees, splits them
+  under extratrees; both directions gate-verified). Max fidelity,
+  logloss target, deterministic, 1–2 ms/eval. optuna36_runner.py written
+  (version arm); provision.sh now pins the optuna36 venv's sklearn to
+  the main env's exact 1.9.0 (objective-identity rule) and adds
+  yahpo-gym; venv rebuilt and verified. **Pre-registered
+  exph6_sweep/DESIGN.md and committed before any run:** 23 benchmarks
+  in 6 classes, 8 arms, budgets {20,40,80,160}, seeds 4001–4025,
+  16,575 runs, e(B) excess-fraction metric, hypotheses GH1–GH7 with
+  letter-precise clauses, smac coverage limit (objective-identity +
+  configspace conflicts) and the conditional-space boundary declared.
+  g_cell_runner.py + run_g.py (wave orchestrator, per-wave resumable,
+  per-cell caps, recycle-tolerant). Timing smoke (5 slowest suspected
+  cells) launched in background.
+- **Next:** Cycle G2 = fast-arm waves. On smoke completion: check the 5
+  timings against caps (adjust caps only via a logged DESIGN amendment);
+  write and commit analyze_g.py (fixed aggregation + GH1–GH7 letter
+  evaluation) BEFORE launching wave 1; then launch `run_g.py fast` waves
+  class by class (A→F), committing results.jsonl after each wave; then
+  `run_g.py gp` waves (G3). After each recycle: provision + re-run
+  g0_gates.py before resuming. When the matrix completes: ANALYSIS.md,
+  adversarial review, ledger, then G5 paper surgery.
