@@ -11,9 +11,12 @@ fi
 "$SCRATCH/smac_venv/bin/python" -c "import smac; print('smac venv OK')"
 if [ ! -x "$SCRATCH/optuna36_venv/bin/python" ]; then
   uv venv "$SCRATCH/optuna36_venv" --python 3.11 -q
-  uv pip install -q --python "$SCRATCH/optuna36_venv/bin/python" "optuna==3.6.1" numpy scipy
 fi
-"$SCRATCH/optuna36_venv/bin/python" -c "import optuna; print('optuna36 venv OK', optuna.__version__)"
+# sklearn pinned to the MAIN env's exact version: the real-ML objectives
+# must be numerically identical across arms (H6 objective-identity rule).
+uv pip install -q --python "$SCRATCH/optuna36_venv/bin/python" \
+  "optuna==3.6.1" numpy scipy "scikit-learn==1.9.0" yahpo-gym pandas
+"$SCRATCH/optuna36_venv/bin/python" -c "import optuna, sklearn, yahpo_gym; print('optuna36 venv OK', optuna.__version__, sklearn.__version__)"
 if [ ! -d "$SCRATCH/yahpo_data" ]; then
   git clone -q --filter=blob:none --sparse https://github.com/slds-lmu/yahpo_data.git "$SCRATCH/yahpo_data"
 fi

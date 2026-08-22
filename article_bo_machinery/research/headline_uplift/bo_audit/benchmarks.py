@@ -109,6 +109,10 @@ def bench_by_name(name):
     if name in G_BENCH:
         return G_BENCH[name]()
 
+    if name.startswith("yahpo_"):
+        from bo_audit.yahpo_adapter import YAHPO_BENCH
+        return YAHPO_BENCH[name]()
+
     if name.startswith("cat_ackley"):
         from machinery import make_cat_ackley
         bits = name.split("_")  # cat_ackley_d{d}_L{L}

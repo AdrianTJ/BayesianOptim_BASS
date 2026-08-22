@@ -23,17 +23,27 @@ class AuditedObjective:
     continuous parts, or pure-categorical repeats, register).
     """
 
-    def __init__(self, fn, space, cont_decimals=6):
+    def __init__(self, fn, space, cont_decimals=6, canonicalize=None):
         self.fn = fn
         self.space = space
         self.cont_decimals = cont_decimals
+        # optional cfg->cfg map applied before key building; used for
+        # conditional spaces (active-parameter keys: drop params inactive
+        # under the config's own parents, so two configs differing only in
+        # an inactive coordinate share one combination key). H6 G1.
+        self.canonicalize = canonicalize
         self.calls = []          # (key, value) in call order
         self.seen = Counter()
 
     def key_of(self, config):
+        if self.canonicalize is not None:
+            config = self.canonicalize(dict(config))
         parts = []
         for spec in self.space:
             name, kind = spec[0], spec[1]
+            if name not in config:      # inactive under canonicalize
+                parts.append(f"{name}=∅")
+                continue
             v = config[name]
             if kind == "cat":
                 parts.append(f"{name}={v}")
