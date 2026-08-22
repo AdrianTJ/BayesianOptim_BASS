@@ -37,6 +37,7 @@ ALLB = [b for c in "ABCDEF" for b in CLASSES[c]]
 FAST_ARMS = ["random", "optuna-tpe", "optuna-tpe-3.6", "hyperopt-tpe", "smac"]
 GP_ARMS = ["optuna-gp", "skopt-gp", "ax"]
 SMAC_COVER = set(b for c in "ABCDF" for b in CLASSES[c])   # DESIGN coverage limit
+O36_SKIP = {b for b in CLASSES["E"] if b.startswith("yahpo_")}  # Amendment 1
 BUDGETS = [20, 40, 80, 160]
 GP160 = {"cat_ackley_d5_L5", "catf_rosen_d4L7", "catf_michal_d5L9", "nk_n20k2",
          "pest_control", "ml_svm_digits", "yahpo_rpart_41138", "func2C"}
@@ -115,6 +116,8 @@ def jobs_for(mode, classes):
         for arm in FAST_ARMS:
             for b in benches:
                 if arm == "smac" and b not in SMAC_COVER:
+                    continue
+                if arm == "optuna-tpe-3.6" and b in O36_SKIP:
                     continue
                 for B in BUDGETS:
                     out += [(arm, b, B, s) for s in SEEDS]

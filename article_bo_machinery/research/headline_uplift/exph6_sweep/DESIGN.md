@@ -108,3 +108,15 @@ paper surgery.
 - Container recycles mid-sweep are expected: every wave is resumable
   from its JSONL; the recycle protocol re-validates gates (g0_gates.py)
   before resuming a wave after any recycle.
+
+## Amendment 1 (post-smoke, pre-wave; no matrix cell had run)
+
+Timing smoke: all five suspected-slowest cells finish in ≤107 s —
+caps stand. One coverage change: **optuna-tpe-3.6 excludes the 3 YAHPO
+benchmarks** — ConfigSpace 0.6.1 (required by yahpo-gym) cannot be
+built or imported against the venv's numpy 2.4.6 (its build pins old
+numpy headers: "numpy.dtype size changed, expected 96 got 88"; three
+build strategies failed, logged in the G1/G2 cycle notes). GH4's
+class-E per-class median is computed over the four ml_* benchmarks for
+that arm (stated wherever GH4 is reported). All other arms' coverage
+unchanged. Metrics, budgets, seeds, hypotheses: unchanged.
