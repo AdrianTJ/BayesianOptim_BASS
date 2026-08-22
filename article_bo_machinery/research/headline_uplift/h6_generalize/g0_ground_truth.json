@@ -1,0 +1,170 @@
+{
+ "gates": {
+  "catf_griewank_d5L7/V1-determinism": {
+   "pass": true,
+   "detail": "240.97 twice, 1 ms/eval"
+  },
+  "catf_griewank_d5L7/V2-analytic0": {
+   "pass": true,
+   "detail": "exhaustive min 0 vs analytic 0 (K=16807)"
+  },
+  "catf_griewank_d5L7/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "catf_michal_d5L9/V1-determinism": {
+   "pass": true,
+   "detail": "-0.363686 twice, 0 ms/eval"
+  },
+  "catf_michal_d5L9/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "catf_rastrigin_d4L7/V1-determinism": {
+   "pass": true,
+   "detail": "91.6128 twice, 0 ms/eval"
+  },
+  "catf_rastrigin_d4L7/V2-analytic0": {
+   "pass": true,
+   "detail": "exhaustive min 0 vs analytic 0 (K=2401)"
+  },
+  "catf_rastrigin_d4L7/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "catf_rosen_d4L7/V1-determinism": {
+   "pass": true,
+   "detail": "211.5 twice, 0 ms/eval"
+  },
+  "catf_rosen_d4L7/V2-analytic0": {
+   "pass": true,
+   "detail": "exhaustive min 0 vs analytic 0 (K=2401)"
+  },
+  "catf_rosen_d4L7/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "catf_schwefel_d4L9/V1-determinism": {
+   "pass": true,
+   "detail": "2117.32 twice, 0 ms/eval"
+  },
+  "catf_schwefel_d4L9/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "contam_2p25/V1-determinism": {
+   "pass": true,
+   "detail": "1.18 twice, 1 ms/eval"
+  },
+  "contam_2p25/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "labs_n25/V1-determinism": {
+   "pass": true,
+   "detail": "0.3712 twice, 0 ms/eval"
+  },
+  "labs_n25/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "maxcut_n20/V1-determinism": {
+   "pass": true,
+   "detail": "-20.4395 twice, 0 ms/eval"
+  },
+  "maxcut_n20/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "ml_gb_bc/V1-determinism": {
+   "pass": true,
+   "detail": "0.06326 twice, 588 ms/eval"
+  },
+  "ml_gb_bc/V3-injection": {
+   "pass": true,
+   "detail": "revisits 2 (want 2), unique 2 (want 2)"
+  },
+  "ml_mlp_wine/V1-determinism": {
+   "pass": true,
+   "detail": "0.0167608 twice, 207 ms/eval"
+  },
+  "ml_mlp_wine/V3-injection": {
+   "pass": true,
+   "detail": "revisits 2 (want 2), unique 2 (want 2)"
+  },
+  "ml_rf_digits/V1-determinism": {
+   "pass": true,
+   "detail": "0.0389538 twice, 2055 ms/eval"
+  },
+  "ml_rf_digits/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "ml_svm_digits/V1-determinism": {
+   "pass": true,
+   "detail": "0.169171 twice, 1128 ms/eval"
+  },
+  "ml_svm_digits/V3-injection": {
+   "pass": true,
+   "detail": "revisits 2 (want 2), unique 2 (want 2)"
+  },
+  "nk_n20k2/V1-determinism": {
+   "pass": true,
+   "detail": "-0.498399 twice, 0 ms/eval"
+  },
+  "nk_n20k2/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  },
+  "nk_n20k8/V1-determinism": {
+   "pass": true,
+   "detail": "-0.452585 twice, 0 ms/eval"
+  },
+  "nk_n20k8/V3-injection": {
+   "pass": true,
+   "detail": "revisits 1 (want 1), unique 2 (want 2)"
+  }
+ },
+ "ground_truth": {
+  "catf_griewank_d5L7": {
+   "K": 16807,
+   "min": 0.0,
+   "sec": 0.3
+  },
+  "catf_michal_d5L9": {
+   "K": 59049,
+   "min": -2.8684724615200463,
+   "sec": 1.1
+  },
+  "catf_rastrigin_d4L7": {
+   "K": 2401,
+   "min": 0.0,
+   "sec": 0.0
+  },
+  "catf_rosen_d4L7": {
+   "K": 2401,
+   "min": 0.0,
+   "sec": 0.0
+  },
+  "catf_schwefel_d4L9": {
+   "K": 6561,
+   "min": 5.091134994472668e-05,
+   "sec": 0.1
+  },
+  "maxcut_n20": {
+   "K": 1048576,
+   "min": -34.67838796545255,
+   "sec": 2.4
+  },
+  "nk_n20k2": {
+   "K": 1048576,
+   "min": -0.7111229801581768,
+   "sec": 1.4
+  },
+  "nk_n20k8": {
+   "K": 1048576,
+   "min": -0.8015077661203802,
+   "sec": 0.8
+  }
+ }
+}
