@@ -10,7 +10,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))                                     # bo_audit
-sys.path.insert(0, str(HERE.parents[2] / "article_loop" / "experiments"))  # machinery
+_MACH = HERE.parents[1] / "article_loop" / "experiments"                 # machinery
+assert (_MACH / "machinery.py").exists(), f"machinery path wrong: {_MACH}"
+sys.path.insert(0, str(_MACH))
 
 
 def main():
