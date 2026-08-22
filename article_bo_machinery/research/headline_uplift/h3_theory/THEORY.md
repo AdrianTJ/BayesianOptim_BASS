@@ -1,9 +1,11 @@
 # H3 — Theory appendix draft (statements and proofs)
 
-Status: drafted per DESIGN.md scope; every claim below goes through the
-prover-skeptic review before entering the ledger or the paper. Anchor
-citations (Kim et al. 2506.11831; B3O 2606.30228) are **excluded** —
-snippet-verified only, egress-blocked, queued for author verification.
+Status: drafted per DESIGN.md scope; every claim below went through the
+prover-skeptic review before entering the ledger or the paper.
+UPDATE 2026-08-22: the anchor gate is now satisfied — the author supplied
+both PDFs, full texts were read, and the citations (kim2025inexact,
+bloor2026b3o) are wired into the paper; see ../anchor_verification.md.
+The self-contained statements below are unchanged by the verification.
 
 ## Setting and notation
 

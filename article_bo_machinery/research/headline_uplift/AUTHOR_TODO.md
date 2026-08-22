@@ -8,7 +8,13 @@ Everything the loop could not do in-container, in rough priority order.
    in the loop's container — the draft has never been compiled). Check
    Table `tab:wild` and the appendix render; the two-panel dedup figure
    (`figures/fig_dedup_audit.pdf`) is pre-built.
-2. **Verify-and-cite the anchor papers** (full text, then add to
+2. **DONE (2026-08-22): anchor papers verified and cited.** Both
+   PDFs supplied by the author, full texts read, citations
+   kim2025inexact + bloor2026b3o wired into Related Work and the
+   appendix; record in anchor_verification.md. REMAINING from this
+   item: the audit-genre positioning cites only (Recht et al.,
+   bayesmark) — still verify-before-cite.
+   Original item follows for the record: Verify-and-cite the anchor papers (full text, then add to
    references.bib and the appendix/Related Work). Both are REAL and the
    arXiv IDs are correct — an external ID lookup reported them missing
    on 2026-08-21, but web search corroborates both with

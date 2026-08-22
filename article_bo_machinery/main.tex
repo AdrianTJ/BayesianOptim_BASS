@@ -282,7 +282,16 @@ machinery directly. A ground-truth substitution appears as an internal
 ablation in \citet{evogo2025} (a ``real evaluation'' variant estimating
 their generative optimizer's ceiling at the training-loss level); we
 generalize the idea into a reusable, machinery-isolating diagnostic for
-pool-based mixed-space BO.
+pool-based mixed-space BO. On the theory side, \citet{kim2025inexact}
+give the first regret analysis of \emph{inexact} acquisition
+maximization — including pool-based (random-grid) solvers of exactly the
+kind audited here — showing GP-UCB/GP-TS retain sublinear regret when
+the grid grows linearly; and \citet{bloor2026b3o} prove that sampling
+queries from the Boltzmann (softmax) density of a UCB acquisition
+recovers GP-UCB rates up to a negligible term. Both are regret-side
+guarantees for idealized machinery; our audit measures what deployed,
+non-idealized machinery actually does to a fixed evaluation budget, and
+Appendix~\ref{app:theory} connects the two views.
 
 \paragraph{Benchmarking BO.}
 Empirical-foundations critiques have long documented benchmark and
@@ -1115,7 +1124,12 @@ Being pathwise and per-budget, the bound transfers to means, medians,
 and any monotone functional of the best-so-far curve. It is exactly what
 the audit implements when the generator stream is seeded independently
 of selections --- and it is silent about adaptive generators, which is
-the honest boundary of what the audit proves.
+the honest boundary of what the audit proves. The exogenous setting is
+not an artifact of our pipeline: the random grids for which
+\citet{kim2025inexact} prove sublinear-regret guarantees under inexact
+acquisition maximization are exogenous pool sequences in exactly this
+sense, so Lemma~A supplies the per-realization ceiling that complements
+their asymptotic regret rates.
 
 \paragraph{Proposition B (adaptive pools; an explicit conjecture).}
 With a history-dependent generator (ours centres its local half on the
@@ -1156,7 +1170,12 @@ top-1), with the same limits and monotonicity
 ($\operatorname{logit} p(\sigma) = -\log \sum_{j\ge2}
 e^{-\Delta_j/\sigma}$, decreasing in $\sigma$). Our experiments used
 Gaussian noise; the Gumbel form is stated as the closed-form analytic
-twin.
+twin. This softmax selection law is precisely the fixed-temperature
+Boltzmann sampling over a finite candidate set for which
+\citet{bloor2026b3o} prove near-GP-UCB regret (their inverse temperature
+$\lambda$ playing the role of $1/\sigma$): the guidance dial measures,
+on our pools, the per-step selection-quality cost that their analysis
+bounds on the regret side.
 \emph{(c) Sequential reading.} In the loop, $\sigma$ interpolates
 between the oracle selector and, as $\sigma \to \infty$, uniform
 selection over the same generator's (post-dedup-mask) pools --- not free
