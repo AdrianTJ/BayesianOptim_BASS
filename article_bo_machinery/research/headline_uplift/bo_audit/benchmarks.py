@@ -105,6 +105,10 @@ def bench_by_name(name):
     if name == "pest_control":
         return pest_cfg_objective, pest_space()
 
+    from bo_audit.benchmarks_g import G_BENCH
+    if name in G_BENCH:
+        return G_BENCH[name]()
+
     if name.startswith("cat_ackley"):
         from machinery import make_cat_ackley
         bits = name.split("_")  # cat_ackley_d{d}_L{L}
