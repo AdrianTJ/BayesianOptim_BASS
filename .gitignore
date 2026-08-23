@@ -44,3 +44,6 @@ results*/
 !written_files/tesis_escrito/main.pdf
 !written_files/tesis_formato/main.pdf
 !written_files/tesis_formato/coverpages.pdf
+
+__pycache__/
+*.pyc

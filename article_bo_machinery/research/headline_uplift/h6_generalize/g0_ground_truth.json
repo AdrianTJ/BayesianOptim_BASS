@@ -2,7 +2,7 @@
  "gates": {
   "catf_griewank_d5L7/V1-determinism": {
    "pass": true,
-   "detail": "240.97 twice, 1 ms/eval"
+   "detail": "161.015 twice, 0 ms/eval"
   },
   "catf_griewank_d5L7/V2-analytic0": {
    "pass": true,
@@ -14,7 +14,7 @@
   },
   "catf_michal_d5L9/V1-determinism": {
    "pass": true,
-   "detail": "-0.363686 twice, 0 ms/eval"
+   "detail": "-1.04556 twice, 0 ms/eval"
   },
   "catf_michal_d5L9/V3-injection": {
    "pass": true,
@@ -22,7 +22,7 @@
   },
   "catf_rastrigin_d4L7/V1-determinism": {
    "pass": true,
-   "detail": "91.6128 twice, 0 ms/eval"
+   "detail": "59.1292 twice, 0 ms/eval"
   },
   "catf_rastrigin_d4L7/V2-analytic0": {
    "pass": true,
@@ -34,7 +34,7 @@
   },
   "catf_rosen_d4L7/V1-determinism": {
    "pass": true,
-   "detail": "211.5 twice, 0 ms/eval"
+   "detail": "2039 twice, 0 ms/eval"
   },
   "catf_rosen_d4L7/V2-analytic0": {
    "pass": true,
@@ -46,7 +46,7 @@
   },
   "catf_schwefel_d4L9/V1-determinism": {
    "pass": true,
-   "detail": "2117.32 twice, 0 ms/eval"
+   "detail": "1180.14 twice, 0 ms/eval"
   },
   "catf_schwefel_d4L9/V3-injection": {
    "pass": true,
@@ -78,7 +78,7 @@
   },
   "ml_gb_bc/V1-determinism": {
    "pass": true,
-   "detail": "0.06326 twice, 588 ms/eval"
+   "detail": "0.06326 twice, 395 ms/eval"
   },
   "ml_gb_bc/V3-injection": {
    "pass": true,
@@ -86,7 +86,7 @@
   },
   "ml_mlp_wine/V1-determinism": {
    "pass": true,
-   "detail": "0.0167608 twice, 207 ms/eval"
+   "detail": "0.0167608 twice, 140 ms/eval"
   },
   "ml_mlp_wine/V3-injection": {
    "pass": true,
@@ -94,7 +94,7 @@
   },
   "ml_rf_digits/V1-determinism": {
    "pass": true,
-   "detail": "0.0389538 twice, 2055 ms/eval"
+   "detail": "0.0389538 twice, 1579 ms/eval"
   },
   "ml_rf_digits/V3-injection": {
    "pass": true,
@@ -102,7 +102,7 @@
   },
   "ml_svm_digits/V1-determinism": {
    "pass": true,
-   "detail": "0.169171 twice, 1128 ms/eval"
+   "detail": "0.169171 twice, 377 ms/eval"
   },
   "ml_svm_digits/V3-injection": {
    "pass": true,
@@ -129,12 +129,12 @@
   "catf_griewank_d5L7": {
    "K": 16807,
    "min": 0.0,
-   "sec": 0.3
+   "sec": 0.2
   },
   "catf_michal_d5L9": {
    "K": 59049,
    "min": -2.8684724615200463,
-   "sec": 1.1
+   "sec": 0.7
   },
   "catf_rastrigin_d4L7": {
    "K": 2401,
@@ -149,22 +149,22 @@
   "catf_schwefel_d4L9": {
    "K": 6561,
    "min": 5.091134994472668e-05,
-   "sec": 0.1
+   "sec": 0.0
   },
   "maxcut_n20": {
    "K": 1048576,
    "min": -34.67838796545255,
-   "sec": 2.4
+   "sec": 1.4
   },
   "nk_n20k2": {
    "K": 1048576,
    "min": -0.7111229801581768,
-   "sec": 1.4
+   "sec": 0.8
   },
   "nk_n20k8": {
    "K": 1048576,
    "min": -0.8015077661203802,
-   "sec": 0.8
+   "sec": 0.5
   }
  }
 }

@@ -79,3 +79,24 @@ times on 2026-08-21/22 alone; commit+push after every meaningful step.
   `run_g.py gp` waves (G3). After each recycle: provision + re-run
   g0_gates.py before resuming. When the matrix completes: ANALYSIS.md,
   adversarial review, ledger, then G5 paper surgery.
+
+## Cycle G2a — 2026-08-23 (recovery note, no new science)
+- **Recycle #4** wiped the container mid-sweep. Recovery via the scripted
+  protocol: checkout restored from remote (nothing lost — 10,198 rows
+  were already committed), environment re-provisioned, **g0_gates.py
+  re-run: ALL PASS**.
+- **Unplanned reproducibility check (worth keeping):** the re-run
+  regenerated g0_ground_truth.json in a fresh container with a fresh
+  install, and **every exhaustive ground-truth minimum reproduces
+  bit-exactly** (all 7 enumerable instances; only wall-clock `sec`
+  fields differ). The seeded benchmark instances are therefore
+  environment-independent, which the sweep's solve thresholds depend on.
+- **Sweep state at recovery:** fast arms essentially complete (random
+  2300, optuna-tpe 2300, hyperopt-tpe 2300, optuna-tpe-3.6 2000 — full
+  coverage; smac 1295/1600); GP arms not yet started beyond smoke.
+  SMAC backfill + GP waves relaunched.
+- **Housekeeping:** `__pycache__/*.pyc` had been committed by an early
+  `git add -A`; untracked now and covered by .gitignore.
+- **Next:** unchanged from G1's Next — GP waves to completion, then
+  ANALYSIS.md via the pre-committed analyze_g.py, adversarial review,
+  ledger, then G5 paper surgery.
