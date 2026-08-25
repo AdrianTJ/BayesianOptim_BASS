@@ -1022,7 +1022,16 @@ the evidence here, no real surrogate we ran was measurably affected by
 the generator restriction --- the observational case for its practical
 relevance is inferential, resting on the dial calibration (sensitivity
 decays with guidance quality within a fixed search type) plus the
-observation that better-guided methods than ours exist. The dedup
+observation that better-guided methods than ours exist.%
+\footnote{A pre-registered attempt to observe the effect under a
+strengthened GP (10$\times$ acquisition restarts) and the binding pool
+(n\_cand $=50$) failed its ceiling-proximity gate before any confirmatory
+run: at that pool the strengthened surrogate sat below the vanilla
+E3 surrogate (mean $-0.026$ vs $-0.105$ on Func-2C), and the knob itself
+was inert --- 10 restarts left the Matern-EI optimum unchanged --- so
+the null would have been uninterpretable. The attempt is recorded
+(exp06\_h4 in the companion repository), not staged as a finding.}
+The dedup
 confound needs no such inference: it taxed every method we ran,
 directly. A comparison paper adopting our protocol gets the generator
 control nearly for free either way; the audit is what tells its authors
