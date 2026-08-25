@@ -72,7 +72,8 @@ Everything the loop could not do in-container, in rough priority order.
 ## Repository hygiene
 
 8. **Branch reconciliation:** `main` was force-rewritten upstream at some
-   point; this branch (`claude/machinery-confound-article`) carries the
+   point; this branch (`feat/bo-audit`, renamed from
+   `claude/machinery-confound-article` on 2026-08-25) carries the
    whole program. Decide merge strategy (the loop imported needed
    content via `git checkout origin/main -- <paths>` rather than
    history surgery).

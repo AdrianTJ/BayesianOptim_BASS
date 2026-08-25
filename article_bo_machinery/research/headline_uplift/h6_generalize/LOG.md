@@ -3,7 +3,8 @@
 Append-only; one entry per cycle, newest last; "Next:" is the
 fresh-context resume instruction. Claims ledger: ../../article_loop/CLAIMS.md.
 Recycle protocol: at every wakeup verify checkout (fetch+reset to
-origin/claude/machinery-confound-article) and environment
+origin/feat/bo-audit, renamed from
+origin/claude/machinery-confound-article on 2026-08-25) and environment
 (../tools/provision.sh) before continuing — the container recycled three
 times on 2026-08-21/22 alone; commit+push after every meaningful step.
 
