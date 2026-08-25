@@ -47,3 +47,6 @@ results*/
 
 __pycache__/
 *.pyc
+
+# REVTeX note file
+mainNotes.bib

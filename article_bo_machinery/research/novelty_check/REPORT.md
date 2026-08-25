@@ -153,8 +153,10 @@ section can now be resolved affirmatively — none of the 39 sources swept does.
   GitHub companion repositories, and consistent search-index summaries rather
   than full texts. The MCBO and Daulton verdicts are the strongest (direct
   code inspection); the Tripp and EvoGO verdicts rest on repos + abstracts.
-  **Spot-check the full PDFs of MCBO, Tripp & Hernández-Lobato, and Daulton
-  et al. before submission.**
+  ~~Spot-check the full PDFs of MCBO, Tripp & Hernández-Lobato, and Daulton
+  et al. before submission.~~ **DONE 2026-08-24:** all three read end-to-end
+  from arXiv HTML; all downgrades confirmed; see
+  `FULL_TEXT_VERIFICATION.md` in this directory.
 - The sweep is a 39-source web pass, not an exhaustive systematic review;
   workshop papers and very recent preprints (2026) are the likeliest blind
   spot. Re-run closer to submission.

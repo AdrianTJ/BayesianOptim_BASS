@@ -50,15 +50,11 @@
 \title[The Machinery Confound in Mixed-Space Bayesian Optimization]{The
 Machinery Confound: Acquisition-Optimization Machinery Can Dominate Surrogate
 Comparisons in Mixed and Categorical Bayesian Optimization}
-% TODO: settle the final title; alternatives:
-%  - "Audit Your Candidate Generator: A Confound in Mixed-Space BO Benchmarks"
-%  - "Oracle Ceilings: Separating Surrogate Quality from Search Machinery in
-%     Bayesian Optimization"
 
 \author{Adrian Tame Jacobo}
-\email[]{atj904@gmail.com}
+\email[]{adrian.tame.jacobo@gmail.com}
 \affiliation{Instituto Tecnol\'ogico Aut\'onomo de M\'exico (ITAM)}
-% TODO: co-authors / advisor, final affiliation line.
+% Author decision (2026-08-24): sole author; affiliation final.
 
 \date{\today}
 
@@ -990,15 +986,19 @@ experiment was independently re-verified against its raw results; three
 pre-registered hypotheses failed and are reported as such
 (Secs.~\ref{sec:equalized}, \ref{sec:dedup}, and~\ref{sec:conseq}).
 
-One planned cell remains open: BASS itself through the restricted/leaky
-machinery ablations. BASS's R implementation was not runnable in the
-environment where the Python matrix was executed; the companion
-repository ships the exact commands
-(\texttt{run\_all\_final.sh} and the diagnostics harness under
-\texttt{3\_categorical\_diagnostics}), and the pre-fix instrumented
-BASS runs already measure the dedup leak for BASS at smaller scale
-($25$--$29$ of $40$ picks). We state this as an open cell rather than
-extrapolating the Python results to BASS.
+The machinery ablations deliberately run on schema-equivalent Python
+surrogates, and the audited candidates are the deployed libraries as they
+ship (Sec.~\ref{sec:wild}) --- the packages a practitioner would actually
+install --- not BASS itself. BASS is the motivating pipeline, not a
+deployed candidate: its exposure to the dedup leak is measured directly by
+the pre-fix instrumented runs ($25$--$29$ of $40$ picks re-spent on known
+combinations), and its behavior under repaired, shared machinery is the
+case study of Sec.~\ref{sec:conseq}. Running it through the full ablation
+matrix would add one more pipeline to a matrix whose mechanisms the oracle
+and surrogate experiments already isolate; the exact commands ship in the
+companion repository (\texttt{run\_all\_final.sh} and the diagnostics
+harness under \texttt{3\_categorical\_diagnostics}) so the cell can be
+filled by anyone who wants it.
 
 % =============================================================================
 \section{Discussion and Limitations}
@@ -1055,17 +1055,20 @@ fractions of the domain, could plausibly make the generator restriction
 bind harder --- that is conjecture, stated as such.
 
 \paragraph{Open cells and verification limits.}
-The spline surrogate itself has not been run through the restricted and
-leaky machinery ablations (Sec.~\ref{sec:experiments}); we deliberately
-do not extrapolate the Python-surrogate results to it. Our novelty
-statement rests on a recorded 39-source sweep in which the three closest
-works were verified at the abstract and companion-code level rather than
-full text (an environment constraint); the sweep and its per-source
-assessments are versioned in the companion repository so the check can
-be extended. Finally, one methodological debt is disclosed rather than
-hidden: four of this paper's experiment analyses were refuted in internal
-adversarial review and corrected before inclusion --- the surrogate-matrix
-analysis, for reframing a failed generator hypothesis as a new supported
+The spline surrogate itself is not run through the restricted and leaky
+machinery ablations (Sec.~\ref{sec:experiments}) --- a deliberate scope
+decision: the ablations isolate mechanisms on controlled surrogates, the
+ecosystem audit measures the deployed candidates, and the spline pipeline
+serves as the case study under repaired machinery; we do not extrapolate
+the Python-surrogate results to it. Our novelty statement rests on a
+recorded 39-source sweep; the three closest works
+\cite{dreczkowski2023mcbo,tripp2024diagnosing,daulton2022pr} have since
+been verified against their full texts, with per-source assessments
+versioned in the companion repository so the check can be extended.
+Finally, one methodological debt is disclosed rather than hidden: four of
+this paper's experiment analyses were refuted in internal adversarial
+review and corrected before inclusion --- the surrogate-matrix analysis,
+for reframing a failed generator hypothesis as a new supported
 finding beyond its pre-registered fallback; the first guidance-dial
 analysis, for declaring a TPE configuration question closed when its
 pre-registered joint criterion had been missed by one seed; the
@@ -1093,7 +1096,8 @@ sense of failing a pre-named test at $\alpha=0.05$, not as evidence of
 exact absence.
 
 \begin{acknowledgments}
-% TODO
+% Placeholder by author decision (2026-08-24); text to be added before
+% submission. The section renders empty until then.
 \end{acknowledgments}
 
 \appendix
@@ -1210,9 +1214,11 @@ available at \texttt{github.com/AdrianTJ/BayesianOptim\_BASS}; the oracle
 audit and instrumented runs are under
 \texttt{code\_files/3\_categorical\_diagnostics/}, and this article's
 experiments, pre-registered designs, raw results, and review records
-under \texttt{article\_bo\_machinery/research/}; the \texttt{bo-audit}
-wrapper, drivers, and the in-the-wild matrices live under
-\texttt{research/headline\_uplift/}. Reproducibility: all runs use fixed
+under \texttt{article\_bo\_machinery/research/}. The \texttt{bo-audit}
+wrapper is released as the pip-installable top-level \texttt{bo-audit/}
+package (wrapper, library drivers, and vendored benchmarks ship with it);
+the in-the-wild result matrices live under
+\texttt{article\_bo\_machinery/research/headline\_uplift/}. Reproducibility: all runs use fixed
 seed ranges (1001--1025 for the controlled matrices, 1026--1050 for the
 pre-registered retest, 3001--3025 for the ecosystem audit and its
 equal-budget control) with shared per-seed initial designs where the

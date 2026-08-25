@@ -4,10 +4,13 @@ Everything the loop could not do in-container, in rough priority order.
 
 ## Before submission
 
-1. **Compile the paper locally** (`pdflatex main.tex` + `bibtex`; no TeX
-   in the loop's container — the draft has never been compiled). Check
-   Table `tab:wild` and the appendix render; the two-panel dedup figure
-   (`figures/fig_dedup_audit.pdf`) is pre-built.
+1. **DONE (2026-08-24): compiled locally.** One blocking defect found and
+   fixed: `figures/fig_dedup_audit.pdf` had never been committed (built
+   only in the loop's container) — regenerated from the committed E2
+   results with a checked-in script (`figures/make_fig_dedup_audit.py`);
+   medians reproduce the caption exactly (0 vs 78/80). One overfull table
+   (tab:dedup) fixed via header shortening. Final: 11 pages, no errors,
+   no undefined refs, no overfull boxes.
 2. **DONE (2026-08-22): anchor papers verified and cited.** Both
    PDFs supplied by the author, full texts read, citations
    kim2025inexact + bloor2026b3o wired into Related Work and the
@@ -35,11 +38,10 @@ Everything the loop could not do in-container, in rough priority order.
    full-text verification (arXiv AND proceedings.mlr.press are
    egress-blocked in-container; the corroborating search metadata is
    recorded in h6_generalize/PLAN.md).
-3. **Title decision.** Placeholder stands ("The Machinery Confound…").
-   Loop recommendation: keep the name, consider a subtitle carrying the
-   audit ("…: Auditing What Bayesian-Optimization Budgets Actually Buy").
-   Author's call, with co-authors/advisor and acknowledgments (TODOs in
-   main.tex).
+3. **DONE (2026-08-24): author decisions applied.** Title kept as-is
+   ("The Machinery Confound: Acquisition-Optimization Machinery…");
+   sole author; email adrian.tame.jacobo@gmail.com; acknowledgments left
+   as a marked placeholder until the author supplies text.
 4. **Venue call.** With the in-the-wild audit (1,050 runs, 6 libraries),
    the Z=3/4 re-comparison, the released tool, and the theory appendix,
    the paper now has the profile of the audit-genre papers that landed at
@@ -53,9 +55,12 @@ Everything the loop could not do in-container, in rough priority order.
 
 ## Runs only the author can do (open cells, honestly labeled in the paper)
 
-5. **E4: BASS through the machinery ablations** on the author's machine
-   (R + BASS; exact commands in `article_loop/experiments/` and
-   `run_all_final.sh`). Would close the paper's one open cell.
+5. **DECLINED by author decision (2026-08-24): E4 will not be run.**
+   Rationale: the audit evaluates deployed, pip-installable candidates
+   (optuna and the like); BASS is the motivating research pipeline and
+   case study, not a candidate. The paper's "open cell" text has been
+   rewritten as a deliberate scope statement (Experiments + Discussion).
+   Commands remain in `run_all_final.sh` for anyone who wants the cell.
 6. Optional **H1b: YAHPO conditional-space audit** — data downloaded and
    surrogate verified working in-container; needs pre-registered
    active-parameter key semantics (design sketch in exph1_matrix
@@ -71,9 +76,12 @@ Everything the loop could not do in-container, in rough priority order.
    whole program. Decide merge strategy (the loop imported needed
    content via `git checkout origin/main -- <paths>` rather than
    history surgery).
-9. **bo-audit packaging** if submitting to D&B: `bo_audit/` is
-   pip-structured but has no pyproject.toml/tests-as-package; an
-   afternoon of packaging + README makes it installable.
+9. **DONE (2026-08-24): bo-audit packaged and promoted.** Canonical home
+   is now the top-level `bo-audit/` directory on `main`
+   (pyproject.toml, README, 10-test suite; audited code moved verbatim).
+   Verified: clean-venv pip install, tests pass, end-to-end optuna-TPE
+   audit from site-packages. The paper's Data Availability section points
+   there.
 10. If the pest-control determinization matters to reviewers: the
     disclosure is in `bo_audit/benchmarks.py` and the paper; the
     stochastic-original comparison is a possible rebuttal experiment.
