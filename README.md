@@ -56,6 +56,10 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 │   └── figure_generations/  # Python/R scripts for thesis visualizations
 ├── written_files/           # Thesis documentation
 │   └── tesis_escrito/       # Main LaTeX source for the thesis document
+├── bo-audit/                # bo-audit tool: pip-installable audit wrapper (article)
+│   ├── bo_audit/            #   AuditedObjective, memoized control, drivers, benchmarks
+│   └── tests/
+├── article_bo_machinery/    # The Machinery Confound article (branch claude/machinery-confound-article)
 └── README.md                # Project overview and documentation
 ```
 
@@ -135,6 +139,26 @@ No changes to the BO loop are needed; it is agnostic to the objective.
 ## Results
 
 Experiments indicate that BASS-BO demonstrates competitive sample efficiency, particularly in landscapes where the underlying function exhibits piecewise linear behavior or sharp transitions that GPs may over-smooth. Convergence plots and statistical summaries are written to the chosen `--out_dir` when you run the benchmarks (they are not committed); see [`RUNNING.md`](RUNNING.md).
+
+## The Machinery Confound (article) and bo-audit
+
+The methodological finding that grew out of this thesis — that
+acquisition-optimization machinery (candidate generation, duplicate
+handling), not the surrogate model, can dominate method comparisons in
+mixed and categorical Bayesian optimization — is written up as a standalone
+article on the [`claude/machinery-confound-article`](../../tree/claude/machinery-confound-article)
+branch (`article_bo_machinery/`).
+
+Its audit instrument is released as **bo-audit**: a pip-installable
+objective wrapper that counts decoded-combination revisits (duplicate
+evaluations) uniformly across BO libraries at their documented defaults.
+
+```bash
+pip install "./bo-audit[optuna]"
+```
+
+See [`bo-audit/README.md`](bo-audit/README.md) for usage; the article's
+preprint is cited there.
 
 ## Citation
 

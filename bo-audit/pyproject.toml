@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bo-audit"
+version = "0.1.0"
+description = "Objective-wrapper instrumentation that counts decoded-combination revisits (duplicate evaluations) in any ask/tell Bayesian-optimization library"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Adrian Tame Jacobo", email = "adrian.tame.jacobo@gmail.com" }]
+keywords = [
+    "bayesian-optimization",
+    "benchmarking",
+    "reproducibility",
+    "duplicate-evaluations",
+    "mixed-integer",
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = []
+
+[project.optional-dependencies]
+benchmarks = ["numpy"]
+optuna = ["optuna"]
+hyperopt = ["hyperopt"]
+skopt = ["scikit-optimize"]
+ax = ["ax-platform"]
+
+[project.urls]
+Repository = "https://github.com/AdrianTJ/BayesianOptim_BASS"
+
+[tool.setuptools]
+packages = ["bo_audit"]

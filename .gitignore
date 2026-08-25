@@ -48,3 +48,10 @@ results*/
 
 # Author private defense prep -- kept local, not for the public repo
 docs/defense_questions.md
+
+# Python build/test artifacts (bo-audit)
+__pycache__/
+*.egg-info/
+
+# local git worktrees
+.worktrees/
