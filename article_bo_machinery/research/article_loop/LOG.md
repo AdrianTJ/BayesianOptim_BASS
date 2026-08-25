@@ -217,3 +217,32 @@ resume instruction.
   decisions (title/co-authors/acknowledgments/venue), a compile fix
   pass after pdflatex on the user's machine, the E4 BASS cells when run
   on the user's machine, or the paused loop_engineering backlog (Q2–Q7).
+
+## Post-close: H4 (generator axis, strengthened surrogate) — 2026-08-25
+- **Phase:** experiment (H4, pre-registered) + analyze + record. The loop
+  was already STOPPED; this is a single author-authorized attempt from
+  AUTHOR_TODO, not a reopened cycle.
+- **Did:** DESIGN.md pre-registered (`33f1d1e`, 15:46), runner committed
+  before any run (`5074596`, 17:05), pilot run (20 runs, seeds 1051–1055,
+  budget 80, n_cand=50). The pre-registered ceiling-proximity gate FAILED
+  on func2C: strengthened GP mean −0.026 against a threshold of −0.156 and
+  a same-pool oracle ceiling of −0.206. Per DESIGN the outcome is "strength
+  knob failed": no confirmatory run, no oracle-240 reference, E3 fallback
+  stands, K5 unchanged, one Discussion footnote records the attempt.
+- **Review findings applied the same day:** the first draft's "10× restarts
+  are inert" mechanism claim was refuted against the pilot's own data (the
+  knob changes 4 of the 20 runs, in mixed directions) and removed from
+  ANALYSIS.md, CLAIMS.md and main.tex; the footnote now names the pool-size
+  difference behind the −0.026 vs −0.105 comparison, so the shortfall is
+  not misread as evidence about strengthening. Two further items are on
+  record in ANALYSIS.md: a re-run finding (19/20 rows reproduce bit-exactly,
+  func2C seed 1055 keep does not, gate mean −0.049 on re-run, decision
+  unchanged) and a mis-specified `STRENGTHENED-NULL` rule in DESIGN.md that
+  never bound. DESIGN.md left frozen.
+- **Files:** exp06_h4_strong_surrogate/{DESIGN,ANALYSIS}.md, run_h4.py,
+  results_pilot.csv, CLAIMS.md (K5 row), main.tex (one footnote)
+- **Tests:** gate arithmetic recomputed from committed exp02/exp03
+  results.csv; 19 of 20 pilot rows reproduced bit-exactly from the
+  committed runner.
+- **Loop state: still STOPPED.** No third test on the generator axis
+  without a new pre-registered mechanism hypothesis (DESIGN stopping rule).
