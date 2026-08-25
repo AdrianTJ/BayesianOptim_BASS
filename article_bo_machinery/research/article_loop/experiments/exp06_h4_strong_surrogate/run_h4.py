@@ -12,6 +12,10 @@ The strengthened GP is E3's gp_ei_acquire with exactly two pre-named knob
 changes (DESIGN.md): n_restarts_optimizer 1 -> 10 and random_state 0 ->
 seed % 2**31. Kernel, normalize_y, EI, and everything else are untouched.
 """
+import os
+for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS",
+           "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
 import csv
 import sys
 from concurrent.futures import ProcessPoolExecutor
