@@ -488,3 +488,54 @@ committed results / DESIGN files / paper numbers are read-only.
   runs and passes with scipy installed, and with scipy removed it skips
   while reporting the tree as present and naming the scipy import
   failure.
+
+## Item D1 — 2026-08-26
+- **Phase:** stale layout references in current-state documentation —
+  complete.
+- **Did:** The repository renamed `class_presentation/` to
+  `defense_presentation/`, and the article moved from a branch into
+  `main`, but several documents still described the old layout. A Sonnet
+  5 subagent corrected the root README's structure block and its prose
+  section (which linked to `../../tree/claude/machinery-confound-article`,
+  a 404 — now a relative link to the in-repo directory), the article
+  README's templating-provenance path, and the stale path in a comment
+  on line 2 of `main.tex`.
+- **The two references deliberately left in place.**
+  `h6_generalize/LOG.md:7` and `AUTHOR_TODO.md:76` both name
+  `claude/machinery-confound-article`, and both are correct: they are
+  append-only research records stating the branch was *renamed on
+  2026-08-25*. They describe the past accurately. This project's
+  methodology rests on its logs being trustworthy historical records, so
+  editing them to match the present would falsify a provenance trail.
+  The brief named them as out of scope and the agent honoured it,
+  verified by an empty `git diff --stat` over `research/`.
+- **Verification:** scope is exactly three files; the `main.tex` change
+  is a comment on line 2 and nothing else, confirmed by reading the
+  diff; all three checkers PASS with the TODO ratchet unmoved; no stale
+  reference survives in any current-state document.
+- **Extended beyond the brief by this session, with ground truth from
+  the filesystem:** the structure block was accurate about what it
+  listed but silently incomplete — it omitted `docs/`, `final_results/`,
+  `code_files/3_categorical_diagnostics/`, `code_files/5_nlp_hpo/`,
+  `written_files/tesis_formato/` and `defense_presentation/Defense/`,
+  and gave `article_bo_machinery/` no sub-entries at all. A structure
+  block that omits a third of the tree misleads a new reader as surely
+  as a wrong name does. All were added and the block then checked
+  mechanically against the filesystem: every listed path exists, every
+  real top-level directory is listed, nothing listed is missing.
+- **My first verifier for that check was wrong** and reported all eight
+  top-level entries missing — it never stripped the `#` comments before
+  testing the paths. Rewritten to split on `#` and reconstruct nesting
+  depth from the tree glyphs. Noted because it is the fourth time this
+  loop that the checking code, not the change under test, was at fault.
+- **Next:** Item D2 = move this work onto a conventional branch prefix.
+  The author's convention is `feat/`, `bug/`, `research/` and the like,
+  with `claude/` excluded; the working branch is
+  `claude/article-bo-audit-review-stei8t`. Note for the record: no
+  CLAUDE.md exists anywhere in this repository — not committed, not on
+  `main`, not in history, not gitignored, and no user-level copy — so
+  the convention is currently unwritten, and the repository's own
+  history contains five merged `claude/*` branches alongside `feature/`,
+  `docs/` and `thesis/` ones. Rename the branch, push it, delete the old
+  remote ref, and offer to record the convention in a CLAUDE.md so it is
+  enforceable rather than tacit.
