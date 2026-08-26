@@ -79,3 +79,56 @@ committed results / DESIGN files / paper numbers are read-only.
   against the canonical MIT wording word for word, confirm the README
   link resolves to a real path, and confirm the SPDX identifier agrees;
   then commit and move to R3.
+
+## Item R2 — 2026-08-26
+- **Phase:** MIT LICENSE — complete.
+- **Did:** The repository claimed MIT in three places and granted
+  nothing: the root README's license link had no target,
+  `bo-audit/README.md` said "MIT.", and `bo-audit/pyproject.toml` set
+  `license = "MIT"`. A Sonnet 5 subagent added the canonical MIT text at
+  the repository root, copyright 2026 Adrian Tame Jacobo (matching the
+  `authors` field in pyproject), then added a byte-identical copy at
+  `bo-audit/LICENSE`.
+- **Verification, part 1 — text provenance.** The agent wrote the
+  licence text *from memory* and said so. It happened to be correct, but
+  memory is not an acceptable source for canonical legal text, so it was
+  checked rather than believed: the canonical wording was fetched from
+  the SPDX license-list-data repository and diffed word for word against
+  the file, ignoring only SPDX's placeholder copyright line. Exact
+  match. The agent was told to cite an authority rather than recall in
+  future.
+- **Verification, part 2 — a gap the brief had missed.** Building the
+  wheel showed it declared `License-Expression: MIT` while containing no
+  licence text at all: the Python project root is `bo-audit/`, not the
+  repository root, and PEP 639 resolves licence-file patterns relative
+  to the project root. The defect had simply relocated to the artifact a
+  colleague would actually `pip install`. Hence the package-local copy.
+- **Second round verified independently:** a fresh build of the wheel by
+  this session (not the agent's) yields
+  `bo_audit-0.1.0.dist-info/licenses/LICENSE`, METADATA carrying both
+  `License-Expression: MIT` and `License-File: LICENSE`, and the licence
+  inside the wheel byte-identical to the repository root's
+  (sha256 a6b8c737...). Setuptools' PEP 639 defaults picked the file up
+  on their own, so `pyproject.toml` was correctly left untouched — the
+  conditional edit in the brief was not needed and was not made.
+- **Note:** both LICENSE files are identical by `cmp` and by md5
+  (7bee2f9f...). Duplicating the licence per distributable package is
+  standard for repositories shipping a package from a subdirectory.
+- **Next:** Item R3 = make the article PDF buildable from a clean clone.
+  `article_bo_machinery/figures/fig_dedup_audit.pdf` is required by
+  `main.tex` line 684 but is caught by the blanket `*.pdf` rule in
+  `.gitignore`, whose allowlist does not include it, so a fresh clone
+  following `article_bo_machinery/README.md`'s build instructions fails
+  on a missing figure. The generator
+  (`figures/make_fig_dedup_audit.py`) works and reproduces the caption's
+  medians (0 vs 78/80) from committed E2 results. Delegate to a Sonnet 5
+  subagent: add a negative-pattern exception for that one path in
+  `.gitignore` so the built figure is tracked, and extend the article
+  README's Build section to name the figure-generation step. Out of
+  scope for that agent: the generator script itself, `main.tex`, and any
+  other ignore rule. Verify by simulating a clean clone
+  (`git archive`/fresh checkout into a temp dir) and confirming the
+  figure is present, and by re-running the generator to confirm the
+  medians still print 0 and 78. No LaTeX exists in this container, so
+  the actual `pdflatex` run stays an author task and must be named as
+  such rather than claimed.
