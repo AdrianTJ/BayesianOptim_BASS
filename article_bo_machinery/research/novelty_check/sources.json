@@ -1,0 +1,480 @@
+{
+ "angle_count": 5,
+ "unique_candidates": 39,
+ "assessed_count": 15,
+ "dropped_beyond_cap": 24,
+ "all_candidates": [
+  {
+   "title": "An Empirical Study of Bayesian Optimization: Acquisition Versus Partition",
+   "url": "https://www.jmlr.org/papers/v22/18-220.html",
+   "venue_year": "JMLR 22, 2021",
+   "relevance": "Comprehensive repeatable empirical comparison isolating the effect of acquisition-optimization strategy vs. space-partitioning strategy on BO performance within a common software framework -- worth checking closely since it isolates optimization-machinery effects on outcomes, though apparently continuous-space and not framed as an oracle-ceiling audit or mixed/categorical dedup study.",
+   "suspected_threat": true
+  },
+  {
+   "title": "Framework and Benchmarks for Combinatorial and Mixed-variable Bayesian Optimization (MCBO)",
+   "url": "https://arxiv.org/abs/2306.09803",
+   "venue_year": "NeurIPS 2023",
+   "relevance": "Modular benchmarking framework explicitly built to enable controlled assessment of individual MCBO primitives (surrogate, acquisition optimizer, trust-region/local-search, etc.) in combination, arguing that papers proposing one primitive often fail to control for the others -- the closest existing work to a 'machinery-controlled comparison protocol' (C3) and should be checked closely for overlap.",
+   "suspected_threat": true
+  },
+  {
+   "title": "Reproducibility Study of Large Language Model Bayesian Optimization",
+   "url": "https://arxiv.org/pdf/2511.18891",
+   "venue_year": "arXiv 2025",
+   "relevance": "Reproducibility study directly comparing candidate-generation strategies (random, TPE variants, LLM-based sampler) used during acquisition optimization and their effect on reported BO performance, i.e. an empirical demonstration that candidate-generation choice can dominate outcomes -- worth a closer look though scope seems to be LLM-driven candidate samplers rather than mixed/categorical dedup or oracle-ceiling audits.",
+   "suspected_threat": true
+  },
+  {
+   "url": "https://proceedings.mlr.press/v139/wan21b.html",
+   "title": "Think Global and Act Local: Bayesian Optimisation over High-Dimensional Categorical and Mixed Search Spaces (Casmopolitan)",
+   "venue_year": "ICML 2021",
+   "relevance": "Proposes bespoke local-search machinery (trust regions, tailored kernel) for mixed/categorical BO and compares against CoCaBO/COMBO; a candidate source for the 'local proposals force categorical flip' machinery issue since it discusses local search design choices in categorical/mixed spaces directly.",
+   "suspected_threat": true
+  },
+  {
+   "url": "https://link.springer.com/article/10.1186/s40323-022-00218-8",
+   "title": "A comparison of mixed-variables Bayesian optimization approaches",
+   "venue_year": "Advanced Modeling and Simulation in Engineering Sciences, 2022",
+   "relevance": "Direct empirical comparison of multiple mixed-variable BO methods; potentially relevant if it discusses how differing candidate-generation/local-search machinery across methods affects the comparison, otherwise related-work only.",
+   "suspected_threat": true
+  },
+  {
+   "title": "A survey and benchmark of high-dimensional Bayesian optimization of discrete sequences",
+   "url": "https://arxiv.org/abs/2406.04739",
+   "venue_year": "NeurIPS 2024 (Datasets and Benchmarks)",
+   "relevance": "Unifies many discrete/combinatorial BO methods under one framework/benchmark, explicitly noting heterogeneous experimental setups and recommending ablations of candidate-generation strategies -- directly relevant to C3's protocol argument, though it is a survey/benchmark unification rather than an oracle-ceiling machinery audit.",
+   "suspected_threat": true
+  },
+  {
+   "url": "https://arxiv.org/abs/2406.07709",
+   "title": "Diagnosing and fixing common problems in Bayesian optimization for molecule design",
+   "venue_year": "arXiv 2406.07709 / ICML 2024 AI4Science workshop",
+   "relevance": "Identifies 'inadequate acquisition function maximization' as a pipeline pitfall that silently caps BO performance and gets misattributed to the surrogate/model choice on the PMO molecule benchmark -- closely parallel in spirit to C2's claim that machinery failures are misattributed to surrogates, though it does not use an oracle-replacement audit or propose a machinery-controlled comparison protocol.",
+   "suspected_threat": true
+  },
+  {
+   "url": "https://arxiv.org/pdf/2508.00380",
+   "title": "Evolutionary Generative Optimization: Towards Fully Data-Driven Evolutionary Optimization via Generative Learning",
+   "venue_year": "arXiv 2508.00380 (2026)",
+   "relevance": "Uses a 'Real Eval' ablation that replaces predicted (surrogate) objective values with ground-truth evaluations inside the optimization loop specifically to assess the theoretical upper bound of the framework -- structurally very close to C1's oracle-ceiling substitution, though applied to a generative/evolutionary optimizer rather than pool-based BO and not used to A/B candidate-generation machinery variants.",
+   "suspected_threat": true
+  },
+  {
+   "title": "Dealing with Categorical and Integer-valued Variables in Bayesian Optimization with Gaussian Processes",
+   "url": "https://arxiv.org/abs/1805.03463",
+   "venue_year": "Neurocomputing 2020 (arXiv 2018)",
+   "relevance": "Garrido-Merchan & Hernandez-Lobato: shows that rounding continuous relaxations to integer/categorical values causes BO to repeatedly evaluate the same discretized point, and fixes it by rounding inside the objective wrapper so the acquisition-optimizer's proposal matches the evaluated point.",
+   "suspected_threat": true
+  },
+  {
+   "title": "Bayesian Optimization over Discrete and Mixed Spaces via Probabilistic Reparameterization",
+   "url": "https://arxiv.org/abs/2210.10199",
+   "venue_year": "NeurIPS 2022",
+   "relevance": "Daulton et al. diagnose that standard rounding-based acquisition-function optimization in mixed/discrete spaces produces degenerate, duplicate-prone candidate proposals that hurt even a good surrogate, and replace the optimization machinery (probabilistic reparameterization) rather than the surrogate -- close in spirit to C2a/C2b's claim that machinery, not the surrogate, is the bottleneck, though framed as a new method rather than an oracle-ceiling diagnostic or benchmarking protocol.",
+   "suspected_threat": true
+  },
+  {
+   "title": "Maximizing acquisition functions for Bayesian optimization",
+   "url": "https://arxiv.org/abs/1805.10196",
+   "venue_year": "NeurIPS 2018",
+   "relevance": "Foundational paper (Wilson et al.) establishing that acquisition-function maximization quality (multi-start, gradient methods, Monte Carlo) is a critical and understudied component of BO pipelines; core citation for the acq-opt angle but confined to continuous spaces with no oracle-ceiling audit or mixed/categorical machinery-confound demonstration.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Unleashing the Potential of Acquisition Functions in High-Dimensional Bayesian Optimization",
+   "url": "https://arxiv.org/abs/2302.08298",
+   "venue_year": "arXiv 2023 / ICLR-reviewed (OpenReview id 0CM7Hfsy61)",
+   "relevance": "Large-scale empirical study showing random initialization of the acquisition-function maximizer severely limits BO performance in high dimensions and proposing heuristic-optimizer initialization; closely related 'acquisition-optimizer matters' argument but restricted to continuous high-D spaces, not mixed/categorical, and no oracle-ceiling/true-objective audit.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Think Global and Act Local: Bayesian Optimisation over High-Dimensional Categorical and Mixed Search Spaces (Casmopolitan)",
+   "url": "https://arxiv.org/abs/2102.07188",
+   "venue_year": "ICML 2021",
+   "relevance": "Proposes trust-region-based local search machinery (interleaved continuous/categorical moves, Hamming-distance neighbor generation) for mixed/categorical BO; a bespoke-machinery method paper (exclusion category ii) but its neighbor-generation design is exactly the kind of candidate generator the target article's C2(a) failure mode critiques, useful related work.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Bayesian Optimization over Discrete and Mixed Spaces via Probabilistic Reparameterization",
+   "url": "https://www.robots.ox.ac.uk/~mosb/public/pdf/6704/Daulton%20et%20al.%20-%202022%20-%20Bayesian%20Optimization%20over%20Discrete%20and%20Mixed%20Spac.pdf",
+   "venue_year": "NeurIPS 2022",
+   "relevance": "Proposes a probabilistic-reparameterization alternative to discrete local-search/candidate-pool acquisition optimization for mixed spaces; bespoke new machinery (exclusion ii) rather than a diagnostic or confound demonstration, but directly relevant related work on why acquisition-optimization method choice matters in mixed spaces.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Bounce: Reliable High-Dimensional Bayesian Optimization for Combinatorial and Mixed Spaces",
+   "url": "https://arxiv.org/abs/2307.00618",
+   "venue_year": "NeurIPS 2023",
+   "relevance": "New mixed/combinatorial BO method with its own candidate-generation and trust-region machinery, using candidate-pool sizing heuristics (e.g. min(5000,max(2000,200d)) random solutions); bespoke-machinery method paper, related work rather than a novelty threat.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Benchmarking Bayesian Optimisation (slides, UQSay)",
+   "url": "https://l2s.centralesupelec.fr/wp-content/uploads/uqsay/uqsay25_slides_vpicheny.pdf",
+   "venue_year": "2025 talk (V. Picheny)",
+   "relevance": "Surveys methodological pitfalls in BO benchmarking (implementation vs algorithm, tuned vs untuned baselines, uncontrolled variance sources); general benchmarking critique (exclusion category iii), useful for related-work framing but not a machinery-confound demonstration.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Modernizing HEBO: a robust Bayesian optimization baseline for practical heteroskedastic and non-stationary problems",
+   "url": "https://arxiv.org/abs/2607.10669",
+   "venue_year": "arXiv 2026",
+   "relevance": "Updates the HEBO baseline used widely in BO benchmark comparisons; general baseline/robustness paper (exclusion category iii), background related work on the surrogate-comparison ecosystem rather than a machinery-confound or oracle-audit contribution.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/abs/1705.06058",
+   "title": "Pitfalls and Best Practices in Algorithm Configuration",
+   "venue_year": "JAIR 2019 (arXiv 2017)",
+   "relevance": "Foundational catalog of methodological pitfalls (overtuning, insufficient instances, dependent randomness) in comparing configurators/optimizers; closest prior 'benchmarking critique' paper but focuses on configuration-level pitfalls, not acquisition-optimization machinery confounds specifically.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/abs/2104.10201",
+   "title": "Bayesian Optimization is Superior to Random Search for Machine Learning Hyperparameter Tuning: Analysis of the Black-Box Optimization Challenge 2020",
+   "venue_year": "NeurIPS 2020 Competition Track / PMLR 133, 2021 (Turner et al.)",
+   "relevance": "Major empirical analysis of a large BO competition surfacing benchmarking/comparison issues across many optimizer submissions; directly relevant related work for the benchmarking-critique angle, but does not isolate acquisition-optimization machinery (candidate pools/dedup) as a confound.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/abs/2109.06716",
+   "title": "HPOBench: A Collection of Reproducible Multi-Fidelity Benchmark Problems for HPO",
+   "venue_year": "NeurIPS Datasets & Benchmarks 2021",
+   "relevance": "Standardized, containerized HPO benchmark suite aimed at reproducibility; useful related work on benchmarking infrastructure, but a benchmark suite, not a machinery-confound diagnostic or oracle-ceiling audit.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/abs/2506.06143",
+   "title": "carps: A Framework for Comparing N Hyperparameter Optimizers on M Benchmarks",
+   "venue_year": "ECMLPKDD 2025 (arXiv June 2025)",
+   "relevance": "Recent benchmarking-protocol framework for fair N-optimizer x M-benchmark comparisons with representative task subsetting; relevant related work on comparison-protocol design, though general HPO rather than mixed/categorical acquisition-machinery confounds.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/pdf/2512.16491",
+   "title": "Best Practices For Empirical Meta-Algorithmic Research: Guidelines from the COSEAL Research Network",
+   "venue_year": "arXiv 2025 (COSEAL)",
+   "relevance": "Recent community guidelines paper on rigorous empirical comparison of algorithm-selection/configuration/optimization methods; general benchmarking-critique related work, worth checking for any machinery-confound discussion but likely broader in scope.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://www.mdpi.com/2673-4230 (see https://doi.org/10.3390/a19050361)",
+   "title": "Bayesian Optimization for Categorical and Mixed Variables Using a Multinomial Logit Surrogate",
+   "venue_year": "Algorithms journal, 2025",
+   "relevance": "New mixed/categorical BO surrogate method; primarily a bespoke-method paper (category iii, related work) rather than a machinery-confound or benchmarking-protocol contribution, but worth checking its candidate-generation/dedup handling.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/abs/2012.03501",
+   "title": "Adaptive Local Bayesian Optimization Over Multiple Discrete Variables",
+   "venue_year": "arXiv 2020 (KDD Cup context)",
+   "relevance": "Studies local-search-based BO machinery over discrete/multiple-choice variables; relevant related work on candidate-generation design for discrete BO, worth checking for dedup/duplicate-evaluation handling.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/abs/1902.00448",
+   "title": "Combinatorial Bayesian Optimization using the Graph Cartesian Product (COMBO)",
+   "venue_year": "arXiv 2019 / AISTATS",
+   "relevance": "A widely-used mixed/combinatorial BO baseline with its own candidate-generation machinery (graph-based local search); relevant as a machinery-comparison baseline in the target article's likely experiments, and related work for how machinery choices are typically bundled with the surrogate.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Bayesian Optimisation over Multiple Continuous and Categorical Inputs (CoCaBO)",
+   "url": "https://arxiv.org/abs/1906.08878",
+   "venue_year": "ICML 2020",
+   "relevance": "Uses a multi-armed bandit to select categorical values and GP-BO for continuous values; a bespoke machinery/method paper, not an ablation of candidate-generation machinery vs. surrogate -- related work only.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Bayesian Optimization over High-Dimensional Combinatorial Spaces via Dictionary-based Embeddings (BODi)",
+   "url": "https://arxiv.org/abs/2303.01774",
+   "venue_year": "AISTATS 2023",
+   "relevance": "Proposes a dictionary-embedding kernel plus local-search acquisition optimization for combinatorial BO; new machinery, no isolation of machinery effects from surrogate -- related work only.",
+   "suspected_threat": false
+  },
+  {
+   "title": "MOCA-HESP: Meta High-dimensional Bayesian Optimization for Combinatorial and Mixed Spaces via Hyper-ellipsoid Partitioning",
+   "url": "https://arxiv.org/abs/2508.06847",
+   "venue_year": "2025",
+   "relevance": "New mixed/combinatorial BO machinery (hyper-ellipsoid partitioning) built atop existing methods (e.g. Casmopolitan, Bounce); bespoke-method paper per exclusion criterion (ii), no machinery-isolation ablation or oracle audit -- related work only.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://www.sciencedirect.com/science/article/abs/pii/S0925231219315619",
+   "title": "Dealing with categorical and integer-valued variables in Bayesian Optimization with Gaussian processes",
+   "venue_year": "Neurocomputing, 2020 (Garrido-Merch\u00e1n & Hern\u00e1ndez-Lobato)",
+   "relevance": "Documents that naive one-hot/rounding encodings for categorical variables cause the acquisition optimizer to repeatedly propose duplicate points, wasting evaluation budget -- directly anticipates the mechanism behind C2(b), though as a modeling fix (a transformation) rather than a diagnostic/benchmarking-protocol contribution.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/pdf/2603.27839",
+   "title": "Surrogate-based categorical neighborhoods for mixed-variable blackbox optimization",
+   "venue_year": "arXiv 2603.27839 (2026, Audet, Diouane, Hall\u00e9-Hannan, Le Digabel, Tribes)",
+   "relevance": "Explicitly notes that neighborhood/local-search-based candidate generators for categorical variables can fail to reach the global optimum when it lies in a continuous subspace associated with a different categorical combination than the incumbent -- the same failure mode as C2(a); proposes a bespoke surrogate-guided neighborhood fix rather than a machinery-isolation diagnostic.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/pdf/2306.09803",
+   "title": "Framework and Benchmarks for Combinatorial and Mixed-variable Bayesian Optimization",
+   "venue_year": "arXiv 2306.09803 (NeurIPS 2023 Datasets & Benchmarks)",
+   "relevance": "A benchmarking/framework paper for mixed-variable BO that standardizes problem instances and evaluation, relevant related work for C3's protocol proposal, but does not isolate or audit acquisition-optimization machinery separately from surrogates.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/html/2406.04739v1",
+   "title": "A survey and benchmark of high-dimensional Bayesian optimization of discrete sequences",
+   "venue_year": "arXiv 2406.04739 (2024)",
+   "relevance": "Survey/benchmark for discrete-sequence BO methods that standardizes initial designs and comparison setup across methods; relevant related work for C3's shared-machinery protocol but focused on general benchmarking rigor rather than isolating candidate-generation/dedup machinery.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/html/2506.06143",
+   "title": "carps: A Framework for Comparing N Hyperparameter Optimizers on M Benchmarks",
+   "venue_year": "arXiv 2506.06143 (2025)",
+   "relevance": "General critique/framework paper on HPO benchmarking pitfalls (comparing implementations vs. algorithms, tuned vs. untuned baselines); background related work on BO benchmarking rigor (category iii in the brief) rather than a machinery-confound novelty threat.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/pdf/2401.13334",
+   "title": "Explainable Bayesian Optimization",
+   "venue_year": "arXiv 2401.13334 (2024)",
+   "relevance": "Runs an ablation comparing results using 1000 ground-truth samples directly versus using the GP surrogate, to check consistency/independence of an explanation method from surrogate error -- a narrow, single-purpose oracle-vs-surrogate check rather than a general oracle-ceiling diagnostic for BO machinery.",
+   "suspected_threat": false
+  },
+  {
+   "url": "https://arxiv.org/pdf/2507.06529",
+   "title": "Direct Regret Optimization in Bayesian Optimization",
+   "venue_year": "arXiv 2507.06529 (2025, Fengxue Zhang et al.)",
+   "relevance": "Engages with regret decomposition in BO (surrogate/acquisition-related error sources) which is conceptually adjacent to C1's framing of isolating machinery vs. surrogate contributions, but is a new acquisition/algorithm proposal, not a diagnostic-audit or benchmarking-protocol paper.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Bayesian Optimization with Discrete Variables",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-030-35288-2_38",
+   "venue_year": "AI 2019 (Springer LNCS)",
+   "relevance": "Luong et al.'s 'Discrete-BO' explicitly targets the same failure mode as C2b (naive rounding causes repeated sampling of pre-existing observations) and fixes it by shifting acquisition-function exploration/length-scale rather than diagnosing it as a machinery confound or proposing a controlled comparison protocol.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Surrogate-based categorical neighborhoods for mixed-variable blackbox optimization",
+   "url": "https://arxiv.org/abs/2603.27839",
+   "venue_year": "arXiv 2026 (CatMADS-related)",
+   "relevance": "Proposes new distance-based categorical neighborhood/candidate-generation machinery for mixed-variable blackbox optimization; related work on candidate generator design, not a machinery-confound audit or cross-surrogate protocol.",
+   "suspected_threat": false
+  },
+  {
+   "title": "Bayesian Optimization for Mixed-Variable Problems in the Natural Sciences",
+   "url": "https://arxiv.org/abs/2604.07416",
+   "venue_year": "arXiv 2026 (review)",
+   "relevance": "Recent review of mixed-variable BO covering discretized-landscape repeated-sampling issues near-duplicate points in the continuous subspace with fixed categorical/discrete settings; survey-level related work, not a direct C1-C3 claim.",
+   "suspected_threat": false
+  },
+  {
+   "title": "CatMADS: Mesh Adaptive Direct Search for constrained blackbox optimization with categorical variables",
+   "url": "https://arxiv.org/abs/2506.06937",
+   "venue_year": "arXiv 2025",
+   "relevance": "Derivative-free (non-BO) framework using distance-induced categorical neighborhoods to generalize user-defined neighborhoods in mixed-variable search; related candidate-generation machinery design work, not a surrogate-comparison confound study.",
+   "suspected_threat": false
+  }
+ ],
+ "assessed": [
+  {
+   "url": "https://www.jmlr.org/papers/v22/18-220.html",
+   "title": "An Empirical Study of Bayesian Optimization: Acquisition Versus Partition (Merrill, Fern, Fern, Dolatnia; JMLR 22(4):1-25, 2021)",
+   "accessible": false,
+   "threat": "low",
+   "summary": "Direct fetch of jmlr.org was blocked by this session's network egress policy (EGRESS_BLOCKED, not a 403/404 from the source itself); assessment is based on the published abstract and secondary summaries retrieved via search. The paper compares two whole classes of continuous-space black-box optimization algorithms head-to-head within one common open-source software framework: (1) algorithms that optimize an acquisition function to pick the next point (e.g. ABO-EI) and (2) algorithms that use systematic space-partitioning/tree methods instead of acquisition maximization. It runs a comprehensive, repeatable empirical comparison across benchmarks and finds acquisition-optimization-based methods (ABO-EI) are a consistent top performer, even outperforming partition methods given far more samples, and this holds even when accounting for wall-clock/compute cost.",
+   "threat_reason": "This paper isolates and compares a different axis than the article: it swaps out the entire selection paradigm (acquisition-maximization vs. space-partitioning) rather than holding a shared candidate-generation/dedup 'machinery' fixed while swapping surrogates. It is continuous-space only, uses no oracle/true-objective substitution to build a ceiling (C1), does not touch mixed/categorical dedup or local-search categorical-flip failure modes (C2), and proposes no machinery-controlled surrogate-comparison protocol (C3) \u2014 it's a comparison between two competing algorithm families, not a diagnostic that separates surrogate quality from optimizer/candidate-generator machinery within one family. It is useful related work only insofar as it's early precedent that 'how points are selected/optimized' can dominate empirical BO rankings, reinforcing the article's broader premise, but it does not pre-empt any of C1/C2/C3.",
+   "key_quotes": []
+  },
+  {
+   "url": "https://arxiv.org/abs/2306.09803",
+   "title": "Framework and Benchmarks for Combinatorial and Mixed-variable Bayesian Optimization (MCBO), NeurIPS 2023",
+   "accessible": false,
+   "threat": "medium",
+   "summary": "Direct fetch of arxiv.org/abs/2306.09803 (and openreview.net, semanticscholar.org, medium.com mirrors) was blocked by this session's network egress policy; the associated GitHub repo (huawei-noah/HEBO, MCBO subdirectory) was reachable and gave README-level detail, supplemented by the arXiv abstract and search snippets. MCBO is a modular software framework for mixed-variable/combinatorial BO that lets researchers mix-and-match independently implemented primitives: surrogate models (7 GP variants + Bayesian linear regression), acquisition functions (EI, LCB, TS), and acquisition optimizers (genetic algorithm, simulated annealing, local search, trust-region variants). Its explicit motivation is that 'papers introducing a solution for a single MCBO primitive often omit benchmarking against baselines that utilize the same methods for the remaining primitives,' i.e. surrogate comparisons in prior mixed/combinatorial BO papers are confounded by uncontrolled machinery. The authors implement 47 new algorithm combinations, benchmark against 7 existing MCBO solvers and 5 standard black-box optimizers on 10 tasks (>4000 experiments), and use a Friedman test with post-hoc Wilcoxon signed-rank tests to compare algorithm performance, concluding model fit and trust-region use are the primitives that matter most.",
+   "threat_reason": "Strong partial overlap with C3: MCBO's central motivating claim ('single-primitive papers are confounded by uncontrolled remaining primitives') is essentially the article's machinery-confound thesis stated from the benchmarking-framework angle, and MCBO already (a) provides a shared, modular acquisition-optimizer/candidate-generation machinery that can be held fixed while surrogates vary, and (b) uses Wilcoxon signed-rank tests for statistical comparison across combinations \u2014 two concrete elements the article proposes in C3. However, no evidence found (in README, abstract, or search snippets) that MCBO performs an oracle-ceiling audit (C1: substituting the true objective for the acquisition score to bound achievable performance per machinery variant), documents the specific categorical-flip local-search failure mode or encoding-vs-decoded-combination dedup failure mode (C2), or reports per-seed win/tie/loss with paired shared initial designs. The article must explicitly differentiate itself from MCBO (framework-level primitive-mixing + Wilcoxon testing already exists) by emphasizing the oracle-ceiling diagnostic and the two specific empirically-demonstrated machinery failure modes, which appear to be genuinely new relative to MCBO.",
+   "key_quotes": [
+    "papers introducing a solution for a single MCBO primitive often omit benchmarking against baselines that utilize the same methods for the remaining primitives. This omission is primarily due to the significant implementation overhead involved, resulting in a lack of controlled assessments and an inability to showcase the merits of a contribution effectively.",
+    "MCBO algorithms generally have three high-level primitives: a probabilistic surrogate model, an acquisition function, and an acquisition optimizer that can operate in a trust region.",
+    "The framework uses a Friedman test and post-hoc Wilcoxon signed-rank test to analyze algorithm performance comparisons."
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2511.18891",
+   "title": "Reproducibility Study of Large Language Model Bayesian Optimization (Rychert, Spagnolo, Posashkov; Nov 2025)",
+   "accessible": false,
+   "threat": "low",
+   "summary": "Direct fetch of arxiv.org (abs, pdf, and html mirrors) was blocked by this session's network egress policy; assessment is based on the abstract and search-engine summaries. This is a reproducibility study of the LLAMBO framework (Daxberger et al. 2024), a prompting-based BO method using LLMs as discriminative surrogates and acquisition optimizers via text-only interaction. The authors replicate LLAMBO's Bayesmark and HPOBench hyperparameter-optimization experiments, swapping GPT-3.5 for open-weight Llama 3.1 70B, and compare against classical GP-, SMAC-, and TPE-based baselines. They confirm LLAMBO's main claims: textual warm-starting improves early regret and reduces variance, LLAMBO's discriminative surrogate is individually weaker than GP/SMAC but benefits from cross-task semantic priors, and ablations show 'the LLAMBO candidate sampler consistently generates higher quality candidates' than removing textual context.",
+   "threat_reason": "This is a reproducibility/ablation study of one specific LLM-based BO method's components (including its candidate sampler) in continuous/HPO benchmark spaces (Bayesmark, HPOBench), not a general demonstration that acquisition-optimization machinery (pool/candidate generators, dedup, local search) confounds surrogate comparisons across methods. The finding that the LLAMBO candidate sampler generates 'higher quality candidates' is a component-ablation result internal to one method rather than an isolated machinery-vs-machinery or oracle-ceiling comparison, and there is no evidence of mixed/categorical dedup analysis, categorical-flip local-search failure modes, or a true-objective/oracle substitution to bound achievable performance. It is relevant related work (showing candidate-generation choice affects outcomes) but does not pre-empt C1, C2, or C3 as defined.",
+   "key_quotes": []
+  },
+  {
+   "url": "https://proceedings.mlr.press/v139/wan21b.html",
+   "accessible": false,
+   "threat": "low",
+   "summary": "Casmopolitan (Wan et al., ICML 2021) proposes a bespoke local-BO method for high-dimensional categorical/mixed spaces: separate trust regions for categorical (Hamming-ball around the incumbent) and continuous (hyper-rectangle) subspaces, plus a tailored kernel, with convergence guarantees. Compared against CoCaBO, COMBO, and standard BO baselines. Inspecting the actual source (bo/localbo_mixed.py, via GitHub, since the MLR page itself was blocked by network egress policy) shows that in its Thompson-sampling candidate generator, categorical dimensions are resampled fresh for every candidate via random_sample_within_discrete_tr_ordinal (no mask keeping them fixed at the incumbent), while continuous dimensions use a probabilistic per-candidate mask so some candidates DO keep the incumbent's continuous coordinates unchanged. For EI/UCB it instead uses an 'interleaved_search' that alternates optimizing the categorical and continuous subspaces.",
+   "threat_reason": "This is a bespoke mixed/categorical BO method paper (exclusion category ii), not an audit/protocol paper. It never replaces acquisition with the true objective (no C1), never empirically attributes cross-method performance gaps to acquisition-optimization machinery vs. surrogate, never discusses candidate deduplication (no C2), and proposes no machinery-controlled comparison protocol (no C3). Its own Thompson-sampling generator (categorical dims never held fixed at the incumbent while continuous is refined) is a real-world instance of the asymmetric-perturbation pattern C2(a) critiques, making it useful as a concrete related-work example/citation, but the paper itself does not identify, measure, or control for this as a confound.",
+   "key_quotes": []
+  },
+  {
+   "url": "https://link.springer.com/article/10.1186/s40323-022-00218-8",
+   "accessible": false,
+   "threat": "low",
+   "summary": "Cuesta-Ramirez, Le Riche, Roustant, Perrin, Durantin & Gliere (2022) empirically compare several mixed-variable BO approaches -- a continuous-relaxation Gaussian-process method (LV-EGO, which maximizes EI in a relaxed continuous space then solves a discrete pre-image problem, with variants for how discrete/continuous compatibility and Lagrange multipliers are handled) versus random-forest-based mixed metamodels and Gower-kernel GPs -- on three analytical test functions and a beam-design engineering problem. Reported finding: random-forest-based optimizers performed poorly overall (except on 6D Hartmann) relative to the GP/continuous-relaxation approaches.",
+   "threat_reason": "This is a direct method-vs-method empirical comparison (each 'approach' bundles its own surrogate and its own inner-loop/candidate machinery together as a package), but nothing found in the abstract, search-indexed summaries, or citing literature indicates the paper isolates or controls acquisition-optimization machinery (a shared candidate generator, dedup rule, or trust-region variant) as an independent variable, nor does it perform an oracle-ceiling audit or report paired per-seed Wilcoxon tests. It reads as ordinary comparative benchmarking of full BO pipelines (bundled surrogate+machinery), which is related work rather than a preemption of C1/C2/C3.",
+   "key_quotes": []
+  },
+  {
+   "url": "https://arxiv.org/abs/2406.04739",
+   "accessible": false,
+   "threat": "low",
+   "summary": "Gonzalez-Duque, Michael, Bartels, Zainchkovskyy, Hauberg & Boomsma (NeurIPS 2024, Datasets & Benchmarks track) survey high-dimensional BO methods for discrete sequences (molecule/protein design) and build a unified open-source framework (poli / poli-baselines) with standardized black-box functions from chemistry/biology. The stated motivation is that the surveyed literature has 'highly heterogeneous experimental set-ups' across methods and 'technical barriers for the replicability and application of published algorithms,' and the unified harness is intended to enable 'fair and easily-replicable comparisons' under matched black boxes and budgets.",
+   "threat_reason": "This is a benchmarking-standardization survey (exclusion category iii: critiques BO benchmarking generally -- heterogeneous setups, non-standardized black boxes/budgets/replicability) rather than a paper about acquisition-optimization machinery specifically. No evidence found (via search snippets across multiple indexers/mirrors, since arxiv.org itself was blocked by network egress policy) that it replaces the acquisition function with the true objective for an oracle-ceiling audit, that it attributes surrogate-comparison outcomes to candidate-generation/local-search/dedup machinery as distinct from the surrogate, or that it prescribes paired-seed Wilcoxon signed-rank testing or a shared candidate generator/dedup rule. It is strong general related work for motivating C3's fairness concerns but does not itself propose a machinery-controlled protocol or demonstrate the machinery-confound finding.",
+   "key_quotes": [
+    "highly heterogeneous experimental set-ups across methods and technical barriers for the replicability and application of published algorithms to real-world tasks",
+    "a unified framework to test a vast array of high-dimensional Bayesian optimization methods and a collection of standardized black-box functions"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2406.07709",
+   "accessible": false,
+   "title": "Diagnosing and fixing common problems in Bayesian optimization for molecule design",
+   "threat": "medium",
+   "summary": "Tripp & Hern\u00e1ndez-Lobato (2024) identify three pitfalls that silently degrade BO performance on the PMO molecule-design benchmark: an incorrect GP prior width, over-smoothing, and 'inadequate acquisition function maximization' -- i.e. the acquisition optimizer failing to find a good maximizer of the acquisition surface. They show that once these are fixed, even a basic/vanilla BO setup becomes the best-performing method on PMO, implying that prior papers' surrogate/model comparisons on this benchmark were confounded by these pipeline issues rather than reflecting true surrogate quality. Note: WebFetch could not reach arxiv.org, openreview.net, or arxiv-vanity mirrors in this environment (network egress blocked for all tested domains, confirmed via a control fetch to example.com); this assessment is built from multiple independent WebSearch queries returning consistent abstract-level summaries, not from the full text.",
+   "threat_reason": "Directly parallels C2's central claim (acquisition-optimization machinery failures are invisible in convergence plots and get misattributed to the surrogate) and even parallels C3's implication that better machinery, not a better surrogate, explains benchmark rankings. It is confined to acquisition-function MAXIMIZATION quality in a molecule-design/graph search setting, not the mixed/categorical candidate-pool machinery failure modes C2 specifies (forced categorical flips, encoding- vs decoded-level dedup). It does not replace the acquisition score with the true objective to build an oracle ceiling (no C1 analogue), does not A/B candidate-generation machinery variants, and proposes no machinery-controlled comparison protocol (no C3 analogue: no shared candidate generator across surrogates, no paired-seed Wilcoxon protocol). The article should explicitly cite and differentiate from this paper as the closest prior articulation of 'machinery masquerading as a surrogate result,' while noting it lacks the oracle-ceiling audit technique and the categorical/dedup-specific failure modes.",
+   "key_quotes": [
+    "three pitfalls of Bayesian optimization (BO) which can cause poor empirical performance: an incorrect prior width, over-smoothing, and inadequate acquisition function maximization",
+    "with these issues addressed, even a basic BO setup is able to achieve the highest overall performance on the PMO benchmark for molecule design"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2508.00380",
+   "accessible": false,
+   "title": "Evolutionary Generative Optimization: Towards Fully Data-Driven Evolutionary Optimization via Generative Learning (EvoGO)",
+   "threat": "medium",
+   "summary": "Proposes EvoGO, a fully data-driven evolutionary/generative black-box optimization framework that replaces hand-designed evolutionary operators with a learned generative model trained on historical evaluations. As one of several ablations, a 'Real Eval' variant replaces the predicted (surrogate) objective values used inside the optimization loss with ground-truth objective evaluations, in order to isolate the generative architecture and optimization strategy from surrogate-induced error and thereby estimate the framework's theoretical performance ceiling. The GitHub README (github.com/EMI-Group/evogo, which WAS reachable) confirms the project is a generative/evolutionary black-box optimizer replacing 'heuristic rules' with learned search behavior, corroborating that this is not a pool/candidate-based BO loop. WebFetch could not reach arxiv.org directly for the paper text; assessment is based on GitHub README plus multiple consistent WebSearch summaries of the abstract/ablation description.",
+   "threat_reason": "Structurally close to C1's core mechanic -- substitute true objective for the predicted/surrogate score inside the search loop to compute an upper bound -- which is exactly the kind of 'oracle substitution to bound the machinery' the task defines as a high-threat pattern in the abstract. However it differs materially from C1: it is applied to EvoGO's own generative/evolutionary optimizer (not a pool/candidate-based BO loop), it audits EvoGO's own surrogate module in isolation rather than being proposed as a general, reusable diagnostic for BO pipelines, and it is never used to A/B candidate-generation machinery variants (dedup rules, candidate generators) or across multiple competing surrogates/methods as in C1/C3. The article should cite this as convergent prior use of the 'replace surrogate score with ground truth to get a ceiling' idea and explicitly differentiate C1's contribution as generalizing the technique into a machinery-isolation diagnostic for pool-based mixed/categorical BO specifically.",
+   "key_quotes": [
+    "the predicted objective values in the optimization loss are replaced with the ground-truth function evaluations, forming a variant referred to as \"Real Eval\"",
+    "isolates the effectiveness of the overall generative architecture and optimization strategy from any surrogate-induced error, thereby assessing the theoretical upper bound of the framework"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/1805.03463",
+   "accessible": false,
+   "title": "Dealing with Categorical and Integer-valued Variables in Bayesian Optimization with Gaussian Processes (Garrido-Merch\u00e1n & Hern\u00e1ndez-Lobato)",
+   "threat": "medium",
+   "summary": "Addresses BO over categorical/integer variables using a continuous GP relaxation. Identifies that naive approaches (optimizing the acquisition function over the continuous relaxation, then rounding to the nearest integer/one-hot category only at evaluation time) cause the acquisition optimizer to repeatedly propose continuous points that decode to an already-evaluated discrete design -- wasting evaluation budget re-testing known combinations, since the true (discrete) objective is flat within each rounding region but the GP over the continuous relaxation is not. Their fix is to round inside the objective wrapper (so the point the acquisition optimizer scores matches what's evaluated) and, more centrally, to transform the GP covariance function itself so the model correctly represents the objective as piecewise-constant over each discrete region. WebFetch could not reach arxiv.org, arxiv-vanity.com, or ar5iv for this paper; assessment is from consistent WebSearch summaries of the abstract/content.",
+   "threat_reason": "This is the closest pre-existing articulation of the mechanism behind C2(b): duplicate evaluations arising because the acquisition-optimizer/dedup operates at the continuous-encoding level rather than the decoded-categorical level. That said, it is framed and delivered as (per the task's own exclusion category ii) a new bespoke mixed-space BO method -- a kernel/covariance-function redesign plus rounding-in-the-wrapper -- not as an empirical demonstration that this failure mode confounds SURROGATE COMPARISONS across methods, and it proposes no machinery-controlled benchmarking protocol, no oracle-ceiling audit, and no cross-surrogate dedup standardization. The article should cite this paper as the earliest clear statement of the rounding/duplicate-evaluation mechanism and explicitly differentiate C2(b)/C3: this paper treats it as a modeling problem to fix via the kernel for one method, whereas C2(b) shows it silently re-spends the majority of the budget across arbitrary surrogates in a shared pipeline and C3 fixes it at the protocol level (decoded-combination-level dedup shared across all surrogates being compared) rather than via a bespoke kernel.",
+   "key_quotes": [
+    "in the worst case, BO will repeatedly select the same infeasible continuous design due to its high AF value, but discretization will result in a design that has already been evaluated and has zero AF value"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2210.10199",
+   "title": "Bayesian Optimization over Discrete and Mixed Spaces via Probabilistic Reparameterization",
+   "accessible": true,
+   "threat": "medium",
+   "summary": "Daulton, Wan, Eriksson, Balandat, Osborne, Bakshy (NeurIPS 2022) diagnose that the standard practice for handling discrete/categorical parameters in BO -- one-hot encode, apply a continuous relaxation to the acquisition function, then round the optimized continuous candidate to the nearest discrete point -- is a biased, degenerate approximation to true acquisition-function maximization over the mixed space. They propose 'probabilistic reparameterization' (PR): instead of optimizing the acquisition function on rounded points, maximize the expectation of the acquisition function over a distribution on the discrete parameters, which they prove is optimized by the same policy as direct discrete maximization and which admits scalable unbiased gradient estimators. The paper is framed and evaluated as a new acquisition-OPTIMIZATION method (a replacement candidate-generation machinery), tested with GP surrogates across several mixed/discrete synthetic and real benchmarks, showing PR beats round-based baselines regardless of which acquisition function (EI, NEI, UCB, etc.) is used on top of it.",
+   "threat_reason": "Substantial partial overlap with C2a: the paper's core empirical motivation is that a specific piece of acquisition-optimization machinery (round-after-relaxation candidate generation) is degenerate/duplicate-prone in mixed/discrete spaces and caps performance largely independent of the acquisition function on top -- i.e., machinery, not the scoring function, is bottlenecking search. This is close in spirit to C2's claim that machinery dominates surrogate/acquisition comparisons. However it does NOT do C1 (there is no oracle-ceiling audit that swaps in the true objective to bound performance independent of any surrogate/acquisition choice), it is not framed as a general diagnostic tool for auditing arbitrary BO pipelines, and it does not propose anything resembling C3's machinery-controlled benchmarking protocol (shared candidate generator across surrogates, decoded-level dedup, paired seeds, Wilcoxon signed-rank per-seed win/tie/loss reporting). It also targets fixing the machinery (a new method) rather than using machinery control as a diagnostic/audit for comparing different surrogates. The draft must explicitly differentiate C1/C3 from this paper and can cite it as the closest prior empirical evidence for C2a.",
+   "key_quotes": [
+    "maximizing the acquisition function over mixed or high-cardinality discrete search spaces is challenging since standard gradient-based methods cannot be used directly",
+    "a simple and widely-used approach across many popular BO packages is to one-hot encode the categorical parameters, apply a continuous relaxation when solving the optimization, and discretize (round) the resulting continuous candidates",
+    "under suitable reparameterizations, the Bayesian optimization policy that maximizes the probabilistic objective is the same as that which maximizes the acquisition function, and thus PR enjoys the same regret bounds"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/1805.10196",
+   "title": "Maximizing acquisition functions for Bayesian optimization",
+   "accessible": true,
+   "threat": "low",
+   "summary": "Wilson, Hutter, Deisenroth (NeurIPS 2018) is the foundational paper establishing that fully maximizing the acquisition function (rather than approximately) matters for realizing the Bayes' decision rule, and that Monte Carlo-estimated acquisition functions (e.g. for parallel/batch BO) are amenable to gradient-based, multi-start optimization, improving on prior heuristic optimizers. It is confined entirely to continuous Euclidean search spaces.",
+   "threat_reason": "Establishes the general 'acquisition-optimization quality matters' thesis the draft's C2/C3 build on, but has no mixed/categorical space treatment, no oracle/true-objective ceiling audit, no dedup or candidate-generator machinery-confound demonstration, and no benchmarking protocol. Ordinary foundational related work for the acq-opt angle, not a novelty threat.",
+   "key_quotes": [
+    "Fully maximizing acquisition functions produces the Bayes' decision rule, but this ideal is difficult to achieve since these functions are frequently non-trivial to optimize.",
+    "We first show that acquisition functions estimated via Monte Carlo integration are consistently amenable to gradient-based optimization."
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2302.08298",
+   "title": "Unleashing the Potential of Acquisition Functions in High-Dimensional Bayesian Optimization",
+   "accessible": true,
+   "threat": "low",
+   "summary": "Zhao, Yang, Qiu, Wang (2023) run a large-scale empirical study showing that random initialization of the acquisition-function maximizer severely limits realized BO performance in high-dimensional continuous problems, and propose initializing the AF maximizer with points from multiple heuristic optimizers seeded on historical data, showing large gains over standard BO and other high-D BO methods on synthetic and real benchmarks.",
+   "threat_reason": "Reinforces the general 'acquisition-optimizer machinery matters, and is invisible/misattributed in standard comparisons' argument, but is restricted to continuous high-dimensional spaces (no discrete/categorical/mixed handling, no candidate-pool dedup issue), and performs no oracle-ceiling/true-objective audit and no cross-surrogate benchmarking protocol. Related work for the acq-opt-matters framing, not a threat to C1/C2/C3 as defined (which are specifically about mixed/categorical machinery and surrogate-comparison confounds).",
+   "key_quotes": [
+    "the initialization of the AF maximizer plays a pivotal role, as an inadequate setup can severely hinder the effectiveness of the AF",
+    "Our large-scale empirical study shows that the widely used random initialization strategy often fails to harness the potential of an AF."
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2102.07188",
+   "title": "Think Global and Act Local: Bayesian Optimisation over High-Dimensional Categorical and Mixed Search Spaces (Casmopolitan)",
+   "accessible": true,
+   "threat": "low",
+   "summary": "ICML 2021 paper (Wan, Nguyen, Ha, Ru, Lu, Osborne) proposing a new mixed/categorical BO method: a trust-region local-search framework (built on TuRBO/CoCaBO) paired with a tailored categorical/mixed kernel design (transformed-overlap and mixture kernels). For EI/UCB it uses an 'interleaved_search' acquisition optimizer that alternates n-step continuous gradient refinement (categorical held fixed) with n-step categorical neighbor perturbation (continuous held fixed) inside Hamming-distance and Euclidean trust regions. For its highlighted Thompson-sampling variant, the candidate pool for categorical dims is generated via random_sample_within_discrete_tr_ordinal, which always selects at least one categorical dimension to redraw (bit_change = max(hamming*d,1) or min(hamming,d), never 0) and redraws it uniformly over all category values (not excluding the current value) -- so most, but not strictly all, Thompson candidates differ from the incumbent's categorical combination; this is a probabilistic bias toward flipping, not an absolute inability to refine continuous-only, and the paper never frames it as a problem, never audits it against an oracle, and never discusses acquisition-optimization machinery as a confound. It is a bespoke-machinery method paper (new local search + new kernel), benchmarked with standard convergence plots against baselines, with no true-objective-as-acquisition oracle ceiling, no A/B machinery isolation experiment, and no cross-surrogate machinery-controlled comparison protocol. Directly useful as related work for describing/citing a real candidate-generator design relevant to the C2(a) discussion, but does not preempt C1, C2, or C3.",
+   "threat_reason": "No oracle/true-objective audit (C1), no demonstration that machinery choice confounds surrogate comparisons (C2), no machinery-controlled multi-surrogate benchmarking protocol (C3). It is a new algorithm paper (exclusion category ii); its Thompson-variant candidate sampler happens to structurally bias toward categorical flips, which is useful illustrative related work for C2(a) but not a threat since Casmopolitan neither identifies this as a failure mode nor uses it diagnostically.",
+   "key_quotes": [
+    "if max_hamming_dist < 1: bit_change = int(max(max_hamming_dist * len(n_categories), 1)) else: bit_change = int(min(max_hamming_dist, len(n_categories)))  # random_sample_within_discrete_tr_ordinal, bo/localbo_utils.py",
+    "# First optimise the continuous part, freezing the categorical part ... # Then freeze the continuous part and optimise the categorical part  (interleaved_search, bo/localbo_utils.py)"
+   ]
+  },
+  {
+   "url": "https://www.robots.ox.ac.uk/~mosb/public/pdf/6704/Daulton%20et%20al.%20-%202022%20-%20Bayesian%20Optimization%20over%20Discrete%20and%20Mixed%20Spac.pdf",
+   "title": "Bayesian Optimization over Discrete and Mixed Spaces via Probabilistic Reparameterization",
+   "accessible": false,
+   "threat": "low",
+   "summary": "NeurIPS 2022 paper (Daulton, Wan, Eriksson, Balandat, Osborne, Bakshy; arXiv:2210.10199). Proposes probabilistic reparameterization (PR): instead of optimizing the acquisition function directly over a discrete/mixed space with local search or candidate enumeration, PR maximizes the expectation of the acquisition function under a probability distribution over continuous relaxation parameters, using gradient ascent with unbiased stochastic estimators of the objective and its gradient. The authors prove the PR-optimal policy coincides with the AF-maximizing policy and inherits the same regret bounds, and show empirically it outperforms discrete local-search/enumeration-based AF optimizers. This is a wholesale replacement of the acquisition-optimization machinery itself (a new optimizer), not a diagnostic that isolates machinery effects from surrogate effects, not a true-objective oracle-ceiling audit, and not a proposed cross-surrogate benchmarking protocol -- it compares its own new optimizer against baseline optimizers, all using the same (learned) surrogate, rather than isolating machinery from surrogate choice per se.",
+   "threat_reason": "No oracle/true-objective substitution to bound machinery (C1). It does implicitly support the article's thesis that acquisition-optimization method choice matters in mixed spaces (motivating context for C2), but does not empirically demonstrate that machinery confounds SURROGATE comparisons, and proposes no machinery-controlled multi-surrogate protocol (C3). Bespoke new machinery / exclusion category (ii); direct fetch of the given PDF URL and mirrors was blocked by network policy, so this summary is built from the verified abstract/venue metadata via search rather than full-text confirmation.",
+   "key_quotes": []
+  },
+  {
+   "url": "https://arxiv.org/abs/2307.00618",
+   "title": "Bounce: Reliable High-Dimensional Bayesian Optimization for Combinatorial and Mixed Spaces",
+   "accessible": true,
+   "threat": "low",
+   "summary": "NeurIPS 2023 paper (Papenmeier, Nardi, Poloczek). Argues existing high-dimensional mixed/combinatorial BO methods are unreliable when the unknown optimum lacks certain structural assumptions, and proposes Bounce: a method that maps combinatorial and continuous variables into nested embeddings of increasing dimensionality, with its own trust-region search and candidate-pool sizing heuristics (e.g., min(5000, max(2000, 200d)) randomly generated candidate solutions per iteration) for acquisition optimization within each embedding. Evaluated with standard best-so-far convergence comparisons against baselines (including Casmopolitan and PR-style competitors) on synthetic and real benchmarks. It is a new bespoke-machinery BO algorithm, not a diagnostic tool, oracle audit, or benchmarking-protocol proposal.",
+   "threat_reason": "No true-objective/oracle substitution to audit or bound machinery (C1); no isolated A/B demonstration that candidate-generator or dedup machinery, independent of the algorithm's own design, confounds comparisons between different surrogates (C2); no shared-machinery cross-surrogate comparison protocol (C3). It is a new-method paper with its own embedding+candidate-pool machinery (exclusion category ii/new mixed-space method), useful only as related-work context on candidate-pool sizing conventions.",
+   "key_quotes": []
+  }
+ ],
+ "verdicts": [
+  {
+   "url": "https://arxiv.org/abs/2306.09803",
+   "verdict": "downgraded",
+   "reasoning": "Direct fetch of arxiv.org/abs/2306.09803 was blocked by this session's network egress policy (confirmed via proxy status: explicit 403 policy denials for arxiv.org, ar5iv, export.arxiv.org, openreview.net, semanticscholar.org, paperswithcode.com, proceedings.mlr.press, proceedings.neurips.cc, dblp.org, r.jina.ai \u2014 this is a hard session-wide block, not a retry-able failure). GitHub (raw.githubusercontent.com and a sparse git clone of huawei-noah/HEBO) was reachable, so I read the full MCBO README plus grepped the actual implementation (acquisition optimizers: local-search, genetic-algorithm, multi-armed-bandit, interleaved-search; duplicate-elimination logic in the GA and MAB optimizers) for any trace of the article's three contributions.\n\nC1 (oracle-ceiling audit): Zero evidence anywhere \u2014 README and a full-codebase grep for \"oracle\", \"ceiling\", \"true objective\", \"upper bound\" (in the audit sense) turn up nothing resembling substituting the true objective for the acquisition score to produce a per-machinery-variant achievability ceiling. MCBO's mixed-and-match evaluation is always surrogate-driven (GP/BLR models feeding EI/LCB/TS); there is no \"oracle mode\" baseline. This confirms the first-pass agent's finding and it holds under direct code inspection, not just README absence.\n\nC2 (specific machinery failure modes): Not documented as empirical findings anywhere. MCBO's local-search (`LsAcqOptimizer`) is explicitly nominal/ordinal-only (\"The greedy descent acquisition optimizer only supports nominal and ordinal variables\") and mixed spaces are instead handled by a separate interleaved-search optimizer (hill-climbing + gradient descent) \u2014 MCBO never characterizes or demonstrates the article's specific \"local proposals always force a categorical flip, never refining continuous coordinates alone\" failure mode; it's simply a different architecture, not an analyzed pathology. On dedup: MCBO does have generic duplicate-elimination (pymoo's `MixedVariableDuplicateElimination` in the GA optimizer; a resample-until-unseen loop in the MAB optimizer keyed off `was_sample_seen` on the encoded/index tensor) \u2014 this is implementation plumbing for search efficiency, not an empirically demonstrated \"silently re-spends a majority of the budget\" confound, and there is no discussion anywhere of an encoding-level vs. decoded-combination-level distinction as a source of wasted budget. Both C2(a) and C2(b) mechanisms, as specific empirical claims, are absent from MCBO.\n\nC3 (protocol): Genuine but partial overlap, matching what the first-pass agent flagged. MCBO does (a) provide a shared, swappable acquisition-optimizer machinery that can be held fixed while surrogates vary (its whole \"mix-and-match primitives\" design), and (b) use Wilcoxon signed-rank tests (paired with a Friedman test) for statistical comparison. That is real, citable overlap on two protocol ingredients. But the overall protocol differs substantially from C3: MCBO's statistics are rank-based across 47 combinations x 10 tasks x multiple seeds (Friedman + post-hoc Wilcoxon on rankings), not the article's per-pair, per-seed win/tie/loss with paired shared initial designs; there's no dedup-at-decoded-combination-level requirement, no oracle-ceiling gate run \"before attributing anything to a surrogate,\" and no explicit budget-scaling-for-solvability rule. MCBO's motivating claim is the general benchmarking-hygiene point that any uncontrolled primitive (including the acquisition function or trust region, not specifically acquisition-optimization machinery) confounds comparisons \u2014 a related-work-grade framing, not the same specific mechanism-plus-diagnostic contribution.\n\nNet: MCBO threatens only one narrow slice (shared machinery + Wilcoxon testing, i.e. part of C3's plumbing) and is silent on C1 and both C2 failure modes entirely. That is a partial/superficial overlap on a general \"control your primitives\" thesis, not a source that already does substantially the same thing as the article's three contributions taken together. This warrants downgrading from 'medium' to 'low' (still valuable, citable related work).",
+   "decisive_evidence": "MCBO README: \"papers introducing a solution for a single MCBO primitive often omit benchmarking against baselines that utilize the same methods for the remaining primitives\" (general primitive-control motivation, not the article's specific acquisition-optimization-machinery confound). Codebase grep across mcbo/, experiments/, analysis/ for oracle|ceiling|true.?objective|upper.?bound (audit sense) returns zero relevant hits. LsAcqOptimizer docstring: \"The greedy descent acquisition optimizer only supports nominal and ordinal variables\" \u2014 mixed spaces route through a different (interleaved search) optimizer entirely, so MCBO never analyzes a categorical-flip-forcing pathology. Duplicate handling found only as generic pymoo `MixedVariableDuplicateElimination` (GA) and `was_sample_seen` resampling (MAB) \u2014 implementation plumbing, never framed as an encoding-vs-decoded-combination confound or quantified budget loss.",
+   "what_the_article_must_cite_or_differentiate": "Cite MCBO (Dreczkowski, Grosnit & Bou Ammar, NeurIPS 2023 D&B Track) as the closest prior benchmarking-framework work and differentiate on three explicit points: (1) MCBO's \"uncontrolled primitive\" thesis is about ANY primitive (surrogate, acquisition function, acquisition optimizer, trust region) confounding comparisons generically, whereas this article isolates and empirically demonstrates that acquisition-OPTIMIZATION machinery specifically (candidate generation + dedup) dominates, via two concrete mechanisms (categorical-flip lock-in; encoding-vs-decoded dedup budget waste) that MCBO neither names nor measures. (2) MCBO has no oracle-ceiling / true-objective-substitution diagnostic anywhere \u2014 the article's C1 (a surrogate-free, per-machinery-variant upper-bound audit) is a genuinely new cheap diagnostic relative to MCBO's surrogate-driven mix-and-match evaluation. (3) MCBO's statistical protocol is Friedman + post-hoc Wilcoxon over ranked algorithm combinations across a benchmark suite, not the article's C3 recipe of per-seed win/tie/loss with paired shared initial designs, decoded-level dedup, and an oracle-gate check run before any surrogate attribution \u2014 the article should note it borrows the Wilcoxon-testing and shared-machinery ideas from MCBO but composes them into a materially different, more surgical protocol built around the oracle-ceiling gate."
+  },
+  {
+   "url": "https://arxiv.org/abs/2406.07709",
+   "verdict": "downgraded",
+   "reasoning": "Network access to arxiv.org, openreview.net, semanticscholar, researchgate, huggingface, alphaxiv, and even the author's personal blog (austintripp.ca) is blocked by organizational egress policy in this environment (confirmed via /root/.ccr/README.md and repeated EGRESS_BLOCKED errors on each domain) \u2014 I could not get full-text access, matching the first-pass agent's finding. However, GitHub was NOT blocked, and I was able to pull the paper's companion code repo (github.com/AustinT/basic-mol-bo-workshop2024) plus several independent WebSearch queries that surfaced specific technical details beyond the abstract-level summary the first-pass agent had. These additional details change the picture enough to downgrade the rating.\n\nWhat I newly confirmed:\n1. Domain/mechanism for the 'inadequate acquisition function maximization' pitfall: the acquisition function (UCB with randomized beta in [1e-2, 1e0]) is maximized over molecular-graph space using the `mol_ga` genetic-algorithm package with a default population size of 10^4. The paper's proposed 'fix' is simply to run a much more thorough/larger GA search \u2014 i.e., use a stronger acquisition optimizer \u2014 not to build a diagnostic that decouples search-machinery ceiling from surrogate quality.\n2. No evidence anywhere (repo README, multiple targeted searches for \"oracle\", \"true objective\", \"ground truth\", \"upper bound\") that the paper replaces the acquisition score with the true objective to construct a machinery-only ceiling, or that it A/B-tests candidate-generation machinery variants (pool generators, dedup rules) against such a ceiling. This is the core of C1, and it appears absent \u2014 the paper diagnoses acquisition-maximization inadequacy indirectly (by showing a bigger/better GA improves final scores), not via C1's oracle-substitution audit technique.\n3. Domain mismatch with C2's specific failure modes: molecular design here is pure combinatorial graph/string mutation (via genetic algorithm over SELFIES/graphs) with no continuous coordinates at all. There is no 'incumbent categorical combination + continuous sub-vector' structure, so C2(a)'s 'forced categorical flip that prevents refining continuous coordinates while holding the categorical combo fixed' cannot even arise in this setting. Likewise, there is no encoding-vs-decoded-categorical-combination distinction (C2(b)) \u2014 molecules are evaluated directly as graphs, not as encoded mixed vectors that decode to categorical combinations, so the dedup-level failure mode the article specifies doesn't apply.\n4. No evidence of a C3-style machinery-controlled comparison protocol (shared candidate generator enforced across all surrogates being compared, decoded-level dedup, paired-seed Wilcoxon signed-rank testing, per-machinery-variant oracle-ceiling audits, or benchmark-instance scaling for solvability). The paper's contribution is a set of three fixes applied within one pipeline to show a 'basic' GP-BO becomes SOTA on PMO once fixed \u2014 a single before/after comparison, not a protocol for controlling machinery while comparing multiple surrogates.\n\nWhat genuinely overlaps: the paper's overarching insight \u2014 that pipeline/optimizer issues (not surrogate quality) explain apparent benchmark rankings on PMO, and that these issues are invisible unless specifically probed \u2014 is a real and citable precedent for the article's general thesis in C2, and is the closest prior articulation of 'machinery masquerading as a surrogate result.' But per the task's own classification rule, a paper that studies acquisition-function-maximization quality (here, in a discrete/combinatorial molecular space rather than continuous, but functionally analogous \u2014 improving the optimizer, not building a machinery-isolating audit protocol) without the oracle-ceiling technique, without the mixed/categorical-specific failure modes, and without a machinery-controlled multi-surrogate protocol falls on the RELATED WORK side of the line, not the novelty-threat side.",
+   "decisive_evidence": "Confirmed technical detail (via WebSearch, GA maximizes UCB acquisition over molecular graphs using mol_ga with population size 10^4, random beta in [1e-2,1e0]) shows the paper's fix for 'inadequate acquisition function maximization' is enlarging the GA search, not an oracle-substitution ceiling; repeated targeted searches for \"oracle\"/\"true objective\"/\"ground truth\" turned up no such technique in this paper. Companion repo (github.com/AustinT/basic-mol-bo-workshop2024) README, independently fetched, likewise shows no oracle-ceiling diagnostic, no candidate-generation machinery A/B testing, and no machinery-controlled multi-surrogate protocol \u2014 only a single before/after pipeline-fix comparison on PMO.",
+   "what_the_article_must_cite_or_differentiate": "The article should cite Tripp & Hern\u00e1ndez-Lobato (2024, arXiv:2406.07709) in related work as the closest prior demonstration that 'pipeline/optimizer machinery, not surrogate quality, can determine benchmark rankings and go unnoticed' \u2014 and should differentiate on four grounds: (1) no C1 analogue \u2014 they never substitute the true objective for the acquisition score to build a machinery-only oracle ceiling; their diagnosis is indirect (show a bigger GA improves scores), not a formal audit tool proposed for general BO pipelines; (2) their domain is pure combinatorial molecular-graph search via genetic algorithm, with no continuous coordinates and no encoded-mixed-vector representation, so C2's two specific failure modes (candidate generators that force a categorical flip and block continuous-coordinate refinement; encoding-level vs decoded-combination dedup) do not and cannot arise in their setting; (3) no A/B testing of candidate-generation/dedup machinery variants; (4) no C3 analogue \u2014 no shared-candidate-generator-across-surrogates requirement, no decoded-level dedup rule, no paired-seed Wilcoxon signed-rank protocol, no benchmark-instance-scaling requirement. Note also for the article's own methodological rigor section: full-text verification of this source was not possible in this environment (arxiv.org, openreview.net, semanticscholar, researchgate, and even the author's blog are all egress-blocked here), so claims about the paper rest on the abstract, GitHub companion repo, and multiple independent search-derived technical details rather than a direct read of the PDF \u2014 worth a caveat if this citation is load-bearing."
+  },
+  {
+   "url": "https://arxiv.org/pdf/2508.00380",
+   "verdict": "downgraded",
+   "reasoning": "I could not reach arxiv.org, ar5iv, export.arxiv.org, huggingface, r.jina.ai, or semanticscholar directly (all EGRESS_BLOCKED by the proxy for this session). I independently re-fetched the GitHub README (raw.githubusercontent.com/EMI-Group/evogo/main/README.md) and cross-checked with several WebSearch queries returning consistent abstract/ablation descriptions from independent indexes (arxiv listing, ADS, evox.group blog). All sources agree on the same picture, which converges with the first-pass agent's findings, so I'm reasonably confident despite not reading the raw PDF text.\n\nFindings that refute 'medium' and support a lower rating:\n\n1. Domain mismatch is total, not partial. EvoGO's own README and search summaries describe benchmarks as \"numerical benchmarks (e.g., Rosenbrock function), classical control tasks, and high-dimensional robotic control environments,\" with dims 10-1000 \u2014 all continuous. No discrete, categorical, or mixed-space benchmark is mentioned anywhere. C2's two failure modes (a candidate generator that forces a categorical flip and never refines continuous coordinates in place; dedup at the encoding level vs. decoded-categorical-combination level) and C3's protocol (schema-aware shared generator, decoded-combination dedup) are specifically about mixed/categorical BO. EvoGO has literally nothing to say about categorical variables, encoding/dedup at the categorical-combination level, or mixed-space candidate generation, so it cannot pre-empt C2 or C3 at all \u2014 this is best classified as unrelated by domain, not merely \"different machinery.\"\n\n2. Mechanism mismatch for C1 is more than the first-pass agent credited. \"Real Eval\" replaces predicted objective values \"in the optimization loss\" used to TRAIN EvoGO's generative population-proposal model (which itself replaces crossover/mutation operators). This is a training-signal ablation for a generative model, not a per-iteration substitution of the acquisition score used to SELECT the best candidate from a discrete pool inside a BO loop. C1 specifically targets pool/candidate-based BO machinery \u2014 the candidate generator and dedup rule that gate what the acquisition function even sees \u2014 and produces a best-so-far ceiling curve to A/B those machinery components. EvoGO's ablation reports aggregate benchmark performance under a \"perfect surrogate\" assumption at the loss level; there is no candidate pool, no dedup rule, and no machinery A/B (candidate generator variants, dedup variants) being isolated.\n\n3. Scope/reusability: EvoGO's Real Eval is a single ablation on the authors' own architecture, not proposed or used as a general, reusable diagnostic across competing surrogates/methods, which is central to both C1 (\"proposed as a general diagnostic for BO pipelines\") and C3 (protocol run \"per machinery variant before attributing anything to a surrogate\").\n\nNet: the overlap is real but narrow and superficial \u2014 both use \"swap surrogate score for ground truth to estimate a ceiling,\" which the task specifies as the high-threat pattern in the abstract. But EvoGO differs on domain (continuous-only vs. mixed/categorical), on locus of substitution (training loss of a generative operator vs. candidate-selection step of a pool-based BO loop), on what is isolated (its own generative architecture vs. acquisition-optimization machinery: candidate generator, dedup rule), and on generality (one paper's internal ablation vs. a proposed reusable, machinery-controlled comparison protocol used across surrogates/methods). Given the total domain mismatch (continuous-only, no categorical/mixed spaces at all) on top of the mechanism/scope differences the first-pass agent already noted, I'd characterize this as closer to low-threat convergent prior art than a genuine medium threat \u2014 but 'downgraded' (partial/superficial overlap) is the right verdict rather than outright 'none', since the core \"oracle-substitution-for-ceiling\" idea is genuinely shared and should be cited.",
+   "decisive_evidence": "GitHub README (independently re-fetched): \"The documentation indicates EvoGO targets continuous optimization problems. Validation encompasses: Numerical benchmarks (e.g., Rosenbrock function), Classical control tasks, High-dimensional robotic control environments... the examples focus exclusively on continuous domains.\" Combined with the paper quote (via WebSearch, consistent across sources): \"the predicted objective values in the optimization loss are replaced with the ground-truth function evaluations, forming a variant referred to as 'Real Eval'... isolates the effectiveness of the overall generative architecture and optimization strategy... thereby assessing the theoretical upper bound of the framework.\"",
+   "what_the_article_must_cite_or_differentiate": "Cite EvoGO (arXiv:2508.00380) as convergent prior use of the \"substitute ground truth for predicted/surrogate score to estimate a performance ceiling\" idea, crediting it as independent precedent for the general pattern. Explicitly differentiate: (1) Domain \u2014 EvoGO's Real Eval ablation and all its benchmarks (numerical/Rosenbrock-type, classical control, high-dimensional robotic control) are purely continuous; it never touches mixed or categorical spaces, so it cannot speak to C2's categorical-flip candidate-generator failure or encoding-vs-decoded-combination dedup failure, nor to C3's schema-aware/decoded-combination protocol. (2) Mechanism/locus \u2014 EvoGO substitutes ground truth inside the TRAINING LOSS of its own generative population-proposal model (which replaces evolutionary crossover/mutation operators), not inside the candidate-SELECTION step of a pool/candidate-based BO loop; it therefore isolates its generative architecture's training quality, not acquisition-optimization \"machinery\" in C1's sense (candidate pool construction, local-search neighborhood shape, dedup rule). No best-so-far ceiling curve gated by candidate-generation machinery is produced or compared across machinery variants. (3) Generality/use \u2014 the substitution is a single self-contained ablation on EvoGO's own module, never proposed as a reusable, general diagnostic and never used to A/B candidate generators or dedup rules, nor run across multiple competing surrogates/methods as C1's diagnostic and C3's protocol require. The article should frame its contribution as generalizing and repurposing the oracle-substitution idea specifically as a machinery-isolation audit for pool-based mixed/categorical BO \u2014 a setting and a mechanism EvoGO's ablation does not address."
+  },
+  {
+   "url": "https://arxiv.org/abs/1805.03463",
+   "verdict": "downgraded",
+   "reasoning": "Network access to arxiv.org, arxiv-vanity.com, ar5iv.org/ar5iv.labs.arxiv.org, researchgate.net, sciencedirect.com, and semanticscholar.org were all blocked by the egress proxy for this session (confirming the first-pass agent's note that direct fetch was impossible). I cross-checked via multiple independent WebSearch queries, which converge on a consistent, detailed picture of the paper (Garrido-Merch\u00e1n & Hern\u00e1ndez-Lobato, \"Dealing with Categorical and Integer-valued Variables in Bayesian Optimization with Gaussian Processes,\" Neurocomputing 2020 / arXiv:1805.03463):\n\n1. It is a single-method paper proposing a transformed/rounded GP covariance function so the GP models the objective as piecewise-constant over each discrete/categorical region, plus rounding inside the objective wrapper so the acquisition optimizer scores the same point that gets evaluated. This is squarely the task's exclusion category (ii): \"propose new mixed-space BO methods with bespoke machinery.\"\n2. Its experiments compare its own GP-with-transformed-kernel against baseline BO variants (naive one-hot/rounding GP-BO) and against other surrogate families (TPE, SMAC/random forest) as competing full methods on synthetic/real benchmarks \u2014 there is no evidence, in the abstract or any secondary summary found, of a shared/standardized candidate-generation-and-dedup layer applied uniformly across those surrogates to isolate machinery from modeling effects. The comparison is method-vs-method (bundling surrogate + its own machinery), which is exactly the confound the target article is calling out, not a control for it.\n3. No source describes an oracle/true-objective substitution used to bound or audit the candidate-generation machinery (no C1 analogue).\n4. No source describes a machinery-controlled benchmarking protocol (shared generator across surrogates, decoded-combination-level dedup applied generically, paired seeds, per-seed win/tie/loss with Wilcoxon signed-rank tests) \u2014 no C3 analogue.\n5. On the C2(b) mechanism specifically: the paper does articulate that continuous-relaxation-plus-rounding can make the acquisition optimizer repeatedly select points that decode to an already-evaluated discrete design (matching the provided quote), wasting budget. But it frames and resolves this as a GP-kernel/modeling defect intrinsic to one method (fixed by changing that model's covariance function), not as an empirical demonstration that the acquisition-optimization/dedup machinery itself confounds comparisons ACROSS arbitrary surrogates sharing a pipeline. It never generalizes the fix into a protocol-level, surrogate-agnostic dedup rule to be applied when comparing different models.\n\nNet: the overlap is real but narrow and mechanistic only (earliest clear statement of the rounding/duplicate-evaluation phenomenon), while C1 (oracle-ceiling audit) and C3 (machinery-controlled comparison protocol) have no counterpart in this paper, and C2's core empirical claim (machinery confounds cross-surrogate comparisons, invisible in convergence plots) is not what this paper demonstrates \u2014 it demonstrates its own method beats alternatives. This confirms rather than refutes the first-pass agent's 'medium, not high' characterization; if anything the case for keeping it above 'low' rests entirely on the mechanism-articulation overlap for C2(b), which is real but should not be read as pre-empting the article's actual contributions.",
+   "decisive_evidence": "Quote (via first-pass agent, consistent with all secondary summaries found): \"in the worst case, BO will repeatedly select the same infeasible continuous design due to its high AF value, but discretization will result in a design that has already been evaluated and has zero AF value.\" Combined with independently-verified summary: \"A transformation of the covariance function is proposed to deal with categorical and integer-valued variables, with empirical results showing that the proposed method outperforms other approaches for Bayesian optimization\" \u2014 i.e., the fix is a bespoke kernel change validated by beating other full methods, not a machinery-isolation protocol.",
+   "what_the_article_must_cite_or_differentiate": "Cite Garrido-Merch\u00e1n & Hern\u00e1ndez-Lobato (arXiv:1805.03463 / Neurocomputing 2020) as the earliest clear statement of the rounding/duplicate-evaluation mechanism underlying C2(b) \u2014 continuous-relaxation-plus-rounding causes the acquisition optimizer to repeatedly propose points that decode to already-evaluated discrete designs. Explicitly differentiate: (1) that paper treats this as a modeling defect and fixes it via a bespoke GP covariance-function transformation plus wrapper rounding, scoped to one method, evaluated by outperforming rival full methods (surrogate+machinery bundled) \u2014 not as a demonstration that the phenomenon confounds surrogate comparisons; (2) it contains no oracle-ceiling audit (no true-objective substitution to bound what any surrogate could achieve given the candidate machinery) \u2014 C1 has no antecedent there; (3) it contains no machinery-controlled comparison protocol (no shared schema-aware candidate generator applied across differing surrogates, no decoded-combination-level dedup imposed generically, no paired-seed Wilcoxon signed-rank protocol) \u2014 C3 has no antecedent there; (4) C2(b) as claimed in the article is specifically that this dedup failure silently re-spends the majority of the budget ACROSS arbitrary surrogates sharing one pipeline and is invisible in standard convergence plots \u2014 a cross-method, protocol-level empirical claim this 1805.03463 paper does not make (its dedup fix is internal to its own kernel-based method, not a protocol imposed uniformly when comparing multiple different surrogates)."
+  },
+  {
+   "url": "https://arxiv.org/abs/2210.10199",
+   "verdict": "downgraded",
+   "reasoning": "Direct fetch of arxiv.org, ar5iv, dl.acm.org, semanticscholar, openreview, proceedings.neurips.cc, arxiv-vanity, huggingface, and the author's own homepage were all blocked by org egress policy (confirmed via /__agentproxy/status \u2014 403 policy denials, not transient failures, so per the proxy's own instructions these should be reported, not routed around). GitHub was reachable, so I verified the paper's official code repo (facebookresearch/bo_pr) README and source (discrete_mixed_bo/optimize.py), cross-checked against WebSearch snippets and the quotes supplied in the task, and against my training knowledge of this well-known BoTorch/Meta paper.\n\nFindings, checked against C1/C2/C3 as defined:\n\nC1 (oracle-ceiling audit): NOT PRESENT. Nothing in the repo, README, or recoverable summaries indicates the paper ever substitutes the true objective for the acquisition function to produce a machinery-only performance ceiling. The paper's central theoretical result \u2014 'the BO policy that maximizes the probabilistic objective is the same as that which maximizes the acquisition function... enjoys the same regret bounds' \u2014 is a proof that PR faithfully recovers ordinary acquisition-function maximization; it is a fidelity/convergence argument about their new optimizer, not an oracle-substitution diagnostic decoupled from any surrogate/acquisition choice. There is no general-purpose auditing tool proposed.\n\nC2a (candidate-generator degeneracy caps even a perfect surrogate): Only superficial, motivational overlap. PR's diagnosed defect is that continuous-relaxation-then-round acquisition optimization is a biased/inefficient approximation to the true discrete argmax of the acquisition function \u2014 a differentiability/bias problem in the optimizer used to maximize a fixed acquisition function on a fixed GP surrogate. The article's C2a mechanism is specifically a local-search neighborhood defect (local proposals that always force a categorical flip and never refine continuous coordinates while holding the incumbent's categorical combination fixed) \u2014 a different failure mode entirely, and PR's benchmarks never hold surrogate type constant while varying machinery to isolate a surrogate-independent ceiling; they hold the GP surrogate constant and vary acquisition-optimization method (PR vs. round-based vs. exact-rounding w/ FD or STE) across several acquisition functions (EI/UCB/EHVI/NEHVI/TS). That is a claim about acquisition-function-robustness of a new optimizer, not a claim that machinery confounds cross-SURROGATE comparisons (C2's actual target).\n\nC2b (encoding-level vs. decoded-combination dedup wasting majority of budget): NOT PRESENT. Repo code inspection shows the only 'unique' handling is a within-batch (q>1) uniqueness constraint for a single acquisition-optimization call, not a mechanism (or diagnosis of a failure) for detecting duplicate decoded-categorical-combinations across the full evaluation history. No discussion found of duplicate re-evaluation silently consuming budget.\n\nC3 (machinery-controlled comparison protocol): NOT PRESENT. No shared-candidate-generator-across-surrogates design, no decoded-level dedup rule, no paired-seed/shared-initial-design protocol, no per-seed win/tie/loss with Wilcoxon signed-rank reporting, no oracle-ceiling-audit-per-machinery-variant step. PR's own experimental protocol (per GitHub) is standard seeded runs per (experiment, algorithm, seed) triple \u2014 it does not propose any general benchmarking methodology for comparing surrogates.\n\nNet effect: the first-pass 'medium' rating is somewhat overstated. The genuine point of contact is only spiritual/motivational \u2014 both works agree that acquisition-optimization machinery, not just the scoring function on top, can bottleneck mixed/discrete BO \u2014 but PR's mechanism (continuous-relaxation rounding bias), unit of comparison (acquisition functions atop one GP surrogate, not different surrogates), and remedy (a new differentiable optimizer) are all substantively different from C1's oracle-audit diagnostic, C2b's dedup-budget-waste finding, and C3's benchmarking protocol. This is close prior evidence for the general thesis 'machinery can matter independent of the scoring function on top of it' but is not evidence for C2's specific claim about surrogate-comparison confounds, and does none of C1 or C3.",
+   "decisive_evidence": "Repo/source confirmation (github.com/facebookresearch/bo_pr): experiments vary acquisition function (EI, TS, UCB, EHVI, NEHVI) and acquisition-OPTIMIZATION method (continuous relaxation+round, exact rounding w/ FD, exact rounding w/ STE, PR) while the surrogate is a GP throughout \u2014 never a cross-surrogate comparison. The only 'unique'/dedup logic found in optimize.py is a within-batch (q>1) uniqueness constraint documented as \"unique: If True return unique choices, o/w choices may be repeated (only relevant if q > 1)\" \u2014 not decoded-combination-level dedup across the run. Supplied quotes confirm the paper's frame is entirely acquisition-function-maximization fidelity (\"the Bayesian optimization policy that maximizes the probabilistic objective is the same as that which maximizes the acquisition function, and thus PR enjoys the same regret bounds\") rather than an oracle/true-objective substitution or a surrogate-comparison protocol.",
+   "what_the_article_must_cite_or_differentiate": "Cite Daulton et al. (NeurIPS 2022) as the closest prior empirical evidence that acquisition-OPTIMIZATION machinery in mixed/discrete BO (specifically continuous-relaxation-then-round) is a biased approximation that degrades performance largely independent of which acquisition function sits on top \u2014 i.e., partial precedent for the spirit of C2a. The draft must explicitly state: (1) Daulton et al. never substitutes the true objective for the acquisition function and produces no machinery-only performance ceiling \u2014 it has no analogue of C1's oracle-ceiling audit as a general diagnostic; (2) its degeneracy mechanism is continuous-relaxation/rounding bias in a gradient-based optimizer, not the local-search-neighborhood categorical-flip trap the article documents for C2a, and its fix is a new acquisition-optimization method (PR) rather than a machinery-control diagnostic; (3) it never varies surrogate model type \u2014 its 'robust to X' claim is about acquisition functions atop one fixed GP surrogate, not about machinery confounding comparisons ACROSS surrogates, which is C2's actual target; (4) it contains no analogue of C2b's finding that encoding-level (vs. decoded-combination-level) dedup silently re-spends a majority of the evaluation budget; and (5) it proposes no machinery-controlled benchmarking protocol resembling C3 (shared candidate generator across surrogates, decoded-level dedup, paired seeds/shared initial designs, per-seed win/tie/loss with Wilcoxon signed-rank tests, oracle audit per machinery variant, budget-solvable benchmark scaling)."
+  }
+ ]
+}

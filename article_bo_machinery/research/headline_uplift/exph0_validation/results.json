@@ -1,0 +1,322 @@
+{
+ "checks": {
+  "G1 scripted repeats": {
+   "pass": true,
+   "detail": "revisits 6 (want 6), unique 4 (want 4)"
+  },
+  "G2 continuous no-false-positives": {
+   "pass": true,
+   "detail": "0 revisits in all 5 runs"
+  },
+  "G3 pigeonhole expectation": {
+   "pass": true,
+   "detail": "mean revisits 36.0, analytic \u2248 36.0"
+  },
+  "G4 independent recount": {
+   "pass": true,
+   "detail": "exact match all 20 runs"
+  },
+  "D1 hyperopt detection": {
+   "pass": true,
+   "detail": "median revisits 35/80 (gate \u22655; issue #608 class)"
+  },
+  "D2 optuna detection": {
+   "pass": true,
+   "detail": "median revisits 46/80 (gate >0; issues #5440/#2021 class)"
+  },
+  "D4 random pigeonhole on benchmark": {
+   "pass": true,
+   "detail": "mean 20.0, analytic \u2248 20.7"
+  }
+ },
+ "per_lib": {
+  "hyperopt-tpe": [
+   {
+    "evals": 80,
+    "revisits": 35,
+    "revisit_frac": 0.4375,
+    "best": 18.18351393439618,
+    "unique": 45
+   },
+   {
+    "evals": 80,
+    "revisits": 35,
+    "revisit_frac": 0.4375,
+    "best": 4.440892098500626e-16,
+    "unique": 45
+   },
+   {
+    "evals": 80,
+    "revisits": 33,
+    "revisit_frac": 0.4125,
+    "best": 4.440892098500626e-16,
+    "unique": 47
+   },
+   {
+    "evals": 80,
+    "revisits": 31,
+    "revisit_frac": 0.3875,
+    "best": 4.440892098500626e-16,
+    "unique": 49
+   },
+   {
+    "evals": 80,
+    "revisits": 35,
+    "revisit_frac": 0.4375,
+    "best": 18.18351393439618,
+    "unique": 45
+   },
+   {
+    "evals": 80,
+    "revisits": 35,
+    "revisit_frac": 0.4375,
+    "best": 4.440892098500626e-16,
+    "unique": 45
+   },
+   {
+    "evals": 80,
+    "revisits": 33,
+    "revisit_frac": 0.4125,
+    "best": 4.440892098500626e-16,
+    "unique": 47
+   },
+   {
+    "evals": 80,
+    "revisits": 35,
+    "revisit_frac": 0.4375,
+    "best": 4.440892098500626e-16,
+    "unique": 45
+   },
+   {
+    "evals": 80,
+    "revisits": 33,
+    "revisit_frac": 0.4125,
+    "best": 4.440892098500626e-16,
+    "unique": 47
+   },
+   {
+    "evals": 80,
+    "revisits": 35,
+    "revisit_frac": 0.4375,
+    "best": 4.440892098500626e-16,
+    "unique": 45
+   }
+  ],
+  "optuna-tpe": [
+   {
+    "evals": 80,
+    "revisits": 46,
+    "revisit_frac": 0.575,
+    "best": 4.440892098500626e-16,
+    "unique": 34
+   },
+   {
+    "evals": 80,
+    "revisits": 47,
+    "revisit_frac": 0.5875,
+    "best": 4.440892098500626e-16,
+    "unique": 33
+   },
+   {
+    "evals": 80,
+    "revisits": 47,
+    "revisit_frac": 0.5875,
+    "best": 18.18351393439618,
+    "unique": 33
+   },
+   {
+    "evals": 80,
+    "revisits": 47,
+    "revisit_frac": 0.5875,
+    "best": 4.440892098500626e-16,
+    "unique": 33
+   },
+   {
+    "evals": 80,
+    "revisits": 43,
+    "revisit_frac": 0.5375,
+    "best": 4.440892098500626e-16,
+    "unique": 37
+   },
+   {
+    "evals": 80,
+    "revisits": 42,
+    "revisit_frac": 0.525,
+    "best": 4.440892098500626e-16,
+    "unique": 38
+   },
+   {
+    "evals": 80,
+    "revisits": 50,
+    "revisit_frac": 0.625,
+    "best": 4.440892098500626e-16,
+    "unique": 30
+   },
+   {
+    "evals": 80,
+    "revisits": 45,
+    "revisit_frac": 0.5625,
+    "best": 4.440892098500626e-16,
+    "unique": 35
+   },
+   {
+    "evals": 80,
+    "revisits": 46,
+    "revisit_frac": 0.575,
+    "best": 4.440892098500626e-16,
+    "unique": 34
+   },
+   {
+    "evals": 80,
+    "revisits": 43,
+    "revisit_frac": 0.5375,
+    "best": 4.440892098500626e-16,
+    "unique": 37
+   }
+  ],
+  "skopt-gp": [
+   {
+    "evals": 80,
+    "revisits": 16,
+    "revisit_frac": 0.2,
+    "best": 4.440892098500626e-16,
+    "unique": 64
+   },
+   {
+    "evals": 80,
+    "revisits": 13,
+    "revisit_frac": 0.1625,
+    "best": 4.440892098500626e-16,
+    "unique": 67
+   },
+   {
+    "evals": 80,
+    "revisits": 20,
+    "revisit_frac": 0.25,
+    "best": 4.440892098500626e-16,
+    "unique": 60
+   },
+   {
+    "evals": 80,
+    "revisits": 19,
+    "revisit_frac": 0.2375,
+    "best": 4.440892098500626e-16,
+    "unique": 61
+   },
+   {
+    "evals": 80,
+    "revisits": 21,
+    "revisit_frac": 0.2625,
+    "best": 4.440892098500626e-16,
+    "unique": 59
+   },
+   {
+    "evals": 80,
+    "revisits": 18,
+    "revisit_frac": 0.225,
+    "best": 4.440892098500626e-16,
+    "unique": 62
+   },
+   {
+    "evals": 80,
+    "revisits": 16,
+    "revisit_frac": 0.2,
+    "best": 4.440892098500626e-16,
+    "unique": 64
+   },
+   {
+    "evals": 80,
+    "revisits": 19,
+    "revisit_frac": 0.2375,
+    "best": 4.440892098500626e-16,
+    "unique": 61
+   },
+   {
+    "evals": 80,
+    "revisits": 22,
+    "revisit_frac": 0.275,
+    "best": 4.440892098500626e-16,
+    "unique": 58
+   },
+   {
+    "evals": 80,
+    "revisits": 19,
+    "revisit_frac": 0.2375,
+    "best": 4.440892098500626e-16,
+    "unique": 61
+   }
+  ],
+  "random": [
+   {
+    "evals": 80,
+    "revisits": 22,
+    "revisit_frac": 0.275,
+    "best": 4.440892098500626e-16,
+    "unique": 58
+   },
+   {
+    "evals": 80,
+    "revisits": 18,
+    "revisit_frac": 0.225,
+    "best": 4.440892098500626e-16,
+    "unique": 62
+   },
+   {
+    "evals": 80,
+    "revisits": 22,
+    "revisit_frac": 0.275,
+    "best": 4.440892098500626e-16,
+    "unique": 58
+   },
+   {
+    "evals": 80,
+    "revisits": 20,
+    "revisit_frac": 0.25,
+    "best": 18.18351393439618,
+    "unique": 60
+   },
+   {
+    "evals": 80,
+    "revisits": 23,
+    "revisit_frac": 0.2875,
+    "best": 18.18351393439618,
+    "unique": 57
+   },
+   {
+    "evals": 80,
+    "revisits": 14,
+    "revisit_frac": 0.175,
+    "best": 18.18351393439618,
+    "unique": 66
+   },
+   {
+    "evals": 80,
+    "revisits": 22,
+    "revisit_frac": 0.275,
+    "best": 4.440892098500626e-16,
+    "unique": 58
+   },
+   {
+    "evals": 80,
+    "revisits": 20,
+    "revisit_frac": 0.25,
+    "best": 4.440892098500626e-16,
+    "unique": 60
+   },
+   {
+    "evals": 80,
+    "revisits": 17,
+    "revisit_frac": 0.2125,
+    "best": 18.18351393439618,
+    "unique": 63
+   },
+   {
+    "evals": 80,
+    "revisits": 22,
+    "revisit_frac": 0.275,
+    "best": 4.440892098500626e-16,
+    "unique": 58
+   }
+  ]
+ }
+}

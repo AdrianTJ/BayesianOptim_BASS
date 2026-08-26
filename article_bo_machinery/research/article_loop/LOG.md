@@ -1,0 +1,248 @@
+# Article loop log
+
+Append-only; one entry per cycle, newest last; "Next:" is the fresh-context
+resume instruction.
+
+## Cycle 0 — 2026-08-21
+- **Phase:** setup / re-center
+- **Did:** Restructured per user direction: experimentation is now the core
+  of the loop (research → decide → experiment → analyze → re-center →
+  repeat), writing deferred to the terminal phase (writing plan retained
+  unchanged). Imported main's content needed as ground truth
+  (final_results/, updated thesis TeX, diagnostics, NLP HPO, R library) as
+  files — history merge with rewritten main is classifier-blocked and
+  queued as a user decision. Installed the Python experiment stack (numpy,
+  scipy, scikit-learn, optuna, pandas). Wrote the experiment program
+  (E1–E6) and the initial claim ledger (K1–K8; K3-old marked contradicted).
+- **Files:** PLAN.md, CLAIMS.md, LOG.md, ../README.md, imported content
+- **Tests:** check_research.py PASS
+- **Next:** Cycle 1 = E1 (harness validation), per PLAN.md experiment
+  program: DESIGN.md first, Python machinery harness vs the R reference,
+  reproduce the pre-fix oracle numbers, ANALYSIS.md + independent review +
+  check_experiments.py, then re-center the ledger.
+
+## Cycle 1 — 2026-08-21
+- **Phase:** experiment (E1 harness validation) + analyze + re-center
+- **Did:** Built the Python machinery harness (`experiments/machinery.py`)
+  from the R reference; pre-registered DESIGN.md with 6 checks; ran 135
+  runs (3 benchmarks × 15 seeds × 3 arms, budget 80) in 67 s. 5/6 checks
+  PASS including the load-bearing 15/15 paired keep-vs-flip wins on both
+  mixed benchmarks and exact-optimum hits. V2 FAIL led to a real find: the
+  recorded R figure "−0.148 at budget 10" is unreproducible from the
+  committed R code (tail-probability argument + exact historical generator
+  test) — quarantined as K2a-fig; the article must not quote it pending an
+  R re-run. Exact optima computed and analytically proven in review:
+  func2C −0.206326 at (2,2), func3C −0.722140 at (2,2,1). Independent
+  Sonnet review UPHELD the analysis and caught two code defects (unstable
+  hash-based RNG seeding; V6 min/max) — both fixed, experiment re-run
+  deterministically. Ledger updated: K1, K6 supported with measured cost;
+  K2a supported with magnitude revised down at n_cand=1000 (pool-size
+  dependence queued for E2); Kopt added; K2a-fig quarantined.
+- **Files:** experiments/machinery.py, exp01_harness_validation/{DESIGN,
+  ANALYSIS,REVIEW}.md + run_e1.py + results.csv, tools/check_experiments.py,
+  CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E1 V-checks
+  5/6 PASS (V2 = the quarantined reference number, documented)
+- **User decisions (open):** title/co-authors/venue (unchanged); branch
+  history reconciliation with rewritten main (unchanged).
+- **Next:** Cycle 2 = E2 (oracle-ceiling matrix at final protocol): DESIGN
+  first — 2 generator variants × 2 dedup levels (add encoding-level dedup
+  to the harness as a loop option), 25 seeds (1001–1025), budget 80,
+  benchmarks func2C/func3C/cat_ackley d3L5+d6L11, plus the pool-size axis
+  n_cand ∈ {50, 200, 1000} on func2C/func3C to test K2a's magnitude
+  dependence. Reuse validated machinery.py; independent review before
+  ledger update.
+
+## Cycle 2 — 2026-08-21
+- **Phase:** experiment (E2 oracle matrix) + analyze + re-center; plus the
+  R-side resolution of K2a-fig
+- **Did:** E2 ran 700 runs in 5m04s: all five pre-registered hypotheses
+  PASS. Headlines: keep beats flip 25/25 in every cell (Wilcoxon floor
+  p=6.0e-8); the ceiling gap grows ×8–14 as the pool shrinks 1000→50 while
+  keep stays at the optimum (K2a upgraded — severity is pool-size
+  dependent, worst where pools are realistic); encoding-level dedup wastes
+  a median 78/80 picks on the solvable categorical benchmark with no
+  visible movement in any final value (K2b mechanism at protocol scale).
+  Installed R in-container (CRAN egress-blocked; lhs via apt; BASS/GPfit
+  unavailable → E4 BASS cells stay queued for the user's machine) and ran
+  the historical generator through the actual R library: R gives
+  −0.1971@10 at n_cand=1000 — K2a-fig **refuted as recorded** (−0.148 sits
+  in small-pool territory); R and Python agree to ~2 decimals everywhere,
+  cross-language-validating the harness. Independent review UPHELD E2 with
+  five minor findings, all incorporated (REVIEW.md). Ledger: K2a upgraded,
+  K2b protocol-scale, K2a-fig refuted-as-recorded, K6 strengthened.
+- **Files:** exp02_oracle_matrix/{DESIGN,ANALYSIS,REVIEW}.md, run_e2.py,
+  results.csv, r_check/{k2afig_check.R,r_results.csv}, machinery.py
+  (dedup= + revisits), CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E2 H1–H5
+  all PASS
+- **User decisions (open):** unchanged (title/co-authors/venue; branch
+  history).
+- **Next:** Cycle 3 = E3 (surrogate × machinery matrix): DESIGN first —
+  surrogates {GP-relaxation (sklearn GPR + closed-form EI), RF (sklearn,
+  SMAC-style EI over trees' variance), TPE (optuna)} through the SAME
+  run_bo loop and generator/dedup cells, vs Random, paired 25 seeds,
+  budget 80, benchmarks func2C/func3C/cat_ackley d3L5; fold a benchmark
+  index into the RNG seed formula (E2 review finding 1). Measures whether
+  machinery choices move rankings for surrogate families beyond BASS/GP
+  (K5) and the surrogate-level revisit cost (E5 piggybacks: count revisits
+  per surrogate under encoding dedup on d3L5). Independent review before
+  ledger update.
+
+## Cycle 3 — 2026-08-22
+- **Phase:** experiment (E3 surrogate matrix) + analyze + review-forced
+  re-center
+- **Did:** E3 ran 750 runs (relaunched once after a container restart
+  killed the first run; pre-registration was already committed). Two
+  pre-registered hypotheses FAILED, two PASSED. H2 passed emphatically:
+  encoding-level dedup costs every real pool surrogate 52–55/80 revisits
+  and drops d3L5 solve-rate from 25/25 to 20–23/25, and stock optuna TPE's
+  own machinery wastes 53/80 — the dedup leak is cross-method (K2b
+  upgraded). H1 failed in all four cells: keep-vs-flip makes no
+  significant difference for sklearn GP/RF (p≥0.09). The adversarial
+  reviewer UPHELD every computation (zero numeric mismatches) but
+  **REFUTED the first-draft "regime" reframing** of the H1 null as
+  confounded HARKing; the analysis was rewritten to the pre-registered
+  fallback (audit ceiling overestimates machinery sensitivity for weak
+  surrogates), K10 demoted to hypothesis, and the de-confounding
+  experiment designed: a guidance dial (noisy oracle, score = −f + σ·ε,
+  same pool-argmax search type, σ swept ceiling→Random). H4 also failed
+  (TPE ≯ Random); review confirmed the cause candidate is real (thesis
+  tpe.R shares the LHS init via add_trial; ours didn't) — config-matched
+  re-run queued. Minor code fixes: numeric param-key sort in combo_of; GP
+  random_state disclosure.
+- **Files:** exp03_surrogate_matrix/{DESIGN,ANALYSIS,REVIEW}.md, run_e3.py,
+  results.csv, surrogates.py, CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E3 checks:
+  H2 PASS ×2, H3 2/4, H1 FAIL ×4 + H4 FAIL ×2 (pre-registered
+  falsifications, recorded as findings)
+- **User decisions (open):** unchanged.
+- **Next:** Cycle 4 = E7 (guidance dial, decides K10): DESIGN first —
+  noisy-oracle acquisition score = −f(Xc) + σ·ε with σ calibrated per
+  benchmark so mean final spans ceiling→~Random across σ levels (pilot σ
+  grid on a few seeds first, then pre-register the σ set); keep vs flip,
+  combination dedup, func2C + func3C, 25 paired seeds, budget 80,
+  n_cand 1000 and 50 (small pool = where E2 says the gap is largest —
+  strongest test). Pre-register: H-regime supported iff keep-vs-flip
+  paired win-rate/gap decays monotonically toward chance as σ grows;
+  refuted if it persists at σ where performance ≈ GP/Random level. Also
+  (cheap, same cycle if time permits): shared-init TPE re-run on
+  func2C/3C to close K-TPE. Independent review before ledger update.
+
+## Cycle 4 — 2026-08-22
+- **Phase:** experiment (E7 guidance dial + shared-init TPE) + analyze +
+  review-forced corrections
+- **Did:** Calibration pilot disclosed, σ set and GP-level anchors frozen
+  in DESIGN before the confirmatory 1250-run job. Dial result: W-clauses
+  H-regime-consistent in all four cells (25/25 at σ=0 → chance at the
+  pre-named anchors, within the identical pool-argmax search type), but
+  the G-clause failed in 2/4 cells → composite verdict INCONCLUSIVE,
+  reported as such; G-clause diagnosed (post-hoc, labeled) as
+  mis-specified at near-ceiling cells. Shared-init TPE moved func2C to
+  20/25 and func3C to 16/25 — the pre-registered joint criterion missed
+  by one seed, so K-TPE stays open (narrowed). The adversarial review
+  REFUTED the first draft for declaring K-TPE "closed" despite the missed
+  joint criterion (the same overclaim class E3's review blocked) and for
+  a G-count factual error (said 3/4, actually 2/4); both corrected, plus
+  two config deviations disclosed (n_startup_trials=0 vs tpe.R's default
+  10; benchmark-shared noise streams). Process rule adopted (REVIEW.md):
+  composite criteria are evaluated by their letter first, and every
+  ledger status change must quote the criterion it satisfies.
+- **Files:** exp04_guidance_dial/{DESIGN,ANALYSIS,REVIEW}.md, run_e7.py,
+  results.csv, surrogates.py (run_tpe init=), CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E7
+  composite INCONCLUSIVE (pre-registered), K-TPE joint criterion NOT MET
+  (recorded)
+- **User decisions (open):** unchanged.
+- **Next:** Cycle 5 = the one-shot K10 re-test (authorized in CLAIMS):
+  same dial, FRESH seeds 1026–1050, W-only pre-registered criteria
+  (support: W(0)≥20 & p<0.05 AND W(σ*)≤17 & p≥0.05 in all four cells;
+  refute: W(σ*)≥20 & p<0.05 at n_cand=50 on both benchmarks; else
+  inconclusive-final). Whatever it returns is final for the article — no
+  further K10 experiments. If time remains in the cycle: begin
+  `numbers.md` (Phase 0 of the writing plan), since the in-container
+  experiment program is nearing its limit (E4/BASS needs the user's
+  machine; E6/real-task is the remaining optional experiment).
+
+## Cycle 5 — 2026-08-22
+- **Phase:** experiment (E8, the one-shot K10 final test) + analyze +
+  re-center; plus writing-plan Phase 0 in parallel
+- **Did:** E8 ran on fresh seeds 1026–1050 with W-only criteria committed
+  before the run. Verdict by the letter: **H-REGIME SUPPORTED** — all four
+  cells at W(0)=25/25 (p=6e-8) and non-significant at the pre-named
+  anchors (min p=0.13); refute criterion cleanly unmet. Review UPHELD,
+  with git-forensic confirmation the criteria predate the data and zero
+  numeric mismatches across all 24 cells; three wording minors adopted
+  (non-monotone-decay phrasing — func3C n=50 shows a residual W=18 p=.004
+  at σ=100; sequential-design disclosure in Threats; "untested" tag on
+  the mechanism speculation). K10 enters the ledger as supported with
+  mandatory E7-footnote and sequential-design disclosures. Phase 0 of the
+  writing plan also done: `writing_loop/tools/extract_numbers.py` +
+  canonical `numbers.md` generated from final_results/.
+- **Files:** exp05_k10_final/{DESIGN,ANALYSIS,REVIEW}.md, run_e8.py,
+  results.csv, writing_loop/{tools/extract_numbers.py,numbers.md,
+  WRITING_LOG.md}, CLAIMS.md
+- **Tests:** check_research.py PASS; check_experiments.py PASS; E8
+  pre-registered verdict SUPPORTED
+- **Re-center decision (logged, user may override):** the in-container
+  experiment program is complete. E4 (BASS cells) requires R packages
+  unavailable here — queued for the user's machine with exact commands
+  (run_all_final.sh + diagnostics harness). E6 (extra real mixed task) is
+  SKIPPED, not silently: the thesis's final run already includes two real
+  tasks under the shared machinery (nlp_hpo, elastic_net, in numbers.md),
+  and marginal in-container budget is better spent writing. K-TPE stays
+  open as a non-article claim.
+- **User decisions (open):** title/co-authors/venue; branch history; E6
+  skip approval.
+- **Next:** Writing phase begins (WRITING_PLAN.md governs; single-writer
+  on main.tex, worker≠verifier per section). First: write
+  `writing_loop/tools/check_article.py` (citation integrity, TODO
+  ratchet from baseline 14, numbers traceability vs numbers.md +
+  experiment ANALYSIS files); then S1 (Setup section) from code_files/R/
+  as it exists, with review before its TODO resolves.
+
+## Cycle 6+ — 2026-08-22 (writing phase, cycles 2–8 of WRITING_LOG)
+- **Phase:** writing (see WRITING_LOG.md for per-cycle detail) → **loop
+  stop condition reached**
+- **Did:** Sections S1–S8 drafted single-writer with per-section
+  adversarial review (five section reviews returned REFUTED verdicts on
+  first drafts — all corrected before commit), references extended with
+  field-verified entries, and the Phase-2 three-lens full pass run to a
+  clean verdict over three rounds, adding the paper's first figure. The
+  article is a complete, internally consistent, evidence-traceable full
+  draft; every number traces to numbers.md or a pre-registered
+  experiment analysis, and every mandatory disclosure is in place.
+- **Tests:** all checks PASS.
+- **Loop state: STOPPED at its normal end.** Reopen triggers: the user's
+  decisions (title/co-authors/acknowledgments/venue), a compile fix
+  pass after pdflatex on the user's machine, the E4 BASS cells when run
+  on the user's machine, or the paused loop_engineering backlog (Q2–Q7).
+
+## Post-close: H4 (generator axis, strengthened surrogate) — 2026-08-25
+- **Phase:** experiment (H4, pre-registered) + analyze + record. The loop
+  was already STOPPED; this is a single author-authorized attempt from
+  AUTHOR_TODO, not a reopened cycle.
+- **Did:** DESIGN.md pre-registered (`33f1d1e`, 15:46), runner committed
+  before any run (`5074596`, 17:05), pilot run (20 runs, seeds 1051–1055,
+  budget 80, n_cand=50). The pre-registered ceiling-proximity gate FAILED
+  on func2C: strengthened GP mean −0.026 against a threshold of −0.156 and
+  a same-pool oracle ceiling of −0.206. Per DESIGN the outcome is "strength
+  knob failed": no confirmatory run, no oracle-240 reference, E3 fallback
+  stands, K5 unchanged, one Discussion footnote records the attempt.
+- **Review findings applied the same day:** the first draft's "10× restarts
+  are inert" mechanism claim was refuted against the pilot's own data (the
+  knob changes 4 of the 20 runs, in mixed directions) and removed from
+  ANALYSIS.md, CLAIMS.md and main.tex; the footnote now names the pool-size
+  difference behind the −0.026 vs −0.105 comparison, so the shortfall is
+  not misread as evidence about strengthening. Two further items are on
+  record in ANALYSIS.md: a re-run finding (19/20 rows reproduce bit-exactly,
+  func2C seed 1055 keep does not, gate mean −0.049 on re-run, decision
+  unchanged) and a mis-specified `STRENGTHENED-NULL` rule in DESIGN.md that
+  never bound. DESIGN.md left frozen.
+- **Files:** exp06_h4_strong_surrogate/{DESIGN,ANALYSIS}.md, run_h4.py,
+  results_pilot.csv, CLAIMS.md (K5 row), main.tex (one footnote)
+- **Tests:** gate arithmetic recomputed from committed exp02/exp03
+  results.csv; 19 of 20 pilot rows reproduced bit-exactly from the
+  committed runner.
+- **Loop state: still STOPPED.** No third test on the generator axis
+  without a new pre-registered mechanism hypothesis (DESIGN stopping rule).
