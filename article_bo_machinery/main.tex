@@ -1247,7 +1247,13 @@ the controlled matrices total about $75$ minutes of aggregate CPU time
 (dominated by random-forest fits; the oracle audit itself about five
 minutes); the in-the-wild audit adds ${\sim}13$ core-hours for its
 1{,}050 runs and the equal-budget control ${\sim}1.5$ core-hours for
-275, all single-machine on four cores.
+275, all single-machine on four cores. Reported aggregate statistics for
+the pest\_control $\times$ optuna-tpe cell were confirmed to reproduce
+exactly under a matching Optuna version, but individual per-seed runs
+largely did not replay (3 of 25 matched), since the committed results
+record each library's version and
+non-default settings but not the transitive numpy/scipy versions that its
+sampler depends on; per-seed replay is therefore not guaranteed.
 
 \bibliography{references}
 
