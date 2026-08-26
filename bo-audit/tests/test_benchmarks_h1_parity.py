@@ -54,11 +54,21 @@ class TestBenchmarksH1Parity(unittest.TestCase):
     def setUpClass(cls):
         try:
             cls.machinery = _load_machinery()
-        except ImportError:
+        except ImportError as exc:
+            # Report the real cause. A skip here means the divergence
+            # guard did NOT run, and the two most common causes look
+            # nothing alike: the research tree may be absent (expected
+            # for an installed user), or it may be present while one of
+            # machinery's own dependencies -- scipy, notably -- is
+            # missing (a developer environment problem worth fixing).
+            # Attributing both to "tree not on path" would let a silent
+            # non-run pass for an expected one.
+            present = os.path.isdir(os.path.abspath(MACHINERY_DIR))
             raise unittest.SkipTest(
-                "machinery module not importable (research tree not on "
-                "path) -- vendored fallback cannot be compared to its "
-                "source in this environment")
+                "machinery module not importable, so the vendored copy "
+                "was NOT compared against its source. Research tree at "
+                f"{MACHINERY_DIR} {'present' if present else 'absent'}; "
+                f"import failed with: {exc!r}")
 
     def _assert_exact_match(self, name_a, obj_a, obj_b, X):
         y_a = obj_a["fn"](X)

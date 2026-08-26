@@ -466,3 +466,25 @@ committed results / DESIGN files / paper numbers are read-only.
   compile (no TeX in-container), an end-to-end SMAC run, and the PyPI
   publication, which is deliberately left undone so the name and version
   are not claimed before collaborators have seen the API.
+
+## Item R7b addendum — 2026-08-26 (found in the close-out acceptance test)
+- The clean-clone acceptance run showed the six parity tests **skipping**
+  in a clone where the research tree was demonstrably present. A guard
+  that always skips is not a guard, so this was chased rather than
+  waved through.
+- **Cause:** `machinery.py` imports `scipy.stats.qmc`, and the acceptance
+  venv had numpy and optuna but no scipy. The guard was skipping on a
+  missing dependency while reporting "research tree not on path".
+  Installing scipy made all 17 tests pass, parity included — so the
+  guard itself was sound and only its diagnostic was wrong.
+- **Why that mattered enough to fix:** the two causes look identical in
+  the output but mean opposite things. An absent tree is expected for an
+  installed user; a present tree with a broken dependency is a developer
+  environment problem, and the divergence guard silently not running is
+  exactly the failure this test exists to prevent. Conflating them lets a
+  silent non-run pass for an expected one.
+- **Fix:** the skip message now states whether the research tree is
+  present and quotes the real `ImportError`. Verified both branches — it
+  runs and passes with scipy installed, and with scipy removed it skips
+  while reporting the tree as present and naming the scipy import
+  failure.
