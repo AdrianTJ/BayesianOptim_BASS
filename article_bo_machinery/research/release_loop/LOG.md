@@ -132,3 +132,62 @@ committed results / DESIGN files / paper numbers are read-only.
   medians still print 0 and 78. No LaTeX exists in this container, so
   the actual `pdflatex` run stays an author task and must be named as
   such rather than claimed.
+
+## Item R3 — 2026-08-26
+- **Phase:** article PDF buildable from a clean clone — complete.
+- **Did:** `main.tex:684` includes `figures/fig_dedup_audit`, but the
+  built figure was swallowed by the blanket `*.pdf` rule in the root
+  `.gitignore` (rule at line 36) and absent from the allowlist beneath
+  it, so a fresh clone following the article README's Build section
+  failed on a missing figure. A Sonnet 5 subagent added one negative
+  pattern for that single path inside the existing "Keep specific PDF
+  assets and main outputs" block, regenerated the figure from the
+  committed E2 results, and documented the generation step in the
+  README's Build section.
+- **Verification:** the diff is exactly one added `.gitignore` line plus
+  one README paragraph — no other ignore rule, no `main.tex` change, no
+  edit to the generator. The figure was regenerated independently by
+  this session and printed `medians: {'combination': 0.0, 'encoding':
+  78.0}`, matching the caption's claim of 78/80 under encoding dedup
+  versus 0 under combination dedup. Output is a valid 1-page PDF whose
+  basename matches what `main.tex` requests.
+- **A verification error worth recording, since the loop records its
+  own:** the first trackability check called `git check-ignore -v` and
+  read its exit status as the verdict. That is wrong — `check-ignore`
+  exits 0 whenever *any* rule matches, including a negation, so it
+  reported "still ignored" for a file that is not ignored. Re-tested
+  decisively with `git add --dry-run` (offers to add), `git status`
+  (lists it as `??` untracked rather than ignored), and by reading the
+  matched rule itself (line 43, `!`-prefixed). The fix was correct; the
+  check was not.
+  A second harness bug followed in the same item: a clean-clone check
+  tested `ls "$f".pdf "$f".png "$f"`, which fails whenever *any* listed
+  candidate is absent, and so reported the figure missing while the
+  directory listing directly above it showed the file present. Both
+  errors were in the checking code, not the change under test; both are
+  recorded because a verification pass that hides its own mistakes is
+  not one.
+- **Clean-clone simulation (the actual acceptance test):** cloned the
+  committed branch into a fresh directory. The figure is present at
+  19,246 bytes, `references.bib` resolves, every `\includegraphics`
+  target resolves, and running the generator *from inside the clone*
+  reprints `medians: {'combination': 0.0, 'encoding': 78.0}`. Both
+  LICENSE files from R2 are present in the clone as well.
+- **Author task, not claimed as done:** no TeX distribution exists in
+  this container, so `pdflatex` was never run here. This item makes the
+  figure present and the step documented; the actual compile remains an
+  author-side confirmation.
+- **Next:** Item R4 = record the H6 sweep's real status.
+  `research/headline_uplift/exph6_sweep/` holds a pre-registered
+  16,575-run DESIGN and 10,203 committed rows with no ANALYSIS.md, GP
+  arms essentially unrun, and a pre-registered hypothesis (GH5) that
+  fails on the real-ML class. A reader currently finds a large tree of
+  unanalyzed data that narrows the paper's headline, with nothing
+  saying so. Delegate to a Sonnet 5 subagent: write a STATUS.md in that
+  folder following this tree's LOG/PLAN conventions — what ran, what did
+  not, which hypotheses the partial data can and cannot address, and an
+  explicit statement that no paper claim currently rests on it. Out of
+  scope for that agent: `results.jsonl`, `DESIGN.md`, `analyze_g.py`,
+  `main.tex`, and any claim in `CLAIMS.md`. Every number in the note
+  must be re-derived by this session from `results.jsonl` before the
+  commit stands — do not let the agent copy figures out of this log.

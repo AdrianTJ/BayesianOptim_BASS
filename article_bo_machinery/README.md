@@ -30,6 +30,11 @@ cd article_bo_machinery
 pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
+The article's one figure, `figures/fig_dedup_audit.pdf`, is committed to the
+repository, so the build above works without any extra steps. To regenerate
+it from the committed results (`research/article_loop/experiments/exp02_oracle_matrix/results.csv`),
+run `figures/make_fig_dedup_audit.py`, which requires matplotlib and numpy.
+
 ## Relationship to the thesis
 
 The thesis (`written_files/tesis_escrito/`) claims this finding briefly in its

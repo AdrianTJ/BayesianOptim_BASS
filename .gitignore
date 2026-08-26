@@ -40,6 +40,7 @@ results*/
 # Keep specific PDF assets and main outputs
 !**/logo_ITAM.pdf
 !**/aipguide4-1.pdf
+!article_bo_machinery/figures/fig_dedup_audit.pdf
 !written_files/corrections.pdf
 !written_files/tesis_escrito/Figures/*.pdf
 !written_files/tesis_escrito/main.pdf
