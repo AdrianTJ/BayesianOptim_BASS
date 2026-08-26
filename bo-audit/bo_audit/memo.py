@@ -14,8 +14,9 @@ class AuditStop(Exception):
 
 
 class MemoizedAuditedObjective(AuditedObjective):
-    def __init__(self, fn, space, unique_budget, cont_decimals=6):
-        super().__init__(fn, space, cont_decimals)
+    def __init__(self, fn, space, unique_budget, cont_decimals=6,
+                 canonicalize=None):
+        super().__init__(fn, space, cont_decimals, canonicalize)
         self.unique_budget = unique_budget
         self.cache = {}
 

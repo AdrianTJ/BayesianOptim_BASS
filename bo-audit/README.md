@@ -110,10 +110,10 @@ repository (`article_bo_machinery/research/`) and are dispatched by
 
 ## Verification
 
-The counting logic is covered by `bo_audit/tests/`:
+The counting logic is covered by `tests/`:
 
 ```bash
-python -m pytest bo_audit/tests
+python -m pytest tests
 ```
 
 ## Citation

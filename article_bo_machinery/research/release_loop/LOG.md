@@ -426,3 +426,43 @@ committed results / DESIGN files / paper numbers are read-only.
   states the test path as `bo_audit/tests` where the tests live at
   `tests/`. Verify by clean-venv install, full suite, and confirming
   the new memo test fails when the passthrough is reverted.
+
+## Item R7b — 2026-08-26
+- **Phase:** the three remaining package defects — complete. R7 closed.
+- **Did:** A Sonnet 5 subagent (a) copied `smac_runner.py` verbatim into
+  `bo_audit/`, so `run_smac_subprocess` no longer resolves a path that
+  does not exist; (b) added `canonicalize=None` to
+  `MemoizedAuditedObjective.__init__` and forwarded it to the parent,
+  unblocking the budget-equalized control on conditional spaces; (c)
+  corrected the README's test path from `bo_audit/tests` to `tests`.
+- **Verification:** `smac_runner.py` byte-identical to the research-tree
+  original (sha256 e770f2a0...); a wheel built by this session ships it
+  alongside the other nine modules, and from an installed package
+  `Path(drivers.__file__).parent / "smac_runner.py"` now exists;
+  backward compatibility of the memo signature confirmed by calling
+  `(fn, space, 80)` and `(fn, space, 80, 6)` positionally; the README's
+  corrected command run as written gives 17 passed.
+- **The new memo test was mutation-tested twice, because one mutation
+  was not enough to trust it.** Reverting the signature makes it fail
+  with TypeError — but that only proves it detects a missing *parameter*.
+  The original defect was subtler: a parameter accepted and silently
+  dropped. So a second mutation kept the signature and removed only the
+  `super().__init__` forwarding; the test failed there too, raising
+  AuditStop because the two conditional configs no longer share a key
+  and exhaust the unique budget. It catches the real bug shape, not just
+  its signature. `memo.py` was restored byte-identical after each
+  mutation and the suite re-run green.
+- **Honest limit, not claimed as fixed:** shipping the runner makes the
+  driver reachable, but SMAC execution still requires the isolated SMAC
+  venv the runner is designed for, and `smac_runner.py` retains its own
+  `sys.path.insert` of a research-tree-relative path (harmless when
+  absent — Python ignores non-existent sys.path entries — after which
+  `bench_by_name` falls back to the vendored benchmarks). No end-to-end
+  SMAC run was performed here: smac is not installed in this container.
+  What is verified is that the file ships and the path resolves; what is
+  not verified is a full SMAC audit from an installed package.
+- **Next:** none — R1 through R7 are complete, verified and pushed. Close
+  out to the author with the deferred items named: the `pdflatex`
+  compile (no TeX in-container), an end-to-end SMAC run, and the PyPI
+  publication, which is deliberately left undone so the name and version
+  are not claimed before collaborators have seen the API.

@@ -109,6 +109,34 @@ class TestMemoizedWrapper(unittest.TestCase):
         with self.assertRaises(AuditStop):
             audited({"k": "c"})
 
+    def test_canonicalize_is_forwarded_to_core(self):
+        """MemoizedAuditedObjective must forward canonicalize to
+        AuditedObjective.__init__ so conditional-space configs that differ
+        only in an inactive coordinate share one cache key. Regression:
+        if the subclass drops the argument, the two calls below mint
+        distinct keys, the second is charged as a unique eval instead of
+        served from cache, and this test fails."""
+        seen = []
+
+        def fn(cfg):
+            seen.append(cfg)
+            return 0.0
+
+        def canon(cfg):
+            cfg = dict(cfg)
+            if cfg["mode"] == "off":
+                cfg.pop("aux", None)
+            return cfg
+
+        space = [("mode", "cat", ["off", "on"]), ("aux", "cat", ["u", "v"])]
+        audited = MemoizedAuditedObjective(fn, space, unique_budget=1,
+                                           canonicalize=canon)
+        audited({"mode": "off", "aux": "u"})
+        audited({"mode": "off", "aux": "v"})  # same key under canon: cached
+        self.assertEqual(len(seen), 1)        # second call served from cache
+        self.assertEqual(audited.summary()["unique_evals_charged"], 1)
+        self.assertEqual(audited.n_revisits, 1)
+
     def test_trajectory_values_match_uncached(self):
         """Same proposal sequence, deterministic fn: identical values."""
         seq = [{"k": k} for k in ["a", "b", "a", "c", "b", "a"]]
