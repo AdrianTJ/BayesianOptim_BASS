@@ -52,6 +52,9 @@ docs/defense_questions.md
 # Python build/test artifacts (bo-audit)
 __pycache__/
 *.egg-info/
+build/
+dist/
+.pytest_cache/
 
 # local git worktrees
 .worktrees/
