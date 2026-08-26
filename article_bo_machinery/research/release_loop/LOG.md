@@ -191,3 +191,64 @@ committed results / DESIGN files / paper numbers are read-only.
   `main.tex`, and any claim in `CLAIMS.md`. Every number in the note
   must be re-derived by this session from `results.jsonl` before the
   commit stands — do not let the agent copy figures out of this log.
+
+## Item R4 — 2026-08-26
+- **Phase:** H6 G-sweep status record — complete.
+- **Did:** `exph6_sweep/` held a pre-registered DESIGN, 10,203 committed
+  rows, no ANALYSIS.md, GP arms unrun and a failing pre-registered
+  hypothesis, with nothing in the tree saying so. A Sonnet 5 subagent
+  wrote `STATUS.md` there: coverage table, cell-level shortfall, the
+  concrete finish-list, per-clause analysis of which GH hypotheses the
+  partial data can and cannot address, a plain statement of the GH5
+  failure, and a provenance section. `results.jsonl`, `DESIGN.md` and
+  the analysis scripts were not touched.
+- **Verification — ground truth derived before reading the agent's
+  answer,** so the comparison was independent rather than a
+  plausibility check. Re-derived from `results.jsonl` with separate
+  code: 10,203 rows; per-arm 2,300/2,300/2,000/2,300/1,300 and 1/1/1
+  for the GP arms; planned cells 92/92/80/92/64/77/77/77 totalling 651;
+  smac 51 full, 2 partial, 11 missing; fast-arm 10,200 of 10,500
+  (97.1%); GP family 3 of 5,775; overall 10,203 of 16,275 (62.7%); zero
+  duplicate `(arm, benchmark, budget, seed)` keys; GH3's 66 contributing
+  cells decomposing as 23 + 20 + 23 with optuna-gp contributing none.
+  Every figure in STATUS.md matched.
+- **A stale total in the frozen pre-registration, found and correctly
+  handled.** DESIGN.md line 58 states "Total 16,575 runs", but that
+  arithmetic predates its own Amendment 1, which excluded the 3 YAHPO
+  benchmarks from optuna-tpe-3.6 (3 x 4 budgets x 25 seeds = 300 runs).
+  The post-amendment total is 16,275. The agent found this independently
+  and used the corrected denominator. DESIGN stays unedited — a
+  pre-registration is frozen even where later known to be imperfect —
+  and STATUS.md carries the reconciliation as a bookkeeping note.
+- **Two precision defects found in review and corrected by this session
+  rather than by another agent round-trip, both mechanical:** (1) the
+  block labelled "reproduced verbatim" had had its `**` bold markers
+  stripped, so a reader diffing it against `analyze_g.py`'s real stdout
+  would have found a mismatch — restored byte-for-byte from the script's
+  own output and re-checked equal; (2) the smoke-cell citation read
+  "Amendment 1's Procedure step 2", conflating two separate DESIGN
+  sections — Procedure step 2 names the five smoke cells, Amendment 1
+  reports their timings. In a document whose entire value is provenance,
+  claiming verbatim and then differing is the defect that matters most.
+- **Independently confirmed the "no paper claim rests on this" statement**
+  before letting it stand: grepped `main.tex` for the sweep's benchmark
+  names, GH labels and run totals. The only hit was the word
+  "contaminate" on line 181, a false positive from an over-loose pattern
+  of mine. The paper's revisit/pigeonhole language belongs to the
+  completed H1 matrix, which has its own results file.
+- **Also verified against DESIGN's text:** the ">5/25 seeds is reported
+  incomplete" bar STATUS.md invokes is real (DESIGN line 62), and the
+  three GP runs are exactly the three GP-arm entries among Procedure
+  step 2's five pre-registered smoke cells.
+- **Next:** Item R5 = write the GH5 scope caveat into the article. This
+  is the first item that edits `main.tex`, so the discipline tightens:
+  the caveat must be scoped to what the partial sweep licenses — the
+  four complete TPE-family arms — and must not imply the GP arms
+  contributed, since they ran 3 of 5,775 cells. State plainly that a
+  pre-registered hypothesis failed on the real-ML class and what that
+  bounds. Delegate to a Sonnet 5 subagent with `main.tex` as the only
+  writable file, Discussion section only, no new citations, no number
+  that is not already in `STATUS.md`. Verify: `check_article.py` PASS
+  with the TODO ratchet not rising, every quoted figure re-derived from
+  `results.jsonl` by this session, and the surrounding Limitations prose
+  re-read for contradiction with the new text.
