@@ -1,0 +1,65 @@
+# Reference environment for the pest_control x optuna-tpe reproduction check
+# ---------------------------------------------------------------------------
+# Generated: 2026-08-26, by this session, via:
+#   /tmp/claude-0/-home-user-BayesianOptim-BASS/3b67576c-51f6-5f82-95e9-4844441c9328/scratchpad/strangertest/bin/pip freeze
+# Interpreter (python --version, same environment): Python 3.11.15
+#
+# WHAT THIS FILE IS:
+#   The environment in which this session verified, on 2026-08-26, that the
+#   released bo-audit package reproduces the paper's REPORTED STATISTICS for
+#   the pest_control x optuna-tpe cell (median revisits = 16, median unique
+#   = 64, matching the committed values exactly). Only 3 of the 25 individual
+#   per-seed runs matched the committed per-seed rows; the other 22 did not.
+#
+# WHAT THIS FILE IS NOT:
+#   This is NOT the environment that produced the original committed results.
+#   That original environment's transitive dependency versions (notably
+#   numpy, and scipy if it was used) were never recorded anywhere in the
+#   repository and cannot now be reconstructed. The numpy version below
+#   (2.4.6) is simply whatever this session's environment happened to
+#   resolve today; it should not be read as, or assumed to match, the numpy
+#   version used for the original run. No numpy/scipy version is claimed
+#   for the original run.
+#
+# COVERAGE LIMIT:
+#   This environment contains only the optuna driver (optuna==4.9.0, matching
+#   the paper's recorded library version for the ecosystem audit). Hyperopt,
+#   scikit-optimize, Ax, and SMAC are not installed here, so this environment
+#   and the check it supports cover only the optuna-tpe arm of the audit,
+#   not the other library arms.
+#
+# OBSERVED BEHAVIOUR (this session, this environment, pest_control x
+# optuna-tpe, 25 seeds):
+#   - Aggregate statistics: reproduced exactly (median revisits 16,
+#     median unique 64), matching the paper and the committed results.
+#   - Per-seed rows: 3 of 25 individual runs matched the committed per-seed
+#     rows; 22 of 25 did not. The benchmark objective is deterministic and
+#     unchanged, the runner code path is identical, and optuna is the same
+#     version (4.9.0); the divergence is attributed to transitive
+#     dependencies (optuna's TPE sampler consumes numpy's RNG) whose
+#     versions were not recorded for the original run.
+# ---------------------------------------------------------------------------
+alembic==1.19.1
+bo-audit @ file:///home/user/BayesianOptim_BASS/bo-audit
+build==1.5.0
+colorlog==6.12.0
+contourpy==1.3.3
+cycler==0.12.1
+fonttools==4.63.0
+greenlet==3.5.5
+kiwisolver==1.5.0
+Mako==1.4.1
+MarkupSafe==3.0.3
+matplotlib==3.11.1
+numpy==2.4.6
+optuna==4.9.0
+packaging==26.3
+pillow==12.3.0
+pyparsing==3.3.2
+pyproject_hooks==1.2.0
+python-dateutil==2.9.0.post0
+PyYAML==6.0.3
+six==1.17.0
+SQLAlchemy==2.0.52
+tqdm==4.70.0
+typing_extensions==4.16.0

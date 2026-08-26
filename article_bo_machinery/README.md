@@ -14,7 +14,7 @@ Where things came from and where they lead:
   (10–15 seeds, budgets 60–80) recorded in that folder's README; the full
   25-seed protocol (`run_all_final.sh`) supersedes them.
 - **Templating**: the AIP REVTeX 4.1 document class and preamble, copied from
-  `class_presentation/ReporteFinal/`'s article. The class itself comes from
+  `defense_presentation/ReporteFinal/`'s article. The class itself comes from
   the TeX distribution (any full TeX Live / MacTeX; on minimal installs,
   `texlive-publishers`) rather than being vendored — the copy in
   `ReporteFinal/` is incomplete as a standalone distribution.
@@ -29,6 +29,11 @@ Where things came from and where they lead:
 cd article_bo_machinery
 pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
+
+The article's one figure, `figures/fig_dedup_audit.pdf`, is committed to the
+repository, so the build above works without any extra steps. To regenerate
+it from the committed results (`research/article_loop/experiments/exp02_oracle_matrix/results.csv`),
+run `figures/make_fig_dedup_audit.py`, which requires matplotlib and numpy.
 
 ## Relationship to the thesis
 

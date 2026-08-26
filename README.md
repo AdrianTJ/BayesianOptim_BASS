@@ -32,8 +32,9 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 ## Repository Structure
 
 ```text
-├── class_presentation/      # Academic dissemination materials
-│   ├── Presentacion/        # Beamer slides (LaTeX) for thesis defense
+├── defense_presentation/    # Academic dissemination materials
+│   ├── Defense/             # Beamer slides (LaTeX) for the defense itself
+│   ├── Presentacion/        # Earlier Beamer slide deck
 │   └── ReporteFinal/        # Final project report and technical summaries
 ├── code_files/              # Core implementation and experiments
 │   ├── R/                   # Shared BO library (sourced, no build step)
@@ -50,16 +51,23 @@ where $h_m(X)$ represents a basis function or a product of hinge functions.
 │   ├── 1_base_loop/         # Exploratory R Markdown notebooks (pedagogical)
 │   ├── 2_tpe_sensitivity/   # Ablation: TPE's gamma sensitivity vs. parameter-free BASS-BO/GP-BO
 │   │   └── run_tpe_sensitivity.R #   driver (reuses the shared library)
+│   ├── 3_categorical_diagnostics/ # Oracle A/B, revisit counting, surrogate fit checks
 │   ├── 4_regression_test_case/ # Real-world case study: Elastic Net tuning
 │   │   ├── run_elastic_net.R   #   driver (reuses the shared library)
 │   │   └── enet_objective.R    #   CV-RMSE objective over (alpha, lambda)
+│   ├── 5_nlp_hpo/           # Real-task NLP hyperparameter-tuning benchmark
 │   └── figure_generations/  # Python/R scripts for thesis visualizations
 ├── written_files/           # Thesis documentation
-│   └── tesis_escrito/       # Main LaTeX source for the thesis document
+│   ├── tesis_escrito/       # Main LaTeX source for the thesis document
+│   └── tesis_formato/       # ITAM front-matter and formatting template
+├── final_results/           # Committed benchmark outputs (CSVs + convergence plots)
+├── docs/                    # Project documentation (AI-use disclosure)
 ├── bo-audit/                # bo-audit tool: pip-installable audit wrapper (article)
 │   ├── bo_audit/            #   AuditedObjective, memoized control, drivers, benchmarks
 │   └── tests/
-├── article_bo_machinery/    # The Machinery Confound article (branch claude/machinery-confound-article)
+├── article_bo_machinery/    # The Machinery Confound article
+│   ├── main.tex             #   the article source
+│   └── research/            #   pre-registered designs, raw results, review records
 └── README.md                # Project overview and documentation
 ```
 
@@ -146,8 +154,7 @@ The methodological finding that grew out of this thesis — that
 acquisition-optimization machinery (candidate generation, duplicate
 handling), not the surrogate model, can dominate method comparisons in
 mixed and categorical Bayesian optimization — is written up as a standalone
-article on the [`claude/machinery-confound-article`](../../tree/claude/machinery-confound-article)
-branch (`article_bo_machinery/`).
+article in [`article_bo_machinery/`](article_bo_machinery/).
 
 Its audit instrument is released as **bo-audit**: a pip-installable
 objective wrapper that counts decoded-combination revisits (duplicate

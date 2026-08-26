@@ -32,19 +32,44 @@ place of the objective, and read the audit off it afterwards:
 
 ```python
 from bo_audit import AuditedObjective
-from bo_audit.drivers import run_optuna_tpe
+from bo_audit.drivers import run_optuna_tpe, run_random
 
+LEVELS = ["0", "1", "2", "3", "4"]
 space = [
-    ("kernel", "cat", ["rbf", "matern"]),
-    ("C", "float", 1e-3, 1e3),
+    ("x", "cat", LEVELS),
+    ("y", "cat", LEVELS),
+    ("z", "cat", LEVELS),
 ]
 
-audited = AuditedObjective(objective_fn, space)
-info = run_optuna_tpe(audited, space, budget=80, seed=0)
+def objective_fn(config):
+    i, j, k = int(config["x"]), int(config["y"]), int(config["z"])
+    return (i - 2) ** 2 + (j - 2) ** 2 + (k - 2) ** 2  # single optimum at (2, 2, 2)
 
-print(audited.summary())
-# {"evals": 80, "revisits": 16, "revisit_frac": 0.2, "best": ..., "unique": 64}
+audited = AuditedObjective(objective_fn, space)
+run_optuna_tpe(audited, space, budget=80, seed=0)
+print("tpe:", audited.summary())
+# tpe: {'evals': 80, 'revisits': 47, 'revisit_frac': 0.5875, 'best': 0, 'unique': 33}
+
+audited_random = AuditedObjective(objective_fn, space)
+run_random(audited_random, space, budget=80, seed=0)
+print("random:", audited_random.summary())
+# random: {'evals': 80, 'revisits': 19, 'revisit_frac': 0.2375, 'best': 0, 'unique': 61}
 ```
+
+Raw revisit counts are only meaningful against the space's pigeonhole
+baseline — the revisits forced by chance alone if evaluations landed
+uniformly at random over the K = 5×5×5 = 125 combinations, `B - K·(1 -
+(1 - 1/K)^B)`. At K=125, B=80 that baseline is **20.7**. The uniform-random
+control above lands at 19 revisits — statistically at the baseline, i.e.
+no meaningful waste. TPE lands at 47 — an excess of about 26 revisits
+(~33% of the budget) above what chance alone would force, which is a real
+finding about sampler behavior, not a counting artifact. Always read
+`revisits` this way: against the baseline for that K and B, not as a raw
+number. Revisits like this register on categorical/finite spaces where
+exact repeats are possible; once a space has a continuous (`"float"`)
+dimension, coordinates are keyed at 6 decimal places (below), so exact
+repeats — and therefore counted revisits — are typically zero even under
+heavy resampling.
 
 The space schema is library-agnostic:
 
@@ -85,10 +110,10 @@ repository (`article_bo_machinery/research/`) and are dispatched by
 
 ## Verification
 
-The counting logic is covered by `bo_audit/tests/`:
+The counting logic is covered by `tests/`:
 
 ```bash
-python -m pytest bo_audit/tests
+python -m pytest tests
 ```
 
 ## Citation

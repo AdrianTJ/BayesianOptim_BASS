@@ -1,5 +1,5 @@
 % =============================================================================
-% main.tex -- article scaffold (templating copied from class_presentation/
+% main.tex -- article scaffold (templating copied from defense_presentation/
 % ReporteFinal, i.e. the AIP REVTeX 4.1 distribution files in this directory).
 %
 % Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
@@ -1060,6 +1060,14 @@ library internals change across releases, and we do not claim the
 measured waste is stable over time or generalizes beyond the sampled
 libraries, configurations, and benchmarks --- the released wrapper
 exists precisely so the measurement can be repeated against any version.
+The measured waste is bounded by space type as well: it is a property
+of finite categorical combination spaces, not of Bayesian optimization
+in general. Where a search space carries continuous coordinates, exact
+combination revisits are near-impossible by construction, and the audit
+reports accordingly --- 349 of 350 mixed-space runs register none at
+all. A practitioner tuning a continuous-heavy space should therefore
+not expect this failure mode, and the ecosystem finding should not be
+read as extending there.
 Higher-dimensional spaces, where candidate pools cover vanishing
 fractions of the domain, could plausibly make the generator restriction
 bind harder --- that is conjecture, stated as such.
@@ -1239,7 +1247,13 @@ the controlled matrices total about $75$ minutes of aggregate CPU time
 (dominated by random-forest fits; the oracle audit itself about five
 minutes); the in-the-wild audit adds ${\sim}13$ core-hours for its
 1{,}050 runs and the equal-budget control ${\sim}1.5$ core-hours for
-275, all single-machine on four cores.
+275, all single-machine on four cores. Reported aggregate statistics for
+the pest\_control $\times$ optuna-tpe cell were confirmed to reproduce
+exactly under a matching Optuna version, but individual per-seed runs
+largely did not replay (3 of 25 matched), since the committed results
+record each library's version and
+non-default settings but not the transitive numpy/scipy versions that its
+sampler depends on; per-seed replay is therefore not guaranteed.
 
 \bibliography{references}
 
