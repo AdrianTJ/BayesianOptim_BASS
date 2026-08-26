@@ -97,10 +97,14 @@ def bench_by_name(name):
     """(fn(config_dict)->float, bo-audit space) for every H1 benchmark.
 
     Shared by the main-env run script and the venv-isolated smac_runner so
-    the benchmark adapter cannot diverge between libraries. machinery.py
-    (article_loop/experiments) must be importable for non-pest benchmarks;
-    its objectives take unit-cube rows: cat coordinate j at level v (1..L)
-    encodes to (v-0.5)/L, continuous coordinates pass through [0,1].
+    the benchmark adapter cannot diverge between libraries. cat_ackley_*,
+    func2C and func3C prefer `machinery` (article_loop/experiments) when it
+    is importable -- so reproducing a published run executes the identical
+    code that produced it -- and fall back to the vendored
+    bo_audit.benchmarks_h1 (kept byte-identical; see its module docstring
+    and tests/test_benchmarks_h1_parity.py) when it is not. Their objectives
+    take unit-cube rows: cat coordinate j at level v (1..L) encodes to
+    (v-0.5)/L, continuous coordinates pass through [0,1].
     """
     if name == "pest_control":
         return pest_cfg_objective, pest_space()
@@ -114,12 +118,18 @@ def bench_by_name(name):
         return YAHPO_BENCH[name]()
 
     if name.startswith("cat_ackley"):
-        from machinery import make_cat_ackley
+        try:
+            from machinery import make_cat_ackley
+        except ImportError:
+            from bo_audit.benchmarks_h1 import make_cat_ackley
         bits = name.split("_")  # cat_ackley_d{d}_L{L}
         d, L = int(bits[2][1:]), int(bits[3][1:])
         obj = make_cat_ackley(d, L)
     else:
-        from machinery import OBJECTIVES
+        try:
+            from machinery import OBJECTIVES
+        except ImportError:
+            from bo_audit.benchmarks_h1 import OBJECTIVES
         obj = OBJECTIVES[name]()
         d = obj["d"]
 

@@ -366,3 +366,63 @@ committed results / DESIGN files / paper numbers are read-only.
   that behaviour may not change — and the acceptance test is that a
   reproduced paper cell still matches at the median from a clean venv,
   not that the file merely imports.
+
+## Item R7a — 2026-08-26
+- **Phase:** vendor the H1 benchmarks into the package — complete. (R7
+  is split in two: this is the part that moves code which produced
+  published numbers; the three smaller package defects follow as R7b.)
+- **Did:** `bench_by_name` reached cat_ackley and func2C/func3C only via
+  `from machinery import ...`, a research-tree module absent from the
+  distribution, so 5 of the paper's 6 audit benchmarks were unreachable
+  from an installed package. A Sonnet 5 subagent extracted the minimal
+  closure — `Schema`, `decode_levels`, `_rosen`, `_camel`, `_beale`,
+  `_apply_fn`, `make_func2C`, `make_func3C`, `make_cat_ackley`,
+  `OBJECTIVES` — verbatim into `bo_audit/benchmarks_h1.py`, leaving the
+  BO harness (`run_bo`, `hybrid_candidates`, `oracle_method`, ...) out.
+  `machinery.py` itself was not modified.
+- **Behaviour preservation was the binding constraint,** so the wiring
+  tries `machinery` first and falls back to the vendored copy only on
+  ImportError. Every published run executed `machinery`; preferring it
+  means reproducing a published result still runs the identical code,
+  while the fallback makes the installed package self-sufficient.
+- **Verification, and the reason it is trustworthy: reference values
+  were captured from the original `machinery` module BEFORE the vendored
+  copy existed.** SHA-256 over the objective outputs on fixed grids, all
+  five benchmarks, compared afterwards against the vendored copy: bit
+  identical in every case. An independent AST comparison (source segment
+  per definition, not a visual diff) confirms all 10 definitions match
+  their source exactly, with no extra top-level definitions smuggled in.
+- **The fingerprint itself had to be fixed before it was worth
+  anything.** Its first version fed raw level indices to objectives that
+  take unit-cube rows (level v encodes to (v-0.5)/L), which saturates:
+  all 40 cat_ackley points returned one identical value, so the check
+  would have passed no matter what the copy did. Rebuilt with the
+  correct encoding it spans 9-60 distinct values with real spread. Third
+  time this loop that the checking code, not the change under test, was
+  the broken part.
+- **The parity guard was mutation-tested rather than assumed.** Two
+  deliberate perturbations of the vendored copy — `100` to `100.0000001`
+  in `_rosen`, and the cat_ackley grid bound `32.768` to `32.7681` —
+  were each caught, and by the right tests: func2C/func3C for the first,
+  the three cat_ackley sizes for the second. The file was then restored
+  and confirmed byte-identical to its pre-mutation state, with the AST
+  check re-run and the suite green. A guard that cannot fail would have
+  been worse than no guard, because it would look like protection.
+- **Clean-venv acceptance:** installed from a built wheel into a fresh
+  environment with `machinery` confirmed unimportable; all six
+  benchmarks resolve *and evaluate* (pest_control 25 dims, cat_ackley
+  3/5/6, func2C 4, func3C 5). Suite: 16 tests pass, including the new
+  parity file, which skips cleanly when the research tree is absent.
+- **Next:** Item R7b = the three remaining package defects, none of
+  which touch published numbers. (a) `smac_runner.py` exists only in
+  `research/headline_uplift/bo_audit/`, so `run_smac_subprocess`
+  resolves `Path(__file__).parent / "smac_runner.py"` to a path that
+  does not exist in an installed package — copy it verbatim.
+  (b) `MemoizedAuditedObjective.__init__` calls
+  `super().__init__(fn, space, cont_decimals)` and silently drops the
+  `canonicalize` argument, so the budget-equalized control cannot be
+  used on conditional spaces — the exact case the hook was built for;
+  add the passthrough and a test that fails without it. (c) the README
+  states the test path as `bo_audit/tests` where the tests live at
+  `tests/`. Verify by clean-venv install, full suite, and confirming
+  the new memo test fails when the passthrough is reverted.
