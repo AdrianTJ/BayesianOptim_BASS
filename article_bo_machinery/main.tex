@@ -1060,6 +1060,14 @@ library internals change across releases, and we do not claim the
 measured waste is stable over time or generalizes beyond the sampled
 libraries, configurations, and benchmarks --- the released wrapper
 exists precisely so the measurement can be repeated against any version.
+The measured waste is bounded by space type as well: it is a property
+of finite categorical combination spaces, not of Bayesian optimization
+in general. Where a search space carries continuous coordinates, exact
+combination revisits are near-impossible by construction, and the audit
+reports accordingly --- 349 of 350 mixed-space runs register none at
+all. A practitioner tuning a continuous-heavy space should therefore
+not expect this failure mode, and the ecosystem finding should not be
+read as extending there.
 Higher-dimensional spaces, where candidate pools cover vanishing
 fractions of the domain, could plausibly make the generator restriction
 bind harder --- that is conjecture, stated as such.
