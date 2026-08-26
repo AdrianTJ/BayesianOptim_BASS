@@ -539,3 +539,46 @@ committed results / DESIGN files / paper numbers are read-only.
   `docs/` and `thesis/` ones. Rename the branch, push it, delete the old
   remote ref, and offer to record the convention in a CLAUDE.md so it is
   enforceable rather than tacit.
+
+## Item D2 — 2026-08-26
+- **Phase:** conventional branch prefix + written conventions — complete,
+  with one step the container cannot perform.
+- **Did:** Renamed the working branch from
+  `claude/article-bo-audit-review-stei8t` to `feat/release-readiness`
+  and pushed it. The author's convention is a type prefix — `feat/`,
+  `bug/`, `research/`, `docs/` — with `claude/` excluded.
+- **Blocked, reported rather than worked around:** deleting the old
+  remote branch fails consistently with `send-pack: unexpected
+  disconnect while reading sideband packet` across four attempts with
+  backoff. This is the git proxy refusing a remote deletion, not a
+  flake, and the GitHub MCP server exposes no branch-deletion tool
+  (`create_branch` exists; no delete). Verified before reporting that
+  the stale ref costs nothing: it points at `cd07ce1`, a strict
+  ancestor of `df0bfe8`, with zero commits absent from the new branch.
+  It needs one click in the GitHub UI; this session cannot do it.
+- **The convention was not actually written down anywhere.** The author
+  referred to it as being in CLAUDE.md. Checked before accepting the
+  premise: no CLAUDE.md exists in the working tree, on `main`, anywhere
+  in git history (`--diff-filter=A` over all refs returns nothing), or
+  at user level, and it is not gitignored. The repository also contains
+  five merged `claude/*` branches alongside `feature/`, `docs/` and
+  `thesis/` ones, so the history is genuinely mixed. The instruction is
+  the author's to give either way; what was missing was any artifact
+  enforcing it.
+- **So the convention is now recorded.** Added `CLAUDE.md` covering the
+  branch prefixes, the append-only/frozen rules the research tree
+  already lives by (DESIGN pre-registrations frozen, LOGs append-only,
+  committed results read-only, no unreviewed result reaching main.tex),
+  the three checker commands and the TODO ratchet, the package suite,
+  and the parity guard's skip semantics.
+- **Every command in it was executed as written before it was
+  committed,** and one claim did not survive: the build section
+  presented figure regeneration as a required step, but the figure is
+  committed and the script needs matplotlib, which a bare environment
+  lacks — the command as documented failed with ModuleNotFoundError.
+  Corrected to match the article README, which already had this right.
+  Writing a conventions file whose own instructions do not run would
+  have been a poor start.
+- **Next:** none — D1 and D2 complete. Outstanding for the author: delete
+  the old remote branch, and the three items deferred at R7b close-out
+  (the `pdflatex` compile, an end-to-end SMAC run, PyPI publication).
