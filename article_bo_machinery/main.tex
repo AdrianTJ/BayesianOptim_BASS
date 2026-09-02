@@ -259,7 +259,12 @@ denison1998bayesian}, with BASS as the modern implementation
 \paragraph{Acquisition optimization as a first-class concern.}
 That the \emph{inner} optimization matters is established for continuous
 domains: \citet{wilson2018maximizing} showed acquisition maximization to
-be a critical, understudied component of BO pipelines. In mixed and
+be a critical, understudied component of BO pipelines. \citet{kim2020local}
+then bounded the one-step loss from local rather than global acquisition
+optimizers and showed why multi-starting matters; \citet{zhao2024unleashing}
+found that initialization of the acquisition maximizer can likewise determine
+whether an acquisition function's potential is realized in high dimensions.
+In mixed and
 discrete spaces, \citet{daulton2022pr} diagnosed the standard
 relax-then-round candidate generation as a biased, degenerate
 approximation that degrades performance largely independently of the
@@ -295,7 +300,10 @@ Appendix~\ref{app:theory} connects the two views.
 \paragraph{Benchmarking BO.}
 Empirical-foundations critiques have long documented benchmark and
 protocol pitfalls \cite{eggensperger2013towards, turner2021bayesian}.
-For mixed and combinatorial spaces specifically, the MCBO framework of
+In a complementary common-framework study, \citet{merrill2021acquisition}
+compare acquisition-based BO with systematic partitioning and make the
+computational cost of approximate acquisition optimization part of the
+empirical comparison. For mixed and combinatorial spaces specifically, the MCBO framework of
 \citet{dreczkowski2023mcbo} makes the closest prior argument to ours:
 papers proposing a single primitive rarely benchmark against baselines
 that hold the remaining primitives fixed, and MCBO supplies shared,
