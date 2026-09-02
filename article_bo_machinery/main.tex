@@ -4,17 +4,19 @@
 %
 % Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
 %
-% STATUS: FULL DRAFT. All sections written; every quoted number comes from
-% the final 25-seed protocol run (thesis pipeline) or from the article's own
-% pre-registered, independently reviewed experiments (see
-% research/article_loop/). Remaining open items are marked TODO: the title
-% decision, co-authors/acknowledgments (author decisions), and two optional
-% figures (full-pass review decision). Compile is untested in the authoring
-% environment (no TeX toolchain); run the build line above before submission.
+% STATUS: FULL DRAFT, build-verified (pdflatex + bibtex, 12 pp, no
+% undefined refs). All sections written; every quoted number comes from
+% the final 25-seed protocol run (thesis pipeline) or from the article's
+% own pre-registered, independently reviewed experiments (see
+% research/article_loop/; claim ledger in research/article_loop/CLAIMS.md).
+% Remaining open items are marked TODO: the audit-genre anchor citations
+% (verify-before-cite; Related Work), two optional figures, and the
+% acknowledgments text (author decisions).
 % =============================================================================
 \documentclass[%
  aip,
  amsmath,amssymb,
+ floatfix,
 %preprint,%
  reprint,%
 ]{revtex4-1}
@@ -62,39 +64,39 @@ Comparisons in Mixed and Categorical Bayesian Optimization}
 Comparisons of Bayesian-optimization (BO) methods over mixed and categorical
 search spaces are usually read as statements about surrogate models. We show
 that they are frequently statements about the surrounding \emph{machinery}
-instead --- the candidate generation the acquisition is optimized over, and
-the duplicate handling that decides which proposals are admissible --- and
-that the effect is live in the deployed ecosystem.
-Auditing six widely used BO libraries and a random-sampling control at their
-documented defaults with a surrogate-free objective wrapper (1{,}050 runs
-across the seven arms; six benchmarks, 25 seeds, budget 80), we find that
-three of the six silently re-spend at least 10\% of the evaluation budget on
+instead: the candidate generation the acquisition is optimized over, and the
+duplicate handling that decides which proposals are admissible. The effect is
+live in the deployed ecosystem.
+We audited six widely used BO libraries and a random-sampling control at
+their documented defaults with a surrogate-free objective wrapper (1{,}050
+runs across the seven arms; six benchmarks, 25 seeds, budget 80). Three of
+the six silently re-spend at least 10\% of the evaluation budget on
 already-evaluated categorical combinations beyond what unavoidable collisions
-explain, two exceed 25\%, and one exceeds 40\% --- a median of 53 of 80
-evaluations ground into revisits, touching only ${\sim}27$ unique
-configurations, by the library that simultaneously posts the matrix's
-\emph{best} categorical solve record: convergence curves are blind to the
-waste; one library instead halts early rather than propose a duplicate.
-When we equalize duplicate handling --- charging each library for unique
-evaluations only (bit-identical trajectories on deterministic objectives,
-by construction) --- the apparent library ranking
-changes on three of four benchmarks; one sampler's apparent weakness on small
-categorical spaces (7 of 25 solves) is revealed as mostly machinery, not
-model (22 of 25 once duplicates are refunded).
-A controlled study of one research pipeline isolates the mechanisms:
-under an \emph{oracle-ceiling audit} that replaces every acquisition score
-with the true objective, a single degree of freedom in local candidate
-generation caps what perfect guidance can attain (restricted loses to
-permissive on 25 of 25 paired seeds, $p = 6.0\times10^{-8}$, worsening by
-factors of 8 to 14 as the pool shrinks), and encoding-level duplicate
-detection re-spends a median of 78 of 80 oracle picks. We prove the audit is
-a genuine ceiling for exogenous candidate pools, state the adaptive case as
-an explicit conjecture, and derive a monotone decay law for selection quality
+explain, two exceed 25\%, and one exceeds 40\%. The library that
+simultaneously posts the matrix's \emph{best} categorical solve record
+grinds a median of 53 of 80 evaluations into revisits and touches only
+${\sim}27$ unique configurations; convergence curves are blind to the waste.
+One library instead halts early rather than propose a duplicate.
+We then equalized duplicate handling by charging each library for unique
+evaluations only (bit-identical trajectories on deterministic objectives, by
+construction). The apparent library ranking changes on three of four
+benchmarks, and one sampler's apparent weakness on a small categorical space
+(7 of 25 solves) is revealed as mostly machinery, not model (22 of 25 once
+duplicates are refunded).
+A controlled study of one research pipeline isolates the mechanisms. Under
+an \emph{oracle-ceiling audit} that replaces every acquisition score with
+the true objective, a single degree of freedom in local candidate generation
+caps what perfect guidance can attain: restricted loses to permissive on 25
+of 25 paired seeds ($p = 6.0\times10^{-8}$), and the shortfall worsens by
+factors of 8 to 14 as the pool shrinks. Encoding-level duplicate detection
+re-spends a median of 78 of 80 oracle picks. We prove the audit is a genuine
+ceiling for exogenous candidate pools, state the adaptive case as an
+explicit conjecture, and derive a monotone decay law for selection quality
 under noisy guidance. We release \texttt{bo-audit}, the objective wrapper
 behind the ecosystem audit, together with a disclosure checklist for
 machinery-controlled comparisons: shared schema-aware proposals,
 combination-level deduplication, paired seeds, per-seed win statistics, and
-reported excess-over-collision revisit counts.
+reported excess-over-pigeonhole revisit counts.
 \end{abstract}
 
 \maketitle
@@ -110,121 +112,122 @@ reported excess-over-collision revisit counts.
 % outcomes; (5) contributions.
 
 The sample efficiency of Bayesian optimization is conventionally credited to
-its surrogate model, and comparative studies of surrogates --- Gaussian
-processes, random forests, density-ratio methods, spline models --- are read
-as evidence about which model class best captures the objective
+its surrogate model. Comparative studies of surrogates, from Gaussian
+processes to random forests, density-ratio methods, and spline models, are
+read as evidence about which model class best captures the objective
 \cite{Snoek_Larochelle_Adams_2012, bergstra2011algorithms}. Over continuous
 domains this attribution is at least plausible: the acquisition function can
-be optimized to near-optimality with standard multi-start gradient methods, so
-the surrogate is the main thing that differs between pipelines. Over mixed and
-categorical domains the situation is different. The acquisition must be
-optimized over a discrete or hybrid space, every method ships its own
-machinery for doing so --- candidate pools, local search, trust regions,
-bandit layers \cite{hutter2011sequential, ru2020cocabo, wan2021think} --- and
-that machinery is typically inseparable from the method being evaluated.
+be optimized to near-optimality with standard multi-start gradient methods,
+so the surrogate is the main thing that differs between pipelines. Over
+mixed and categorical domains the situation is different. The acquisition
+must be optimized over a discrete or hybrid space, and every method ships
+its own machinery for doing so: candidate pools, local search, trust
+regions, bandit layers \cite{hutter2011sequential, ru2020cocabo,
+wan2021think}. This machinery is typically inseparable from the method being
+evaluated.
 
-How much does this matter outside carefully constructed examples? We measured
-it in the deployed ecosystem. Wrapping the objective function itself --- a
-vantage point every optimizer must pass through, requiring no access to
-library internals --- we audited six widely used BO libraries, plus a
-random-sampling control, at their documented defaults on six categorical and
+To find out how much this matters outside carefully constructed examples, we
+measured it in the deployed ecosystem. We wrapped the objective function
+itself, a vantage point every optimizer must pass through that requires no
+access to library internals, and audited six widely used BO libraries plus a
+random-sampling control at their documented defaults on six categorical and
 mixed benchmarks (25 seeds each, budget 80; 1{,}050 runs across the seven
-arms). Three of the six re-spend at least 10\% of the
-evaluation budget on already-evaluated categorical combinations \emph{beyond}
-the collisions unavoidable at that budget; two exceed 25\%, one exceeds
-40\%. The extreme case evaluates a median of only ${\sim}27$ unique
-configurations out of 80 charged evaluations on a 125-combination space ---
-while posting the matrix's best categorical solve record, so no convergence
-curve gives it away. On a $5^{25}$-combination space, where a uniform random
+arms). Three of the six re-spend at least 10\% of the evaluation budget on
+already-evaluated categorical combinations \emph{beyond} the collisions
+unavoidable at that budget. Two exceed 25\% and one exceeds 40\%. The
+extreme case evaluates a median of only ${\sim}27$ unique configurations out
+of 80 charged evaluations on a 125-combination space, and it does so while
+posting the matrix's best categorical solve record, so no convergence curve
+gives it away. On a $5^{25}$-combination space, where a uniform random
 sampler essentially never collides, one default sampler still re-spends a
-median of 16 evaluations in 80. At the other extreme, one library's runhistory
-machinery terminates the run early rather than propose a duplicate. These are
-not exotic corner cases: the duplicate-suggestion behavior of both audited
-TPE implementations is acknowledged in their libraries' own issue trackers,
-and the audit turns it --- and the behaviors with no paper trail at all ---
-into numbers.
+median of 16 evaluations in 80. At the other extreme, one library's
+runhistory machinery terminates the run early rather than propose a
+duplicate. These are not exotic corner cases: the duplicate-suggestion
+behavior of both audited TPE implementations is acknowledged in their
+libraries' own issue trackers, and the audit turns this behavior, together
+with the behaviors that have no paper trail at all, into numbers.
 
-The waste is not an automatic verdict on quality --- that is precisely the
+The waste is not an automatic verdict on quality. This is precisely the
 confound. When we re-ran the wasteful libraries charging only \emph{unique}
 evaluations (a memoization control that leaves sampler trajectories
 bit-identical on deterministic objectives), the apparent ranking of the six
-libraries changed on three of four benchmarks: the sampler that looked
-weakest on small categorical spaces recovered from 7 of 25 solves to 22 of
-25. Benchmark tables implicitly charge proposals; expensive objectives charge
-unique evaluations; the two meters disagree about who wins.
+libraries changed on three of four benchmarks, and the sampler that looked
+weakest on a small categorical space recovered from 7 of 25 solves to 22 of
+25. The two meters disagree about who wins: benchmark tables implicitly
+charge proposals, while expensive objectives charge unique evaluations.
 
 This paper isolates the mechanisms behind such effects in a controlled
 pipeline, through two concrete failure modes. The first lives in candidate
-generation: a single degree of freedom in the local proposal distribution ---
-whether a candidate may keep the incumbent's categorical combination while
-refining its continuous coordinates --- determines whether \emph{any}
+generation: a single degree of freedom in the local proposal distribution,
+namely whether a candidate may keep the incumbent's categorical combination
+while refining its continuous coordinates, determines whether \emph{any}
 acquisition, however well informed, can exploit on mixed spaces. The second
 lives in duplicate handling: comparing raw encodings rather than decoded
-combinations lets a pipeline silently re-spend most of a categorical
-budget re-measuring points it has already evaluated, with no visible
-trace in a convergence curve. Both are ordinary-looking implementation
-choices; neither is reported in a typical experimental section --- and both
-have live counterparts in the audited libraries.
+combinations lets a pipeline silently re-spend most of a categorical budget
+re-measuring points it has already evaluated, with no visible trace in a
+convergence curve. Both are ordinary-looking implementation choices, neither
+is reported in a typical experimental section, and both have live
+counterparts in the audited libraries.
 
 Our instrument for separating these effects from the surrogate is an
 \emph{oracle-ceiling audit}: run the unchanged loop with the acquisition
 score replaced by the true objective, so that the machinery is exercised
 under perfect guidance. Auditing each machinery variant this way costs
 minutes and no surrogate fits, and it turns ``the method underperformed''
-into an attributable statement --- either the machinery's ceiling was the
+into an attributable statement: either the machinery's ceiling was the
 binding constraint, or the surrogate failed short of a ceiling that
-permitted more. The spline surrogate whose puzzling failure motivated
-this work serves here as a case study: the general mechanisms are
-established on the oracle and on other surrogate families, and applying
-the audit and repairing both failure modes did not rescue it --- it did
-something more useful, converting an unattributable mixed-space failure
-into a clean negative result about the model itself. The two defects contaminate
-comparisons in different ways: the duplicate leak taxes every method
-family we tested by a comparable margin, while the generator restriction
-binds in proportion to how close a method runs to the machinery's
-ceiling --- which is precisely why attributing anything to a surrogate
-requires knowing where that ceiling is.
+permitted more. The spline surrogate whose puzzling failure motivated this
+work serves here as a case study. The general mechanisms are established on
+the oracle and on other surrogate families, and applying the audit and
+repairing both failure modes did not rescue the model. It did something more
+useful: it converted an unattributable mixed-space failure into a clean
+negative result about the model itself. The two defects contaminate
+comparisons in different ways. The duplicate leak taxes every method family
+we tested by a comparable margin. The generator restriction binds in
+proportion to how close a method runs to the machinery's ceiling, which is
+why attributing anything to a surrogate requires knowing where that ceiling
+is.
 
 This paper makes five contributions:
 \begin{enumerate}
   \item \textbf{An in-the-wild machinery audit of six deployed BO
   libraries.} A surrogate-free objective wrapper (\texttt{bo-audit},
   released) counts decoded-combination revisits uniformly across
-  libraries at their documented defaults. Headline: 3 of 6 libraries
+  libraries at their documented defaults. 3 of 6 libraries
   waste ${\ge}10\%$ of budget beyond unavoidable collisions on at least
-  one benchmark (2 of 6 ${\ge}25\%$; 1 of 6 ${\ge}40\%$), the heaviest
+  one benchmark (2 of 6 ${\ge}25\%$; 1 of 6 ${\ge}40\%$). The heaviest
   waster simultaneously posts the matrix's best categorical solve record, and one
-  library terminates early rather than duplicate --- all invisible to
-  convergence curves.
+  library terminates early rather than duplicate. All of this is invisible
+  to convergence curves.
   \item \textbf{A budget-equalized re-comparison.} Charging unique
   evaluations only (trajectory-preserving memoization on deterministic
   objectives), the apparent library ranking changes on 3 of 4
-  benchmarks under a pre-registered ranking metric; the refund converts
+  benchmarks under a pre-registered ranking metric. The refund converts
   into solves for one TPE implementation and not the other, so waste is
   necessary but not sufficient for a ranking artifact.
   \item \textbf{The oracle-ceiling audit, with its exact scope.}
   Replacing the acquisition score with the true objective turns the BO
   loop into oracle-guided search. We prove the resulting bound is a
   theorem for exogenous candidate pools, exhibit a counterexample
-  generator showing why the adaptive case needs an assumption, state
-  that case as an explicit conjecture --- supported by 0 violations in
-  2{,}250 matched surrogate-versus-oracle comparisons --- and derive a
+  generator showing why the adaptive case needs an assumption, and state
+  that case as an explicit conjecture, supported by 0 violations in
+  2{,}250 matched surrogate-versus-oracle comparisons. We also derive a
   monotone decay law for selection quality under noisy guidance.
   \item \textbf{Two demonstrated failure modes.} A restricted local
   proposal distribution (all local candidates forced to change the
   incumbent's categorical combination) loses to its permissive
   counterpart on every paired seed of the CoCaBO mixed benchmarks under
-  the oracle, with a shortfall that grows as the candidate pool shrinks;
-  encoding-level duplicate detection lets a majority of the budget be
+  the oracle, with a shortfall that grows as the candidate pool shrinks.
+  Encoding-level duplicate detection lets a majority of the budget be
   re-spent on known categorical combinations across every method family
-  we tested --- the controlled twins of the behaviors measured in the
-  wild.
+  we tested. These are the controlled twins of the behaviors measured in
+  the wild.
   \item \textbf{A machinery-controlled comparison protocol.} Shared
   schema-aware candidate generation, combination-level deduplication,
   paired per-seed designs, win/tie/loss reporting with signed-rank
-  tests, and disclosed excess-over-collision revisit counts. Repairing
+  tests, and disclosed excess-over-pigeonhole revisit counts. Repairing
   and sharing the machinery did not flip the motivating surrogate's
-  ranking --- it made the ranking \emph{attributable}, localizing a
+  ranking; it made the ranking \emph{attributable}, localizing a
   mixed-space failure to the surrogate itself while two other methods
   won through the identical loop.
 \end{enumerate}
@@ -261,7 +264,7 @@ discrete spaces, \citet{daulton2022pr} diagnosed the standard
 relax-then-round candidate generation as a biased, degenerate
 approximation that degrades performance largely independently of the
 acquisition function on top, and replaced it with probabilistic
-reparameterization; the duplicate-evaluation pathology of rounding was
+reparameterization. The duplicate-evaluation pathology of rounding was
 articulated earlier by \citet{garrido2020dealing} and by
 \citet{luong2019discrete}, each fixing it \emph{within} one method (a
 transformed kernel; manipulated exploration and length-scale). Our
@@ -269,23 +272,23 @@ Sec.~\ref{sec:dedup} treats the same pathology as a protocol-level
 property of the comparison rather than a defect of any one model, and
 measures its cost across unrelated method families. Closest in spirit to
 our attribution concern, \citet{tripp2024diagnosing} showed that fixing
-pipeline pitfalls --- including inadequate acquisition maximization ---
-makes a basic GP the strongest method on a molecule-design benchmark,
-implying prior rankings there reflected pipelines rather than models;
-their diagnosis is indirect (a stronger inner optimizer improves
-results), where our audit substitutes the true objective to bound the
+pipeline pitfalls, including inadequate acquisition maximization, makes
+a basic GP the strongest method on a molecule-design benchmark, which
+implies that prior rankings there reflected pipelines rather than
+models. Their diagnosis is indirect (a stronger inner optimizer improves
+results); our audit instead substitutes the true objective to bound the
 machinery directly. A ground-truth substitution appears as an internal
 ablation in \citet{evogo2025} (a ``real evaluation'' variant estimating
 their generative optimizer's ceiling at the training-loss level); we
 generalize the idea into a reusable, machinery-isolating diagnostic for
 pool-based mixed-space BO. On the theory side, \citet{kim2025inexact}
 give the first regret analysis of \emph{inexact} acquisition
-maximization — including pool-based (random-grid) solvers of exactly the
-kind audited here — showing GP-UCB/GP-TS retain sublinear regret when
-the grid grows linearly; and \citet{bloor2026b3o} prove that sampling
+maximization, including pool-based (random-grid) solvers of exactly the
+kind audited here, and show that GP-UCB/GP-TS retain sublinear regret
+when the grid grows linearly. \citet{bloor2026b3o} prove that sampling
 queries from the Boltzmann (softmax) density of a UCB acquisition
 recovers GP-UCB rates up to a negligible term. Both are regret-side
-guarantees for idealized machinery; our audit measures what deployed,
+guarantees for idealized machinery. Our audit measures what deployed,
 non-idealized machinery actually does to a fixed evaluation budget, and
 Appendix~\ref{app:theory} connects the two views.
 
@@ -297,20 +300,19 @@ For mixed and combinatorial spaces specifically, the MCBO framework of
 papers proposing a single primitive rarely benchmark against baselines
 that hold the remaining primitives fixed, and MCBO supplies shared,
 mix-and-match implementations (with Friedman and post-hoc Wilcoxon
-testing across combinations). We differ in mechanism and in instrument:
-MCBO controls primitives generically, whereas we isolate and measure two
-specific acquisition-optimization failure modes (generator restriction
-and dedup leakage), quantify them with an oracle-style audit that MCBO
-does not perform, and derive per-seed paired statistics gated by that
-audit. To our knowledge --- based on a systematic sweep recorded in the
-companion repository --- no prior work substitutes the true objective
-into the loop as a general machinery audit for mixed-space BO, nor
-proposes a machinery-controlled protocol with an oracle gate: method
-papers continue to ship bespoke machinery inseparable from the model
-(e.g., the trust-region pipeline of \citet{papenmeier2023bounce}), and
-benchmark suites standardize tasks and interfaces, but neither audits a
-ceiling.
-
+testing across combinations). We differ in mechanism and in instrument.
+MCBO controls primitives
+generically, whereas we isolate and measure two specific
+acquisition-optimization failure modes (generator restriction and dedup
+leakage), quantify them with an oracle-style audit that MCBO does not
+perform, and derive per-seed paired statistics gated by that audit. To
+our knowledge, based on a systematic sweep recorded in the companion
+repository, no prior work substitutes the true objective into the loop
+as a general machinery audit for mixed-space BO, nor proposes a
+machinery-controlled protocol with an oracle gate. Method papers
+continue to ship bespoke machinery inseparable from the model (e.g., the
+trust-region pipeline of \citet{papenmeier2023bounce}), and benchmark
+suites standardize tasks and interfaces, but neither audits a ceiling.
 \paragraph{Auditing deployed optimizers.}
 A separate tradition audits optimizers as shipped rather than as
 described: the black-box optimization challenge of
@@ -319,11 +321,11 @@ optimizers under one harness and changed community defaults. Our
 ecosystem audit (Sec.~\ref{sec:wild}) belongs to that tradition but
 measures a quantity such harnesses do not record: decoded-combination
 revisits, counted from inside the objective. The behavior it detects is
-partially self-documented --- duplicate suggestions are acknowledged in
+partially self-documented: duplicate suggestions are acknowledged in
 the issue trackers of both audited TPE implementations
 (\texttt{hyperopt\#608}, which reports 48 identical trials out of 500;
-\texttt{optuna\#5440} and \texttt{\#2021}) --- but has not, to our
-knowledge, been measured uniformly across libraries, related to the
+\texttt{optuna\#5440} and \texttt{\#2021}). To our knowledge, however,
+it has not been measured uniformly across libraries, related to the
 unavoidable collision baseline, or connected to ranking artifacts.
 Positioning against further published audit studies is deferred to a
 camera-ready pass with full-text verification.
@@ -347,7 +349,7 @@ surrogate untouched, while surrogates with native factor support receive
 the decoded levels. The \emph{canonical representation} of a point snaps
 each categorical coordinate to its bin centre $(k - \tfrac12)/L_j$, so
 that two encodings decoding to the same level combination become exactly
-equal --- the representation on which combination-level duplicate
+equal. This is the representation on which combination-level duplicate
 detection operates.
 
 \paragraph{The loop.}
@@ -358,9 +360,9 @@ duplicates an already-evaluated point (tolerance $10^{-10}$), (iv) picks
 the arg-max with uniform random tie-breaking, and (v) evaluates the
 objective and records it. Random Search replaces (i)--(iv) with uniform
 draws rejected against the same duplicate mask. Both surrogate families
-use Expected Improvement \cite{jones1998efficient} --- closed-form on the
+use Expected Improvement \cite{jones1998efficient}: closed-form on the
 posterior mean and variance where these are available (GP, random
-forest), by Monte Carlo over posterior draws for BASS --- so no method
+forest), and by Monte Carlo over posterior draws for BASS. No method
 carries an acquisition-side exploration weight to tune (numerical
 settings such as the Monte Carlo draw count remain, fixed across all
 comparisons). Runs are paired: all methods
@@ -376,13 +378,13 @@ drawn from a Gaussian cloud centred on the incumbent whose width is the
 incumbent's nearest-neighbour distance (clipped to $[10^{-2}, 0.5]$), and
 each categorical coordinate independently either keeps the incumbent's
 level or flips to a uniformly random other level with probability
-$1/n_{\mathrm{cat}}$ --- one flip in expectation, the Hamming-local
+$1/n_{\mathrm{cat}}$, that is, one flip in expectation: the Hamming-local
 notion of ``nearby'' for unordered factors. The degree of freedom this
 paper studies is whether a local row may flip \emph{zero} coordinates. In
 the \emph{permissive} variant a zero-flip row keeps the incumbent's full
-categorical combination and refines only its continuous coordinates ---
-on mixed spaces, exactly the exploitation move a model-based method has
-over random search. The \emph{restricted} variant forces at least one
+categorical combination and refines only its continuous coordinates,
+which on mixed spaces is exactly the exploitation move a model-based
+method has over random search. The \emph{restricted} variant forces at least one
 flip per local row, so no candidate ever refines the continuous
 coordinates at the best-known combination. (On purely categorical
 schemas a zero-flip row merely duplicates the incumbent, so one flip is
@@ -421,16 +423,16 @@ optimizer's meaningful resolution) and counts arrivals at already-seen
 keys measures duplicate spending uniformly, with no access to library
 internals and no per-library adapters beyond the driver that launches
 each tool at its documented defaults. Because collisions are sometimes
-unavoidable --- sampling uniformly over $K$ combinations for $B$ steps
-collides $B - K\bigl(1-(1-1/K)^{B}\bigr)$ times in expectation --- we
+unavoidable (sampling uniformly over $K$ combinations for $B$ steps
+collides $B - K\bigl(1-(1-1/K)^{B}\bigr)$ times in expectation), we
 report \emph{excess} revisits over this pigeonhole baseline, so that a
 random-sampling control sits at zero in expectation (finite-sample
 medians can deviate slightly; Table~\ref{tab:wild}'s Random row shows
 $+1$ on the smallest space). The counter was validated before any
-library was read --- exact agreement with hand-computed and analytic
+library was read: exact agreement with hand-computed and analytic
 ground truth on scripted-repeat, continuous no-false-positive, and
 pigeonhole gates, plus detection of the tracker-acknowledged TPE
-behavior at the expected order of magnitude --- and a scripted
+behavior at the expected order of magnitude. A scripted
 mixed-space duplicate-injection gate was added and passed before the
 equal-budgets re-comparison of Sec.~\ref{sec:equalized}.
 
@@ -439,9 +441,9 @@ equal-budgets re-comparison of Sec.~\ref{sec:equalized}.
 \label{sec:wild}
 % =============================================================================
 
-We audited six pip-installable BO libraries at their documented defaults
---- Optuna's TPE and GP samplers, Hyperopt's TPE, scikit-optimize's GP,
-Ax, and SMAC~3 --- plus a uniform random-sampling control
+We audited six pip-installable BO libraries at their documented defaults:
+Optuna's TPE and GP samplers, Hyperopt's TPE, scikit-optimize's GP,
+Ax, and SMAC~3, plus a uniform random-sampling control
 \cite{bergstra2012random}, on six
 benchmarks: categorical Ackley at three sizes ($5^3{=}125$,
 $5^5{=}3{,}125$, and $11^6{\approx}1.8{\times}10^6$ combinations), the
@@ -487,8 +489,8 @@ detection tracking the pigeonhole baseline) and libraries without (both
 TPE implementations and Optuna's GP sampler). Three findings deserve
 emphasis. First, \emph{solving masks waste}: Optuna's GP sampler posts
 the matrix's best categorical solve record while spending a median of 53
-of its 80 evaluations on revisits --- roughly 27 unique configurations
-per run on the 125-combination space --- and no convergence curve
+of its 80 evaluations on revisits, roughly 27 unique configurations
+per run on the 125-combination space, and no convergence curve
 distinguishes it from a duplicate-free solver. Second, on the $5^{25}$
 space the pigeonhole baseline is ${\sim}10^{-14}$, so \emph{any} revisit
 is algorithmic: TPE's per-dimension categorical sampling still re-spends
@@ -497,10 +499,9 @@ shows the opposite failure surface: zero revisits everywhere, at the cost
 of terminating six of 25 runs early (at 59--75 of 80 evaluations, those
 runs scored on their completed prefix) on the
 smallest space, when its runhistory-keyed generator exhausts rather than
-propose a duplicate --- a defensible design choice that, like the waste
-it avoids, is invisible in convergence curves and surfaced only by the
-audit.
-
+propose a duplicate. This is a defensible design choice that, like the
+waste it avoids, is invisible in convergence curves and surfaced only by
+the audit.
 % =============================================================================
 \section{Equal Budgets: Does the Waste Change Conclusions?}
 \label{sec:equalized}
@@ -509,14 +510,14 @@ audit.
 Waste alone does not settle whether machinery distorts
 \emph{comparisons}: that requires re-running the comparison with
 duplicate handling equalized. Because every benchmark above is
-deterministic, a memoization control does this exactly --- duplicate
+deterministic, a memoization control does this exactly: duplicate
 proposals receive the cached value at zero budget cost, so each
 sampler's trajectory is, by construction, bit-identical to its
 as-shipped run at the same seed while the meter charges \emph{unique}
 evaluations only (80 unique, horizon 400 proposals). We re-ran the two
 TPE implementations on all four categorical benchmarks and Optuna's GP
 sampler on three (its pest-control row had zero as-shipped revisits, so
-memoization is a no-op there and the row carries over) --- 275 runs,
+memoization is a no-op there and the row carries over); this is 275 runs,
 same seeds. The duplicate-free libraries' as-shipped rows likewise carry
 over, verified duplicate-free row-by-row for Ax and SMAC, with one
 disclosed exception: scikit-optimize's carried $5^3$ row reflects
@@ -535,24 +536,24 @@ gap to the GP tier (22/25 versus 25/25, though not all of it). On
 $5^3$ its solve count rises from 21 to 25 of 25, lifting it past
 Hyperopt and SMAC; on $11^6$ the two TPE implementations, tied as
 shipped, separate with Hyperopt ahead.
-Equal-proposal budgets --- what benchmark tables implicitly charge ---
-and equal-unique-evaluation budgets --- what an expensive objective
-actually costs --- disagree about who wins.
+Equal-proposal budgets, what benchmark tables implicitly charge, and
+equal-unique-evaluation budgets, what an expensive objective actually
+costs, disagree about who wins.
 
-Two honest complications. The refund converts heterogeneously: Hyperopt's
-pre-registered strict-improvement prediction on the $5^5$ space
-\emph{failed} (median and solve count unchanged at 3 of 25) --- freeing
-its wasted budget does not help, because its sampler does not find better
-combinations with the extra evaluations; waste is necessary but not
-sufficient for a ranking artifact. And the memoized runs expose a second
-mechanism: on the 125-combination space, Optuna's GP sampler exhausted
-the entire 400-proposal horizon while producing a median of only 30
-unique configurations --- five times the proposals bought three more
-unique points than its as-shipped 27 --- so its duplicates are not
-occasional collisions but the proposal generator's steady state, which
-no budget increase can fix. The controlled study that follows isolates
-both mechanisms --- generator restriction and duplicate leakage --- in a
-pipeline where every part can be held fixed.
+The refund also converts heterogeneously. Hyperopt's pre-registered
+strict-improvement prediction on the $5^5$ space \emph{failed} (median
+and solve count unchanged at 3 of 25): freeing its wasted budget does
+not help, because its sampler does not find better combinations with
+the extra evaluations. Waste is necessary but not sufficient for a
+ranking artifact. The memoized runs expose a second mechanism: on the
+125-combination space, Optuna's GP sampler exhausted the entire
+400-proposal horizon while producing a median of only 30 unique
+configurations, so five times the proposals bought three more unique
+points than its as-shipped 27. Its duplicates are not occasional
+collisions but the proposal generator's steady state, which no budget
+increase can fix. The controlled study that follows isolates both
+mechanisms, generator restriction and duplicate leakage, in a pipeline
+where every part can be held fixed.
 
 % =============================================================================
 \section{The Oracle-Ceiling Audit and Failure Mode I:\\ the Generator Ceiling}
@@ -570,11 +571,11 @@ in the pool is evaluated. The resulting best-so-far curve is the
 \emph{machinery ceiling} of $(G, A, B)$.
 \end{definition}
 
-Two remarks fix the ceiling's exact epistemic status. Per realized pool,
+Two remarks fix what the ceiling does and does not guarantee. Per realized pool,
 the oracle's pick is optimal by construction: no acquisition, however
 informed, can select a better admissible point from the same pool.
 Trajectory-wise, however, the guarantee is not a theorem, because the
-pools themselves are history-dependent --- the generator's local half is
+pools themselves are history-dependent. The generator's local half is
 centred on the current incumbent, so an oracle run and a surrogate run
 diverge in pool content after their first differing pick, and on a
 multimodal objective a differently-centred local cloud could in
@@ -594,11 +595,12 @@ proved, description).
 
 The audit (Definition~\ref{def:oracle}) has four properties that make it
 cheap enough to be a standard
-preliminary. It fits no surrogate --- its cost is candidate generation
+preliminary. It fits no surrogate: its cost is candidate generation
 plus objective evaluations of the pool, which on synthetic or
-cheap-to-simulate objectives is negligible (the complete
-generator~$\times$~dedup~$\times$~pool-size matrix reported below, 700
-runs at budget 80, completes in about five minutes on one core). It is
+cheap-to-simulate objectives is negligible (the
+generator~$\times$~dedup~$\times$~pool-size matrix, 700
+runs at budget 80, summarized in Table~\ref{tab:oracle} and
+Fig.~\ref{fig:dedup}, completes in about five minutes on one core). It is
 deterministic given seeds. It is A/B-able: running it once per machinery
 variant isolates the machinery axis with no model in the loop. And it
 pairs: all variants share per-seed initial designs, so differences are
@@ -614,18 +616,18 @@ $-0.206326$ for Func-2C at combination $(2,2)$, $-0.722140$ for Func-3C
 at $(2,2,1)$) at every pool size tested. The restricted generator loses
 on \emph{every one of 25 paired seeds in every cell} (Wilcoxon
 signed-rank $p = 6.0\times10^{-8}$, the $n{=}25$ floor), and its
-shortfall grows as the pool shrinks --- by a factor of about $14$ on
+shortfall grows as the pool shrinks: by a factor of about $14$ on
 Func-2C and about $8$ on Func-3C from $N{=}1000$ to $N{=}50$. The
 practical reading: with a large pool the global half eventually stumbles
 into the optimum basin and the restriction costs little in final value;
 with the small pools typical of expensive problems, forbidding continuous
 refinement at the incumbent's combination caps even a perfect surrogate
 well short of the optimum. Whether the cap binds a \emph{real} surrogate
-depends on how close it runs to the ceiling --- our surrogate-level
+depends on how close it runs to the ceiling. Our surrogate-level
 experiments detected no generator effect for weak (sklearn-grade) GP and
 random-forest surrogates at this budget, a point Sec.~\ref{sec:conseq}
 treats in full. On the purely categorical benchmarks (permuted-categorical Ackley,
-``Cat-Ackley'', used at three sizes throughout; Sec.~\ref{sec:experiments})
+``Cat-Ackley''; Sec.~\ref{sec:experiments})
 the two variants coincide by construction (Sec.~\ref{sec:setup}) and the
 oracle clears the pool on every seed even at $d{=}6$, $L{=}11$: there the
 pool is not the binding constraint, and failures must be attributed
@@ -651,14 +653,14 @@ Func-3C & 1000 & -0.7221 & -0.7111 & 0.0111 \\
 \end{ruledtabular}
 \end{table}
 
-A cautionary note from this paper's own history: an earlier draft quoted
-a dramatic early-budget plateau figure for the restricted arm from a
-preliminary run's records. The audit's re-run --- in both implementations
-independently --- could not reproduce that figure at the recorded
-configuration; its magnitude is consistent with an ad-hoc small-pool run,
-though the original run's configuration was never recovered. We dropped
-it. The episode is itself an argument for the audit: ceiling numbers are
-cheap enough to regenerate that none need be trusted from memory.
+An earlier draft of this paper quoted a dramatic early-budget plateau
+figure for the restricted arm from a preliminary run's records. The
+audit's re-run, in both implementations independently, could not
+reproduce that figure at the recorded configuration; its magnitude is
+consistent with an ad-hoc small-pool run, though the original run's
+configuration was never recovered. We dropped it. The episode is itself
+an argument for the audit: ceiling numbers are cheap enough to
+regenerate that none need be trusted from memory.
 % TODO: optional gap-vs-pool-size figure; decide at full-pass review.
 
 % =============================================================================
@@ -672,8 +674,8 @@ Duplicate handling that compares \emph{raw encodings} treats two points
 that decode to the same categorical combination as distinct. The
 surrogate's apparent uncertainty lives in encoding space: a fresh
 encoding of an already-evaluated combination is a new point in
-$[0,1]^d$, so its posterior variance --- and hence its Expected
-Improvement --- does not vanish there, even for a surrogate that
+$[0,1]^d$, so its posterior variance, and hence its Expected
+Improvement, does not vanish there, even for a surrogate that
 interpolates its training points exactly. The acquisition therefore
 keeps nominating encodings of combinations the loop has already
 measured, and on a deterministic objective every such pick is a wasted
@@ -696,25 +698,25 @@ Under the oracle the leak is maximally silent
 combinations the oracle re-picks its already-found optimum for a median
 of $78$ of $80$ iterations under encoding-level dedup, while no
 benchmark's mean final value moves by even two paired standard errors in
-either generator variant --- the convergence plot literally cannot see
+either generator variant: the convergence plot literally cannot see
 it. For real surrogates the same leak is far from harmless
 (Table~\ref{tab:dedup}): a GP and a random forest each re-spend $52$--$55$
 of $80$ picks on known combinations and drop from solving the benchmark
 on every seed to missing it on $2$--$5$ of $25$, with mean finals
 degrading toward Random Search. The leak is also not an artifact of one
-implementation: Optuna's stock TPE --- its own sampler, no shared pool
---- revisits a median of $53$ of $80$ combinations (mean $52.7$,
+implementation: Optuna's stock TPE, which runs its own sampler with no
+shared pool, revisits a median of $53$ of $80$ combinations (mean $52.7$,
 Table~\ref{tab:dedup}) on the same benchmark and lands at Random-level
 performance. (This TPE arm starts from Optuna's own random startup
 rather than the shared design, so its performance figure is
 configuration-conditional; the revisit count is the robust part of the
 observation.) The thesis
 pipeline's pre-fix instrumented BASS runs lost $25$--$29$ of $40$ picks
-the same way. Roughly two thirds of the evaluation budget --- across four methods
-spanning three unrelated machinery families (the shared pool loop under
-GP and RF, TPE's own sampler, and the thesis's BASS pipeline) --- spent
-silently re-measuring known points,
-while each method still ``ran'' and produced plausible-looking curves.
+the same way. Across four methods spanning three unrelated machinery
+families (the shared pool loop under GP and RF, TPE's own sampler, and
+the thesis's BASS pipeline), roughly two thirds of the evaluation budget
+was spent silently re-measuring known points, while each method still
+``ran'' and produced plausible-looking curves.
 
 \begin{table}[t]
 \caption{\label{tab:dedup}Duplicate leakage on Cat-Ackley ($d{=}3$,
@@ -725,7 +727,7 @@ never collide at the raw-encoding level, so an encoding-dedup Random arm
 is operationally identical to no dedup and was not run.}
 \begin{ruledtabular}
 \begin{tabular}{llrrr}
-method & dedup & final & solved & revisits/80 \\
+method & dedup & final & solved & mean revisits/80 \\
 \colrule
 GP-EI & combination & 0.000 & 25/25 & 0.0 \\
 GP-EI & encoding    & 3.64  & 20/25 & 52.2 \\
@@ -741,30 +743,6 @@ Random & combination & 4.36 & 19/25 & --- \\
 \section{Consequences for Surrogate Comparisons}
 \label{sec:conseq}
 % =============================================================================
-
-\paragraph{Repairing the machinery changes what a comparison means, not
-necessarily who wins.}
-An early, preliminary reading of our own pipeline suggested that fixing
-the candidate generator would flip the spline surrogate's standing
-against Random Search on the mixed benchmarks. The full 25-seed protocol
-run said otherwise, and we report it as the negative result it is
-(Table~\ref{tab:thesis}): with the machinery repaired, shared, and
-audited, BASS-BO still \emph{loses} to Random Search on both mixed
-benchmarks in per-seed wins, while GP-BO and TPE beat Random comfortably
-\emph{through the identical loop, acquisition rule, dedup, and initial
-designs}. That is precisely the point of the exercise. Before the
-repair, BASS-BO's mixed-space failure was unattributable, on two
-documented grounds: the pre-repair library's generator demonstrably
-forced a categorical flip on every local candidate (the configuration is
-recorded in the pipeline's version history, and the contemporaneous
-oracle A/B against that library lost every paired seed --- a result the
-final-protocol audit of Sec.~\ref{sec:oracle} re-establishes
-independently), and two thirds of the categorical budget was leaking to
-revisits (Sec.~\ref{sec:dedup}). After the repair, with the oracle
-bounding what the pool permits and the leak closed, the failure
-localizes cleanly to the surrogate--acquisition combination itself. A comparison
-that once measured machinery now measures models; the ranking did not
-flip, but its meaning did.
 
 \begin{table}[t]
 \caption{\label{tab:thesis}The thesis pipeline's final protocol run
@@ -784,12 +762,36 @@ Func-3C & BASS-BO & 8/3/14  & $0.048$ \\
 \end{ruledtabular}
 \end{table}
 
+\paragraph{Repairing the machinery changes what a comparison means, not
+necessarily who wins.}
+An early, preliminary reading of our own pipeline suggested that fixing
+the candidate generator would flip the spline surrogate's standing
+against Random Search on the mixed benchmarks. The full 25-seed protocol
+run said otherwise, and we report it as the negative result it is
+(Table~\ref{tab:thesis}): with the machinery repaired, shared, and
+audited, BASS-BO still \emph{loses} to Random Search on both mixed
+benchmarks in per-seed wins, while GP-BO and TPE beat Random comfortably
+\emph{through the identical loop, acquisition rule, dedup, and initial
+designs}. Before the
+repair, BASS-BO's mixed-space failure was unattributable, on two
+documented grounds: the pre-repair library's generator demonstrably
+forced a categorical flip on every local candidate (the configuration is
+recorded in the pipeline's version history, and the contemporaneous
+oracle A/B against that library lost every paired seed, a result the
+final-protocol audit of Sec.~\ref{sec:oracle} re-establishes
+independently), and two thirds of the categorical budget was leaking to
+revisits (Sec.~\ref{sec:dedup}). After the repair, with the oracle
+bounding what the pool permits and the leak closed, the failure
+localizes cleanly to the surrogate--acquisition combination itself. The
+ranking did not flip, but the comparison that once measured machinery
+now measures models.
+
 \paragraph{Where the surrogate does win, the machinery decides whether
 that is visible.}
 On the solvable purely categorical instance (Cat-Ackley, $d{=}3$,
 $L{=}5$), BASS-BO and GP-BO both reach the exact optimum on every seed
 (mean and standard deviation numerically zero) under the repaired
-machinery --- while under encoding-level dedup a GP of the same class
+machinery, while under encoding-level dedup a GP of the same class
 (the Python-implementation GP-EI of Table~\ref{tab:dedup}, not the
 thesis's GP-BO) misses it on a fifth of the seeds. The same
 benchmark also illustrates why solvable-in-budget instances are needed
@@ -797,13 +799,12 @@ at all: Random Search finds the optimum often enough that the paired
 comparison is mostly ties (8/17/0 for both surrogates,
 $p = 0.006$), so capability shows in the tie structure, not the win
 count.
-
 \paragraph{The generator axis, for real surrogates, at this budget.}
 Running sklearn-grade GP and random-forest surrogates through the same
 four machinery cells detects \emph{no} permissive-versus-restricted effect on either
 mixed benchmark (10--14 wins of 25, all $p \ge 0.09$): both run far
-below the oracle ceiling, where their own guidance quality --- not the
-pool --- is the binding constraint. A guidance-dial experiment makes
+below the oracle ceiling, where their own guidance quality, not the
+pool, is the binding constraint. A guidance-dial experiment makes
 this quantitative within a fixed search type: corrupting the oracle's
 score with noise $\sigma\varepsilon$, generator sensitivity decays from
 total (25/25 paired wins at $\sigma{=}0$) to statistically undetectable
@@ -812,8 +813,8 @@ surrogate of this grade (all four benchmark--pool cells,
 $p \ge 0.13$)\footnote{Two disclosures attach to this finding. An
 earlier run of the same dial on different seeds returned an inconclusive
 composite verdict: its win-rate clauses matched the pattern reported
-here in all four cells, but a gap-decay clause --- diagnosed post hoc as
-mis-specified at near-ceiling cells --- failed in two. The present
+here in all four cells, but a gap-decay clause, diagnosed post hoc as
+mis-specified at near-ceiling cells, failed in two. The present
 result is a pre-registered, fresh-seed retest of the win-rate criterion
 only, with a no-further-retests stopping rule; criteria were fixed and
 committed before the run. The decay is also not monotone: one
@@ -863,13 +864,13 @@ audit that verifies the control worked.
   \emph{Rationale:} encoding-level dedup silently re-spends the majority
   of a categorical budget and its cost is invisible in convergence
   curves (Sec.~\ref{sec:dedup}). \emph{Cost:} one canonicalization
-  function; under other encodings (one-hot, embeddings) the same rule
-  applies --- canonicalize to whatever representation the objective
-  actually distinguishes before comparing.
+function; under other encodings (one-hot, embeddings) the same rule
+applies: canonicalize to whatever representation the objective
+actually distinguishes before comparing.
   \item \textbf{Run the oracle-ceiling audit per machinery variant,
   before attributing anything to a surrogate.} \emph{Rationale:} it
   isolates the machinery axis with no model in the loop, and it locates
-  each surrogate's regime --- a surrogate far below the ceiling is
+  each surrogate's regime: a surrogate far below the ceiling is
   guidance-limited, and machinery effects measured on it will be
   attenuated or absent (Sec.~\ref{sec:conseq}). The ceiling distance is
   necessary but not sufficient for attribution: turning it into a
@@ -893,8 +894,8 @@ audit that verifies the control worked.
   objective and report excess-over-pigeonhole revisits.}
   \emph{Rationale:} the wrapper needs no library internals, the
   pigeonhole baseline separates algorithmic waste from unavoidable
-  collisions, and the resulting number changed the apparent ranking on
-  three of four benchmarks in our audit
+  collisions, and the resulting number exposed the waste whose refund
+  changed the apparent ranking on three of four benchmarks in our audit
   (Secs.~\ref{sec:wild}--\ref{sec:equalized}). \emph{Cost:} one
   objective wrapper (released) and, for the ranking check on
   deterministic objectives, a memoization re-run.
@@ -950,17 +951,18 @@ The synthetic benchmarks follow one protocol: budget $80$, $25$ paired
 seeds with shared initial designs, per-seed win/tie/loss with Wilcoxon
 signed-rank tests. Benchmarks: the CoCaBO mixed functions Func-2C/3C
 \cite{ru2020cocabo} and permuted-categorical Ackley at three sizes
-($d{=}3/L{=}5$ solvable in budget; $d{=}4/L{=}7$; $d{=}6/L{=}11$ with
+($d{=}3/L{=}5$ solvable in budget; $d{=}5/L{=}5$ with $3{,}125$
+combinations; $d{=}6/L{=}11$ with
 $1.77$ million combinations). The thesis pipeline additionally reports
 one real tuning task under the same shared machinery at its own scale:
 hyperparameter tuning of a small neural text classifier over a fully
-categorical eight-dimensional space (budget $60$, $25$ seeds --- each
+categorical eight-dimensional space (budget $60$, $25$ seeds; each
 evaluation is a real training run). There, BASS-BO and GP-BO both beat
 Random Search in paired wins ($17/3/5$, $p = 0.025$, and $16/2/7$,
-$p = 0.024$, respectively) while TPE does not ($12/2/11$, $p = 0.96$) ---
-the categorical-capability pattern of the synthetic benchmarks carrying
+$p = 0.024$, respectively) while TPE does not ($12/2/11$, $p = 0.96$):
+the categorical-capability pattern of the synthetic benchmarks carries
 over. (An earlier elastic-net candidate was run but dropped by the
-thesis as uninformative --- its models converged almost immediately,
+thesis as uninformative: its models converged almost immediately,
 leaving nothing for an optimizer to find; its artifacts remain in the
 companion repository.) All machinery \emph{ablations} in this paper,
 however, are synthetic-benchmark results; no ablation was run on a real
@@ -978,18 +980,18 @@ TPE, and Random on all benchmarks (Table~\ref{tab:thesis}); and (v) the
 in-the-wild program: the audit-instrument validation gates, the
 seven-arm ecosystem matrix (1{,}050 runs; Sec.~\ref{sec:wild}), and the
 equal-budget control (275 runs; Sec.~\ref{sec:equalized}). Every
-experiment carried a pre-registered design --- hypotheses and decision
+experiment carried a pre-registered design: hypotheses and decision
 criteria written before the runs, and for the later experiments
 committed to version control before the results existed, which is
-independently verifiable from the repository history --- and every
+independently verifiable from the repository history. Every
 experiment was independently re-verified against its raw results; three
 pre-registered hypotheses failed and are reported as such
 (Secs.~\ref{sec:equalized}, \ref{sec:dedup}, and~\ref{sec:conseq}).
 
 The machinery ablations deliberately run on schema-equivalent Python
 surrogates, and the audited candidates are the deployed libraries as they
-ship (Sec.~\ref{sec:wild}) --- the packages a practitioner would actually
-install --- not BASS itself. BASS is the motivating pipeline, not a
+ship (Sec.~\ref{sec:wild}), the packages a practitioner would actually
+install, not BASS itself. BASS is the motivating pipeline, not a
 deployed candidate: its exposure to the dedup leak is measured directly by
 the pre-fix instrumented runs ($25$--$29$ of $40$ picks re-spent on known
 combinations), and its behavior under repaired, shared machinery is the
@@ -1013,35 +1015,35 @@ surrogates. Its trajectory-level guarantee is empirical, not proved
 differently-guided run explores differently-centred pools. Our
 guidance-degradation evidence has a further scope limit: the dial
 corrupts the oracle with independent noise, which is one degradation
-model; a \emph{biased} surrogate --- one that is systematically wrong in
-a structured way, for example by over-smoothing --- degrades guidance
+model; a \emph{biased} surrogate, one that is systematically wrong in
+a structured way (for example by over-smoothing), degrades guidance
 differently, and its interaction with the generator restriction is
-untested. The objection this invites should be answered head on: does
-the generator confound matter for real methods, or only for oracles? On
+untested. The obvious objection is whether the generator confound
+matters for real methods, or only for oracles. On
 the evidence here, no real surrogate we ran was measurably affected by
-the generator restriction --- the observational case for its practical
+the generator restriction. The observational case for its practical
 relevance is inferential, resting on the dial calibration (sensitivity
 decays with guidance quality within a fixed search type) plus the
-observation that better-guided methods than ours exist.%
 \footnote{A pre-registered attempt to observe the effect under a
 strengthened GP (10$\times$ acquisition restarts) at the binding pool
-(n\_cand $=50$) failed its ceiling-proximity gate before any confirmatory
+($N{=}50$) failed its ceiling-proximity gate before any confirmatory
 run: it reached $\approx -0.03$ on Func-2C against a gate threshold of
 $-0.156$ and a same-pool oracle ceiling of $-0.206$. The shortfall tracks
-pool size, not the strengthening (E3's vanilla GP reached $-0.105$ at its
-own n\_cand $=1000$), so a null measured there would have been
+pool size, not the strengthening (the surrogate-matrix experiment's
+vanilla GP reached $-0.105$ at its own $N{=}1000$), so a null measured
+there would have been
 uninterpretable. Recorded as exp06\_h4 in the companion repository, not
 staged as a finding.}
 The dedup
 confound needs no such inference: it taxed every method we ran,
 directly. A comparison paper adopting our protocol gets the generator
-control nearly for free either way; the audit is what tells its authors
+control nearly for free either way. The audit is what tells its authors
 whether that control was load-bearing for their methods.
 
 \paragraph{Scope of the machinery family.}
 Everything here concerns pool-based acquisition optimization: propose,
 score, mask, pick. Gradient-based acquisition maximization over
-continuous relaxations and trust-region schemes need adapted audits ---
+continuous relaxations and trust-region schemes need adapted audits:
 the natural analogues (an oracle inside the trust region; the true
 objective as the function being maximized by the inner optimizer) are
 straightforward to state but were not evaluated here. Likewise, the
@@ -1058,23 +1060,23 @@ the ablations. Finally, the ecosystem audit (Sec.~\ref{sec:wild}) is a
 single, version-pinned snapshot of six libraries at documented defaults:
 library internals change across releases, and we do not claim the
 measured waste is stable over time or generalizes beyond the sampled
-libraries, configurations, and benchmarks --- the released wrapper
+libraries, configurations, and benchmarks. The released wrapper
 exists precisely so the measurement can be repeated against any version.
 The measured waste is bounded by space type as well: it is a property
 of finite categorical combination spaces, not of Bayesian optimization
 in general. Where a search space carries continuous coordinates, exact
 combination revisits are near-impossible by construction, and the audit
-reports accordingly --- 349 of 350 mixed-space runs register none at
+reports accordingly: 349 of 350 mixed-space runs register none at
 all. A practitioner tuning a continuous-heavy space should therefore
 not expect this failure mode, and the ecosystem finding should not be
 read as extending there.
 Higher-dimensional spaces, where candidate pools cover vanishing
 fractions of the domain, could plausibly make the generator restriction
-bind harder --- that is conjecture, stated as such.
+bind harder; this is conjecture, stated as such.
 
 \paragraph{Open cells and verification limits.}
 The spline surrogate itself is not run through the restricted and leaky
-machinery ablations (Sec.~\ref{sec:experiments}) --- a deliberate scope
+machinery ablations (Sec.~\ref{sec:experiments}), a deliberate scope
 decision: the ablations isolate mechanisms on controlled surrogates, the
 ecosystem audit measures the deployed candidates, and the spline pipeline
 serves as the case study under repaired machinery; we do not extrapolate
@@ -1085,7 +1087,7 @@ been verified against their full texts, with per-source assessments
 versioned in the companion repository so the check can be extended.
 Finally, one methodological debt is disclosed rather than hidden: four of
 this paper's experiment analyses were refuted in internal adversarial
-review and corrected before inclusion --- the surrogate-matrix analysis,
+review and corrected before inclusion: the surrogate-matrix analysis,
 for reframing a failed generator hypothesis as a new supported
 finding beyond its pre-registered fallback; the first guidance-dial
 analysis, for declaring a TPE configuration question closed when its
@@ -1093,7 +1095,7 @@ pre-registered joint criterion had been missed by one seed; the
 audit-instrument validation analysis, whose flagship observation
 contradicted its own results table; and the first equal-budgets analysis, whose committed
 ranking script omitted the registered tie-break and under-counted the
-ranking changes (2 of 4 rather than the correct 3 of 4) --- alongside
+ranking changes (2 of 4 rather than the correct 3 of 4), alongside
 several section drafts corrected for similar overclaims. The review
 records are versioned with the experiments.
 
@@ -1102,14 +1104,14 @@ Our findings are a mixed-space instance of a broader pattern documented
 by benchmarking critiques \cite{eggensperger2013towards,
 turner2021bayesian, dreczkowski2023mcbo}: apparent method differences
 often live in uncontrolled parts of the pipeline. The machinery axes we
-isolate are unusually easy to control --- a shared generator is an
+isolate are unusually easy to control: a shared generator is an
 implementation choice, combination-level dedup is one function, and the
-audit that verifies both costs minutes --- which is what makes a
-protocol (Sec.~\ref{sec:protocol}), rather than a lament, possible. Two statistical notes: we apply no multiple-comparison
-correction across the many cells reported --- the load-bearing results
+audit that verifies both costs minutes. This is what makes a
+protocol (Sec.~\ref{sec:protocol}) possible. Two statistical notes: we apply no multiple-comparison
+correction across the many cells reported. The load-bearing results
 (25/25 sweeps at the Wilcoxon floor) survive any correction, and
-descriptive non-anchor $p$-values are labeled as such where they appear
---- and ``statistically undetectable'' is used throughout in the plain
+descriptive non-anchor $p$-values are labeled as such where they appear.
+``Statistically undetectable'' is used throughout in the plain
 sense of failing a pre-named test at $\alpha=0.05$, not as evidence of
 exact absence.
 
@@ -1145,7 +1147,7 @@ $s \le t$ preserves the inequality. $\blacksquare$
 Being pathwise and per-budget, the bound transfers to means, medians,
 and any monotone functional of the best-so-far curve. It is exactly what
 the audit implements when the generator stream is seeded independently
-of selections --- and it is silent about adaptive generators, which is
+of selections, and it is silent about adaptive generators, which is
 the honest boundary of what the audit proves. The exogenous setting is
 not an artifact of our pipeline: the random grids for which
 \citet{kim2025inexact} prove sublinear-regret guarantees under inexact
@@ -1200,7 +1202,7 @@ on our pools, the per-step selection-quality cost that their analysis
 bounds on the regret side.
 \emph{(c) Sequential reading.} In the loop, $\sigma$ interpolates
 between the oracle selector and, as $\sigma \to \infty$, uniform
-selection over the same generator's (post-dedup-mask) pools --- not free
+selection over the same generator's (post-dedup-mask) pools, not free
 random search. We claim no theorem that the sequential loop's
 final best is monotone in $\sigma$; (a) constrains the per-step
 selection law only. One idealization: the unique-minimum premise is
