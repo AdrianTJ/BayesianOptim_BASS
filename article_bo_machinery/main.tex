@@ -267,9 +267,11 @@ whether an acquisition function's potential is realized in high dimensions.
 In mixed and
 discrete spaces, \citet{daulton2022pr} diagnosed the standard
 relax-then-round candidate generation as a biased, degenerate
-approximation that degrades performance largely independently of the
-acquisition function on top, and replaced it with probabilistic
-reparameterization. The duplicate-evaluation pathology of rounding was
+approximation: the acquisition value at the relaxed point can be larger
+than the value after rounding, so the same design is re-selected (they
+demonstrate the pathology with Expected Improvement), and replaced it
+with probabilistic reparameterization. The duplicate-evaluation
+pathology of rounding was
 articulated earlier by \citet{garrido2020dealing} and by
 \citet{luong2019discrete}, each fixing it \emph{within} one method (a
 transformed kernel; manipulated exploration and length-scale). Our
@@ -493,7 +495,8 @@ Table~\ref{tab:wild} shows the audit's central pattern: waste is
 \emph{machinery-determined}, splitting the ecosystem into libraries with
 combination-aware proposal handling (Ax and SMAC at zero raw revisits in
 every one of their 300 runs; scikit-optimize's built-in duplicate
-detection tracking the pigeonhole baseline) and libraries without (both
+detection, which warns on a revisit without excluding the point,
+tracking the pigeonhole baseline) and libraries without (both
 TPE implementations and Optuna's GP sampler). Three findings deserve
 emphasis. First, \emph{solving masks waste}: Optuna's GP sampler posts
 the matrix's best categorical solve record while spending a median of 53
