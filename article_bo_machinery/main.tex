@@ -67,19 +67,19 @@ that they are frequently statements about the surrounding \emph{machinery}
 instead: the candidate generation the acquisition is optimized over, and the
 duplicate handling that decides which proposals are admissible. The effect is
 live in the deployed ecosystem.
-We audited six widely used BO libraries and a random-sampling control at
+We audited six widely used BO optimizers and a random-sampling control at
 their documented defaults with a surrogate-free objective wrapper (1{,}050
 runs across the seven arms; six benchmarks, 25 seeds, budget 80). Three of
 the six silently re-spend at least 10\% of the evaluation budget on
 already-evaluated categorical combinations beyond what unavoidable collisions
-explain, two exceed 25\%, and one exceeds 40\%. The library that
+explain, two exceed 25\%, and one exceeds 40\%. The optimizer that
 simultaneously posts the matrix's \emph{best} categorical solve record
 grinds a median of 53 of 80 evaluations into revisits and touches only
 ${\sim}27$ unique configurations; convergence curves are blind to the waste.
-One library instead halts early rather than propose a duplicate.
-We then equalized duplicate handling by charging each library for unique
+One optimizer instead halts early rather than propose a duplicate.
+We then equalized duplicate handling by charging each optimizer for unique
 evaluations only (bit-identical trajectories on deterministic objectives, by
-construction). The apparent library ranking changes on three of four
+construction). The apparent optimizer ranking changes on three of four
 benchmarks, and one sampler's apparent weakness on a small categorical space
 (7 of 25 solves) is revealed as mostly machinery, not model (22 of 25 once
 duplicates are refunded).
@@ -129,7 +129,7 @@ evaluated.
 To find out how much this matters outside carefully constructed examples, we
 measured it in the deployed ecosystem. We wrapped the objective function
 itself, a vantage point every optimizer must pass through that requires no
-access to library internals, and audited six widely used BO libraries plus a
+access to library internals, and audited six widely used BO optimizers plus a
 random-sampling control at their documented defaults on six categorical and
 mixed benchmarks (25 seeds each, budget 80; 1{,}050 runs across the seven
 arms). Three of the six re-spend at least 10\% of the evaluation budget on
@@ -140,7 +140,7 @@ of 80 charged evaluations on a 125-combination space, and it does so while
 posting the matrix's best categorical solve record, so no convergence curve
 gives it away. On a $5^{25}$-combination space, where a uniform random
 sampler essentially never collides, one default sampler still re-spends a
-median of 16 evaluations in 80. At the other extreme, one library's
+median of 16 evaluations in 80. At the other extreme, one optimizer's
 runhistory machinery terminates the run early rather than propose a
 duplicate. These are not exotic corner cases: the duplicate-suggestion
 behavior of both audited TPE implementations is acknowledged in their
@@ -148,10 +148,10 @@ libraries' own issue trackers, and the audit turns this behavior, together
 with the behaviors that have no paper trail at all, into numbers.
 
 The waste is not an automatic verdict on quality. This is precisely the
-confound. When we re-ran the wasteful libraries charging only \emph{unique}
+confound. When we re-ran the wasteful optimizers charging only \emph{unique}
 evaluations (a memoization control that leaves sampler trajectories
 bit-identical on deterministic objectives), the apparent ranking of the six
-libraries changed on three of four benchmarks, and the sampler that looked
+optimizers changed on three of four benchmarks, and the sampler that looked
 weakest on a small categorical space recovered from 7 of 25 solves to 22 of
 25. The two meters disagree about who wins: benchmark tables implicitly
 charge proposals, while expensive objectives charge unique evaluations.
@@ -191,17 +191,17 @@ is.
 This paper makes five contributions:
 \begin{enumerate}
   \item \textbf{An in-the-wild machinery audit of six deployed BO
-  libraries.} A surrogate-free objective wrapper (\texttt{bo-audit},
-  released) counts decoded-combination revisits uniformly across
-  libraries at their documented defaults. 3 of 6 libraries
+  optimizers.} A surrogate-free objective wrapper (\texttt{bo-audit},
+  released) counts decoded-combination revisits uniformly across the
+  audited arms at their documented defaults. 3 of 6 optimizers
   waste ${\ge}10\%$ of budget beyond unavoidable collisions on at least
   one benchmark (2 of 6 ${\ge}25\%$; 1 of 6 ${\ge}40\%$). The heaviest
   waster simultaneously posts the matrix's best categorical solve record, and one
-  library terminates early rather than duplicate. All of this is invisible
+  optimizer terminates early rather than duplicate. All of this is invisible
   to convergence curves.
   \item \textbf{A budget-equalized re-comparison.} Charging unique
   evaluations only (trajectory-preserving memoization on deterministic
-  objectives), the apparent library ranking changes on 3 of 4
+  objectives), the apparent optimizer ranking changes on 3 of 4
   benchmarks under a pre-registered ranking metric. The refund converts
   into solves for one TPE implementation and not the other, so waste is
   necessary but not sufficient for a ranking artifact.
@@ -337,10 +337,12 @@ the issue trackers of both audited TPE implementations
 \texttt{optuna\#5440} and \texttt{\#2021}). To our knowledge, however,
 it has not been measured uniformly across libraries, related to the
 unavoidable collision baseline, or connected to ranking artifacts.
-Positioning against further published audit studies is deferred to a
-camera-ready pass with full-text verification.
-% TODO(author): verify + cite audit-genre anchors (Recht et al. ImageNet
-% replication; bayesmark; MCBO already cited) after full-text check.
+Audit-genre precedents outside optimization support the framing:
+\citet{recht2019imagenet} re-measured deployed image classifiers on
+freshly constructed test sets and found accuracy drops of 11--14\% on
+ImageNet, the same pattern of measuring a deployed system from a vantage
+point it does not control that our audit implements from inside the
+objective.
 
 % =============================================================================
 \section{Setup: One Loop, Shared Machinery}
@@ -451,18 +453,19 @@ equal-budgets re-comparison of Sec.~\ref{sec:equalized}.
 \label{sec:wild}
 % =============================================================================
 
-We audited six pip-installable BO libraries at their documented defaults:
-Optuna's TPE and GP samplers, Hyperopt's TPE, scikit-optimize's GP,
-Ax, and SMAC~3, plus a uniform random-sampling control
-\cite{bergstra2012random}, on six
-benchmarks: categorical Ackley at three sizes ($5^3{=}125$,
+We audited six pip-installable BO optimizers at their documented defaults,
+plus a uniform random-sampling control \cite{bergstra2012random}. The six
+optimizers are Optuna's TPE and GP samplers, Hyperopt's TPE,
+scikit-optimize's GP, Ax, and SMAC~3; they are arms of five packages
+(Optuna contributes two samplers), and we count at the arm level
+throughout. The benchmarks are categorical Ackley at three sizes ($5^3{=}125$,
 $5^5{=}3{,}125$, and $11^6{\approx}1.8{\times}10^6$ combinations), the
 $5^{25}$ pest-control simulation (a deterministic variant of the standard
 combinatorial benchmark, disclosed in the repository), and the two mixed
 CoCaBO functions; 25 seeds per cell, budget 80, for 1{,}050 runs. Every
 run's configuration, library version, and non-default settings are
-recorded alongside the raw results. Per-library hypotheses were
-pre-registered from each library's documented mechanism before the matrix
+recorded alongside the raw results. Per-optimizer hypotheses were
+pre-registered from each one's documented mechanism before the matrix
 ran; all seven held, including the null check that the counter registers
 ${\approx}0$ exact revisits on mixed spaces (349 of 350 mixed-space runs
 show exactly zero).
@@ -529,7 +532,7 @@ evaluations only (80 unique, horizon 400 proposals). We re-ran the two
 TPE implementations on all four categorical benchmarks and Optuna's GP
 sampler on three (its pest-control row had zero as-shipped revisits, so
 memoization is a no-op there and the row carries over); this is 275 runs,
-same seeds. The duplicate-free libraries' as-shipped rows likewise carry
+same seeds. The duplicate-free optimizers' as-shipped rows likewise carry
 over, verified duplicate-free row-by-row for Ax and SMAC, with one
 disclosed exception: scikit-optimize's carried $5^3$ row reflects
 ${\sim}60$ median unique evaluations rather than 80 (its as-shipped
@@ -537,7 +540,7 @@ revisits there track the pigeonhole baseline), which cannot change that
 cell's outcome since it already solves 25 of 25.
 
 Under the pre-registered ranking metric (median final best, solve-count
-tie-break), \textbf{the apparent library ranking changes on three of the
+tie-break), \textbf{the apparent optimizer ranking changes on three of the
 four benchmarks}. The largest movement is Optuna TPE on the
 $5^5$ space: as shipped it looks like a weak categorical optimizer
 (median best $16.18$, 7 of 25 solves, below Ax); with its
@@ -996,8 +999,11 @@ criteria written before the runs, and for the later experiments
 committed to version control before the results existed, which is
 independently verifiable from the repository history. Every
 experiment was independently re-verified against its raw results; three
-pre-registered hypotheses failed and are reported as such
-(Secs.~\ref{sec:equalized}, \ref{sec:dedup}, and~\ref{sec:conseq}).
+pre-registered hypotheses failed and are reported as such: the
+harness-validation check on the restricted arm's early-budget plateau
+(Sec.~\ref{sec:oracle}), the Hyperopt strict-improvement prediction
+under the refund (Sec.~\ref{sec:equalized}), and the no-generator-effect
+result for weak surrogates (Sec.~\ref{sec:conseq}).
 
 The machinery ablations deliberately run on schema-equivalent Python
 surrogates, and the audited candidates are the deployed libraries as they
@@ -1068,7 +1074,7 @@ coordinates, at most two continuous; the pest-control space is
 25-dimensional but appears only in the ecosystem audit); the real-task
 evidence comes from the thesis pipeline only and was not subjected to
 the ablations. Finally, the ecosystem audit (Sec.~\ref{sec:wild}) is a
-single, version-pinned snapshot of six libraries at documented defaults:
+single, version-pinned snapshot of the six optimizers at documented defaults:
 library internals change across releases, and we do not claim the
 measured waste is stable over time or generalizes beyond the sampled
 libraries, configurations, and benchmarks. The released wrapper
@@ -1113,7 +1119,8 @@ records are versioned with the experiments.
 \paragraph{Relation to reproducibility critiques.}
 Our findings are a mixed-space instance of a broader pattern documented
 by benchmarking critiques \cite{eggensperger2013towards,
-turner2021bayesian, dreczkowski2023mcbo}: apparent method differences
+turner2021bayesian, dreczkowski2023mcbo, recht2019imagenet}: apparent
+method differences
 often live in uncontrolled parts of the pipeline. The machinery axes we
 isolate are unusually easy to control: a shared generator is an
 implementation choice, combination-level dedup is one function, and the
