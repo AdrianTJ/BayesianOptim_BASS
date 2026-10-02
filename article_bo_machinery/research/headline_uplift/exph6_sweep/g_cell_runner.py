@@ -20,6 +20,16 @@ def main():
     from bo_audit.benchmarks import bench_by_name
     from bo_audit.core import AuditedObjective
     from bo_audit.drivers import DRIVERS
+    if arm == "ax":
+        # Amendment 2: Ax runs through the released package's driver, which
+        # passes is_ordered=False on categoricals (the research copy above
+        # left Ax's ordered-integer default in place; claims audit A5, H7).
+        import importlib.util
+        pkg = HERE.parents[3] / "bo-audit" / "bo_audit" / "drivers.py"
+        spec = importlib.util.spec_from_file_location("bo_audit_pkg_drivers", pkg)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        DRIVERS = {**DRIVERS, "ax": mod.run_ax}
 
     fn, space = bench_by_name(bench)
     audited = AuditedObjective(fn, space,

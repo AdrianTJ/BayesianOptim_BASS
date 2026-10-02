@@ -152,5 +152,29 @@ class TestMemoizedWrapper(unittest.TestCase):
         self.assertEqual(memo.n_revisits, 3)
 
 
+class TestAxDriver(unittest.TestCase):
+    """Ax defaults integer choice parameters to ordered; the driver must not."""
+
+    def test_categoricals_are_unordered(self):
+        try:
+            import ax
+        except ImportError:
+            self.skipTest("ax-platform not installed")
+        from unittest import mock
+        from bo_audit.drivers import run_ax
+        made = []
+        real = ax.ChoiceParameterConfig
+
+        def spy(*args, **kwargs):
+            made.append(kwargs)
+            return real(*args, **kwargs)
+
+        space = [("c0", "cat", [1, 2, 3]), ("c1", "cat", ["a", "b", "c"])]
+        audited = AuditedObjective(lambda cfg: 0.0, space)
+        with mock.patch.object(ax, "ChoiceParameterConfig", spy):
+            run_ax(audited, space, 1, seed=0)
+        self.assertEqual([k["is_ordered"] for k in made], [False, False])
+
+
 if __name__ == "__main__":
     unittest.main()

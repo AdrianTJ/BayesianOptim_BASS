@@ -139,7 +139,8 @@ def main():
     jobs = [j for j in jobs if j not in done]
     print(f"{mode} {classes}: {len(jobs)} runs to do ({len(done)} already done)")
     n = 0
-    with ThreadPoolExecutor(max_workers=4) as ex:
+    workers = int(os.environ.get("G_WORKERS", "4"))   # DESIGN: 4; override per host
+    with ThreadPoolExecutor(max_workers=workers) as ex:
         for msg in ex.map(one, jobs):
             n += 1
             if msg.startswith(("FAIL", "TIMEOUT")) or n % 100 == 0 or n == len(jobs):

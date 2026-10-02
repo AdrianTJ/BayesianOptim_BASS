@@ -102,9 +102,12 @@ def run_ax(audited, space, budget, seed):
     for spec in space:
         name, kind = spec[0], spec[1]
         if kind == "cat":
+            # is_ordered=False: Ax defaults integer choices to ordered, which
+            # would treat integer-coded category labels as a scale.
             params.append(ChoiceParameterConfig(
                 name=name, values=list(spec[2]),
-                parameter_type="int" if all(isinstance(v, int) for v in spec[2]) else "str"))
+                parameter_type="int" if all(isinstance(v, int) for v in spec[2]) else "str",
+                is_ordered=False))
         elif kind == "int":
             params.append(RangeParameterConfig(
                 name=name, bounds=(spec[2], spec[3]), parameter_type="int"))
@@ -120,7 +123,7 @@ def run_ax(audited, space, budget, seed):
             client.complete_trial(trial_index=idx, raw_data={"obj": audited(cfg)})
     import ax
     return {"library": "ax", "version": ax.__version__,
-            "non_defaults": "random_seed; one trial per ask"}
+            "non_defaults": "random_seed; one trial per ask; is_ordered=False on categoricals"}
 
 
 SMAC_VENV_PY = None  # set by run scripts (isolated venv: smac needs sklearn<1.8)
