@@ -38,9 +38,9 @@ it includes 15 optuna-gp cells that have only three budgets.
 | four-budget cells, undefined ρ = pass | 72/74 = 0.97 | PASS |
 | four-budget cells, undefined ρ ≠ pass (DESIGN's letter) | 49/74 = 0.66 | **FAIL** |
 
-The FAIL comes entirely from the 25 four-budget cells where waste is
-exactly zero at every budget (TPE-family arms on float-bearing spaces),
-where "waste grows with budget" has nothing to grow. Among cells where
+Of the 25 four-budget cells that miss, 23 have waste exactly zero at
+every budget (mostly TPE-family arms on float-bearing spaces), where
+"waste grows with budget" has nothing to grow; 2 have ρ < 0. Among cells where
 e(B) varies and is not a floating-point artefact, ρ ≥ 0 in 60 of 61
 (reviewer's count; the one exception is optuna-gp on catf_rosen_d4L7,
 where e is below chance and falls further). Two of the script's three
