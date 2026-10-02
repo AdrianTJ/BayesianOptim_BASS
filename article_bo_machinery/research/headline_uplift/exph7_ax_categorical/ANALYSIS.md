@@ -39,11 +39,11 @@ budget 80). Numbers come from `analyze_h7.py`; full table in `h7_agg.md`.
 | func2C | 17/8/0, p = 0.34 | −0.2057 vs −0.1805 |
 | func3C | 7/18/0, p = 0.0006 | 0.0091 vs −0.7009 |
 
-Ordering helped Ax where the integer label happens to track the
-objective (Cat-Ackley's levels and func3C's encoding are not arbitrary
-with respect to it), and slightly hurt it on pest control. That is the
-expected signature of a spurious ordinal prior, and it is why the H1 Ax
-rows overstated Ax on the Cat-Ackley benchmarks.
+Ordering helped Ax on Cat-Ackley and func3C and slightly hurt it on
+pest control. A plausible reading, not checked here, is that the integer
+labels happen to track the objective on the first two, which is how a
+spurious ordinal prior would show up. Either way, the H1 Ax rows
+overstated Ax on the Cat-Ackley benchmarks.
 
 ## What this changes in the article (after review)
 
