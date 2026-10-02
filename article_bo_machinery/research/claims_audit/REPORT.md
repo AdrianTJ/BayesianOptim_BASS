@@ -205,7 +205,7 @@ already found, and a convergence curve cannot show this" is what the data
 supports. H2-SAT (about 30 unique configurations in 400 proposals) is
 consistent with this: the sampler parks on the incumbent once it has it.
 
-### B8. The Optuna maintainers' stated rationale
+### B7. The Optuna maintainers' stated rationale
 
 optuna#5440 was closed by a maintainer saying repeated suggestions are
 intentional so stochastic objectives can be re-sampled. The paper's
