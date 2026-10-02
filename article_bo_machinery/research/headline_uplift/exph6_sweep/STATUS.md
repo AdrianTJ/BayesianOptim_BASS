@@ -201,3 +201,11 @@ from `analyze_g.py`'s output.**
 - GH1–GH7 block: the unmodified stdout of `python3 analyze_g.py`, run
   from this folder against the committed `results.jsonl`.
 - `main.tex` claim: `grep`-checked as described above.
+
+## Update, 2026-10-02: matrix complete
+
+The GP wave and smac backfill ran under Amendment 2 on a second machine
+(`env_sandcastle.txt`). `results.jsonl` now holds all 16,275 planned
+runs with 0 failures. The record above is kept as written; it describes
+the sweep as it stood when paused. The analysis of the complete matrix
+is `ANALYSIS.md` (unreviewed).
