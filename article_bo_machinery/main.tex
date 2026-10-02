@@ -484,7 +484,12 @@ show exactly zero).
 evaluations (median excess over the pigeonhole baseline in parentheses)
 on the four purely categorical benchmarks, and exact-solve counts where
 the optimum is attainable in budget. The random control's excess is
-${\approx}0$ everywhere by construction. Full per-cell tables, means,
+${\approx}0$ everywhere by construction. $^{\dagger}$Ax with its
+categoricals declared unordered, as every other library treats them; a
+first run let Ax read the integer level labels as ordered and solved
+18/25, and a same-environment rerun of both settings reproduces 10/25
+against 18/25. The unordered count is seed-set sensitive (16/25 on a
+second seed set). Full per-cell tables, means,
 and library versions: companion repository.}
 \begin{ruledtabular}
 \begin{tabular}{lcccccc}
@@ -497,7 +502,7 @@ Optuna TPE      & 45 (+24) & 29 (+28) & 18 (+18) & 16 (+16) & 21/25 & 7/25 \\
 Hyperopt TPE    & 33 (+12) & 14 (+13) & 6 (+6) & 7 (+7) & 21/25 & 3/25 \\
 Optuna GP       & 53 (+32) & 38 (+37) & 1 (+1) & 0 (0)  & 25/25 & 25/25 \\
 skopt GP        & 20 ($-$1) & 1 (0)  & 0 (0)  & 0 (0)  & 25/25 & 25/25 \\
-Ax              & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 25/25 & 18/25 \\
+Ax              & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 25/25 & 10/25$^{\dagger}$ \\
 SMAC            & 0 ($-$21) & 0 ($-$1) & 0 (0) & 0 (0)  & 22/25 & 4/25 \\
 \end{tabular}
 \end{ruledtabular}
