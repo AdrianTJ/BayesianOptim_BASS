@@ -77,6 +77,10 @@ simultaneously posts the matrix's \emph{best} categorical solve record
 grinds a median of 53 of 80 evaluations into revisits and touches only
 ${\sim}27$ unique configurations; convergence curves are blind to the waste.
 One optimizer instead halts early rather than propose a duplicate.
+A pre-registered sweep (16{,}275 runs, 23 benchmarks, four budgets)
+extends the pattern to every discrete benchmark tested; on mixed
+machine-learning spaces the exact-revisit measure registers no waste from
+the TPE samplers, a scope limit we state.
 We then equalized duplicate handling by charging each optimizer for unique
 evaluations only (bit-identical trajectories on deterministic objectives, by
 construction). One sampler's apparent weakness on a 3{,}125-combination
@@ -201,7 +205,10 @@ This paper makes five contributions:
   one benchmark (2 of 6 ${\ge}25\%$; 1 of 6 ${\ge}40\%$). The heaviest
   waster simultaneously posts the matrix's best categorical solve record, and one
   optimizer terminates early rather than duplicate. All of this is invisible
-  to convergence curves.
+  to convergence curves. A pre-registered sweep over 23 benchmarks
+  extends the pattern to all 14 discrete benchmarks tested and marks
+  where the measure stops: on mixed machine-learning spaces it registers
+  no TPE waste.
   \item \textbf{A budget-equalized re-comparison.} Charging unique
   evaluations only (trajectory-preserving memoization on deterministic
   objectives), Optuna TPE's 7 of 25 solves on a 3{,}125-combination
@@ -533,6 +540,98 @@ smallest space, when its runhistory-keyed generator exhausts rather than
 propose a duplicate. This is a defensible design choice that, like the
 waste it avoids, is invisible in convergence curves and surfaced only by
 the audit.
+% =============================================================================
+\section{How Far Does the Waste Extend?}
+\label{sec:sweep}
+% =============================================================================
+
+The audit above rests on six benchmarks. To test whether its pattern
+generalizes, we ran a pre-registered sweep: seven hypotheses (GH1--GH7)
+and the analysis script were committed before the first run. It covers
+23 benchmarks in six families: (A) categorical Ackley at the three sizes
+above plus categorical Rastrigin and Griewank; (B) categorical
+Rosenbrock, Michalewicz, and Schwefel; (C) binary combinatorial
+problems (NK landscapes at two ruggedness levels, MaxCut, LABS); (D)
+the pest-control and contamination simulators; (E) seven real
+machine-learning tuning problems, four scikit-learn models on standard
+datasets and three YAHPO Gym surrogate scenarios
+\cite{pfisterer2022yahpo}; and (F) the two mixed CoCaBO functions. The
+arms are the seven of Sec.~\ref{sec:wild} plus Optuna~3.6's TPE, at
+budgets 20, 40, 80, and 160 with 25 seeds each (16{,}275 runs; the
+GP-family arms run the largest budget on a pre-registered subset). The
+metric is the excess-waste fraction
+$e(B) = (\text{revisits} - \text{pigeonhole}(K,B))/B$, zero for spaces
+with a continuous dimension. Every number below was checked against the
+raw results by an independent reviewer.
+
+\begin{table}[t]
+\caption{\label{tab:sweep}Generalization sweep: excess-waste fraction
+$e(80)$ in percent of budget, per arm and benchmark family (median over
+the family's benchmarks of the per-benchmark median over 25 seeds).
+Families A--D are fully discrete; E is real ML tuning; F is mixed.
+Optuna~3.6's family-E value excludes the three YAHPO scenarios, which
+it could not run. SMAC does not cover family E.}
+\begin{ruledtabular}
+\begin{tabular}{lrrrrrr}
+ & A & B & C & D & E & F \\
+\hline
+Random          & 0  & 0  & 0  & 0  & 0 & 0 \\
+Optuna TPE 4.9  & 30 & 29 & 46 & 34 & 0 & 0 \\
+Optuna TPE 3.6  & 32 & 31 & 46 & 34 & 0 & 0 \\
+Hyperopt TPE    & 16 & 12 & 24 & 16 & 0 & 0 \\
+Optuna GP       & 40 & 43 & 1  & 1  & 0 & 0 \\
+skopt GP        & $-$1 & $-$1 & 0 & 0 & 0 & 0 \\
+Ax              & $-$1 & $-$1 & 0 & 0 & 0 & 0 \\
+SMAC            & $-$1 & $-$1 & 0 & 0 & -- & 0 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Table~\ref{tab:sweep} summarizes the result. The machinery split of
+Sec.~\ref{sec:wild} holds on every discrete family. Optuna's TPE
+re-spends between 20\% and 48\% of its budget beyond chance on each of
+the 14 discrete benchmarks, Hyperopt's TPE 12--24\% per family, and
+Optuna~3.6 behaves like 4.9, so the waste is not an artifact of one
+release (GH1 and GH4 pass). Ax and SMAC register a median of zero
+revisits in every cell at every budget. The pre-registered bound on the
+deduplicating arms (GH2) nevertheless fails on a technicality: it was
+two-sided, and scikit-optimize misses it on one cell at
+$e = -0.0725$, that is, by revisiting \emph{less} than chance.
+
+Waste grows with budget wherever it exists. Among the cells where
+$e(B)$ varies across budgets, the rank correlation between budget and
+waste is non-negative in 60 of 61, and Optuna's TPE reaches 42--61\% at
+budget 160. The registered form of this hypothesis (GH3) fails,
+however. It counted all cells with four budgets, and in 23 of them the
+waste is zero at every budget, so the correlation is undefined. Counting
+those as failures, the clause holds in 49 of 74 cells (66\%) against a
+70\% threshold. The analysis script committed before the runs counted
+them as passes (86 of 89); we report the hypothesis as failed.
+
+The sweep also marks where the evidence stops. On the seven
+machine-learning problems no TPE variant exceeds 5\% except on the one
+fully discrete space (a random forest on \textit{digits}, 15\% for
+Optuna's TPE), and the hypothesis that waste would appear on most of
+them (GH5) fails. That null is partly built into the measure: revisits
+are counted on exact keys that include continuous coordinates (rounded
+to six decimals), which a sampler drawing continuous values essentially
+never repeats, so the measure cannot see a sampler re-spending budget on
+the same discrete sub-configuration of a mixed space. The waste claims
+in this paper are therefore claims about discrete and categorical
+spaces. One exception shows the measure is not blind to mixed spaces:
+Optuna's GP sampler repeats exact configurations on two of the YAHPO
+scenarios (a median of 36 of 80 evaluations on one). On a scikit-learn
+task where it does the same, every repeat we traced sits at a corner of
+the box (learning rate and subsample both at their upper bounds),
+consistent with its acquisition optimizer clipping to the bounds; we
+have not traced the YAHPO cases.
+
+Part of the sweep (the GP-family arms and part of SMAC) ran on a second
+machine with identical objective values; for some arms the same seed
+follows a different optimizer path on different hardware, which affects
+solve counts but not the waste measure, which is a property of each
+run.
+
 % =============================================================================
 \section{Equal Budgets: Does the Waste Change Conclusions?}
 \label{sec:equalized}
@@ -1024,20 +1123,22 @@ pre-registered fresh-seed retest ($2450$ runs; Sec.~\ref{sec:conseq});
 TPE, and Random on all benchmarks (Table~\ref{tab:thesis}); and (v) the
 in-the-wild program: the audit-instrument validation gates, the
 seven-arm ecosystem matrix (1{,}050 runs; Sec.~\ref{sec:wild}), and the
-equal-budget control (275 runs; Sec.~\ref{sec:equalized}). Every
+equal-budget control (275 runs; Sec.~\ref{sec:equalized}); and (vi) the
+generalization sweep (16{,}275 runs; Sec.~\ref{sec:sweep}). Every
 experiment carried a pre-registered design: hypotheses and decision
 criteria written before the runs, and for the later experiments
 committed to version control before the results existed. For the
-ecosystem audit, its equal-budget control, and the strengthened-surrogate
-attempt this ordering is verifiable from the repository history; for the
+ecosystem audit, its equal-budget control, the generalization sweep, and
+the strengthened-surrogate attempt this ordering is verifiable from the repository history; for the
 controlled experiments the pre-registration commits were lost in a
 history rewrite, and the ordering rests on the versioned review records. Every
-experiment was independently re-verified against its raw results; three
+experiment was independently re-verified against its raw results; six
 pre-registered hypotheses failed and are reported as such: the
 harness-validation check on the restricted arm's early-budget plateau
 (Sec.~\ref{sec:oracle}), the Hyperopt strict-improvement prediction
-under the refund (Sec.~\ref{sec:equalized}), and the no-generator-effect
-result for weak surrogates (Sec.~\ref{sec:conseq}).
+under the refund (Sec.~\ref{sec:equalized}), the no-generator-effect
+result for weak surrogates (Sec.~\ref{sec:conseq}), and three of the
+sweep's seven (Sec.~\ref{sec:sweep}).
 
 The machinery ablations deliberately run on schema-equivalent Python
 surrogates, and the audited candidates are the deployed libraries as they
